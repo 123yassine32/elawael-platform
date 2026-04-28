@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElAwail — Configuration initiale</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/config/firebase.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',sans-serif; background:#0f1f42; min-height:100vh;
+         display:flex; align-items:center; justify-content:center; padding:20px; }
+  .box { background:#fff; border-radius:20px; padding:40px; max-width:680px; width:100%;
+         box-shadow:0 32px 80px rgba(0,0,0,.4); }
+  h1 { color:#1b3a6b; font-size:22px; margin-bottom:6px; }
+  .sub { color:#64748b; font-size:13px; margin-bottom:28px; }
+  .step { background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:12px;
+          padding:18px 20px; margin-bottom:14px; }
+  .step-title { font-weight:800; font-size:13px; color:#1e293b; margin-bottom:10px;
+                display:flex; align-items:center; gap:8px; }
+  .badge { font-size:11px; padding:2px 9px; border-radius:100px; font-weight:700; }
+  .badge-ok  { background:#dcfce7; color:#059669; }
+  .badge-wait{ background:#fef3c7; color:#d97706; }
+  .badge-err { background:#fee2e2; color:#dc2626; }
+  .btn { display:inline-flex; align-items:center; gap:6px; background:#1b3a6b; color:#fff;
+         border:none; padding:10px 20px; border-radius:10px; font-size:13px; font-weight:700;
+         cursor:pointer; transition:all .2s; margin-top:8px; }
+  .btn:hover { background:#2563eb; transform:translateY(-1px); }
+  .btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+  .btn-green { background:#059669; }
+  .btn-green:hover { background:#047857; }
+  .log { background:#0f172a; color:#e2e8f0; border-radius:10px; padding:14px 16px;
+         font-family:monospace; font-size:12px; margin-top:12px; max-height:180px;
+         overflow-y:auto; line-height:1.7; display:none; }
+  .log.show { display:block; }
+  .ok  { color:#4ade80; }
+  .err { color:#f87171; }
+  .inf { color:#93c5fd; }
+  .sep { border:none; border-top:1px solid #e2e8f0; margin:6px 0 18px; }
+  input[type=text], input[type=password] {
+    width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 13px;
+    font-size:13px; margin-top:6px; outline:none; transition:border .2s; }
+  input:focus { border-color:#2563eb; }
+  label { font-size:12px; font-weight:700; color:#475569; }
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🛠️ ElAwail — Configuration initiale</h1>
+  <p class="sub">Ce panneau configure Firebase Authentication et initialise les données de base.<br>
+     À ouvrir <strong>une seule fois</strong>, puis supprimer.</p>
+
+  <hr class="sep">
+
+  <!-- ÉTAPE 1 : Vérifier Firebase -->
+  <div class="step" id="step1">
+    <div class="step-title">
+      🔥 Étape 1 — Connexion Firebase
+      <span class="badge badge-wait" id="badge1">En attente</span>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:10px">
+      Projet : <strong>elawael-platform-df2e3</strong>
+    </div>
+    <button class="btn" onclick="testFirebase()">▶ Tester la connexion</button>
+    <div class="log" id="log1"></div>
+  </div>
+
+  <!-- ÉTAPE 2 : Créer / réinitialiser les comptes -->
+  <div class="step" id="step2">
+    <div class="step-title">
+      👤 Étape 2 — Comptes utilisateurs
+      <span class="badge badge-wait" id="badge2">En attente</span>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:12px">
+      Définir les mots de passe définitifs des 3 comptes institutionnels.
+    </div>
+
+    <label>Mot de passe ADMIN (admin@elawail.ma)</label>
+    <input type="password" id="pw-admin" placeholder="Minimum 8 caractères" value="">
+
+    <label style="margin-top:10px;display:block">Mot de passe GESTIONNAIRE</label>
+    <input type="password" id="pw-gest" placeholder="Minimum 8 caractères" value="">
+
+    <label style="margin-top:10px;display:block">Mot de passe CONSULTANT</label>
+    <input type="password" id="pw-cons" placeholder="Minimum 8 caractères" value="">
+
+    <br>
+    <button class="btn" onclick="creerComptes()" id="btn-comptes">
+      ✅ Créer / mettre à jour les comptes
+    </button>
+    <div class="log" id="log2"></div>
+  </div>
+
+  <!-- ÉTAPE 3 : Initialiser Firestore -->
+  <div class="step" id="step3">
+    <div class="step-title">
+      🗄️ Étape 3 — Initialiser Firestore
+      <span class="badge badge-wait" id="badge3">En attente</span>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:10px">
+      Crée les collections de base et vérifie l'accès à la base de données.
+    </div>
+    <button class="btn" onclick="initFirestore()" id="btn-firestore">
+      🗄️ Initialiser Firestore
+    </button>
+    <div class="log" id="log3"></div>
+  </div>
+
+  <!-- ÉTAPE 4 : Règles Firestore -->
+  <div class="step">
+    <div class="step-title">📋 Étape 4 — Règles Firestore (manuel)</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:10px">
+      Cette étape doit être faite manuellement dans la console Firebase.
+      <strong>Copie ces règles</strong> dans
+      <a href="https://console.firebase.google.com/project/elawael-platform-df2e3/firestore/rules"
+         target="_blank" style="color:#2563eb">Firebase Console → Firestore → Règles</a> :
+    </div>
+    <pre style="background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px;font-size:11px;overflow-x:auto;line-height:1.6">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{col}/{doc=**} {
+      allow read, write: if request.auth != null
+                         &amp;&amp; request.auth.uid == uid;
+    }
+    match /org_new_benef/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /audit_logs/{doc} {
+      allow read, write: if request.auth != null;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}</pre>
+    <button class="btn" onclick="window.open('https://console.firebase.google.com/project/elawael-platform-df2e3/firestore/rules','_blank')">
+      🔗 Ouvrir Firebase Console
+    </button>
+  </div>
+
+  <hr class="sep">
+  <div style="text-align:center">
+    <button class="btn btn-green" onclick="window.location.href='index.html'" style="font-size:14px;padding:12px 30px">
+      🚀 Aller à la plateforme →
+    </button>
+  </div>
+</div>
+
+<script>
+const API_KEY = "AIzaSyAM29BVKLyohD9WnmUcOIhZPb_HIqnR_XY";
+
+function log(id, msg, type='inf') {
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  el.innerHTML += `<div class="${type}">${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function setBadge(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'badge badge-' + type;
+}
+
+/* ── Étape 1 : Tester Firebase ── */
+async function testFirebase() {
+  log('log1', '🔍 Test de la connexion Firebase...', 'inf');
+  try {
+    await db.collection('_setup_test').doc('ping').set({ ts: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('_setup_test').doc('ping').delete();
+    log('log1', '✅ Firebase Firestore : connecté et opérationnel', 'ok');
+    log('log1', '✅ Projet : elawael-platform-df2e3', 'ok');
+    setBadge('badge1', 'Connecté ✅', 'ok');
+  } catch(e) {
+    if (e.code === 'permission-denied') {
+      log('log1', '⚠️ Firestore connecté — règles à configurer (Étape 4)', 'inf');
+      log('log1', '✅ La connexion Firebase fonctionne !', 'ok');
+      setBadge('badge1', 'Connecté ✅', 'ok');
+    } else {
+      log('log1', '❌ Erreur : ' + e.message, 'err');
+      setBadge('badge1', 'Erreur', 'err');
+    }
+  }
+}
+
+/* ── Étape 2 : Créer / mettre à jour les comptes ── */
+async function creerComptes() {
+  const comptes = [
+    { email:'admin@elawail.ma',        pw: document.getElementById('pw-admin').value, label:'ADMIN' },
+    { email:'gestionnaire@elawail.ma', pw: document.getElementById('pw-gest').value,  label:'GESTIONNAIRE' },
+    { email:'consultant@elawail.ma',   pw: document.getElementById('pw-cons').value,  label:'CONSULTANT' },
+  ];
+
+  for (const c of comptes) {
+    if (c.pw.length < 8) {
+      alert(`❌ Le mot de passe pour ${c.label} doit contenir au moins 8 caractères.`);
+      return;
+    }
+  }
+
+  document.getElementById('btn-comptes').disabled = true;
+  log('log2', '🔄 Traitement des comptes...', 'inf');
+
+  for (const c of comptes) {
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
+    const body = JSON.stringify({ email: c.email, password: c.pw, returnSecureToken: true });
+
+    try {
+      const resp = await fetch(url, { method:'POST', body, headers:{'Content-Type':'application/json'} });
+      const json = await resp.json();
+
+      if (json.localId) {
+        log('log2', `✅ ${c.label} (${c.email}) — compte créé, UID: ${json.localId}`, 'ok');
+      } else if (json.error?.message === 'EMAIL_EXISTS') {
+        /* Compte existant → envoyer reset pour changer le mot de passe */
+        const resetUrl = `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${API_KEY}`;
+        const resetBody = JSON.stringify({ requestType:'PASSWORD_RESET', email: c.email });
+        await fetch(resetUrl, { method:'POST', body:resetBody, headers:{'Content-Type':'application/json'} });
+        log('log2', `📧 ${c.label} (${c.email}) — compte existant, email de reset envoyé`, 'inf');
+        log('log2', `   → Consulte ta boîte mail et clique sur le lien pour définir : ${c.pw}`, 'inf');
+      } else {
+        log('log2', `❌ ${c.label} — ${json.error?.message || 'Erreur inconnue'}`, 'err');
+      }
+    } catch(e) {
+      log('log2', `❌ ${c.label} — ${e.message}`, 'err');
+    }
+  }
+
+  document.getElementById('btn-comptes').disabled = false;
+  setBadge('badge2', 'Traité ✅', 'ok');
+}
+
+/* ── Étape 3 : Initialiser Firestore ── */
+async function initFirestore() {
+  document.getElementById('btn-firestore').disabled = true;
+  log('log3', '🔄 Initialisation de Firestore...', 'inf');
+
+  try {
+    /* Créer un doc de config organisation */
+    await db.collection('org_config').doc('elawael').set({
+      nom:        'Association El Awael',
+      ville:      'Tétouan',
+      annee:      '2025-2026',
+      initAt:     firebase.firestore.FieldValue.serverTimestamp(),
+      version:    '2.0-M4'
+    });
+    log('log3', '✅ Config organisation créée', 'ok');
+
+    /* Créer un premier audit log */
+    await db.collection('audit_logs').add({
+      utilisateur: 'Système',
+      action:      'INITIALISATION',
+      element:     'Plateforme ElAwail v2.0-M4',
+      horodatage:  firebase.firestore.FieldValue.serverTimestamp()
+    });
+    log('log3', '✅ Journal d\'audit initialisé', 'ok');
+    log('log3', '✅ Firestore opérationnel — plateforme prête !', 'ok');
+    setBadge('badge3', 'Initialisé ✅', 'ok');
+
+  } catch(e) {
+    if (e.code === 'permission-denied') {
+      log('log3', '⚠️ Permission refusée — configure d\'abord les règles (Étape 4)', 'err');
+      log('log3', '   Puis reviens ici et réessaie.', 'inf');
+      setBadge('badge3', 'Règles requises', 'err');
+    } else {
+      log('log3', '❌ Erreur : ' + e.message, 'err');
+      setBadge('badge3', 'Erreur', 'err');
+    }
+    document.getElementById('btn-firestore').disabled = false;
+  }
+}
+
+/* Test automatique au chargement */
+window.addEventListener('load', () => {
+  setTimeout(testFirebase, 800);
+});
+</script>
+</body>
+</html>
