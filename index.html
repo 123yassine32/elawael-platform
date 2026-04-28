@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElAwail Digital — Connexion</title>
+
+  <!-- Polices identiques au dashboard (ne pas modifier) -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK v9 (compat — fonctionne sans bundler) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* ── RESET ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── Variables CSS — identiques au dashboard ── */
+    :root {
+      --primary:       #1b3a6b;
+      --primary-mid:   #2563eb;
+      --primary-light: #eff4ff;
+      --success:       #059669;
+      --success-light: #ecfdf5;
+      --danger:        #dc2626;
+      --danger-light:  #fef2f2;
+      --warning:       #d97706;
+      --warning-light: #fffbeb;
+      --border:        #e2e8f0;
+      --text:          #1e293b;
+      --muted:         #94a3b8;
+    }
+
+    /* ── FOND DÉGRADÉ — identique à l'overlay login existant ── */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #0f1f42 0%, #1b3a6b 50%, #0d2a55 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Cercles décoratifs en arrière-plan */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -120px; left: -80px;
+      width: 500px; height: 500px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ── BOÎTE DE CONNEXION — identique au .login-box existant ── */
+    .login-box {
+      background: #fff;
+      border-radius: 24px;
+      padding: 48px 44px;
+      width: 440px;
+      max-width: 95vw;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: linear-gradient(135deg, #eff4ff, #bfdbfe);
+      border-radius: 50%;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ── LOGO ── */
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+    }
+    .login-logo-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #1b3a6b, #2563eb);
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(27, 58, 107, 0.3);
+    }
+    .login-logo h1 {
+      font-family: Sora, sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0 0 4px;
+    }
+    .login-logo p {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* ── SÉPARATEUR ── */
+    .login-divider {
+      border: none;
+      border-top: 1px solid #f1f5f9;
+      margin: 24px 0;
+    }
+
+    /* ── CHAMP DE SAISIE ── */
+    .login-field {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .login-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 7px;
+      display: block;
+    }
+    .login-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 500;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      color: var(--text);
+      box-sizing: border-box;
+    }
+    .login-input:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Bouton œil — afficher/masquer le mot de passe */
+    .pw-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 16px;
+      user-select: none;
+      line-height: 1;
+    }
+    .pw-toggle:hover { color: var(--primary); }
+
+    /* ── BOUTON SE CONNECTER ── */
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1b3a6b, #2563eb);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(27, 58, 107, 0.3);
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(27, 58, 107, 0.4);
+    }
+    .login-btn:active  { transform: translateY(0); }
+    .login-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* ── SPINNER DE CHARGEMENT ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MESSAGE D'ERREUR — identique au .login-error existant ── */
+    .login-error {
+      background: var(--danger-light);
+      border: 1px solid #fecaca;
+      color: var(--danger);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 14px;
+      display: none;
+      text-align: center;
+    }
+    .login-error.show { display: block; }
+
+    /* ── LIEN MOT DE PASSE OUBLIÉ ── */
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-mid);
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .forgot-link:hover { text-decoration: underline; }
+
+    /* ── PIED DE PAGE ── */
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── TOAST — identique au .toast du dashboard ── */
+    .toast {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 4px 20px rgba(27, 58, 107, 0.35);
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── MODAL RÉINITIALISATION MOT DE PASSE ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 18px;
+      padding: 32px;
+      width: 400px;
+      max-width: 95vw;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    }
+    .modal-title {
+      font-family: Sora, sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .modal-sub {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-modal-cancel {
+      flex: 1; padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 13px; font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; color: #64748b;
+      transition: background .15s;
+    }
+    .btn-modal-cancel:hover { background: var(--border); }
+    .btn-modal-send {
+      flex: 1; padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #1b3a6b, #2563eb);
+      font-size: 13px; font-weight: 800;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; color: #fff;
+      transition: opacity .15s;
+    }
+    .btn-modal-send:hover { opacity: 0.9; }
+
+    /* ── BOUTON LANGUE (coin supérieur droit) ── */
+    .lang-toggle {
+      position: fixed;
+      top: 20px; right: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 7px 14px;
+      font-size: 12px; font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      transition: background .2s;
+      backdrop-filter: blur(4px);
+      z-index: 10;
+    }
+    .lang-toggle:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+    /* ── SUPPORT RTL (arabe) ── */
+    body.rtl .forgot-link { text-align: left; }
+    body.rtl .login-input  { direction: rtl; }
+    body.rtl .login-logo   { direction: ltr; }
+
+    /* ── ÉCRAN DE CHARGEMENT INITIAL ── */
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f1f42 0%, #1b3a6b 50%, #0d2a55 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+      z-index: 99999;
+      transition: opacity .4s;
+    }
+    #loading-screen.hidden { opacity: 0; pointer-events: none; }
+    .loading-logo {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, #1b3a6b, #2563eb);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 24px rgba(27, 58, 107, 0.4);
+    }
+    .loading-spinner {
+      width: 32px; height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    .loading-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px; font-weight: 600;
+    }
+
+    /* ── RESPONSIVE MOBILE ── */
+    @media (max-width: 480px) {
+      .login-box { padding: 36px 24px; }
+      .lang-toggle { top: 14px; right: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Écran de chargement (affiché pendant la vérification de session) ── -->
+<div id="loading-screen">
+  <div class="loading-logo">🏫</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Vérification de la session...</div>
+</div>
+
+<!-- ── Bouton bascule Français / Arabe ── -->
+<button class="lang-toggle" id="lang-btn" onclick="toggleLang()">🌐 العربية</button>
+
+<!-- ── Toast de notification ── -->
+<div class="toast" id="toast-login"></div>
+
+<!-- ── Modal réinitialisation du mot de passe ── -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-reset-title">🔑 Réinitialiser le mot de passe</div>
+    <div class="modal-sub" id="modal-reset-sub">
+      Entrez votre adresse email. Vous recevrez un lien pour créer un nouveau mot de passe.
+    </div>
+    <label class="login-label" id="modal-reset-label">Email</label>
+    <input
+      class="login-input"
+      type="email"
+      id="modal-reset-email"
+      placeholder="votre@elawail.ma"
+      onkeydown="if(event.key==='Enter') envoyerResetEmail()"
+    >
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" id="btn-cancel" onclick="fermerModalReset()">Annuler</button>
+      <button class="btn-modal-send"   id="btn-send"   onclick="envoyerResetEmail()">📧 Envoyer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Boîte de connexion principale ── -->
+<div class="login-box" id="login-box-main" style="display:none">
+  <div class="login-logo">
+    <div class="login-logo-icon">🏫</div>
+    <h1>ElAwail Digital</h1>
+    <p id="login-tagline">Association El Awael — Système de gestion</p>
+  </div>
+
+  <hr class="login-divider">
+
+  <!-- Champ identifiant -->
+  <div class="login-field">
+    <label class="login-label" id="lbl-username">Identifiant</label>
+    <input
+      class="login-input"
+      type="text"
+      id="login-user"
+      placeholder="nom.utilisateur ou email"
+      autocomplete="username"
+      onkeydown="if(event.key==='Enter') document.getElementById('login-pass').focus()"
+    >
+  </div>
+
+  <!-- Champ mot de passe -->
+  <div class="login-field" style="margin-bottom: 8px;">
+    <label class="login-label" id="lbl-password">Mot de passe</label>
+    <input
+      class="login-input"
+      type="password"
+      id="login-pass"
+      placeholder="••••••••"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') doLogin()"
+      style="padding-right: 44px;"
+    >
+    <span class="pw-toggle" onclick="togglePassword()" title="Afficher le mot de passe">👁</span>
+  </div>
+
+  <!-- Lien mot de passe oublié -->
+  <span class="forgot-link" id="forgot-link" onclick="ouvrirModalReset()">
+    Mot de passe oublié ?
+  </span>
+
+  <!-- Bouton connexion -->
+  <button class="login-btn" onclick="doLogin()" id="btn-login">
+    <span class="spinner" id="login-spinner"></span>
+    <span id="btn-login-text">🔐 Se connecter</span>
+  </button>
+
+  <!-- Message d'erreur -->
+  <div class="login-error" id="login-error">❌ Identifiant ou mot de passe incorrect</div>
+
+  <!-- Pied de page -->
+  <div class="login-footer" id="login-footer">
+    Association El Awael — Plateforme sécurisée
+  </div>
+</div>
+
+<!-- ── Modules Firebase et Auth ── -->
+<script src="js/config/firebase.js"></script>
+<script src="js/auth/roles.js"></script>
+<script src="js/auth/login.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   LOGIQUE DE LA PAGE DE CONNEXION
+   Traductions, bascule langue, afficher/masquer mot de passe,
+   modal de reset, toast.
+════════════════════════════════════════════════════════ */
+
+/* ── Textes bilingues FR / AR ── */
+const LANG_LOGIN = {
+  fr: {
+    tagline:     'Association El Awael — Système de gestion',
+    lblUsername: 'Identifiant',
+    lblPassword: 'Mot de passe',
+    forgotLink:  'Mot de passe oublié ?',
+    btnLogin:    '🔐 Se connecter',
+    footer:      'Association El Awael — Plateforme sécurisée',
+    errLogin:    '❌ Identifiant ou mot de passe incorrect',
+    errService:  '❌ Service indisponible — réessayez plus tard',
+    errEmail:    '❌ Veuillez entrer un email valide',
+    resetTitle:  '🔑 Réinitialiser le mot de passe',
+    resetSub:    'Entrez votre adresse email. Vous recevrez un lien pour créer un nouveau mot de passe.',
+    resetLabel:  'Email',
+    btnCancel:   'Annuler',
+    btnSend:     '📧 Envoyer',
+    toastReset:  '📧 Email de réinitialisation envoyé !',
+    langBtn:     '🌐 العربية'
+  },
+  ar: {
+    tagline:     'جمعية الأوائل — نظام التسيير',
+    lblUsername: 'اسم المستخدم',
+    lblPassword: 'كلمة المرور',
+    forgotLink:  'نسيت كلمة المرور؟',
+    btnLogin:    '🔐 تسجيل الدخول',
+    footer:      'جمعية الأوائل — منصة آمنة',
+    errLogin:    '❌ اسم المستخدم أو كلمة المرور غير صحيحة',
+    errService:  '❌ الخدمة غير متاحة مؤقتاً',
+    errEmail:    '❌ يرجى إدخال بريد إلكتروني صحيح',
+    resetTitle:  '🔑 إعادة تعيين كلمة المرور',
+    resetSub:    'أدخل بريدك الإلكتروني. ستتلقى رابطاً لإنشاء كلمة مرور جديدة.',
+    resetLabel:  'البريد الإلكتروني',
+    btnCancel:   'إلغاء',
+    btnSend:     '📧 إرسال',
+    toastReset:  '📧 تم إرسال رابط إعادة التعيين!',
+    langBtn:     '🌐 Français'
+  }
+};
+
+/* Langue courante — lue depuis localStorage pour cohérence avec le dashboard */
+let currentLang = localStorage.getItem('ea_lang') || 'fr';
+
+/* ── Applique la langue à tous les éléments de la page ── */
+function applyLang() {
+  const L = LANG_LOGIN[currentLang];
+
+  document.getElementById('login-tagline').textContent    = L.tagline;
+  document.getElementById('lbl-username').textContent     = L.lblUsername;
+  document.getElementById('lbl-password').textContent     = L.lblPassword;
+  document.getElementById('forgot-link').textContent      = L.forgotLink;
+  document.getElementById('btn-login-text').textContent   = L.btnLogin;
+  document.getElementById('login-footer').textContent     = L.footer;
+  document.getElementById('lang-btn').textContent         = L.langBtn;
+  document.getElementById('modal-reset-title').textContent = L.resetTitle;
+  document.getElementById('modal-reset-sub').textContent   = L.resetSub;
+  document.getElementById('modal-reset-label').textContent = L.resetLabel;
+  document.getElementById('btn-cancel').textContent = L.btnCancel;
+  document.getElementById('btn-send').textContent   = L.btnSend;
+
+  /* RTL pour l'arabe */
+  if (currentLang === 'ar') {
+    document.body.classList.add('rtl');
+    document.documentElement.lang = 'ar';
+    document.documentElement.dir  = 'rtl';
+  } else {
+    document.body.classList.remove('rtl');
+    document.documentElement.lang = 'fr';
+    document.documentElement.dir  = 'ltr';
+  }
+}
+
+/* ── Bascule FR ↔ AR ── */
+function toggleLang() {
+  currentLang = currentLang === 'fr' ? 'ar' : 'fr';
+  localStorage.setItem('ea_lang', currentLang);
+  applyLang();
+}
+
+/* ── Afficher / masquer le mot de passe ── */
+function togglePassword() {
+  const input  = document.getElementById('login-pass');
+  const toggle = document.querySelector('.pw-toggle');
+  if (input.type === 'password') {
+    input.type = 'text';
+    toggle.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    toggle.textContent = '👁';
+  }
+}
+
+/* ── Toast de notification (identique au showToast du dashboard) ── */
+function showLoginToast(msg, color) {
+  const t = document.getElementById('toast-login');
+  t.style.background = color || 'var(--primary)';
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ── Ouvrir la modal de réinitialisation ── */
+function ouvrirModalReset() {
+  /* Pré-remplir l'email si l'identifiant a déjà été saisi */
+  const saisie = document.getElementById('login-user').value.trim();
+  if (saisie) {
+    document.getElementById('modal-reset-email').value =
+      saisie.includes('@') ? saisie : saisie + '@elawail.ma';
+  }
+  document.getElementById('modal-reset').classList.add('show');
+  setTimeout(() => document.getElementById('modal-reset-email').focus(), 100);
+}
+
+/* ── Fermer la modal de réinitialisation ── */
+function fermerModalReset() {
+  document.getElementById('modal-reset').classList.remove('show');
+  document.getElementById('modal-reset-email').value = '';
+}
+
+/* ── Fermer la modal si clic sur l'arrière-plan ── */
+document.getElementById('modal-reset').addEventListener('click', function(e) {
+  if (e.target === this) fermerModalReset();
+});
+
+/* ── INITIALISATION ──────────────────────────────────────────
+   À l'ouverture de la page :
+   1. Appliquer la langue sauvegardée
+   2. Vérifier si l'utilisateur est déjà connecté via Firebase
+   3. Si connecté → rediriger vers dashboard.html directement
+   4. Si non connecté → afficher le formulaire
+──────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  applyLang();
+
+  const loadingScreen = document.getElementById('loading-screen');
+  const loginBox      = document.getElementById('login-box-main');
+
+  /* Fonction qui affiche le formulaire de login */
+  function afficherFormulaire() {
+    loadingScreen.classList.add('hidden');
+    loginBox.style.display = 'block';
+    setTimeout(() => {
+      const inp = document.getElementById('login-user');
+      if (inp) inp.focus();
+    }, 200);
+  }
+
+  /* Timeout de sécurité : si Firebase ne répond pas en 5s → afficher le formulaire */
+  const fallbackTimer = setTimeout(() => {
+    console.warn('[Auth] Firebase ne répond pas — formulaire affiché sans vérification de session');
+    afficherFormulaire();
+  }, 5000);
+
+  /* Vérifier la session Firebase */
+  try {
+    auth.onAuthStateChanged(user => {
+      clearTimeout(fallbackTimer);
+      if (user) {
+        /* Session active → aller directement au dashboard */
+        window.location.href = 'dashboard.html';
+      } else {
+        /* Pas de session → afficher le formulaire */
+        afficherFormulaire();
+      }
+    });
+  } catch (e) {
+    /* Firebase indisponible → afficher le formulaire directement */
+    clearTimeout(fallbackTimer);
+    console.error('[Auth] Firebase non disponible :', e.message);
+    afficherFormulaire();
+  }
+});
+</script>
+
+</body>
+</html>

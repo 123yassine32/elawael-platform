@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════
+# .gitignore — ElAwail Digital Platform
+# ═══════════════════════════════════════
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dépendances (si Node ajouté plus tard)
+node_modules/
+
+# Fichiers sensibles — NE JAMAIS COMMITER
+.env
+.env.local
+*.key
+secrets/
+
+# Builds temporaires
+dist/
+build/
+.cache/
+
+# Fichiers temporaires
+*.tmp
+*.temp

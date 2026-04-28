@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls .claude/)",
+      "Bash(mkdir -p .claude)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(where node *)",
+      "Bash(where npm *)",
+      "Bash(npm --version)",
+      "Bash(awk '{print $5}')",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(node -e ' *)",
+      "Bash('\"$id')",
+      "Bash(powershell -Command ' *)",
+      "Bash(grep -v \"i18n\\\\|//\\\\|^\\\\s*//\")",
+      "Bash(grep -v \"function\\\\|//\")"
+    ]
+  }
+}

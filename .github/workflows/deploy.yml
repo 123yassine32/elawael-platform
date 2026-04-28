@@ -1,0 +1,56 @@
+# ═══════════════════════════════════════════════════════════
+# DÉPLOIEMENT AUTOMATIQUE — ElAwail Digital Platform
+# Fichier : .github/workflows/deploy.yml
+# Déclenché : à chaque push sur la branche main
+# Cible     : GitHub Pages (gratuit — CLAUDE.md §1)
+# ═══════════════════════════════════════════════════════════
+
+name: 🚀 Deploy ElAwail to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  # Permet aussi le déclenchement manuel depuis l'interface GitHub
+  workflow_dispatch:
+
+# Permissions nécessaires pour écrire sur GitHub Pages
+permissions:
+  contents: read
+  pages:    write
+  id-token: write
+
+# Un seul déploiement à la fois — annule le précédent si un nouveau push arrive
+concurrency:
+  group:             'pages'
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Déploiement GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+
+      # 1. Récupérer le code
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      # 2. Configurer GitHub Pages
+      - name: 🔧 Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 3. Uploader les fichiers statiques
+      #    Exclure : fichiers de config, node_modules, .git
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      # 4. Déployer
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
