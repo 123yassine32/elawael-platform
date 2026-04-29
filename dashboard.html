@@ -864,6 +864,18 @@ body.is-consultant .sensitive-data::after {
         <span class="nav-icon">🔑</span> <span data-i18n="adm_nav_users">Gestion utilisateurs</span>
       </div>
     </div>
+
+    <!-- ── Bouton bascule langue — toujours visible en bas de la sidebar admin ── -->
+    <div style="padding:12px 14px;margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);position:sticky;bottom:0;background:var(--sidebar);z-index:10">
+      <button onclick="toggleLang()"
+        title="Changer la langue / تغيير اللغة"
+        style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:9px 14px;cursor:pointer;color:#fff;font-size:13px;font-weight:700;font-family:inherit;transition:background .2s"
+        onmouseover="this.style.background='rgba(255,255,255,0.18)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+        <span id="adm-lang-flag">🇲🇦</span>
+        <span id="adm-lang-label" style="font-size:12px">عربي</span>
+      </button>
+    </div>
   </div>
 
   <div class="admin-main">
@@ -5913,11 +5925,16 @@ function translatePage() {
   const admSearchSidebar = document.querySelector('.admin-sidebar .admin-search-input');
   if (admSearchSidebar) admSearchSidebar.placeholder = t('ph_rechercher');
 
-  /* 10 ── Bouton langue */
+  /* 10 ── Bouton langue (topbar éducateur + sidebar admin) */
   const flagEl  = document.getElementById('lang-flag');
   const labelEl = document.getElementById('lang-label');
   if (flagEl)  flagEl.textContent  = t('lang_flag');
   if (labelEl) labelEl.textContent = t('lang_label');
+  // Bouton langue dans la sidebar admin
+  const admFlagEl  = document.getElementById('adm-lang-flag');
+  const admLabelEl = document.getElementById('adm-lang-label');
+  if (admFlagEl)  admFlagEl.textContent  = t('lang_flag');
+  if (admLabelEl) admLabelEl.textContent = t('lang_label');
 
   /* 11 ── Topbar tag */
   const topbarTag = document.getElementById('topbar-tag-main');
