@@ -819,16 +819,16 @@ body.is-consultant .sensitive-data::after {
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="adm_nav_label">Navigation</div>
-      <div class="admin-nav-item active" id="adm-nav-overview" onclick="adminShowSection('overview')"><span class="nav-icon">📊</span> Vue d'ensemble</div>
-      <div class="admin-nav-item" id="adm-nav-pei" onclick="adminShowSection('pei')"><span class="nav-icon">🎯</span> PEI Global <span class="badge-admin" id="adm-badge-pei">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-benef" onclick="adminShowSection('benef')"><span class="nav-icon">👥</span> Bénéficiaires <span class="badge-admin" id="adm-badge-benef">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-classes" onclick="adminShowSection('classes')"><span class="nav-icon">🏫</span> Classes <span class="badge-admin" id="adm-badge-classes">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-cadres" onclick="adminShowSection('cadres')"><span class="nav-icon">👨‍🏫</span> Cadres <span class="badge-admin" id="adm-badge-cadres">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-alertes" onclick="adminShowSection('alertes')"><span class="nav-icon">🔔</span> Alertes <span class="nav-badge" id="adm-badge-alertes" style="display:none">0</span></div>
-      <div class="admin-nav-item" id="adm-nav-heatmap" onclick="adminShowSection('heatmap')"><span class="nav-icon">🗺️</span> Heatmap des risques</div>
-      <div class="admin-nav-item" id="adm-nav-simulation" onclick="adminShowSection('simulation')"><span class="nav-icon">🎛️</span> Simulation stratégique</div>
-      <div class="admin-nav-item" id="adm-nav-rapport" onclick="adminShowSection('rapport')"><span class="nav-icon">📄</span> Rapport institutionnel</div>
-      <div class="admin-nav-item" id="adm-nav-audit" onclick="adminShowSection('audit')"><span class="nav-icon">🔍</span> Journal d'audit</div>
+      <div class="admin-nav-item active" id="adm-nav-overview" onclick="adminShowSection('overview')"><span class="nav-icon">📊</span> <span data-i18n="adm_nav_overview">Vue d'ensemble</span></div>
+      <div class="admin-nav-item" id="adm-nav-pei" onclick="adminShowSection('pei')"><span class="nav-icon">🎯</span> <span data-i18n="adm_nav_pei">PEI Global</span> <span class="badge-admin" id="adm-badge-pei">—</span></div>
+      <div class="admin-nav-item" id="adm-nav-benef" onclick="adminShowSection('benef')"><span class="nav-icon">👥</span> <span data-i18n="adm_nav_benef">Bénéficiaires</span> <span class="badge-admin" id="adm-badge-benef">—</span></div>
+      <div class="admin-nav-item" id="adm-nav-classes" onclick="adminShowSection('classes')"><span class="nav-icon">🏫</span> <span data-i18n="adm_nav_classes">Classes</span> <span class="badge-admin" id="adm-badge-classes">—</span></div>
+      <div class="admin-nav-item" id="adm-nav-cadres" onclick="adminShowSection('cadres')"><span class="nav-icon">👨‍🏫</span> <span data-i18n="adm_nav_cadres">Cadres</span> <span class="badge-admin" id="adm-badge-cadres">—</span></div>
+      <div class="admin-nav-item" id="adm-nav-alertes" onclick="adminShowSection('alertes')"><span class="nav-icon">🔔</span> <span data-i18n="adm_nav_alertes">Alertes</span> <span class="nav-badge" id="adm-badge-alertes" style="display:none">0</span></div>
+      <div class="admin-nav-item" id="adm-nav-heatmap" onclick="adminShowSection('heatmap')"><span class="nav-icon">🗺️</span> <span data-i18n="adm_nav_heatmap">Heatmap des risques</span></div>
+      <div class="admin-nav-item" id="adm-nav-simulation" onclick="adminShowSection('simulation')"><span class="nav-icon">🎛️</span> <span data-i18n="adm_nav_simulation">Simulation stratégique</span></div>
+      <div class="admin-nav-item" id="adm-nav-rapport" onclick="adminShowSection('rapport')"><span class="nav-icon">📄</span> <span data-i18n="adm_nav_rapport">Rapport institutionnel</span></div>
+      <div class="admin-nav-item" id="adm-nav-audit" onclick="adminShowSection('audit')"><span class="nav-icon">🔍</span> <span data-i18n="adm_nav_audit">Journal d'audit</span></div>
       <!-- اللوائح : item unique regroupant les 4 sous-sections -->
       <div class="admin-nav-item" id="adm-nav-listes" onclick="adminShowSection('listes')" style="background:linear-gradient(135deg,rgba(13,148,136,0.18),rgba(37,99,235,0.12));color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
         <span class="nav-icon">📋</span> <span data-i18n="adm_nav_listes">اللوائح والتقسيمات</span>
@@ -839,29 +839,29 @@ body.is-consultant .sensitive-data::after {
       <div class="sidebar-label" data-i18n="adm_actions_label">Actions</div>
       <!-- Ajouter : masqué pour CONSULTANT (lecture seule) -->
       <div class="admin-nav-item role-no-consultant" id="adm-nav-ajouter" onclick="adminShowSection('ajouter')" style="background:rgba(16,185,129,0.2);color:#6ee7b7;font-weight:800;border:1px solid rgba(16,185,129,0.25)">
-        <span class="nav-icon">➕</span> Ajouter bénéf / cadre
+        <span class="nav-icon">➕</span> <span data-i18n="adm_nav_ajouter">Ajouter bénéf / cadre</span>
       </div>
       <div class="admin-nav-item" id="adm-nav-archives" onclick="adminShowSection('archives')" style="background:rgba(139,92,246,0.18);color:#c4b5fd;font-weight:800;border:1px solid rgba(139,92,246,0.25);margin-top:6px">
-        <span class="nav-icon">🗂️</span> Archives annuelles <span class="nav-badge" id="adm-badge-archives" style="background:rgba(139,92,246,0.4);color:#e9d5ff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
+        <span class="nav-icon">🗂️</span> <span data-i18n="adm_nav_archives">Archives annuelles</span> <span class="nav-badge" id="adm-badge-archives" style="background:rgba(139,92,246,0.4);color:#e9d5ff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
       </div>
       <!-- Ressources Humaines : admin + gestionnaire (masqué pour consultant) -->
       <div class="admin-nav-item role-no-consultant" id="adm-nav-rh" onclick="adminShowSection('rh')" style="background:rgba(217,119,6,0.15);color:#fcd34d;font-weight:800;border:1px solid rgba(217,119,6,0.25);margin-top:6px">
-        <span class="nav-icon">👨‍💼</span> Ressources Humaines
+        <span class="nav-icon">👨‍💼</span> <span data-i18n="adm_nav_rh">Ressources Humaines</span>
         <span class="nav-badge" id="adm-badge-rh" style="display:none;background:rgba(220,38,38,0.6);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
       </div>
       <!-- Recommandations : admin voit toutes les recs / consultant voit ses propres recs -->
       <div class="admin-nav-item role-admin-only" id="adm-nav-recommandations" onclick="adminShowSection('recommandations')" style="background:rgba(13,148,136,0.15);color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📬</span> Recommandations
+        <span class="nav-icon">📬</span> <span data-i18n="adm_nav_recommandations">Recommandations</span>
         <span class="nav-badge" id="adm-badge-recommandations" style="display:none;background:rgba(13,148,136,0.5);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
       </div>
       <!-- Mes recommandations : consultant uniquement -->
       <div class="admin-nav-item role-consultant-only" id="adm-nav-mes-recommandations" onclick="adminShowSection('mes-recommandations')" style="background:rgba(13,148,136,0.15);color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📬</span> Mes recommandations
+        <span class="nav-icon">📬</span> <span data-i18n="adm_nav_mes_recommandations">Mes recommandations</span>
         <span class="nav-badge" id="adm-badge-mes-recommandations" style="display:none;background:rgba(13,148,136,0.5);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
       </div>
       <!-- Gestion utilisateurs : ADMIN uniquement -->
       <div class="admin-nav-item role-admin-only" id="adm-nav-users" onclick="adminShowSection('users')" style="background:rgba(220,38,38,0.15);color:#fca5a5;font-weight:800;border:1px solid rgba(220,38,38,0.25);margin-top:4px">
-        <span class="nav-icon">🔑</span> Gestion utilisateurs
+        <span class="nav-icon">🔑</span> <span data-i18n="adm_nav_users">Gestion utilisateurs</span>
       </div>
     </div>
   </div>
@@ -884,57 +884,57 @@ body.is-consultant .sensitive-data::after {
           <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:3px" id="adm-banner-date">
             📅 Chargement…
           </div>
-          <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#fff">
+          <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#fff" data-i18n="adm_espace_label">
             Espace Administration — El Awael
           </div>
           <div style="margin-top:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <span style="color:rgba(255,255,255,0.65);font-size:12px">📅 Semestre 2 en cours · Fév – Juin 2026</span>
+            <span style="color:rgba(255,255,255,0.65);font-size:12px" data-i18n="adm_semestre_running">📅 Semestre 2 en cours · Fév – Juin 2026</span>
             <span id="adm-banner-sem-rest" style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;background:rgba(255,255,255,0.15);color:#fff">— sem. restantes</span>
           </div>
         </div>
         <div class="wb-stats">
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-benef">—</span><span class="wb-sl">Bénéficiaires</span></div>
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-classes">—</span><span class="wb-sl">Classes</span></div>
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-itars">—</span><span class="wb-sl">Cadres</span></div>
+          <div class="wb-s"><span class="wb-sv" id="adm-kpi-benef">—</span><span class="wb-sl" data-i18n="adm_banner_benef_lbl">Bénéficiaires</span></div>
+          <div class="wb-s"><span class="wb-sv" id="adm-kpi-classes">—</span><span class="wb-sl" data-i18n="adm_banner_classes_lbl">Classes</span></div>
+          <div class="wb-s"><span class="wb-sv" id="adm-kpi-itars">—</span><span class="wb-sl" data-i18n="adm_banner_cadres_lbl">Cadres</span></div>
         </div>
       </div>
 
       <!-- ══ BARRE DE SANTÉ GLOBALE — 4 feux tricolores ══ -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
 
-        <div id="sante-card-presence" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('alertes')" title="Voir les alertes">
+        <div id="sante-card-presence" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('alertes')">
           <div style="font-size:26px;line-height:1" id="sante-ic-presence">🟡</div>
           <div>
-            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Présence</div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="sante_presence">Présence</div>
             <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;line-height:1.1" id="sante-val-presence">—%</div>
-            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-presence">ce mois</div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-presence" data-i18n="sante_ce_mois">ce mois</div>
           </div>
         </div>
 
-        <div id="sante-card-pei" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('pei')" title="Voir le PEI">
+        <div id="sante-card-pei" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('pei')">
           <div style="font-size:26px;line-height:1" id="sante-ic-pei">🟡</div>
           <div>
-            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">PEI réalisé</div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="sante_pei">PEI réalisé</div>
             <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;line-height:1.1" id="sante-val-pei">—%</div>
-            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-pei">objectifs atteints</div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-pei" data-i18n="sante_obj_atteints">objectifs atteints</div>
           </div>
         </div>
 
-        <div id="sante-card-dossiers" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('benef')" title="Voir les bénéficiaires">
+        <div id="sante-card-dossiers" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('benef')">
           <div style="font-size:26px;line-height:1" id="sante-ic-dossiers">🟡</div>
           <div>
-            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Dossiers</div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="sante_dossiers">Dossiers</div>
             <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;line-height:1.1" id="sante-val-dossiers">—%</div>
-            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-dossiers">conformes</div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-dossiers" data-i18n="sante_conformes">conformes</div>
           </div>
         </div>
 
-        <div id="sante-card-risque" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('heatmap')" title="Voir la heatmap">
+        <div id="sante-card-risque" style="border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;border:1.5px solid #e5e7eb;background:var(--card);cursor:pointer" onclick="adminShowSection('heatmap')">
           <div style="font-size:26px;line-height:1" id="sante-ic-risque">🟡</div>
           <div>
-            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Risque moyen</div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="sante_risque">Risque moyen</div>
             <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;line-height:1.1" id="sante-val-risque">—</div>
-            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-risque">score /100</div>
+            <div style="font-size:10px;font-weight:600;color:var(--muted);margin-top:2px" id="sante-lbl-risque" data-i18n="sante_score_100">score /100</div>
           </div>
         </div>
 
@@ -946,7 +946,7 @@ body.is-consultant .sensitive-data::after {
 
           <!-- Score numérique -->
           <div style="text-align:center;flex-shrink:0;min-width:70px">
-            <div style="font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Score Global</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px" data-i18n="score_global_lbl">Score Global</div>
             <div style="font-family:Sora,sans-serif;font-size:42px;font-weight:900;line-height:1" id="adm-score-strip-val">—</div>
             <div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px">/100</div>
           </div>
@@ -956,7 +956,7 @@ body.is-consultant .sensitive-data::after {
 
           <!-- Mention qualitative -->
           <div style="flex-shrink:0">
-            <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:6px">Mention</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:6px" data-i18n="mention_lbl">Mention</div>
             <div id="adm-score-strip-badge" style="font-size:13px;font-weight:800;padding:6px 18px;border-radius:100px;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);white-space:nowrap">—</div>
           </div>
 
@@ -968,7 +968,7 @@ body.is-consultant .sensitive-data::after {
 
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600">🎯 PEI</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600" data-i18n="score_pei_lbl">🎯 PEI</span>
                 <span id="adm-ss-pei" style="font-size:11px;font-weight:800;color:#c4b5fd">—%</span>
               </div>
               <div style="height:5px;background:rgba(255,255,255,0.15);border-radius:100px;overflow:hidden">
@@ -979,7 +979,7 @@ body.is-consultant .sensitive-data::after {
 
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600">📅 Présence</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600" data-i18n="score_pres_lbl">📅 Présence</span>
                 <span id="adm-ss-pres" style="font-size:11px;font-weight:800;color:#93c5fd">—%</span>
               </div>
               <div style="height:5px;background:rgba(255,255,255,0.15);border-radius:100px;overflow:hidden">
@@ -990,7 +990,7 @@ body.is-consultant .sensitive-data::after {
 
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600">🧠 Indép.</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600" data-i18n="score_indep_lbl">🧠 Indép.</span>
                 <span id="adm-ss-indep" style="font-size:11px;font-weight:800;color:#6ee7b7">—%</span>
               </div>
               <div style="height:5px;background:rgba(255,255,255,0.15);border-radius:100px;overflow:hidden">
@@ -1001,7 +1001,7 @@ body.is-consultant .sensitive-data::after {
 
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600">📂 Dossiers</span>
+                <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600" data-i18n="score_doss_lbl">📂 Dossiers</span>
                 <span id="adm-ss-doss" style="font-size:11px;font-weight:800;color:#fde68a">—%</span>
               </div>
               <div style="height:5px;background:rgba(255,255,255,0.15);border-radius:100px;overflow:hidden">
@@ -1024,8 +1024,8 @@ body.is-consultant .sensitive-data::after {
             <div style="display:flex;align-items:center;gap:12px">
               <div id="adm-synthese-ic" style="width:42px;height:42px;border-radius:11px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border)">📊</div>
               <div>
-                <div style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.01em">Synthèse exécutive du directeur</div>
-                <div id="adm-synthese-date" style="font-size:10px;color:var(--muted);margin-top:1px">⚙️ Généré automatiquement</div>
+                <div style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.01em" data-i18n="adm_synthese_title">Synthèse exécutive du directeur</div>
+                <div id="adm-synthese-date" style="font-size:10px;color:var(--muted);margin-top:1px" data-i18n="adm_synthese_gen">⚙️ Généré automatiquement</div>
               </div>
             </div>
             <span id="adm-synthese-badge" style="font-size:11px;font-weight:800;padding:5px 16px;border-radius:100px;background:var(--bg);color:var(--muted);border:1px solid var(--border)">—</span>
@@ -4826,6 +4826,45 @@ var I18N = {
     adm_nav_taqsimat: 'Répartitions 2026',
     adm_nav_damj: 'Intégrés aux écoles',
 
+    // ── Admin nav items manquants ──
+    adm_nav_heatmap:           'Heatmap des risques',
+    adm_nav_simulation:        'Simulation stratégique',
+    adm_nav_rapport:           'Rapport institutionnel',
+    adm_nav_audit:             "Journal d'audit",
+    adm_nav_rh:                'Ressources Humaines',
+    adm_nav_recommandations:   'Recommandations',
+    adm_nav_mes_recommandations:'Mes recommandations',
+    adm_nav_users:             'Gestion utilisateurs',
+
+    // ── Admin banner ──
+    adm_espace_label:          'Espace Administration — El Awael',
+    adm_semestre_running:      '📅 Semestre 2 en cours · Fév – Juin 2026',
+    adm_banner_benef_lbl:      'Bénéficiaires',
+    adm_banner_classes_lbl:    'Classes',
+    adm_banner_cadres_lbl:     'Cadres',
+
+    // ── Santé globale (4 feux) ──
+    sante_presence:     'Présence',
+    sante_pei:          'PEI réalisé',
+    sante_dossiers:     'Dossiers',
+    sante_risque:       'Risque moyen',
+    sante_ce_mois:      'ce mois',
+    sante_obj_atteints: 'objectifs atteints',
+    sante_conformes:    'conformes',
+    sante_score_100:    'score /100',
+
+    // ── Score Global strip ──
+    score_global_lbl:   'Score Global',
+    mention_lbl:        'Mention',
+    score_pei_lbl:      '🎯 PEI',
+    score_pres_lbl:     '📅 Présence',
+    score_indep_lbl:    '🧠 Indép.',
+    score_doss_lbl:     '📂 Dossiers',
+
+    // ── Synthèse exécutive ──
+    adm_synthese_title: 'Synthèse exécutive du directeur',
+    adm_synthese_gen:   '⚙️ Généré automatiquement',
+
     // ── Listes & répartitions (sidebar + section) ──
     adm_nav_listes: 'Listes et répartitions',
     adm_listes_title: '📋 Listes et répartitions — Association ElAwail, Martil',
@@ -5656,6 +5695,45 @@ var I18N = {
     adm_tab_new_benef: '👤 مستفيد جديد',
     adm_nav_taqsimat: 'تقسيمات 2026',
     adm_nav_damj: 'المدمجون بالمدارس',
+
+    // ── عناصر التنقل الإداري المفقودة ──
+    adm_nav_heatmap:           'خريطة المخاطر',
+    adm_nav_simulation:        'المحاكاة الاستراتيجية',
+    adm_nav_rapport:           'التقرير المؤسسي',
+    adm_nav_audit:             'سجل المراقبة',
+    adm_nav_rh:                'الموارد البشرية',
+    adm_nav_recommandations:   'التوصيات',
+    adm_nav_mes_recommandations:'توصياتي',
+    adm_nav_users:             'إدارة المستخدمين',
+
+    // ── البانر الإداري ──
+    adm_espace_label:          'فضاء الإدارة — جمعية الأوائل',
+    adm_semestre_running:      '📅 الفصل 2 جارٍ · فبراير – يونيو 2026',
+    adm_banner_benef_lbl:      'المستفيدون',
+    adm_banner_classes_lbl:    'الأقسام',
+    adm_banner_cadres_lbl:     'الأطر',
+
+    // ── بطاقات الصحة الأربع ──
+    sante_presence:     'الحضور',
+    sante_pei:          'PEI المحقق',
+    sante_dossiers:     'الملفات',
+    sante_risque:       'مستوى المخاطر',
+    sante_ce_mois:      'هذا الشهر',
+    sante_obj_atteints: 'أهداف محققة',
+    sante_conformes:    'مكتملة',
+    sante_score_100:    'نقطة /100',
+
+    // ── شريط النقطة الكلية ──
+    score_global_lbl:   'النقطة الكلية',
+    mention_lbl:        'الملاحظة',
+    score_pei_lbl:      '🎯 PEI',
+    score_pres_lbl:     '📅 الحضور',
+    score_indep_lbl:    '🧠 الاستقلالية',
+    score_doss_lbl:     '📂 الملفات',
+
+    // ── الملخص التنفيذي ──
+    adm_synthese_title: 'الملخص التنفيذي للمدير',
+    adm_synthese_gen:   '⚙️ مُولَّد تلقائياً',
 
     // ── اللوائح والتقسيمات ──
     adm_nav_listes: 'اللوائح والتقسيمات',
