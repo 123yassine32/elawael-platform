@@ -831,7 +831,7 @@ body.is-consultant .sensitive-data::after {
       <div class="admin-nav-item" id="adm-nav-audit" onclick="adminShowSection('audit')"><span class="nav-icon">🔍</span> Journal d'audit</div>
       <!-- اللوائح : item unique regroupant les 4 sous-sections -->
       <div class="admin-nav-item" id="adm-nav-listes" onclick="adminShowSection('listes')" style="background:linear-gradient(135deg,rgba(13,148,136,0.18),rgba(37,99,235,0.12));color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📋</span> اللوائح والتقسيمات
+        <span class="nav-icon">📋</span> <span data-i18n="adm_nav_listes">اللوائح والتقسيمات</span>
         <span class="nav-badge" id="adm-badge-listes" style="background:rgba(13,148,136,0.4);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">627</span>
       </div>
     </div>
@@ -1397,31 +1397,31 @@ body.is-consultant .sensitive-data::after {
 
       <!-- En-tête + KPIs globaux -->
       <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-        <span>📋 اللوائح والتقسيمات — جمعية الأوائل فرع مرتيل</span>
-        <span style="font-size:12px;font-weight:700;color:var(--teal);background:rgba(13,148,136,0.08);padding:4px 14px;border-radius:100px;border:1px solid rgba(13,148,136,0.2)">627 إجمالي — الموسم 2025/2026</span>
+        <span data-i18n="adm_listes_title">📋 اللوائح والتقسيمات — جمعية الأوائل فرع مرتيل</span>
+        <span style="font-size:12px;font-weight:700;color:var(--teal);background:rgba(13,148,136,0.08);padding:4px 14px;border-radius:100px;border:1px solid rgba(13,148,136,0.2)" data-i18n="adm_listes_badge">627 إجمالي — الموسم 2025/2026</span>
       </div>
 
       <!-- KPIs synthèse (4 blocs) -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
-        <div style="background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border:1px solid #5eead4;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('laiha')" title="اللائحة الكلية">
-          <div style="font-size:11px;font-weight:700;color:#0d9488;margin-bottom:4px;direction:rtl">📋 اللائحة الكلية</div>
+        <div style="background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border:1px solid #5eead4;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('laiha')">
+          <div style="font-size:11px;font-weight:700;color:#0d9488;margin-bottom:4px;direction:rtl" data-i18n="adm_laiha_label">📋 اللائحة الكلية</div>
           <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:900;color:#0f766e">291</div>
-          <div style="font-size:11px;color:#0d9488;direction:rtl">جميع المستفيدين</div>
+          <div style="font-size:11px;color:#0d9488;direction:rtl" data-i18n="adm_laiha_count">جميع المستفيدين</div>
         </div>
-        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('taqsimat')" title="تقسيمات اللوائح">
-          <div style="font-size:11px;font-weight:700;color:#d97706;margin-bottom:4px;direction:rtl">📑 تقسيمات اللوائح</div>
+        <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fcd34d;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('taqsimat')">
+          <div style="font-size:11px;font-weight:700;color:#d97706;margin-bottom:4px;direction:rtl" data-i18n="adm_taqsimat_label">📑 تقسيمات اللوائح</div>
           <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:900;color:#b45309">228</div>
-          <div style="font-size:11px;color:#d97706;direction:rtl">مستفيد بالمركز</div>
+          <div style="font-size:11px;color:#d97706;direction:rtl" data-i18n="adm_taqsimat_count">مستفيد بالمركز</div>
         </div>
-        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('damj')" title="المدمجون بالمدارس">
-          <div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:4px;direction:rtl">🏫 المدمجون بالمدارس</div>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('damj')">
+          <div style="font-size:11px;font-weight:700;color:#059669;margin-bottom:4px;direction:rtl" data-i18n="adm_damj_label">🏫 المدمجون بالمدارس</div>
           <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:900;color:#047857">45</div>
-          <div style="font-size:11px;color:#059669;direction:rtl">بالمدارس الدامجة</div>
+          <div style="font-size:11px;color:#059669;direction:rtl" data-i18n="adm_damj_count">بالمدارس الدامجة</div>
         </div>
-        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('cadres-liste')" title="لائحة الأطر">
-          <div style="font-size:11px;font-weight:700;color:#2563eb;margin-bottom:4px;direction:rtl">👨‍💼 لائحة الأطر</div>
+        <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s" onclick="switchListeTab('cadres-liste')">
+          <div style="font-size:11px;font-weight:700;color:#2563eb;margin-bottom:4px;direction:rtl" data-i18n="adm_cadres_liste_label">👨‍💼 لائحة الأطر</div>
           <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:900;color:#1d4ed8">63</div>
-          <div style="font-size:11px;color:#2563eb;direction:rtl">إطار عامل</div>
+          <div style="font-size:11px;color:#2563eb;direction:rtl" data-i18n="adm_cadres_liste_count">إطار عامل</div>
         </div>
       </div>
 
@@ -1429,19 +1429,19 @@ body.is-consultant .sensitive-data::after {
       <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--bg);border-radius:14px;padding:6px;border:1px solid var(--border);flex-wrap:wrap">
         <button id="ltab-laiha" onclick="switchListeTab('laiha')"
           style="flex:1;min-width:130px;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;direction:rtl;transition:all .2s;background:var(--teal);color:#fff">
-          📋 اللائحة الكلية <span style="font-size:10px;opacity:.8">(291)</span>
+          <span data-i18n="adm_laiha_label">📋 اللائحة الكلية</span> <span style="font-size:10px;opacity:.8">(291)</span>
         </button>
         <button id="ltab-taqsimat" onclick="switchListeTab('taqsimat')"
           style="flex:1;min-width:130px;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;direction:rtl;transition:all .2s;background:transparent;color:var(--muted)">
-          📑 تقسيمات اللوائح <span style="font-size:10px;opacity:.8">(228)</span>
+          <span data-i18n="adm_taqsimat_label">📑 تقسيمات اللوائح</span> <span style="font-size:10px;opacity:.8">(228)</span>
         </button>
         <button id="ltab-damj" onclick="switchListeTab('damj')"
           style="flex:1;min-width:130px;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;direction:rtl;transition:all .2s;background:transparent;color:var(--muted)">
-          🏫 المدمجون <span style="font-size:10px;opacity:.8">(45)</span>
+          <span data-i18n="adm_damj_label">🏫 المدمجون بالمدارس</span> <span style="font-size:10px;opacity:.8">(45)</span>
         </button>
         <button id="ltab-cadres-liste" onclick="switchListeTab('cadres-liste')"
           style="flex:1;min-width:130px;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;direction:rtl;transition:all .2s;background:transparent;color:var(--muted)">
-          👨‍💼 لائحة الأطر <span style="font-size:10px;opacity:.8">(63)</span>
+          <span data-i18n="adm_cadres_liste_label">👨‍💼 لائحة الأطر</span> <span style="font-size:10px;opacity:.8">(63)</span>
         </button>
       </div>
 
@@ -3062,14 +3062,14 @@ body.is-consultant .sensitive-data::after {
     <div class="nav-item" id="snav-7" onclick="showTab('saisie');showSaisieTab('rapports')"><span class="nav-icon">📊</span> <span data-i18n="nav_rapports_short">Rapports</span></div>
   </div>
   <div class="sidebar-section" id="sidebar-pei-section" style="display:none">
-    <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px">🧩 وثائق الاشتغال</div>
-    <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📋</span> البرنامج الكبير</div>
-    <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> تتبع الحضور والغياب</div>
-    <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣️</span> جدول الطلبات</div>
-    <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> جدول الرعاية الذاتية</div>
-    <div class="nav-item pei-nav" id="snav-pei-tan9it" onclick="showTab('tan9it')"><span class="nav-icon">📈</span> برنامج التنقيط</div>
-    <div class="nav-item pei-nav" id="snav-pei-ta9yim" onclick="showTab('ta9yim-asasi')"><span class="nav-icon">📊</span> التقييم الأساسي (ABLLS)</div>
-    <div class="nav-item pei-nav" id="snav-pei-kpi" onclick="showTab('kpi-classe')"><span class="nav-icon">🏆</span> إحصائيات الأداء</div>
+    <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div>
+    <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> <span data-i18n="pei_nav_ghiyab">تتبع الحضور والغياب</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣️</span> <span data-i18n="pei_nav_talabat">جدول الطلبات</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> <span data-i18n="pei_nav_ri3aya">جدول الرعاية الذاتية</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-tan9it" onclick="showTab('tan9it')"><span class="nav-icon">📈</span> <span data-i18n="pei_nav_tan9it">برنامج التنقيط</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-ta9yim" onclick="showTab('ta9yim-asasi')"><span class="nav-icon">📊</span> <span data-i18n="pei_nav_ta9yim">التقييم الأساسي (ABLLS)</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-kpi" onclick="showTab('kpi-classe')"><span class="nav-icon">🏆</span> <span data-i18n="pei_nav_kpi">إحصائيات الأداء</span></div>
   </div>
   <div class="sidebar-section" id="sidebar-info-section">
     <div class="sidebar-label" data-i18n="section_info_s2">Informatique S2</div>
@@ -3260,7 +3260,7 @@ body.is-consultant .sensitive-data::after {
     <div id="view-ghiyab" style="display:none">
       <div style="direction:rtl">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
-          <div style="font-size:22px;font-weight:900;color:var(--text)">📅 تتبع الحضور والغياب</div>
+          <div style="font-size:22px;font-weight:900;color:var(--text)" data-i18n="ghiyab_title">📅 تتبع الحضور والغياب</div>
           <div style="display:flex;gap:8px;align-items:center;margin-right:auto;flex-wrap:wrap">
             <select id="gh-benef" onchange="renderGhiyab()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;direction:rtl"></select>
             <select id="gh-month" onchange="renderGhiyab()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px"></select>
@@ -3271,26 +3271,26 @@ body.is-consultant .sensitive-data::after {
         <!-- Grille calendrier -->
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
           <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <span style="font-weight:800;font-size:14px">📅 جدول الحضور اليومي</span>
+            <span style="font-weight:800;font-size:14px" data-i18n="ghiyab_tableau_title">📅 جدول الحضور اليومي</span>
             <div style="display:flex;gap:12px;font-size:12px">
-              <span>✅ حاضر</span><span>❌ غائب بعذر</span><span>⛔ غائب بدون عذر</span><span>🏥 مرض</span>
+              <span data-i18n="ghiyab_present">✅ حاضر</span><span data-i18n="ghiyab_absent_excuse">❌ غائب بعذر</span><span data-i18n="ghiyab_absent_nxcuse">⛔ غائب بدون عذر</span><span data-i18n="ghiyab_malade">🏥 مرض</span>
             </div>
           </div>
           <div id="gh-table" style="overflow-x:auto;padding:14px"></div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="saveGhiyab()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer">💾 حفظ</button>
-          <button onclick="exportGhiyabReport()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer">📄 تقرير الغياب</button>
+          <button onclick="saveGhiyab()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="ghiyab_btn_save">💾 حفظ</button>
+          <button onclick="exportGhiyabReport()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" data-i18n="ghiyab_btn_rapport">📄 تقرير الغياب</button>
         </div>
 
         <!-- ══ سجل الغياب الإجمالي ══ -->
         <div style="margin-top:28px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
             <div style="width:4px;height:28px;background:var(--primary);border-radius:2px"></div>
-            <div style="font-size:16px;font-weight:800;color:var(--text)">📊 سجل الغياب الإجمالي — السنة الدراسية 2025-2026</div>
+            <div style="font-size:16px;font-weight:800;color:var(--text)" data-i18n="ghiyab_sijil_title">📊 سجل الغياب الإجمالي — السنة الدراسية 2025-2026</div>
           </div>
           <div id="gh-sijil-total">
-            <div style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:40px;text-align:center;color:var(--muted)">
+            <div style="background:#fff;border-radius:14px;border:1px solid var(--border);padding:40px;text-align:center;color:var(--muted)" data-i18n="ghiyab_select_benef">
               اختر المستفيد/ة لعرض السجل الإجمالي
             </div>
           </div>
@@ -3302,7 +3302,7 @@ body.is-consultant .sensitive-data::after {
     <div id="view-kpi-classe" style="display:none">
       <div style="direction:rtl">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
-          <div style="font-size:22px;font-weight:900;color:var(--text)">🏆 إحصائيات وأداء الفصل</div>
+          <div style="font-size:22px;font-weight:900;color:var(--text)" data-i18n="kpi_classe_title">🏆 إحصائيات وأداء الفصل</div>
           <select id="kpi-month" onchange="renderKPI()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;margin-right:auto"></select>
         </div>
         <div id="kpi-content"></div>
@@ -3311,7 +3311,7 @@ body.is-consultant .sensitive-data::after {
     <div id="view-jadwal-talabat" style="display:none">
       <div style="direction:rtl">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
-          <div style="font-size:22px;font-weight:900;color:var(--text)">🗣️ جدول الطلبات</div>
+          <div style="font-size:22px;font-weight:900;color:var(--text)" data-i18n="jadwal_talabat_title">🗣️ جدول الطلبات</div>
           <div style="display:flex;gap:8px;align-items:center;margin-right:auto">
             <select id="jt-benef" onchange="renderJadwalTalabat()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;direction:rtl"></select>
             <select id="jt-month" onchange="renderJadwalTalabat()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px"></select>
@@ -3319,18 +3319,18 @@ body.is-consultant .sensitive-data::after {
         </div>
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
           <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:10px">
-            <span style="font-size:14px;font-weight:800">لوحده</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_seul">لوحده</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">+</span>
-            <span style="font-size:14px;font-weight:800">بمساعدة</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_avec_aide">بمساعدة</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">~</span>
-            <span style="font-size:14px;font-weight:800">لا يطلب</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_ne_demande_pas">لا يطلب</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">−</span>
           </div>
           <div id="jt-table-container" style="overflow-x:auto"></div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="saveJadwalTalabat()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer">💾 حفظ</button>
-          <button onclick="clearJadwalTalabat()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer">🗑️ مسح</button>
+          <button onclick="saveJadwalTalabat()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_save">💾 حفظ</button>
+          <button onclick="clearJadwalTalabat()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_clear">🗑️ مسح</button>
         </div>
       </div>
     </div>
@@ -3339,7 +3339,7 @@ body.is-consultant .sensitive-data::after {
     <div id="view-jadwal-ri3aya" style="display:none">
       <div style="direction:rtl">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
-          <div style="font-size:22px;font-weight:900;color:var(--text)">🛁 جدول الرعاية الذاتية</div>
+          <div style="font-size:22px;font-weight:900;color:var(--text)" data-i18n="jadwal_ri3aya_title">🛁 جدول الرعاية الذاتية</div>
           <div style="display:flex;gap:8px;align-items:center;margin-right:auto">
             <select id="rd-benef" onchange="renderJadwalRi3aya()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;direction:rtl"></select>
             <select id="rd-month" onchange="renderJadwalRi3aya()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px"></select>
@@ -3347,15 +3347,15 @@ body.is-consultant .sensitive-data::after {
         </div>
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
           <div style="padding:14px 18px;background:#059669;color:#fff;display:flex;align-items:center;gap:10px">
-            <span style="font-size:14px;font-weight:800">لوحده</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">+</span>
-            <span style="font-size:14px;font-weight:800">بمساعدة</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">~</span>
-            <span style="font-size:14px;font-weight:800">لا يؤدي</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">−</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_seul">لوحده</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">+</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_avec_aide">بمساعدة</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">~</span>
+            <span style="font-size:14px;font-weight:800" data-i18n="jadwal_ne_fait_pas">لا يؤدي</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">−</span>
           </div>
           <div id="rd-table-container" style="overflow-x:auto"></div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="saveJadwalRi3aya()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer">💾 حفظ</button>
-          <button onclick="clearJadwalRi3aya()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer">🗑️ مسح</button>
+          <button onclick="saveJadwalRi3aya()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_save">💾 حفظ</button>
+          <button onclick="clearJadwalRi3aya()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_clear">🗑️ مسح</button>
         </div>
       </div>
     </div>
@@ -3364,7 +3364,7 @@ body.is-consultant .sensitive-data::after {
     <div id="view-tan9it" style="display:none">
       <div style="direction:rtl">
         <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
-          <div style="font-size:22px;font-weight:900;color:var(--text)">📈 برنامج التنقيط اليومي</div>
+          <div style="font-size:22px;font-weight:900;color:var(--text)" data-i18n="tan9it_title">📈 برنامج التنقيط اليومي</div>
           <div style="display:flex;gap:8px;align-items:center;margin-right:auto">
             <select id="tn-benef" onchange="renderTan9it()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;direction:rtl"></select>
             <select id="tn-month" onchange="renderTan9it()" style="border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px"></select>
@@ -4429,7 +4429,7 @@ var I18N = {
     opt_comportement: 'Comportement',
     opt_social: 'Social',
     opt_theo_ou_tp: 'Théorie ou TP',
-    opt_excellent: 'ممتاز',
+    opt_excellent: 'Excellent',
     opt_tres_bien: 'Très bien',
     opt_bien: 'Bien',
     opt_assez_bien: 'Assez bien',
@@ -4825,6 +4825,60 @@ var I18N = {
     adm_tab_new_benef: '👤 Nouveau bénéficiaire',
     adm_nav_taqsimat: 'Répartitions 2026',
     adm_nav_damj: 'Intégrés aux écoles',
+
+    // ── Listes & répartitions (sidebar + section) ──
+    adm_nav_listes: 'Listes et répartitions',
+    adm_listes_title: '📋 Listes et répartitions — Association ElAwail, Martil',
+    adm_listes_badge: '627 Total — Saison 2025/2026',
+    adm_laiha_label: '📋 Liste complète',
+    adm_laiha_count: 'Tous les bénéficiaires',
+    adm_taqsimat_label: '📑 Répartitions des listes',
+    adm_taqsimat_count: 'Bénéficiaires au centre',
+    adm_damj_label: '🏫 Intégrés aux écoles',
+    adm_damj_count: 'Aux écoles inclusives',
+    adm_cadres_liste_label: '👨‍💼 Liste des cadres',
+    adm_cadres_liste_count: 'Cadres actifs',
+
+    // ── Section PEI sidebar ──
+    pei_section_label: '🧩 Documents PEI',
+    pei_nav_barnamaj: 'Programme PEI',
+    pei_nav_ghiyab: 'Suivi présences / absences',
+    pei_nav_talabat: 'Planning des demandes',
+    pei_nav_ri3aya: 'Planning autonomie',
+    pei_nav_tan9it: 'Programme notation',
+    pei_nav_ta9yim: 'Évaluation ABLLS',
+    pei_nav_kpi: 'Statistiques de classe',
+
+    // ── Vue Ghiyab ──
+    ghiyab_title: '📅 Suivi des présences et absences',
+    ghiyab_tableau_title: '📅 Tableau de présences journalier',
+    ghiyab_present: '✅ Présent',
+    ghiyab_absent_excuse: '❌ Absent (excusé)',
+    ghiyab_absent_nxcuse: '⛔ Absent (non excusé)',
+    ghiyab_malade: '🏥 Malade',
+    ghiyab_btn_save: '💾 Sauvegarder',
+    ghiyab_btn_rapport: '📄 Rapport d\'absences',
+    ghiyab_sijil_title: '📊 Registre global des absences — Année scolaire 2025-2026',
+    ghiyab_select_benef: 'Sélectionnez un bénéficiaire pour afficher le registre',
+
+    // ── Vue KPI Classe ──
+    kpi_classe_title: '🏆 Statistiques et performance de la classe',
+
+    // ── Vue Jadwal Talabat ──
+    jadwal_talabat_title: '🗣️ Planning des demandes',
+    jadwal_seul: 'Seul(e)',
+    jadwal_avec_aide: 'Avec aide',
+    jadwal_ne_demande_pas: 'Ne demande pas',
+    jadwal_btn_save: '💾 Sauvegarder',
+    jadwal_btn_clear: '🗑️ Effacer',
+
+    // ── Vue Jadwal Ri3aya ──
+    jadwal_ri3aya_title: '🛁 Planning autonomie personnelle',
+    jadwal_ne_fait_pas: 'Ne réalise pas',
+
+    // ── Vue Tan9it ──
+    tan9it_title: '📈 Programme de notation journalier',
+
     lang_flag:  '🇲🇦',
     lang_label: 'عربي',
   },
@@ -5602,6 +5656,60 @@ var I18N = {
     adm_tab_new_benef: '👤 مستفيد جديد',
     adm_nav_taqsimat: 'تقسيمات 2026',
     adm_nav_damj: 'المدمجون بالمدارس',
+
+    // ── اللوائح والتقسيمات ──
+    adm_nav_listes: 'اللوائح والتقسيمات',
+    adm_listes_title: '📋 اللوائح والتقسيمات — جمعية الأوائل فرع مرتيل',
+    adm_listes_badge: '627 إجمالي — الموسم 2025/2026',
+    adm_laiha_label: '📋 اللائحة الكلية',
+    adm_laiha_count: 'جميع المستفيدين',
+    adm_taqsimat_label: '📑 تقسيمات اللوائح',
+    adm_taqsimat_count: 'مستفيد بالمركز',
+    adm_damj_label: '🏫 المدمجون بالمدارس',
+    adm_damj_count: 'بالمدارس الدامجة',
+    adm_cadres_liste_label: '👨‍💼 لائحة الأطر',
+    adm_cadres_liste_count: 'إطار عامل',
+
+    // ── قائمة PEI ──
+    pei_section_label: '🧩 وثائق الاشتغال',
+    pei_nav_barnamaj: 'البرنامج الكبير',
+    pei_nav_ghiyab: 'تتبع الحضور والغياب',
+    pei_nav_talabat: 'جدول الطلبات',
+    pei_nav_ri3aya: 'جدول الرعاية الذاتية',
+    pei_nav_tan9it: 'برنامج التنقيط',
+    pei_nav_ta9yim: 'التقييم الأساسي (ABLLS)',
+    pei_nav_kpi: 'إحصائيات الأداء',
+
+    // ── واجهة الغياب ──
+    ghiyab_title: '📅 تتبع الحضور والغياب',
+    ghiyab_tableau_title: '📅 جدول الحضور اليومي',
+    ghiyab_present: '✅ حاضر',
+    ghiyab_absent_excuse: '❌ غائب بعذر',
+    ghiyab_absent_nxcuse: '⛔ غائب بدون عذر',
+    ghiyab_malade: '🏥 مرض',
+    ghiyab_btn_save: '💾 حفظ',
+    ghiyab_btn_rapport: '📄 تقرير الغياب',
+    ghiyab_sijil_title: '📊 سجل الغياب الإجمالي — السنة الدراسية 2025-2026',
+    ghiyab_select_benef: 'اختر المستفيد/ة لعرض السجل الإجمالي',
+
+    // ── إحصائيات الفصل ──
+    kpi_classe_title: '🏆 إحصائيات وأداء الفصل',
+
+    // ── جدول الطلبات ──
+    jadwal_talabat_title: '🗣️ جدول الطلبات',
+    jadwal_seul: 'لوحده',
+    jadwal_avec_aide: 'بمساعدة',
+    jadwal_ne_demande_pas: 'لا يطلب',
+    jadwal_btn_save: '💾 حفظ',
+    jadwal_btn_clear: '🗑️ مسح',
+
+    // ── جدول الرعاية الذاتية ──
+    jadwal_ri3aya_title: '🛁 جدول الرعاية الذاتية',
+    jadwal_ne_fait_pas: 'لا يؤدي',
+
+    // ── برنامج التنقيط ──
+    tan9it_title: '📈 برنامج التنقيط اليومي',
+
     lang_flag:  '🇫🇷',
     lang_label: 'Français',
   }
