@@ -10,6 +10,7 @@ name: 🚀 Deploy ElAwail to GitHub Pages
 on:
   push:
     branches:
+      - master
       - main
   # Permet aussi le déclenchement manuel depuis l'interface GitHub
   workflow_dispatch:
