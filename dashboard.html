@@ -402,6 +402,50 @@ canvas{max-height:200px;}
 .adm-tab{padding:8px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted);}
 .adm-tab.active{background:var(--primary);color:#fff;}
 .adm-section-title{font-family:Sora,sans-serif;font-size:18px;font-weight:800;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+
+/* ══ Séparateurs de niveaux dans la sidebar admin (M4.0) ══ */
+.sidebar-level{
+  padding:14px 14px 5px;
+  font-size:9px;font-weight:900;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(255,255,255,0.38);
+  display:flex;align-items:center;gap:7px;
+  user-select:none;
+}
+.sidebar-level::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,0.18),transparent);
+}
+
+/* ══ Barre d'onglets hub (onglets internes fusionnés) ══ */
+.adm-hub-bar{
+  display:flex;gap:6px;flex-wrap:wrap;
+  background:var(--card);border-bottom:2px solid var(--border);
+  padding:12px 20px 10px;
+  margin:-20px -20px 20px;
+  position:sticky;top:0;z-index:20;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.adm-hub-tab{
+  padding:7px 16px;border-radius:9px;
+  border:1.5px solid var(--border);background:var(--bg);
+  color:var(--muted);font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all .18s;white-space:nowrap;
+}
+.adm-hub-tab:hover{background:var(--primary-light,#eff6ff);color:var(--primary);border-color:var(--primary);}
+.adm-hub-tab.active{
+  background:var(--primary);color:#fff;
+  border-color:var(--primary);font-weight:800;
+  box-shadow:0 2px 8px rgba(37,99,235,.25);
+}
+/* Bouton rapport (accès rapide depuis Cockpit) */
+.adm-cockpit-rapport-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;font-size:12px;font-weight:700;
+  border:1.5px solid #7c3aed;color:#7c3aed;background:rgba(124,58,237,.07);
+  cursor:pointer;font-family:inherit;transition:all .18s;
+}
+.adm-cockpit-rapport-btn:hover{background:rgba(124,58,237,.14);}
 .adm-rapport-card{background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
 .cadre-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .cadre-row:last-child{border-bottom:none;}
@@ -817,52 +861,72 @@ body.is-consultant .sensitive-data::after {
     <div style="padding:8px 14px 4px">
       <input class="admin-search-input" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);font-family:'Plus Jakarta Sans',sans-serif" data-i18n-ph="ph_rechercher" placeholder="🔍 Rechercher..." id="adm-global-search" oninput="adminGlobalSearch(this.value)">
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="adm_nav_label">Navigation</div>
-      <div class="admin-nav-item active" id="adm-nav-overview" onclick="adminShowSection('overview')"><span class="nav-icon">📊</span> <span data-i18n="adm_nav_overview">Vue d'ensemble</span></div>
-      <div class="admin-nav-item" id="adm-nav-pei" onclick="adminShowSection('pei')"><span class="nav-icon">🎯</span> <span data-i18n="adm_nav_pei">PEI Global</span> <span class="badge-admin" id="adm-badge-pei">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-benef" onclick="adminShowSection('benef')"><span class="nav-icon">👥</span> <span data-i18n="adm_nav_benef">Bénéficiaires</span> <span class="badge-admin" id="adm-badge-benef">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-classes" onclick="adminShowSection('classes')"><span class="nav-icon">🏫</span> <span data-i18n="adm_nav_classes">Classes</span> <span class="badge-admin" id="adm-badge-classes">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-cadres" onclick="adminShowSection('cadres')"><span class="nav-icon">👨‍🏫</span> <span data-i18n="adm_nav_cadres">Cadres</span> <span class="badge-admin" id="adm-badge-cadres">—</span></div>
-      <div class="admin-nav-item" id="adm-nav-alertes" onclick="adminShowSection('alertes')"><span class="nav-icon">🔔</span> <span data-i18n="adm_nav_alertes">Alertes</span> <span class="nav-badge" id="adm-badge-alertes" style="display:none">0</span></div>
-      <div class="admin-nav-item" id="adm-nav-heatmap" onclick="adminShowSection('heatmap')"><span class="nav-icon">🗺️</span> <span data-i18n="adm_nav_heatmap">Heatmap des risques</span></div>
-      <div class="admin-nav-item" id="adm-nav-simulation" onclick="adminShowSection('simulation')"><span class="nav-icon">🎛️</span> <span data-i18n="adm_nav_simulation">Simulation stratégique</span></div>
-      <div class="admin-nav-item" id="adm-nav-rapport" onclick="adminShowSection('rapport')"><span class="nav-icon">📄</span> <span data-i18n="adm_nav_rapport">Rapport institutionnel</span></div>
-      <div class="admin-nav-item" id="adm-nav-audit" onclick="adminShowSection('audit')"><span class="nav-icon">🔍</span> <span data-i18n="adm_nav_audit">Journal d'audit</span></div>
-      <!-- اللوائح : item unique regroupant les 4 sous-sections -->
-      <div class="admin-nav-item" id="adm-nav-listes" onclick="adminShowSection('listes')" style="background:linear-gradient(135deg,rgba(13,148,136,0.18),rgba(37,99,235,0.12));color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📋</span> <span data-i18n="adm_nav_listes">اللوائح والتقسيمات</span>
-        <span class="nav-badge" id="adm-badge-listes" style="background:rgba(13,148,136,0.4);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">627</span>
-      </div>
+    <!-- ══════════════════════════════════════════════
+         NAVIGATION M4.0 — 3 niveaux décisionnels
+         Restructuration : 17 items → 9 items
+    ══════════════════════════════════════════════ -->
+
+    <!-- ── NIVEAU 1 : DÉCISION ── -->
+    <div class="sidebar-level"><span data-i18n="nav_level_decision">DÉCISION</span></div>
+
+    <div class="admin-nav-item active" id="adm-nav-overview" onclick="adminShowSection('overview')">
+      <span class="nav-icon">📊</span>
+      <span data-i18n="adm_nav_cockpit">Cockpit Directeur</span>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label" data-i18n="adm_actions_label">Actions</div>
-      <!-- Ajouter : masqué pour CONSULTANT (lecture seule) -->
-      <div class="admin-nav-item role-no-consultant" id="adm-nav-ajouter" onclick="adminShowSection('ajouter')" style="background:rgba(16,185,129,0.2);color:#6ee7b7;font-weight:800;border:1px solid rgba(16,185,129,0.25)">
-        <span class="nav-icon">➕</span> <span data-i18n="adm_nav_ajouter">Ajouter bénéf / cadre</span>
-      </div>
-      <div class="admin-nav-item" id="adm-nav-archives" onclick="adminShowSection('archives')" style="background:rgba(139,92,246,0.18);color:#c4b5fd;font-weight:800;border:1px solid rgba(139,92,246,0.25);margin-top:6px">
-        <span class="nav-icon">🗂️</span> <span data-i18n="adm_nav_archives">Archives annuelles</span> <span class="nav-badge" id="adm-badge-archives" style="background:rgba(139,92,246,0.4);color:#e9d5ff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
-      </div>
-      <!-- Ressources Humaines : admin + gestionnaire (masqué pour consultant) -->
-      <div class="admin-nav-item role-no-consultant" id="adm-nav-rh" onclick="adminShowSection('rh')" style="background:rgba(217,119,6,0.15);color:#fcd34d;font-weight:800;border:1px solid rgba(217,119,6,0.25);margin-top:6px">
-        <span class="nav-icon">👨‍💼</span> <span data-i18n="adm_nav_rh">Ressources Humaines</span>
-        <span class="nav-badge" id="adm-badge-rh" style="display:none;background:rgba(220,38,38,0.6);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
-      </div>
-      <!-- Recommandations : admin voit toutes les recs / consultant voit ses propres recs -->
-      <div class="admin-nav-item role-admin-only" id="adm-nav-recommandations" onclick="adminShowSection('recommandations')" style="background:rgba(13,148,136,0.15);color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📬</span> <span data-i18n="adm_nav_recommandations">Recommandations</span>
-        <span class="nav-badge" id="adm-badge-recommandations" style="display:none;background:rgba(13,148,136,0.5);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
-      </div>
-      <!-- Mes recommandations : consultant uniquement -->
-      <div class="admin-nav-item role-consultant-only" id="adm-nav-mes-recommandations" onclick="adminShowSection('mes-recommandations')" style="background:rgba(13,148,136,0.15);color:#5eead4;font-weight:800;border:1px solid rgba(13,148,136,0.25);margin-top:4px">
-        <span class="nav-icon">📬</span> <span data-i18n="adm_nav_mes_recommandations">Mes recommandations</span>
-        <span class="nav-badge" id="adm-badge-mes-recommandations" style="display:none;background:rgba(13,148,136,0.5);color:#ccfbf1;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
-      </div>
-      <!-- Gestion utilisateurs : ADMIN uniquement -->
-      <div class="admin-nav-item role-admin-only" id="adm-nav-users" onclick="adminShowSection('users')" style="background:rgba(220,38,38,0.15);color:#fca5a5;font-weight:800;border:1px solid rgba(220,38,38,0.25);margin-top:4px">
-        <span class="nav-icon">🔑</span> <span data-i18n="adm_nav_users">Gestion utilisateurs</span>
-      </div>
+    <div class="admin-nav-item" id="adm-nav-simulation" onclick="adminShowSection('simulation')">
+      <span class="nav-icon">🎛️</span>
+      <span data-i18n="adm_nav_simulation">Simulation stratégique</span>
+    </div>
+
+    <!-- ── NIVEAU 2 : PILOTAGE ── -->
+    <div class="sidebar-level"><span data-i18n="nav_level_pilotage">PILOTAGE</span></div>
+
+    <!-- Hub Bénéficiaires & Classes (fusion: benef + classes + listes + ajouter) -->
+    <div class="admin-nav-item" id="adm-nav-hub-benef" onclick="adminShowHub('benef','benef')">
+      <span class="nav-icon">👥</span>
+      <span data-i18n="adm_nav_hub_benef">Bénéficiaires & Classes</span>
+      <span class="badge-admin" id="adm-badge-benef">—</span>
+    </div>
+
+    <!-- Suivi PEI — section unique, pas de fusion -->
+    <div class="admin-nav-item" id="adm-nav-pei" onclick="adminShowSection('pei')">
+      <span class="nav-icon">🎯</span>
+      <span data-i18n="adm_nav_pei">Suivi PEI</span>
+      <span class="badge-admin" id="adm-badge-pei">—</span>
+    </div>
+
+    <!-- Hub Alertes & Risques (fusion: alertes + heatmap + recommandations) -->
+    <div class="admin-nav-item" id="adm-nav-hub-alertes" onclick="adminShowHub('alertes','alertes')">
+      <span class="nav-icon">🔔</span>
+      <span data-i18n="adm_nav_hub_alertes">Alertes & Risques</span>
+      <span class="nav-badge" id="adm-badge-alertes" style="display:none">0</span>
+    </div>
+
+    <!-- ── NIVEAU 3 : ORGANISATION ── -->
+    <div class="sidebar-level"><span data-i18n="nav_level_organisation">ORGANISATION</span></div>
+
+    <!-- Hub Équipe & RH (fusion: cadres + rh) — masqué pour consultant -->
+    <div class="admin-nav-item role-no-consultant" id="adm-nav-hub-equipe" onclick="adminShowHub('equipe','cadres')">
+      <span class="nav-icon">👨‍🏫</span>
+      <span data-i18n="adm_nav_hub_equipe">Équipe & RH</span>
+      <span class="badge-admin" id="adm-badge-cadres">—</span>
+    </div>
+
+    <div class="admin-nav-item" id="adm-nav-audit" onclick="adminShowSection('audit')">
+      <span class="nav-icon">🔍</span>
+      <span data-i18n="adm_nav_audit">Journal d'audit</span>
+    </div>
+
+    <div class="admin-nav-item" id="adm-nav-archives" onclick="adminShowSection('archives')" style="background:rgba(139,92,246,0.12);color:#c4b5fd;border:1px solid rgba(139,92,246,0.2)">
+      <span class="nav-icon">🗂️</span>
+      <span data-i18n="adm_nav_archives">Archives</span>
+      <span class="nav-badge" id="adm-badge-archives" style="background:rgba(139,92,246,0.4);color:#e9d5ff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">0</span>
+    </div>
+
+    <!-- Gestion utilisateurs : ADMIN uniquement -->
+    <div class="admin-nav-item role-admin-only" id="adm-nav-users" onclick="adminShowSection('users')" style="background:rgba(220,38,38,0.12);color:#fca5a5;border:1px solid rgba(220,38,38,0.2)">
+      <span class="nav-icon">🔑</span>
+      <span data-i18n="adm_nav_users">Utilisateurs</span>
     </div>
 
     <!-- ── Bouton bascule langue — toujours visible en bas de la sidebar admin ── -->
@@ -889,6 +953,18 @@ body.is-consultant .sensitive-data::after {
 
     <!-- Overview -->
     <div id="adm-section-overview">
+
+      <!-- ══ Barre titre Cockpit + accès rapide Rapport ══ -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div>
+          <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:var(--text)" data-i18n="adm_nav_cockpit">Cockpit Directeur</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px" data-i18n="adm_cockpit_sub">Vue décisionnelle globale — Semestre 2</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="adm-cockpit-rapport-btn" onclick="adminShowSection('rapport')" data-i18n="adm_btn_rapport">📄 Rapport institutionnel</button>
+          <button class="adm-cockpit-rapport-btn" onclick="adminShowSection('listes')" style="border-color:#0d9488;color:#0d9488;background:rgba(13,148,136,.07)" data-i18n="adm_btn_listes">📋 Listes & répartitions</button>
+        </div>
+      </div>
 
       <!-- ══ BANNER enrichi ══ -->
       <div class="admin-banner">
@@ -4978,6 +5054,21 @@ var I18N = {
 
     // ── Nouveaux — i18n complémentaire ──
     firebase_loading_msg: 'Vérification de la session...',
+    // Navigation M4.0 — niveaux et hubs
+    nav_level_decision:     'DÉCISION',
+    nav_level_pilotage:     'PILOTAGE',
+    nav_level_organisation: 'ORGANISATION',
+    adm_nav_cockpit:        '📊 Cockpit Directeur',
+    adm_nav_hub_benef:      'Bénéficiaires & Classes',
+    adm_nav_hub_alertes:    'Alertes & Risques',
+    adm_nav_hub_equipe:     'Équipe & RH',
+    adm_cockpit_sub:        'Vue décisionnelle globale — Semestre 2',
+    adm_btn_rapport:        '📄 Rapport institutionnel',
+    adm_btn_listes:         '📋 Listes & répartitions',
+    // Toasts sécurité
+    toast_acces_admin:  'Accès réservé à l\'administrateur',
+    toast_lecture_seule:'Accès en lecture seule — modification non autorisée',
+    toast_rh_reserve:   'Section RH réservée à l\'administration',
     // Niveaux de risque
     risk_urgent:     'Urgent',
     risk_surveiller: 'Surveiller',
@@ -5893,6 +5984,21 @@ var I18N = {
 
     // ── جديد — تكملة الترجمة ──
     firebase_loading_msg: 'جاري التحقق من الجلسة...',
+    // التنقل M4.0 — المستويات والمجموعات
+    nav_level_decision:     'القرار',
+    nav_level_pilotage:     'التسيير',
+    nav_level_organisation: 'التنظيم',
+    adm_nav_cockpit:        '📊 لوحة قيادة المدير',
+    adm_nav_hub_benef:      'المستفيدون والأقسام',
+    adm_nav_hub_alertes:    'التنبيهات والمخاطر',
+    adm_nav_hub_equipe:     'الفريق والموارد البشرية',
+    adm_cockpit_sub:        'الرؤية القرارية الشاملة — الفصل 2',
+    adm_btn_rapport:        '📄 التقرير المؤسسي',
+    adm_btn_listes:         '📋 اللوائح والتقسيمات',
+    // رسائل الأمان
+    toast_acces_admin:   'الوصول مخصص للمسؤول فقط',
+    toast_lecture_seule: 'وضع القراءة فقط — التعديل غير مسموح',
+    toast_rh_reserve:    'قسم الموارد البشرية مخصص للإدارة',
     // مستويات الخطر
     risk_urgent:     'عاجل',
     risk_surveiller: 'مراقبة',
@@ -6030,16 +6136,19 @@ function translatePage() {
   _tPh   ('r-nonrealises',   'ph_nonreal');
   _tPh   ('r-recommandations','ph_reco');
 
-  /* 8 ── Admin nav items (by ID) */
+  /* 8 ── Admin nav items (by ID) — mis à jour M4.0 */
   const admNavMap = {
-    'adm-nav-overview': 'adm_nav_overview',
-    'adm-nav-pei':      'adm_nav_pei',
-    'adm-nav-benef':    'adm_nav_benef',
-    'adm-nav-classes':  'adm_nav_classes',
-    'adm-nav-cadres':   'adm_nav_cadres',
-    'adm-nav-alertes':  'adm_nav_alertes',
-    'adm-nav-ajouter':  'adm_nav_ajouter',
-    'adm-nav-archives': 'adm_nav_archives',
+    /* Navigation directe (standalone) */
+    'adm-nav-overview':   'adm_nav_cockpit',
+    'adm-nav-pei':        'adm_nav_pei',
+    'adm-nav-simulation': 'adm_nav_simulation',
+    'adm-nav-audit':      'adm_nav_audit',
+    'adm-nav-archives':   'adm_nav_archives',
+    'adm-nav-users':      'adm_nav_users',
+    /* Hubs fusionnés */
+    'adm-nav-hub-benef':   'adm_nav_hub_benef',
+    'adm-nav-hub-alertes': 'adm_nav_hub_alertes',
+    'adm-nav-hub-equipe':  'adm_nav_hub_equipe',
   };
   Object.entries(admNavMap).forEach(([id, key]) => {
     const el = document.getElementById(id);
@@ -19800,76 +19909,213 @@ function backToAdmin() {
   adminShowSection('benef');
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   SYSTÈME DE HUB — Navigation M4.0 (3 niveaux)
+   Fusionne plusieurs sections en une seule entrée sidebar
+   avec onglets internes. Aucune section existante n'est supprimée.
+═══════════════════════════════════════════════════════════════ */
+
+/* Configuration des hubs : quelle section appartient à quel hub */
+const ADM_HUBS = {
+  benef: {
+    navId: 'adm-nav-hub-benef',
+    tabs: [
+      { key: 'benef',   icon: '👥', labelKey: 'adm_nav_benef',                roleCheck: null },
+      { key: 'classes', icon: '🏫', labelKey: 'adm_nav_classes',               roleCheck: null },
+      { key: 'listes',  icon: '📋', labelKey: 'adm_nav_listes',                roleCheck: null },
+      { key: 'ajouter', icon: '➕', labelKey: 'adm_nav_ajouter',
+        roleCheck: r => r !== 'consultant' }
+    ]
+  },
+  alertes: {
+    navId: 'adm-nav-hub-alertes',
+    tabs: [
+      { key: 'alertes',             icon: '🔔', labelKey: 'adm_nav_alertes',
+        roleCheck: null },
+      { key: 'heatmap',             icon: '🗺️', labelKey: 'adm_nav_heatmap',
+        roleCheck: null },
+      { key: 'recommandations',     icon: '📬', labelKey: 'adm_nav_recommandations',
+        roleCheck: r => r === 'admin' },
+      { key: 'mes-recommandations', icon: '📬', labelKey: 'adm_nav_mes_recommandations',
+        roleCheck: r => r === 'consultant' }
+    ]
+  },
+  equipe: {
+    navId: 'adm-nav-hub-equipe',
+    tabs: [
+      { key: 'cadres', icon: '👨‍🏫', labelKey: 'adm_nav_cadres', roleCheck: null },
+      { key: 'rh',     icon: '👨‍💼', labelKey: 'adm_nav_rh',
+        roleCheck: r => r !== 'consultant' }
+    ]
+  }
+};
+
+/* Carte inverse : section → hub auquel elle appartient */
+const _SEC_TO_HUB = {};
+Object.entries(ADM_HUBS).forEach(([hub, cfg]) => {
+  cfg.tabs.forEach(tab => { _SEC_TO_HUB[tab.key] = hub; });
+});
+
+/* Hub actif (null si navigation directe hors hub) */
+let _activeHub = null;
+
+/**
+ * adminShowHub — Point d'entrée pour les items de navigation hub.
+ * Active le hub, rend la barre d'onglets, affiche la section cible.
+ */
+function adminShowHub(hub, section) {
+  _activeHub = hub;
+  /* Afficher la section sans effacer l'état hub */
+  _adminShowSectionCore(section);
+  /* Marquer l'item hub comme actif dans la sidebar */
+  const hubNav = document.getElementById(ADM_HUBS[hub].navId);
+  if (hubNav) hubNav.classList.add('active');
+  /* Injecter la barre d'onglets en haut de la section */
+  _renderHubTabBar(hub, section);
+  if (window.innerWidth <= 768) mobCloseSidebar();
+}
+
+/**
+ * _renderHubTabBar — Crée ou met à jour la barre d'onglets
+ * en tête de la section active. Respecte les rôles.
+ */
+function _renderHubTabBar(hub, activeSec) {
+  /* Supprimer toute barre existante */
+  document.querySelectorAll('.adm-hub-bar').forEach(el => el.remove());
+
+  const role = CURRENT_USER ? CURRENT_USER.role : 'admin';
+  const cfg  = ADM_HUBS[hub];
+  const sectionEl = document.getElementById('adm-section-' + activeSec);
+  if (!sectionEl) return;
+
+  const visibleTabs = cfg.tabs.filter(tab =>
+    !tab.roleCheck || tab.roleCheck(role)
+  );
+  if (visibleTabs.length <= 1) return; /* Pas besoin d'onglets pour 1 seul item */
+
+  const bar = document.createElement('div');
+  bar.className = 'adm-hub-bar';
+  bar.innerHTML = visibleTabs.map(tab => `
+    <button class="adm-hub-tab ${tab.key === activeSec ? 'active' : ''}"
+      onclick="adminShowHub('${hub}','${tab.key}')">
+      ${tab.icon} ${t(tab.labelKey)}
+    </button>
+  `).join('');
+  sectionEl.insertBefore(bar, sectionEl.firstChild);
+}
+
+/**
+ * adminShowSection — Navigation directe (sections hors hub ou appelée par d'autres fonctions).
+ * Détecte automatiquement si la section fait partie d'un hub.
+ */
 function adminShowSection(sec){
   /* Sécurité : bloquer l'accès à 'users' pour non-admin */
   if (sec === 'users' && CURRENT_USER && CURRENT_USER.role !== 'admin') {
-    showToast('🔒 Accès réservé à l\'administrateur', '#dc2626');
+    showToast('🔒 ' + t('toast_acces_admin'), '#dc2626');
     return;
   }
   /* Sécurité : bloquer 'ajouter' pour consultant */
   if (sec === 'ajouter' && CURRENT_USER && CURRENT_USER.role === 'consultant') {
-    showToast('👁️ Accès en lecture seule — modification non autorisée', '#0d9488');
+    showToast('👁️ ' + t('toast_lecture_seule'), '#0d9488');
     return;
   }
   /* Sécurité : bloquer 'rh' pour consultant */
   if (sec === 'rh' && CURRENT_USER && CURRENT_USER.role === 'consultant') {
-    showToast('👁️ Section RH réservée à l\'administration', '#0d9488');
+    showToast('👁️ ' + t('toast_rh_reserve'), '#0d9488');
     return;
   }
-  /* Sécurité : bloquer 'recommandations' (admin) pour non-admin */
+  /* Sécurité : bloquer 'recommandations' admin pour non-admin */
   if (sec === 'recommandations' && CURRENT_USER && CURRENT_USER.role !== 'admin') {
-    /* Rediriger le consultant vers sa propre section */
     if (CURRENT_USER.role === 'consultant') adminShowSection('mes-recommandations');
-    else showToast('🔒 Accès réservé à l\'administrateur', '#dc2626');
+    else showToast('🔒 ' + t('toast_acces_admin'), '#dc2626');
     return;
   }
-  ['overview','pei','benef','classes','cadres','alertes','heatmap','simulation','rapport','audit','ajouter','archives','listes','users','rh','recommandations','mes-recommandations'].forEach(s=>{
-    const el=document.getElementById('adm-section-'+s);if(el)el.style.display='none';
-    const ni=document.getElementById('adm-nav-'+s);if(ni)ni.classList.remove('active');
+
+  /* Si la section fait partie d'un hub → déléguer à adminShowHub */
+  if (_SEC_TO_HUB[sec]) {
+    adminShowHub(_SEC_TO_HUB[sec], sec);
+    return;
+  }
+
+  /* Navigation directe (overview, pei, simulation, audit, archives, users, rapport, listes) */
+  _activeHub = null;
+  _adminShowSectionCore(sec);
+  if (window.innerWidth <= 768) mobCloseSidebar();
+}
+
+/**
+ * _adminShowSectionCore — Logique commune : masquer toutes les sections,
+ * afficher la cible, appeler le renderer approprié.
+ */
+function _adminShowSectionCore(sec) {
+  /* Masquer toutes les sections + désactiver tous les nav items */
+  ['overview','pei','benef','classes','cadres','alertes','heatmap','simulation',
+   'rapport','audit','ajouter','archives','listes','users','rh',
+   'recommandations','mes-recommandations'
+  ].forEach(s => {
+    const el = document.getElementById('adm-section-' + s);
+    if (el) el.style.display = 'none';
+    const ni = document.getElementById('adm-nav-' + s);
+    if (ni) ni.classList.remove('active');
   });
-  /* Les 4 sous-sections de "listes" sont gérées en interne par switchListeTab() */
-  ['laiha','cadres-liste','taqsimat','damj'].forEach(s=>{
-    const el=document.getElementById('adm-section-'+s);if(el)el.style.display='none';
+  /* Désactiver aussi les hubs */
+  ['adm-nav-hub-benef','adm-nav-hub-alertes','adm-nav-hub-equipe'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
   });
-  const el=document.getElementById('adm-section-'+sec);if(el)el.style.display='block';
-  const ni=document.getElementById('adm-nav-'+sec);if(ni)ni.classList.add('active');
-  if(sec==='overview')renderAdminOverview();
-  if(sec==='pei')renderAdminPEI();
-  if(sec==='benef'){
-    const dd=document.getElementById('adm-benef-detail');
-    const bs=document.querySelector('.admin-benef-section');
-    if(dd)dd.style.display='none';
-    if(bs)bs.style.display='block';
+  /* Sous-sections listes */
+  ['laiha','cadres-liste','taqsimat','damj'].forEach(s => {
+    const el = document.getElementById('adm-section-' + s);
+    if (el) el.style.display = 'none';
+  });
+  /* Supprimer les barres d'onglets hub précédentes */
+  document.querySelectorAll('.adm-hub-bar').forEach(el => el.remove());
+
+  /* Afficher la section cible */
+  const el = document.getElementById('adm-section-' + sec);
+  if (el) el.style.display = 'block';
+  /* Marquer le nav direct s'il existe */
+  if (!_activeHub) {
+    const ni = document.getElementById('adm-nav-' + sec);
+    if (ni) ni.classList.add('active');
+  }
+
+  /* Renderers — aucune logique métier modifiée */
+  if (sec === 'overview')   renderAdminOverview();
+  if (sec === 'pei')        renderAdminPEI();
+  if (sec === 'benef') {
+    const dd = document.getElementById('adm-benef-detail');
+    const bs = document.querySelector('.admin-benef-section');
+    if (dd) dd.style.display = 'none';
+    if (bs) bs.style.display = 'block';
     renderAdminBenef();
   }
-  if(sec==='classes')renderAdminClasses();
-  if(sec==='cadres'){
-    const lv=document.getElementById('adm-cadres-liste-view');
-    const dv=document.getElementById('adm-cadre-detail-view');
-    if(lv)lv.style.display='block';
-    if(dv)dv.style.display='none';
+  if (sec === 'classes')    renderAdminClasses();
+  if (sec === 'cadres') {
+    const lv = document.getElementById('adm-cadres-liste-view');
+    const dv = document.getElementById('adm-cadre-detail-view');
+    if (lv) lv.style.display = 'block';
+    if (dv) dv.style.display = 'none';
     renderAdminCadres();
   }
-  if(sec==='alertes')renderAdminAlertes();
-  if(sec==='heatmap')renderAdminHeatmap();
-  if(sec==='simulation')initSimulation();
-  if(sec==='rapport')renderRapportInstitutionnel();
-  if(sec==='audit')renderAuditJournal();
-  if(sec==='ajouter')initAdminAjouter();
-  if(sec==='archives'){
-    const av=document.getElementById('adm-archive-detail');
-    const al=document.getElementById('adm-archives-list');
-    if(av)av.style.display='none';
-    if(al)al.style.display='block';
+  if (sec === 'alertes')          renderAdminAlertes();
+  if (sec === 'heatmap')          renderAdminHeatmap();
+  if (sec === 'simulation')       initSimulation();
+  if (sec === 'rapport')          renderRapportInstitutionnel();
+  if (sec === 'audit')            renderAuditJournal();
+  if (sec === 'ajouter')          initAdminAjouter();
+  if (sec === 'archives') {
+    const av = document.getElementById('adm-archive-detail');
+    const al = document.getElementById('adm-archives-list');
+    if (av) av.style.display = 'none';
+    if (al) al.style.display = 'block';
     renderAdminArchives();
   }
-  if(sec==='listes') renderAdminListes();
-  if(sec==='users') renderAdminUsers();
-  if(sec==='rh') renderAdminRH();
-  if(sec==='recommandations') renderAdminRecommandations();
-  if(sec==='mes-recommandations') renderConsultantMesRecommandations();
-  /* Fermeture sidebar mobile après navigation */
-  if(window.innerWidth<=768) mobCloseSidebar();
+  if (sec === 'listes')               renderAdminListes();
+  if (sec === 'users')                renderAdminUsers();
+  if (sec === 'rh')                   renderAdminRH();
+  if (sec === 'recommandations')      renderAdminRecommandations();
+  if (sec === 'mes-recommandations')  renderConsultantMesRecommandations();
 }
 
 function showAdminDashboard(){
