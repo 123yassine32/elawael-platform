@@ -1309,10 +1309,20 @@ body.is-consultant .sensitive-data::after {
 
 <!-- PEI Global -->
     <div id="adm-section-pei" style="display:none">
-      <div class="adm-section-title"><span data-i18n="adm_title_pei">🎯 Suivi PEI Global — Toutes classes</span></div>
-      <div class="g4" style="margin-bottom:20px">
 
-        <!-- Card 1 — Taux d'achèvement global (% en grand + barre) -->
+      <!-- En-tête avec export -->
+      <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <span data-i18n="adm_title_pei">🎯 Suivi PEI Global — Toutes classes</span>
+        <div style="display:flex;gap:8px">
+          <button onclick="exportPeiExcel()" class="btn" style="font-size:11px;padding:6px 14px;background:#059669;color:#fff;border:none;cursor:pointer;border-radius:8px;font-weight:700">📥 Excel</button>
+          <button onclick="exportPeiPDF()" class="btn" style="font-size:11px;padding:6px 14px;background:#dc2626;color:#fff;border:none;cursor:pointer;border-radius:8px;font-weight:700">📄 PDF</button>
+        </div>
+      </div>
+
+      <!-- ══ PRIORITÉ 0 — 4 KPIs globaux ══ -->
+      <div class="g4" style="margin-bottom:14px">
+
+        <!-- Card 1 — Taux d'achèvement + barre avec marqueur 70% -->
         <div class="card" id="adm-pei-card1" style="border-top:3px solid var(--primary)">
           <div class="kpi">
             <div class="kpi-label">🎯 Taux d'achèvement</div>
@@ -1320,40 +1330,73 @@ body.is-consultant .sensitive-data::after {
               <div class="kpi-val" id="adm-pei-total" style="color:var(--primary)">—</div>
               <div style="font-size:15px;color:var(--muted);font-weight:700">%</div>
             </div>
-            <div class="kbar" style="margin-top:6px"><div class="kfill" id="adm-pei-total-bar" style="background:var(--primary)"></div></div>
+            <!-- Barre avec marqueur cible 70% -->
+            <div id="adm-pei-bar-wrapper" style="margin-top:6px">
+              <div style="position:relative;background:var(--bg);border-radius:100px;height:8px;overflow:visible">
+                <div id="adm-pei-total-bar" style="width:0%;height:100%;background:var(--primary);border-radius:100px;transition:width .8s ease"></div>
+                <div style="position:absolute;left:70%;top:-4px;width:2px;height:16px;background:#7c3aed;border-radius:1px" title="Cible 70%">
+                  <div style="position:absolute;top:-14px;left:-8px;font-size:8px;font-weight:800;color:#7c3aed;white-space:nowrap">70%</div>
+                </div>
+              </div>
+            </div>
             <div class="kpi-sub" id="adm-pei-total-sub">— objectifs</div>
           </div>
         </div>
 
-        <!-- Card 2 — Objectifs réalisés (count + %) -->
+        <!-- Card 2 — Objectifs réalisés -->
         <div class="card" id="adm-pei-card2" style="border-top:3px solid var(--success)">
           <div class="kpi">
             <div class="kpi-label" data-i18n="pei_done">✅ Objectifs réalisés</div>
             <div class="kpi-val" id="adm-pei-done" style="color:var(--success)">—</div>
-            <div class="kpi-sub" id="adm-pei-done-pct">— % du total</div>
+            <div class="kpi-sub" id="adm-pei-done-pct">—</div>
           </div>
         </div>
 
-        <!-- Card 3 — En cours (count + %) -->
+        <!-- Card 3 — En cours -->
         <div class="card" id="adm-pei-card3" style="border-top:3px solid var(--warning)">
           <div class="kpi">
             <div class="kpi-label" data-i18n="pei_en_cours">🔄 En cours</div>
             <div class="kpi-val" id="adm-pei-prog" style="color:var(--warning)">—</div>
-            <div class="kpi-sub" id="adm-pei-prog-pct">— % du total</div>
+            <div class="kpi-sub" id="adm-pei-prog-pct">—</div>
           </div>
         </div>
 
-        <!-- Card 4 — Non démarrés : rouge si >40% -->
+        <!-- Card 4 — Non démarrés (seuil dynamique selon semaines restantes) -->
         <div class="card" id="adm-pei-card4" style="border-top:3px solid var(--muted)">
           <div class="kpi">
             <div class="kpi-label" data-i18n="pei_nouveaux">🆕 Non démarrés</div>
             <div class="kpi-val" id="adm-pei-new" style="color:var(--muted)">—</div>
-            <div class="kpi-sub" id="adm-pei-new-pct">— % du total</div>
+            <div class="kpi-sub" id="adm-pei-new-pct">—</div>
           </div>
         </div>
 
       </div>
+
+      <!-- ══ PRIORITÉ 1 — Filtre par classe ══ -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 14px">
+        <span style="font-size:11px;font-weight:700;color:var(--muted)">🎛️ Filtrer :</span>
+        <div id="pei-filter-classe-btns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+
+      <!-- ══ PRIORITÉ 1 — Domaines bloqués + Cadres ══ -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div id="pei-domaines-panel" class="card" style="border-top:4px solid #7c3aed;padding:0">Chargement…</div>
+        <div id="pei-cadres-panel" class="card" style="border-top:4px solid #0d9488;padding:0">Chargement…</div>
+      </div>
+
+      <!-- ══ PRIORITÉ 1 — Objectif hebdo + Objectifs figés ══ -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+        <div id="pei-hebdo-panel" class="card" style="border-top:4px solid #2563eb;padding:0">Chargement…</div>
+        <div id="pei-stale-panel" class="card" style="border-top:4px solid var(--danger);padding:0">Chargement…</div>
+      </div>
+
+      <!-- ══ PRIORITÉ 2 — Détail par classe (enrichi) ══ -->
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+        <span>🏫 Détail par classe</span>
+        <span style="font-size:10px;font-weight:600;color:var(--muted)">(cliquer sur un bénéficiaire pour ouvrir son dossier)</span>
+      </div>
       <div id="adm-pei-by-class"></div>
+
     </div>
 
     <!-- Bénéficiaires -->
@@ -21588,85 +21631,516 @@ function renderAdminChartHandicap(){
   });
 }
 
+/* ═══════════════════════════════════════════════════════
+   SUIVI PEI GLOBAL — Management 4.0
+   Variables d'état pour filtrage par classe
+═══════════════════════════════════════════════════════ */
+let _peiClasseFilter = 'all'; // filtre actif ('all' ou nom de classe)
+
+/**
+ * Active un filtre par classe dans le panneau PEI Global.
+ * Appelé par les boutons de la barre de filtrage.
+ */
+function peiSetClasseFilter(classe, btn) {
+  _peiClasseFilter = classe;
+  /* Mise à jour visuelle des boutons */
+  document.querySelectorAll('#pei-filter-classe-btns button').forEach(b => {
+    b.style.background    = 'var(--bg)';
+    b.style.color         = 'var(--text)';
+    b.style.borderColor   = 'var(--border)';
+    b.style.fontWeight    = '600';
+  });
+  if (btn) {
+    btn.style.background  = 'var(--primary)';
+    btn.style.color       = '#fff';
+    btn.style.borderColor = 'var(--primary)';
+    btn.style.fontWeight  = '800';
+  }
+  /* Re-rendu du panneau avec le filtre actif */
+  renderAdminPEI();
+}
+
+/**
+ * renderAdminPEI — Version Management 4.0
+ * Remplace l'ancienne version minimaliste.
+ * Panels : KPI globaux · Analyse domaines · Perf cadres
+ *          Calcul hebdomadaire · Objectifs bloqués · Détail classe
+ */
 function renderAdminPEI(){
-  const pb=BENEFICIAIRES.filter(b=>b.type==='pei');
-  const tot=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-  const dn=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-  const pr=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
-  const setT=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  /* ── 0. Données de base ── */
+  const presences  = loadData('ea_presences') || [];
+  const allUsers   = USERS.filter(u => !u.role); // cadres uniquement
+  const allPB      = BENEFICIAIRES.filter(b => b.type === 'pei');
 
-  /* ── Calculs PEI enrichis ── */
-  const nw       = tot - dn - pr;                                         // Non démarrés
-  const pctDone  = tot ? Math.round(dn / tot * 100) : 0;                 // % réalisés
-  const pctProg  = tot ? Math.round(pr / tot * 100) : 0;                 // % en cours
-  const pctNew   = tot ? Math.round(nw / tot * 100) : 0;                 // % non démarrés
+  /* ── 1. Filtre par classe ── */
+  // Construire la carte classe→{cadre, bénéficiaires}
+  const classesMap = {};
+  allUsers.forEach(u => {
+    if (!classesMap[u.classe]) classesMap[u.classe] = {
+      classe: u.classe,
+      classeColor: u.classeColor || '#1b3a6b',
+      classeIcon:  u.classeIcon  || '📚',
+      cadreNom:    u.nom         || '—',
+      teacherId:   u.teacherId,
+      benef: []
+    };
+    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId)
+                 .forEach(b => classesMap[u.classe].benef.push(b));
+  });
+  const allClasses = Object.values(classesMap);
 
-  /* Couleur dynamique taux d'achèvement */
-  const peiAchevColor = pctDone >= 70 ? 'var(--success)'
-    : pctDone >= 40 ? 'var(--warning)' : 'var(--danger)';
-  /* Couleur non démarrés : rouge si >40% (signal urgent) */
-  const newColor = pctNew > 40 ? 'var(--danger)'
-    : pctNew > 20 ? 'var(--warning)' : 'var(--muted)';
+  // Bénéficiaires PEI selon le filtre actif
+  const filteredClasses = _peiClasseFilter === 'all'
+    ? allClasses
+    : allClasses.filter(g => g.classe === _peiClasseFilter);
+  const pb = filteredClasses.flatMap(g => g.benef.filter(b => b.type === 'pei'));
 
-  /* Card 1 — Taux d'achèvement */
+  /* ── 2. Agrégats globaux ── */
+  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
+  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+  const pr  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='in-progress').length, 0), 0);
+  const nw  = tot - dn - pr;
+
+  const pctDone = tot ? Math.round(dn / tot * 100) : 0;
+  const pctProg = tot ? Math.round(pr / tot * 100) : 0;
+  const pctNew  = tot ? Math.round(nw / tot * 100) : 0;
+
+  const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  /* Couleurs dynamiques */
+  const peiAchevColor = pctDone >= 70 ? 'var(--success)' : pctDone >= 40 ? 'var(--warning)' : 'var(--danger)';
+  const newColor      = pctNew  > 40  ? 'var(--danger)'  : pctNew  > 20  ? 'var(--warning)' : 'var(--muted)';
+
+  /* ── 3. Mise à jour KPI Cards ── */
   const peiTotEl = document.getElementById('adm-pei-total');
-  if (peiTotEl) { peiTotEl.textContent = pctDone; peiTotEl.style.color = peiAchevColor; }
+  if (peiTotEl) { peiTotEl.textContent = pctDone + '%'; peiTotEl.style.color = peiAchevColor; }
   const peiCard1 = document.getElementById('adm-pei-card1');
   if (peiCard1) peiCard1.style.borderTopColor = peiAchevColor;
-  const peiBar1 = document.getElementById('adm-pei-total-bar');
-  if (peiBar1) { peiBar1.style.width = pctDone + '%'; peiBar1.style.background = peiAchevColor; }
+  const peiBar1  = document.getElementById('adm-pei-total-bar');
+  if (peiBar1)  { peiBar1.style.width = pctDone + '%'; peiBar1.style.background = peiAchevColor; }
   setT('adm-pei-total-sub', `${tot} objectifs · ${dn} réalisés`);
 
-  /* Card 2 — Done */
-  setT('adm-pei-done', dn);
-  setT('adm-pei-done-pct', pctDone + '% du total');
+  setT('adm-pei-done',      dn);
+  setT('adm-pei-done-pct',  pctDone + '% du total');
+  setT('adm-pei-prog',      pr);
+  setT('adm-pei-prog-pct',  pctProg + '% du total');
 
-  /* Card 3 — En cours */
-  setT('adm-pei-prog', pr);
-  setT('adm-pei-prog-pct', pctProg + '% du total');
-
-  /* Card 4 — Non démarrés */
   const peiNewEl = document.getElementById('adm-pei-new');
   if (peiNewEl) { peiNewEl.textContent = nw; peiNewEl.style.color = newColor; }
   const peiCard4 = document.getElementById('adm-pei-card4');
   if (peiCard4) peiCard4.style.borderTopColor = newColor;
   setT('adm-pei-new-pct', pctNew + '% du total' + (pctNew > 40 ? ' ⚠️' : ''));
-  const itarUsers=USERS.filter(u=>!u.role);
-  const classesMap={};
-  itarUsers.forEach(u=>{
-    if(!classesMap[u.classe])classesMap[u.classe]={classe:u.classe,classeColor:u.classeColor||'#1b3a6b',classeIcon:u.classeIcon||'📚',benef:[]};
-    BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId).forEach(b=>classesMap[u.classe].benef.push(b));
-  });
-  const container=document.getElementById('adm-pei-by-class');if(!container)return;
-  container.innerHTML=Object.values(classesMap).map(g=>{
-    const pb=g.benef.filter(b=>b.type==='pei');if(!pb.length)return'';
-    const ptot=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-    const pdn=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-    const ppr=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
-    const pct=ptot?Math.round(pdn/ptot*100):0;
+
+  /* ── 4. Barre de filtrage par classe ── */
+  const filterBar = document.getElementById('pei-filter-classe-btns');
+  if (filterBar && !filterBar.dataset.init) {
+    const btnAll = document.createElement('button');
+    btnAll.textContent   = '🌍 Toutes';
+    btnAll.style.cssText = 'padding:4px 12px;border-radius:20px;border:1px solid var(--primary);background:var(--primary);color:#fff;font-size:11px;font-weight:800;cursor:pointer';
+    btnAll.onclick = () => peiSetClasseFilter('all', btnAll);
+    filterBar.appendChild(btnAll);
+    allClasses.forEach(g => {
+      const btn = document.createElement('button');
+      btn.textContent   = g.classeIcon + ' ' + g.classe;
+      btn.style.cssText = 'padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px;font-weight:600;cursor:pointer';
+      btn.onclick = () => peiSetClasseFilter(g.classe, btn);
+      filterBar.appendChild(btn);
+    });
+    filterBar.dataset.init = '1';
+  }
+
+  /* ── 5. Analyse par domaine (panneau gauche) ── */
+  const domainesPanel = document.getElementById('pei-domaines-panel');
+  if (domainesPanel) {
+    // Agréger tous les domaines de tous les bénéficiaires filtrés
+    const domaineMap = {};
+    pb.forEach(b => {
+      (b.pei_domaines || []).forEach(d => {
+        if (!domaineMap[d.label]) domaineMap[d.label] = { label: d.label, color: d.color || '#7c3aed', done: 0, prog: 0, tot: 0 };
+        const dm = domaineMap[d.label];
+        dm.tot  += d.objectifs.length;
+        dm.done += d.objectifs.filter(o => o.statut === 'done').length;
+        dm.prog += d.objectifs.filter(o => o.statut === 'in-progress').length;
+      });
+    });
+    const domList = Object.values(domaineMap)
+      .filter(d => d.tot > 0)
+      .map(d => ({ ...d, pct: Math.round(d.done / d.tot * 100) }))
+      .sort((a, b) => a.pct - b.pct); // tri croissant : pire en premier
+
+    if (!domList.length) {
+      domainesPanel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Aucun domaine trouvé</div>';
+    } else {
+      domainesPanel.innerHTML = `
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:800;color:#7c3aed">📊 Analyse par domaine</span>
+          <span style="font-size:10px;color:var(--muted)">Pire → Meilleur</span>
+        </div>
+        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+          ${domList.slice(0,7).map(d => {
+            const c = d.pct >= 70 ? 'var(--success)' : d.pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+            const badge = d.pct < 40 ? '🔴' : d.pct < 70 ? '🟡' : '🟢';
+            return `<div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;font-weight:700">${badge} ${d.label}</span>
+                <span style="font-size:11px;font-weight:900;color:${c}">${d.pct}%</span>
+              </div>
+              <div style="position:relative;background:var(--bg);border-radius:100px;height:7px;overflow:visible">
+                <div style="width:${d.pct}%;height:100%;background:${c};border-radius:100px;transition:width .4s"></div>
+                <!-- Marqueur cible 70% -->
+                <div style="position:absolute;left:70%;top:-3px;width:2px;height:13px;background:#7c3aed;border-radius:2px" title="Cible 70%"></div>
+              </div>
+              <div style="font-size:9px;color:var(--muted);margin-top:2px">✅${d.done} · 🔄${d.prog} · 🆕${d.tot-d.done-d.prog} sur ${d.tot}</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+  }
+
+  /* ── 6. Performance par cadre (panneau droit) ── */
+  const cadresPanel = document.getElementById('pei-cadres-panel');
+  if (cadresPanel) {
+    // Calcul PEI% par cadre
+    const cadrePerf = allUsers.map(u => {
+      const bPEI = BENEFICIAIRES.filter(b => b.teacherId === u.teacherId && b.type === 'pei');
+      const cTot = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
+      const cDn  = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+      const cPct = cTot ? Math.round(cDn / cTot * 100) : 0;
+      return { nom: u.nom || '—', classe: u.classe, classeIcon: u.classeIcon || '📚', classeColor: u.classeColor || '#1b3a6b', pct: cPct, done: cDn, tot: cTot, nbBenef: bPEI.length };
+    }).filter(c => c.tot > 0).sort((a,b) => a.pct - b.pct); // pire en premier
+
+    if (!cadrePerf.length) {
+      cadresPanel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Aucun cadre avec données PEI</div>';
+    } else {
+      cadresPanel.innerHTML = `
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:800;color:#0d9488">👨‍🏫 Performance par cadre</span>
+          <span style="font-size:10px;color:var(--muted)">Pire → Meilleur</span>
+        </div>
+        <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+          ${cadrePerf.map((c,i) => {
+            const col = c.pct >= 70 ? 'var(--success)' : c.pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+            const badge = c.pct < 40 ? '🔴' : c.pct < 70 ? '🟡' : '🟢';
+            const medal = i === cadrePerf.length-1 ? '🏆 ' : '';
+            return `<div style="background:var(--bg);border-radius:10px;padding:8px 10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div>
+                  <span style="font-size:11px;font-weight:800">${badge} ${medal}${c.nom}</span>
+                  <span style="font-size:9px;background:${c.classeColor};color:#fff;border-radius:6px;padding:1px 6px;margin-left:4px">${c.classeIcon} ${c.classe}</span>
+                </div>
+                <span style="font-size:14px;font-weight:900;color:${col};font-family:Sora,sans-serif">${c.pct}%</span>
+              </div>
+              <div style="position:relative;background:var(--border);border-radius:100px;height:5px;overflow:visible;margin-bottom:3px">
+                <div style="width:${c.pct}%;height:100%;background:${col};border-radius:100px;transition:width .4s"></div>
+                <div style="position:absolute;left:70%;top:-2px;width:2px;height:9px;background:#7c3aed" title="Cible 70%"></div>
+              </div>
+              <div style="font-size:9px;color:var(--muted)">✅${c.done}/${c.tot} objectifs · ${c.nbBenef} bénéficiaires</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
+  }
+
+  /* ── 7. Calcul hebdomadaire (objectifs/semaine nécessaires) ── */
+  const hebdoPanel = document.getElementById('pei-hebdo-panel');
+  if (hebdoPanel) {
+    const finSem2       = new Date('2026-06-30');
+    const now           = new Date();
+    const semRestantes  = Math.max(1, Math.ceil((finSem2 - now) / (7 * 24 * 3600 * 1000)));
+    const cible70       = Math.ceil(tot * 0.70);              // objectif cible absolu
+    const restants      = Math.max(0, cible70 - dn);          // objectifs encore à réaliser
+    const objParSem     = Math.ceil(restants / semRestantes);  // objectifs/semaine nécessaires
+    // Rythme actuel : objectifs done / semaines écoulées depuis début semestre
+    const debutSem2     = new Date('2026-01-05');
+    const semEcoulees   = Math.max(1, Math.ceil((now - debutSem2) / (7 * 24 * 3600 * 1000)));
+    const rythmeActuel  = Math.round(dn / semEcoulees);       // objectifs/semaine réels
+    const ecart         = objParSem - rythmeActuel;           // positif = retard
+    const cibleAtteinte = dn >= cible70;
+
+    const rythmeColor = cibleAtteinte ? 'var(--success)' : ecart <= 0 ? 'var(--success)' : ecart <= 3 ? 'var(--warning)' : 'var(--danger)';
+    const rythmeIcon  = cibleAtteinte ? '🎯' : ecart <= 0 ? '✅' : ecart <= 3 ? '⚠️' : '🚨';
+
+    hebdoPanel.innerHTML = `
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;font-weight:800;color:#2563eb">📅 Calcul hebdomadaire</span>
+      </div>
+      <div style="padding:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:#2563eb;font-family:Sora,sans-serif">${semRestantes}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">semaines restantes</div>
+          </div>
+          <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:20px;font-weight:900;color:var(--primary);font-family:Sora,sans-serif">${cible70}</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">objectifs cible 70%</div>
+          </div>
+        </div>
+        ${cibleAtteinte
+          ? `<div style="background:rgba(5,150,105,.1);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--success)">
+               <div style="font-size:14px;font-weight:800;color:var(--success)">🎯 Cible 70% atteinte !</div>
+               <div style="font-size:11px;color:var(--muted);margin-top:4px">${dn} / ${cible70} objectifs réalisés</div>
+             </div>`
+          : `<div style="background:var(--bg);border-radius:10px;padding:10px;border-left:3px solid ${rythmeColor}">
+               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                 <span style="font-size:11px;font-weight:700">Objectifs / semaine nécessaires</span>
+                 <span style="font-size:18px;font-weight:900;color:${rythmeColor};font-family:Sora,sans-serif">${objParSem}</span>
+               </div>
+               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                 <span style="font-size:10px;color:var(--muted)">Rythme actuel</span>
+                 <span style="font-size:12px;font-weight:700;color:var(--text)">${rythmeActuel}/sem</span>
+               </div>
+               <div style="font-size:11px;font-weight:800;color:${rythmeColor};margin-top:6px">
+                 ${rythmeIcon} ${ecart > 0 ? `Accélérer de +${ecart} obj/sem` : `Rythme suffisant (−${Math.abs(ecart)} marge)`}
+               </div>
+               <div style="font-size:9px;color:var(--muted);margin-top:4px">${restants} objectifs restants pour atteindre 70%</div>
+             </div>`
+        }
+      </div>`;
+  }
+
+  /* ── 8. Objectifs bloqués / en retard ── */
+  const stalePanel = document.getElementById('pei-stale-panel');
+  if (stalePanel) {
+    const finSem2_s     = new Date('2026-06-30');
+    const now_s         = new Date();
+    const semRestantes_s= Math.max(1, Math.ceil((finSem2_s - now_s) / (7 * 24 * 3600 * 1000)));
+    // Seuil dynamique : si ≤4 semaines → 20%, sinon 40%
+    const seuilStale    = semRestantes_s <= 4 ? 20 : 40;
+
+    const staleBenef = allPB.filter(b => {
+      const bTot  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
+      const bDn   = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+      const bPr   = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='in-progress').length, 0);
+      const bPct  = bTot ? Math.round(bDn / bTot * 100) : 0;
+      return bPr > 0 && bPct < seuilStale; // en cours mais très peu réalisés
+    }).map(b => {
+      const bTot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
+      const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+      const bPct = bTot ? Math.round(bDn / bTot * 100) : 0;
+      return { ...b, _bPct: bPct, _bTot: bTot, _bDn: bDn, _gIdx: BENEFICIAIRES.indexOf(b) };
+    }).sort((a,b) => a._bPct - b._bPct); // pire en premier
+
+    if (!staleBenef.length) {
+      stalePanel.innerHTML = `
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
+          <span style="font-size:12px;font-weight:800;color:var(--danger)">⚠️ Objectifs bloqués</span>
+        </div>
+        <div style="padding:20px;text-align:center;color:var(--success)">
+          <div style="font-size:24px">✅</div>
+          <div style="font-size:12px;font-weight:700;margin-top:6px">Aucun bénéficiaire bloqué</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Seuil : ${seuilStale}% (${semRestantes_s} sem. restantes)</div>
+        </div>`;
+    } else {
+      stalePanel.innerHTML = `
+        <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:800;color:var(--danger)">⚠️ Objectifs bloqués</span>
+          <span style="font-size:10px;background:var(--danger);color:#fff;border-radius:100px;padding:2px 8px;font-weight:700">${staleBenef.length}</span>
+        </div>
+        <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto">
+          ${staleBenef.map(b => {
+            const col = b._bPct >= 40 ? 'var(--warning)' : 'var(--danger)';
+            return `<div style="background:var(--bg);border-radius:10px;padding:8px 10px;cursor:pointer;border-left:3px solid ${col}"
+                      onclick="adminShowSection('benef');setTimeout(()=>adminOpenBenef(${b._gIdx}),100)">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:11px;font-weight:800;direction:rtl">${b.nom}</span>
+                <span style="font-size:13px;font-weight:900;color:${col}">${b._bPct}%</span>
+              </div>
+              <div style="background:var(--border);border-radius:100px;height:4px;margin-top:5px;overflow:hidden">
+                <div style="width:${b._bPct}%;height:100%;background:${col};border-radius:100px"></div>
+              </div>
+              <div style="font-size:9px;color:var(--muted);margin-top:3px">✅${b._bDn}/${b._bTot} · Cliquer pour ouvrir le dossier</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="padding:6px 14px;font-size:9px;color:var(--muted);border-top:1px solid var(--border)">
+          Seuil blocage : &lt;${seuilStale}% avec objectifs en cours · ${semRestantes_s} semaines restantes
+        </div>`;
+    }
+  }
+
+  /* ── 9. Détail par classe (version enrichie) ── */
+  const container = document.getElementById('adm-pei-by-class');
+  if (!container) return;
+
+  const classesToRender = _peiClasseFilter === 'all' ? allClasses : allClasses.filter(g => g.classe === _peiClasseFilter);
+
+  container.innerHTML = classesToRender.map(g => {
+    const classePB = g.benef.filter(b => b.type === 'pei');
+    if (!classePB.length) return '';
+
+    const ptot = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
+    const pdn  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+    const ppr  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='in-progress').length, 0), 0);
+    const pct  = ptot ? Math.round(pdn / ptot * 100) : 0;
+    const classeRiskScore = classePB.length
+      ? Math.round(classePB.reduce((s,b) => s + calcRisqueBenef(b, presences), 0) / classePB.length)
+      : 0;
+    const classeRiskBadge = classeRiskScore >= 61 ? '🔴 Urgent' : classeRiskScore >= 31 ? '🟡 Surveiller' : '🟢 Stable';
+    const classeRiskColor = classeRiskScore >= 61 ? 'var(--danger)' : classeRiskScore >= 31 ? 'var(--warning)' : 'var(--success)';
+
     return `<div class="card" style="margin-bottom:14px">
-      <div class="card-header"><div class="card-title"><span style="background:${g.classeColor};color:#fff;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:800">${g.classeIcon} ${g.classe}</span></div><span style="font-size:12px;font-weight:800;color:${peiColor(pct)}">${pct}% d'achèvement</span></div>
+      <div class="card-header">
+        <div class="card-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="background:${g.classeColor};color:#fff;border-radius:8px;padding:3px 10px;font-size:11px;font-weight:800">${g.classeIcon} ${g.classe}</span>
+          <span style="font-size:10px;color:var(--muted)">👨‍🏫 ${g.cadreNom}</span>
+          <span style="font-size:10px;font-weight:700;color:${classeRiskColor};background:${classeRiskColor}18;border-radius:100px;padding:2px 8px">${classeRiskBadge}</span>
+        </div>
+        <span style="font-size:12px;font-weight:800;color:${peiColor(pct)}">${pct}% d'achèvement</span>
+      </div>
       <div class="card-body">
-        <div style="background:var(--bg);border-radius:100px;height:8px;overflow:hidden;margin-bottom:14px"><div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px"></div></div>
-        <div style="display:grid;grid-template-columns:repeat(${Math.min(pb.length,4)},1fr);gap:10px">
-          ${pb.map(b=>{
-            const btot=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.length,0);
-            const bdn=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
-            const bpr=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='in-progress').length,0);
-            const bpct=btot?Math.round(bdn/btot*100):0;
-            const gIdx=BENEFICIAIRES.indexOf(b);
-            return `<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;cursor:pointer" onclick="adminShowSection('benef');setTimeout(()=>adminOpenBenef(${gIdx}),100)">
-              <div style="font-size:11px;font-weight:700;direction:rtl;margin-bottom:5px">${b.nom.split(' ')[0]}</div>
-              <div style="font-size:18px;font-weight:900;color:${peiColor(bpct)};font-family:Sora,sans-serif">${bpct}%</div>
+        <!-- Barre globale classe avec marqueur 70% -->
+        <div style="position:relative;background:var(--bg);border-radius:100px;height:8px;overflow:visible;margin-bottom:14px">
+          <div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px;transition:width .5s"></div>
+          <div style="position:absolute;left:70%;top:-4px;width:2px;height:16px;background:#7c3aed;border-radius:2px" title="Cible 70%">
+            <div style="position:absolute;top:-14px;left:-8px;font-size:7px;color:#7c3aed;font-weight:800;white-space:nowrap">70%</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:12px">✅${pdn} réalisés · 🔄${ppr} en cours · 🆕${ptot-pdn-ppr} non démarrés sur ${ptot} objectifs</div>
+        <!-- Cartes bénéficiaires enrichies -->
+        <div style="display:grid;grid-template-columns:repeat(${Math.min(classePB.length,4)},1fr);gap:10px">
+          ${classePB.map(b => {
+            const btot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
+            const bdn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+            const bpr  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='in-progress').length, 0);
+            const bpct = btot ? Math.round(bdn / btot * 100) : 0;
+            const gIdx = BENEFICIAIRES.indexOf(b);
+            // Badge de risque individuel
+            const rScore = calcRisqueBenef(b, presences);
+            const rBadge = rScore >= 61 ? '🔴' : rScore >= 31 ? '🟡' : '🟢';
+            const rColor = rScore >= 61 ? 'var(--danger)' : rScore >= 31 ? 'var(--warning)' : 'var(--success)';
+            // Nom complet (direction rtl)
+            const nomDisplay = b.nom || '—';
+            return `<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;cursor:pointer;border:1px solid var(--border);transition:box-shadow .2s;position:relative"
+                      onclick="adminShowSection('benef');setTimeout(()=>adminOpenBenef(${gIdx}),100)"
+                      onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,.12)'"
+                      onmouseout="this.style.boxShadow='none'">
+              <!-- Badge risque (coin haut-droit) -->
+              <div style="position:absolute;top:6px;right:6px;font-size:11px" title="Risque: ${rScore}/100">${rBadge}</div>
+              <div style="font-size:10px;font-weight:700;direction:rtl;margin-bottom:5px;color:var(--text);padding:0 16px">${nomDisplay}</div>
+              <div style="font-size:20px;font-weight:900;color:${peiColor(bpct)};font-family:Sora,sans-serif">${bpct}%</div>
               <div style="font-size:9px;color:var(--muted);margin-top:3px">✅${bdn} 🔄${bpr} 🆕${btot-bdn-bpr}</div>
-              <div style="background:var(--border);border-radius:100px;height:3px;margin-top:5px;overflow:hidden"><div style="width:${bpct}%;height:100%;background:${peiColor(bpct)};border-radius:100px"></div></div>
+              <!-- Mini barre avec marqueur 70% -->
+              <div style="position:relative;background:var(--border);border-radius:100px;height:4px;margin-top:6px;overflow:visible">
+                <div style="width:${bpct}%;height:100%;background:${peiColor(bpct)};border-radius:100px"></div>
+                <div style="position:absolute;left:70%;top:-2px;width:1px;height:8px;background:#7c3aed" title="70%"></div>
+              </div>
             </div>`;
           }).join('')}
         </div>
       </div>
     </div>`;
   }).join('');
-  setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);
+
+  setTimeout(() => { if (typeof translatePage === 'function') translatePage(); }, 40);
+}
+
+/* ─────────────────────────────────────────────────────────
+   EXPORT PEI — Excel et PDF (fonctions déclenchées par boutons)
+───────────────────────────────────────────────────────── */
+
+/**
+ * exportPeiExcel — Génère un fichier XLSX avec le suivi PEI complet.
+ * Utilise la lib XLSX si disponible, sinon fallback CSV.
+ */
+function exportPeiExcel() {
+  const rows = [];
+  rows.push(['Nom', 'Classe', 'Cadre', 'Domaine', 'Total Obj', 'Réalisés', 'En cours', 'Non démarrés', '% Achèvement']);
+  const allUsers = USERS.filter(u => !u.role);
+  // Construire cadreMap
+  const cadreMap = {};
+  allUsers.forEach(u => {
+    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId).forEach(b => {
+      cadreMap[b.teacherId] = { nom: u.nom, classe: u.classe };
+    });
+  });
+  BENEFICIAIRES.filter(b => b.type === 'pei').forEach(b => {
+    const info = cadreMap[b.teacherId] || { nom: '—', classe: '—' };
+    (b.pei_domaines || []).forEach(d => {
+      const done = d.objectifs.filter(o => o.statut === 'done').length;
+      const prog = d.objectifs.filter(o => o.statut === 'in-progress').length;
+      const nw   = d.objectifs.length - done - prog;
+      const pct  = d.objectifs.length ? Math.round(done / d.objectifs.length * 100) : 0;
+      rows.push([b.nom, info.classe, info.nom, d.label, d.objectifs.length, done, prog, nw, pct + '%']);
+    });
+  });
+
+  // Essayer d'utiliser SheetJS si disponible
+  if (typeof XLSX !== 'undefined') {
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Suivi PEI');
+    const dateStr = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(wb, `ElAwail_PEI_${dateStr}.xlsx`);
+    showToast('✅ Export Excel généré', 'success');
+    return;
+  }
+  // Fallback CSV
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href     = url;
+  a.download = `ElAwail_PEI_${dateStr}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Export CSV généré (XLSX non disponible)', 'success');
+}
+
+/**
+ * exportPeiPDF — Génère un rapport PDF du suivi PEI.
+ * Utilise window.print() avec une mise en forme dédiée.
+ */
+function exportPeiPDF() {
+  const dateStr = new Date().toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
+  const allUsers = USERS.filter(u => !u.role);
+  const cadreMap = {};
+  allUsers.forEach(u => {
+    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId).forEach(b => {
+      cadreMap[b.nom] = { nom: u.nom, classe: u.classe };
+    });
+  });
+  const pb = BENEFICIAIRES.filter(b => b.type === 'pei');
+  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
+  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+  const pct = tot ? Math.round(dn / tot * 100) : 0;
+
+  // Générer contenu HTML pour impression
+  const lignes = pb.map(b => {
+    const info = cadreMap[b.nom] || { nom: '—', classe: '—' };
+    const bTot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
+    const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+    const bPct = bTot ? Math.round(bDn / bTot * 100) : 0;
+    return `<tr><td style="direction:rtl">${b.nom}</td><td>${info.classe}</td><td>${info.nom}</td><td>${bTot}</td><td>${bDn}</td><td style="font-weight:800;color:${bPct>=70?'green':bPct>=40?'orange':'red'}">${bPct}%</td></tr>`;
+  }).join('');
+
+  const pdfWin = window.open('', '_blank');
+  if (!pdfWin) { showToast('⚠️ Autoriser les popups pour exporter en PDF', 'warning'); return; }
+  pdfWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>Rapport PEI — ElAwail — ${dateStr}</title>
+    <style>body{font-family:Arial,sans-serif;margin:30px;color:#1e293b}h1{color:#1b3a6b;font-size:20px}h2{color:#1b3a6b;font-size:15px;margin-top:20px}
+    table{width:100%;border-collapse:collapse;font-size:12px}th{background:#1b3a6b;color:#fff;padding:8px;text-align:left}
+    td{padding:6px 8px;border-bottom:1px solid #e2e8f0}tr:nth-child(even){background:#f8fafc}
+    .kpi-box{display:inline-block;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 20px;margin:8px 4px;text-align:center}
+    .kpi-num{font-size:24px;font-weight:900;color:#1b3a6b}.kpi-lbl{font-size:11px;color:#64748b}
+    @media print{body{margin:0}}</style></head><body>
+    <h1>🎯 Rapport Suivi PEI — Association ElAwail</h1>
+    <p style="color:#64748b;font-size:12px">Généré le ${new Date().toLocaleDateString('fr-FR')} · Semestre 2 · ${dateStr}</p>
+    <div>
+      <div class="kpi-box"><div class="kpi-num">${pb.length}</div><div class="kpi-lbl">Bénéficiaires PEI</div></div>
+      <div class="kpi-box"><div class="kpi-num">${tot}</div><div class="kpi-lbl">Objectifs totaux</div></div>
+      <div class="kpi-box"><div class="kpi-num">${dn}</div><div class="kpi-lbl">Réalisés</div></div>
+      <div class="kpi-box"><div class="kpi-num" style="color:${pct>=70?'green':pct>=40?'orange':'red'}">${pct}%</div><div class="kpi-lbl">Taux global</div></div>
+    </div>
+    <h2>📋 Détail par bénéficiaire</h2>
+    <table><thead><tr><th>Nom</th><th>Classe</th><th>Cadre</th><th>Total obj.</th><th>Réalisés</th><th>%</th></tr></thead>
+    <tbody>${lignes}</tbody></table>
+    <p style="margin-top:30px;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:8px">
+    Association ElAwail · Rapport généré automatiquement par la plateforme numérique · Confidentiel</p>
+    </body></html>`);
+  pdfWin.document.close();
+  setTimeout(() => { pdfWin.print(); }, 400);
+  showToast('📄 Fenêtre d\'impression ouverte', 'success');
 }
 
 let _admBenefFilter='all', _admNivFilter='all', _admSortRisque=false;
