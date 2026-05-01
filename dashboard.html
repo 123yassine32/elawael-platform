@@ -788,7 +788,7 @@ body.is-consultant .sensitive-data::after {
 <div id="firebase-loading">
   <div class="fb-loading-icon">🏫</div>
   <div class="fb-loading-spin"></div>
-  <div class="fb-loading-txt">Vérification de la session...</div>
+  <div class="fb-loading-txt" data-i18n="firebase_loading_msg">Vérification de la session...</div>
 </div>
 
 <!-- ══ ADMIN OVERLAY ══ -->
@@ -802,10 +802,10 @@ body.is-consultant .sensitive-data::after {
       <div style="display:flex;align-items:center;gap:10px">
         <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:800;font-family:Sora,sans-serif">A</div>
         <div style="flex:1">
-          <div style="color:#fff;font-size:13px;font-weight:700">Administration</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px">🏫 S2 · 2025-2026</div>
+          <div style="color:#fff;font-size:13px;font-weight:700" data-i18n="adm_role">Administration</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:1px" data-i18n="adm_s2_label">🏫 S2 · 2025-2026</div>
         </div>
-        <div class="logout-btn" style="padding:5px 10px;font-size:11px;border-radius:7px;margin:0" onclick="doLogout()">⬅ Exit</div>
+        <div class="logout-btn" style="padding:5px 10px;font-size:11px;border-radius:7px;margin:0" onclick="doLogout()" data-i18n="btn_exit">⬅ Exit</div>
       </div>
       <div class="t-stats-mini" style="margin-top:10px">
         <div class="tsm"><span class="tsm-v" id="adm-total-benef">—</span><span class="tsm-l" data-i18n="lbl_benef_short">Bénéf.</span></div>
@@ -815,7 +815,7 @@ body.is-consultant .sensitive-data::after {
       </div>
     </div>
     <div style="padding:8px 14px 4px">
-      <input class="admin-search-input" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);font-family:'Plus Jakarta Sans',sans-serif" placeholder="🔍 Rechercher..." id="adm-global-search" oninput="adminGlobalSearch(this.value)">
+      <input class="admin-search-input" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.2);font-family:'Plus Jakarta Sans',sans-serif" data-i18n-ph="ph_rechercher" placeholder="🔍 Rechercher..." id="adm-global-search" oninput="adminGlobalSearch(this.value)">
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label" data-i18n="adm_nav_label">Navigation</div>
@@ -4975,6 +4975,51 @@ var I18N = {
 
     lang_flag:  '🇲🇦',
     lang_label: 'عربي',
+
+    // ── Nouveaux — i18n complémentaire ──
+    firebase_loading_msg: 'Vérification de la session...',
+    // Niveaux de risque
+    risk_urgent:     'Urgent',
+    risk_surveiller: 'Surveiller',
+    risk_stable:     'Stable',
+    adm_s2_label: '🏫 S2 · 2025-2026',
+    // PEI Global — panneaux dynamiques
+    pei_dom_titre:       '📊 Analyse par domaine',
+    pei_dom_vide:        'Aucun domaine trouvé',
+    pei_dom_ordre:       'Pire → Meilleur',
+    pei_cible_70:        'Cible 70%',
+    pei_cadres_titre:    '👨‍🏫 Performance par cadre',
+    pei_cadres_vide:     'Aucun cadre avec données PEI',
+    pei_hebdo_titre:     '📅 Calcul hebdomadaire',
+    pei_hebdo_sem_rest:  'semaines restantes',
+    pei_hebdo_cible_abs: 'objectifs cible 70%',
+    pei_cible_ok:        '🎯 Cible 70% atteinte !',
+    pei_cible_ok_sub:    'objectifs réalisés',
+    pei_obj_sem_need:    'Objectifs / semaine nécessaires',
+    pei_rythme_actuel:   'Rythme actuel',
+    pei_accelerer:       'Accélérer de',
+    pei_obj_sem:         'obj/sem',
+    pei_marge:           'Rythme suffisant (−{x} marge)',
+    pei_restants_cible:  'objectifs restants pour atteindre 70%',
+    pei_stale_titre:     '⚠️ Objectifs bloqués',
+    pei_stale_vide_ok:   'Aucun bénéficiaire bloqué',
+    pei_stale_seuil:     'Seuil blocage :',
+    pei_stale_sem_rest:  'semaines restantes',
+    pei_stale_click:     'Cliquer pour ouvrir le dossier',
+    pei_classe_obj:      'objectifs',
+    pei_realises_sur:    'réalisés · 🔄',
+    pei_en_cours_sur:    'en cours · 🆕',
+    pei_non_dem:         'non démarrés sur',
+    pei_achevement:      "% d'achèvement",
+    // Mois (pour buildAbsHTML)
+    mois_10: 'Octobre', mois_11: 'Novembre', mois_12: 'Décembre',
+    mois_01: 'Janvier', mois_02: 'Février',  mois_03: 'Mars',
+    mois_04: 'Avril',   mois_05: 'Mai',       mois_06: 'Juin',
+    // Status séances
+    status_reussi:    'Réussi', status_excellent: 'Excellent',
+    status_difficultes: 'Difficultés', status_absent: 'Absent', status_en_cours: 'En cours',
+    // Alertes
+    msg_aucune_donnee: '⬜ Aucune donnée',
   },
 
   ar: {
@@ -5845,6 +5890,51 @@ var I18N = {
 
     lang_flag:  '🇫🇷',
     lang_label: 'Français',
+
+    // ── جديد — تكملة الترجمة ──
+    firebase_loading_msg: 'جاري التحقق من الجلسة...',
+    // مستويات الخطر
+    risk_urgent:     'عاجل',
+    risk_surveiller: 'مراقبة',
+    risk_stable:     'مستقر',
+    adm_s2_label: '🏫 الفصل 2 · 2025-2026',
+    // PEI Global — لوحات ديناميكية
+    pei_dom_titre:       '📊 تحليل حسب المجال',
+    pei_dom_vide:        'لا توجد مجالات',
+    pei_dom_ordre:       'الأسوأ → الأفضل',
+    pei_cible_70:        'الهدف 70%',
+    pei_cadres_titre:    '👨‍🏫 أداء المربين',
+    pei_cadres_vide:     'لا يوجد مربٍّ مع بيانات PEI',
+    pei_hebdo_titre:     '📅 الحساب الأسبوعي',
+    pei_hebdo_sem_rest:  'أسابيع متبقية',
+    pei_hebdo_cible_abs: 'هدف 70% (عدد الأهداف)',
+    pei_cible_ok:        '🎯 تم بلوغ الهدف 70% !',
+    pei_cible_ok_sub:    'هدف منجز',
+    pei_obj_sem_need:    'الأهداف الأسبوعية المطلوبة',
+    pei_rythme_actuel:   'الإيقاع الحالي',
+    pei_accelerer:       'تسريع بـ',
+    pei_obj_sem:         'هدف/أسبوع',
+    pei_marge:           'الإيقاع كافٍ',
+    pei_restants_cible:  'هدف متبقٍّ للوصول إلى 70%',
+    pei_stale_titre:     '⚠️ أهداف متوقفة',
+    pei_stale_vide_ok:   'لا يوجد مستفيد متوقف',
+    pei_stale_seuil:     'عتبة الإيقاف :',
+    pei_stale_sem_rest:  'أسابيع متبقية',
+    pei_stale_click:     'انقر لفتح الملف',
+    pei_classe_obj:      'أهداف',
+    pei_realises_sur:    'منجز · 🔄',
+    pei_en_cours_sur:    'جارٍ · 🆕',
+    pei_non_dem:         'لم يبدأ من إجمالي',
+    pei_achevement:      '% إنجاز',
+    // الأشهر
+    mois_10: 'أكتوبر', mois_11: 'نوفمبر', mois_12: 'دجنبر',
+    mois_01: 'يناير',  mois_02: 'فبراير',  mois_03: 'مارس',
+    mois_04: 'أبريل',  mois_05: 'ماي',     mois_06: 'يونيو',
+    // حالة الجلسات
+    status_reussi:      'ناجح',   status_excellent: 'ممتاز',
+    status_difficultes: 'صعوبات', status_absent: 'غائب', status_en_cours: 'جارٍ',
+    // تنبيهات
+    msg_aucune_donnee: '⬜ لا توجد بيانات',
   }
 };
 
@@ -16314,12 +16404,17 @@ function buildAbsHTML(nom) {
     const allPres = loadData('ea_presences') || [];
     const mySeances = allPres.filter(p => p.presences && p.presences.some(x => x.nom === nom));
     if (mySeances.length) {
-      const mMap = {'10':'Octobre','11':'Novembre','12':'Décembre','01':'Janvier','02':'Février','03':'Mars','04':'Avril','05':'Mai','06':'Juin'};
+      // Utiliser les clés i18n pour les noms de mois (bilingue FR/AR)
+      const mMap = {
+        '10': t('mois_10'), '11': t('mois_11'), '12': t('mois_12'),
+        '01': t('mois_01'), '02': t('mois_02'), '03': t('mois_03'),
+        '04': t('mois_04'), '05': t('mois_05'), '06': t('mois_06')
+      };
       const monthly = {};
       let total_abs = 0, total_jours = 0;
       mySeances.forEach(p => {
         const mKey  = p.date && p.date.split('-')[1];
-        const mName = mMap[mKey] || 'Autre';
+        const mName = mMap[mKey] || (CURRENT_LANG === 'ar' ? 'أخرى' : 'Autre');
         if (!monthly[mName]) monthly[mName] = {abs:0, pres:0, jours:0};
         const x = p.presences.find(x => x.nom === nom) || {};
         const isAbs = x.statut !== 'P';
@@ -18888,7 +18983,11 @@ function buildPerfDashboard(b, idx) {
     const allPres = loadData('ea_presences') || [];
     const mySeances = allPres.filter(p => p.presences && p.presences.some(x => x.nom === b.nom));
     if (mySeances.length) {
-      const mMap = {'10':'Octobre','11':'Novembre','12':'Décembre','01':'Janvier','02':'Février','03':'Mars','04':'Avril','05':'Mai','06':'Juin'};
+      const mMap = {
+        '10': t('mois_10'), '11': t('mois_11'), '12': t('mois_12'),
+        '01': t('mois_01'), '02': t('mois_02'), '03': t('mois_03'),
+        '04': t('mois_04'), '05': t('mois_05'), '06': t('mois_06')
+      };
       const monthly = {};
       let total_abs = 0, total_jours = 0;
       mySeances.forEach(p => {
@@ -21735,7 +21834,7 @@ function renderAdminPEI(){
   const filterBar = document.getElementById('pei-filter-classe-btns');
   if (filterBar && !filterBar.dataset.init) {
     const btnAll = document.createElement('button');
-    btnAll.textContent   = '🌍 Toutes';
+    btnAll.textContent   = '🌍 ' + t('btn_toutes_classes');
     btnAll.style.cssText = 'padding:4px 12px;border-radius:20px;border:1px solid var(--primary);background:var(--primary);color:#fff;font-size:11px;font-weight:800;cursor:pointer';
     btnAll.onclick = () => peiSetClasseFilter('all', btnAll);
     filterBar.appendChild(btnAll);
@@ -21769,12 +21868,12 @@ function renderAdminPEI(){
       .sort((a, b) => a.pct - b.pct); // tri croissant : pire en premier
 
     if (!domList.length) {
-      domainesPanel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Aucun domaine trouvé</div>';
+      domainesPanel.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">${t('pei_dom_vide')}</div>`;
     } else {
       domainesPanel.innerHTML = `
         <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:12px;font-weight:800;color:#7c3aed">📊 Analyse par domaine</span>
-          <span style="font-size:10px;color:var(--muted)">Pire → Meilleur</span>
+          <span style="font-size:12px;font-weight:800;color:#7c3aed">${t('pei_dom_titre')}</span>
+          <span style="font-size:10px;color:var(--muted)">${t('pei_dom_ordre')}</span>
         </div>
         <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
           ${domList.slice(0,7).map(d => {
@@ -21788,9 +21887,9 @@ function renderAdminPEI(){
               <div style="position:relative;background:var(--bg);border-radius:100px;height:7px;overflow:visible">
                 <div style="width:${d.pct}%;height:100%;background:${c};border-radius:100px;transition:width .4s"></div>
                 <!-- Marqueur cible 70% -->
-                <div style="position:absolute;left:70%;top:-3px;width:2px;height:13px;background:#7c3aed;border-radius:2px" title="Cible 70%"></div>
+                <div style="position:absolute;left:70%;top:-3px;width:2px;height:13px;background:#7c3aed;border-radius:2px" title="${t('pei_cible_70')}"></div>
               </div>
-              <div style="font-size:9px;color:var(--muted);margin-top:2px">✅${d.done} · 🔄${d.prog} · 🆕${d.tot-d.done-d.prog} sur ${d.tot}</div>
+              <div style="font-size:9px;color:var(--muted);margin-top:2px">✅${d.done} · 🔄${d.prog} · 🆕${d.tot-d.done-d.prog} / ${d.tot}</div>
             </div>`;
           }).join('')}
         </div>`;
@@ -21810,12 +21909,12 @@ function renderAdminPEI(){
     }).filter(c => c.tot > 0).sort((a,b) => a.pct - b.pct); // pire en premier
 
     if (!cadrePerf.length) {
-      cadresPanel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Aucun cadre avec données PEI</div>';
+      cadresPanel.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">${t('pei_cadres_vide')}</div>`;
     } else {
       cadresPanel.innerHTML = `
         <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:12px;font-weight:800;color:#0d9488">👨‍🏫 Performance par cadre</span>
-          <span style="font-size:10px;color:var(--muted)">Pire → Meilleur</span>
+          <span style="font-size:12px;font-weight:800;color:#0d9488">${t('pei_cadres_titre')}</span>
+          <span style="font-size:10px;color:var(--muted)">${t('pei_dom_ordre')}</span>
         </div>
         <div style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
           ${cadrePerf.map((c,i) => {
@@ -21832,9 +21931,9 @@ function renderAdminPEI(){
               </div>
               <div style="position:relative;background:var(--border);border-radius:100px;height:5px;overflow:visible;margin-bottom:3px">
                 <div style="width:${c.pct}%;height:100%;background:${col};border-radius:100px;transition:width .4s"></div>
-                <div style="position:absolute;left:70%;top:-2px;width:2px;height:9px;background:#7c3aed" title="Cible 70%"></div>
+                <div style="position:absolute;left:70%;top:-2px;width:2px;height:9px;background:#7c3aed" title="${t('pei_cible_70')}"></div>
               </div>
-              <div style="font-size:9px;color:var(--muted)">✅${c.done}/${c.tot} objectifs · ${c.nbBenef} bénéficiaires</div>
+              <div style="font-size:9px;color:var(--muted)">✅${c.done}/${c.tot} ${t('pei_classe_obj')} · ${c.nbBenef}</div>
             </div>`;
           }).join('')}
         </div>`;
@@ -21862,37 +21961,37 @@ function renderAdminPEI(){
 
     hebdoPanel.innerHTML = `
       <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
-        <span style="font-size:12px;font-weight:800;color:#2563eb">📅 Calcul hebdomadaire</span>
+        <span style="font-size:12px;font-weight:800;color:#2563eb">${t('pei_hebdo_titre')}</span>
       </div>
       <div style="padding:14px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
           <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center">
             <div style="font-size:20px;font-weight:900;color:#2563eb;font-family:Sora,sans-serif">${semRestantes}</div>
-            <div style="font-size:9px;color:var(--muted);margin-top:2px">semaines restantes</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">${t('pei_hebdo_sem_rest')}</div>
           </div>
           <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center">
             <div style="font-size:20px;font-weight:900;color:var(--primary);font-family:Sora,sans-serif">${cible70}</div>
-            <div style="font-size:9px;color:var(--muted);margin-top:2px">objectifs cible 70%</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">${t('pei_hebdo_cible_abs')}</div>
           </div>
         </div>
         ${cibleAtteinte
           ? `<div style="background:rgba(5,150,105,.1);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--success)">
-               <div style="font-size:14px;font-weight:800;color:var(--success)">🎯 Cible 70% atteinte !</div>
-               <div style="font-size:11px;color:var(--muted);margin-top:4px">${dn} / ${cible70} objectifs réalisés</div>
+               <div style="font-size:14px;font-weight:800;color:var(--success)">${t('pei_cible_ok')}</div>
+               <div style="font-size:11px;color:var(--muted);margin-top:4px">${dn} / ${cible70} ${t('pei_cible_ok_sub')}</div>
              </div>`
           : `<div style="background:var(--bg);border-radius:10px;padding:10px;border-left:3px solid ${rythmeColor}">
                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                 <span style="font-size:11px;font-weight:700">Objectifs / semaine nécessaires</span>
+                 <span style="font-size:11px;font-weight:700">${t('pei_obj_sem_need')}</span>
                  <span style="font-size:18px;font-weight:900;color:${rythmeColor};font-family:Sora,sans-serif">${objParSem}</span>
                </div>
                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                 <span style="font-size:10px;color:var(--muted)">Rythme actuel</span>
-                 <span style="font-size:12px;font-weight:700;color:var(--text)">${rythmeActuel}/sem</span>
+                 <span style="font-size:10px;color:var(--muted)">${t('pei_rythme_actuel')}</span>
+                 <span style="font-size:12px;font-weight:700;color:var(--text)">${rythmeActuel}/${t('pei_obj_sem')}</span>
                </div>
                <div style="font-size:11px;font-weight:800;color:${rythmeColor};margin-top:6px">
-                 ${rythmeIcon} ${ecart > 0 ? `Accélérer de +${ecart} obj/sem` : `Rythme suffisant (−${Math.abs(ecart)} marge)`}
+                 ${rythmeIcon} ${ecart > 0 ? `${t('pei_accelerer')} +${ecart} ${t('pei_obj_sem')}` : t('pei_marge')}
                </div>
-               <div style="font-size:9px;color:var(--muted);margin-top:4px">${restants} objectifs restants pour atteindre 70%</div>
+               <div style="font-size:9px;color:var(--muted);margin-top:4px">${restants} ${t('pei_restants_cible')}</div>
              </div>`
         }
       </div>`;
@@ -21923,17 +22022,17 @@ function renderAdminPEI(){
     if (!staleBenef.length) {
       stalePanel.innerHTML = `
         <div style="padding:12px 14px;border-bottom:1px solid var(--border)">
-          <span style="font-size:12px;font-weight:800;color:var(--danger)">⚠️ Objectifs bloqués</span>
+          <span style="font-size:12px;font-weight:800;color:var(--danger)">${t('pei_stale_titre')}</span>
         </div>
         <div style="padding:20px;text-align:center;color:var(--success)">
           <div style="font-size:24px">✅</div>
-          <div style="font-size:12px;font-weight:700;margin-top:6px">Aucun bénéficiaire bloqué</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px">Seuil : ${seuilStale}% (${semRestantes_s} sem. restantes)</div>
+          <div style="font-size:12px;font-weight:700;margin-top:6px">${t('pei_stale_vide_ok')}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">${seuilStale}% · ${semRestantes_s} ${t('pei_stale_sem_rest')}</div>
         </div>`;
     } else {
       stalePanel.innerHTML = `
         <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:12px;font-weight:800;color:var(--danger)">⚠️ Objectifs bloqués</span>
+          <span style="font-size:12px;font-weight:800;color:var(--danger)">${t('pei_stale_titre')}</span>
           <span style="font-size:10px;background:var(--danger);color:#fff;border-radius:100px;padding:2px 8px;font-weight:700">${staleBenef.length}</span>
         </div>
         <div style="padding:10px 14px;display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto">
@@ -21948,12 +22047,12 @@ function renderAdminPEI(){
               <div style="background:var(--border);border-radius:100px;height:4px;margin-top:5px;overflow:hidden">
                 <div style="width:${b._bPct}%;height:100%;background:${col};border-radius:100px"></div>
               </div>
-              <div style="font-size:9px;color:var(--muted);margin-top:3px">✅${b._bDn}/${b._bTot} · Cliquer pour ouvrir le dossier</div>
+              <div style="font-size:9px;color:var(--muted);margin-top:3px">✅${b._bDn}/${b._bTot} · ${t('pei_stale_click')}</div>
             </div>`;
           }).join('')}
         </div>
         <div style="padding:6px 14px;font-size:9px;color:var(--muted);border-top:1px solid var(--border)">
-          Seuil blocage : &lt;${seuilStale}% avec objectifs en cours · ${semRestantes_s} semaines restantes
+          ${t('pei_stale_seuil')} &lt;${seuilStale}% · ${semRestantes_s} ${t('pei_stale_sem_rest')}
         </div>`;
     }
   }
@@ -21975,7 +22074,7 @@ function renderAdminPEI(){
     const classeRiskScore = classePB.length
       ? Math.round(classePB.reduce((s,b) => s + calcRisqueBenef(b, presences), 0) / classePB.length)
       : 0;
-    const classeRiskBadge = classeRiskScore >= 61 ? '🔴 Urgent' : classeRiskScore >= 31 ? '🟡 Surveiller' : '🟢 Stable';
+    const classeRiskBadge = classeRiskScore >= 61 ? ('🔴 ' + t('risk_urgent')) : classeRiskScore >= 31 ? ('🟡 ' + t('risk_surveiller')) : ('🟢 ' + t('risk_stable'));
     const classeRiskColor = classeRiskScore >= 61 ? 'var(--danger)' : classeRiskScore >= 31 ? 'var(--warning)' : 'var(--success)';
 
     return `<div class="card" style="margin-bottom:14px">
@@ -21985,17 +22084,17 @@ function renderAdminPEI(){
           <span style="font-size:10px;color:var(--muted)">👨‍🏫 ${g.cadreNom}</span>
           <span style="font-size:10px;font-weight:700;color:${classeRiskColor};background:${classeRiskColor}18;border-radius:100px;padding:2px 8px">${classeRiskBadge}</span>
         </div>
-        <span style="font-size:12px;font-weight:800;color:${peiColor(pct)}">${pct}% d'achèvement</span>
+        <span style="font-size:12px;font-weight:800;color:${peiColor(pct)}">${pct}${t('pei_achevement')}</span>
       </div>
       <div class="card-body">
         <!-- Barre globale classe avec marqueur 70% -->
         <div style="position:relative;background:var(--bg);border-radius:100px;height:8px;overflow:visible;margin-bottom:14px">
           <div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px;transition:width .5s"></div>
-          <div style="position:absolute;left:70%;top:-4px;width:2px;height:16px;background:#7c3aed;border-radius:2px" title="Cible 70%">
+          <div style="position:absolute;left:70%;top:-4px;width:2px;height:16px;background:#7c3aed;border-radius:2px" title="${t('pei_cible_70')}">
             <div style="position:absolute;top:-14px;left:-8px;font-size:7px;color:#7c3aed;font-weight:800;white-space:nowrap">70%</div>
           </div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-bottom:12px">✅${pdn} réalisés · 🔄${ppr} en cours · 🆕${ptot-pdn-ppr} non démarrés sur ${ptot} objectifs</div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:12px">✅${pdn} ${t('pei_realises_sur')}${ppr} ${t('pei_en_cours_sur')}${ptot-pdn-ppr} ${t('pei_non_dem')} ${ptot} ${t('pei_classe_obj')}</div>
         <!-- Cartes bénéficiaires enrichies -->
         <div style="display:grid;grid-template-columns:repeat(${Math.min(classePB.length,4)},1fr);gap:10px">
           ${classePB.map(b => {
