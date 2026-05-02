@@ -1583,6 +1583,19 @@ body.is-consultant .sensitive-data::after {
         </button>
       </div>
 
+      <!-- Barre d'export — mise à jour dynamiquement selon l'onglet actif -->
+      <div id="listes-export-bar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;
+        padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:700;color:var(--muted)">Exporter :</span>
+        <button onclick="exportListeExcel()" class="btn btn-p" style="font-size:11px;padding:5px 12px;background:#059669;border-color:#059669">
+          📊 Excel
+        </button>
+        <button onclick="exportListePDF()" class="btn btn-p" style="font-size:11px;padding:5px 12px;background:#7c3aed;border-color:#7c3aed">
+          📄 PDF
+        </button>
+        <span id="listes-export-info" style="font-size:11px;color:var(--muted);margin-left:4px"></span>
+      </div>
+
       <!-- Panneaux des sous-sections (même HTML qu'avant, maintenant internes) -->
 
 <!-- ═══════════════════════════════════════════════════════
@@ -2274,8 +2287,13 @@ body.is-consultant .sensitive-data::after {
     <!-- ══ SECTION : Simulation stratégique ══ -->
     <div id="adm-section-simulation" style="display:none">
 
-      <div class="adm-section-title">🎛️ Simulation stratégique — Aide à la décision</div>
-      <div style="font-size:13px;color:var(--muted);margin:-10px 0 20px;line-height:1.6">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+        <div class="adm-section-title" style="margin-bottom:0">🎛️ Simulation stratégique — Aide à la décision</div>
+        <button onclick="simExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#7c3aed;border-color:#7c3aed">
+          📥 Exporter scénario PDF
+        </button>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.6">
         Modifiez les 3 leviers ci-dessous et observez en temps réel l'impact sur le Score Organisationnel.
         Le score actuel (à gauche) est fixe — seul le score simulé (à droite) évolue.
       </div>
@@ -2857,45 +2875,91 @@ body.is-consultant .sensitive-data::after {
 
     <!-- ══ SECTION : Ressources Humaines ══ -->
     <div id="adm-section-rh" style="display:none">
-      <div class="adm-section-title">👨‍💼 Ressources Humaines — Gestion des demandes cadres</div>
+      <div class="adm-section-title">👨‍💼 Ressources Humaines</div>
 
-      <!-- KPIs RH -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
-        <div class="card" style="border-top:3px solid var(--warning)">
-          <div class="kpi"><div class="kpi-label">⏳ En attente</div>
-          <div class="kpi-val" id="rh-k-attente" style="color:var(--warning)">0</div>
-          <div class="kpi-sub">Demandes à traiter</div></div>
+      <!-- Onglets RH : Demandes | Contrats | Formations -->
+      <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0">
+        <button id="rh-tab-btn-demandes"  onclick="rhSwitchTab('demandes')"
+          style="padding:8px 18px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:800;
+          color:var(--primary);border-bottom:3px solid var(--primary);margin-bottom:-2px">📋 Demandes cadres</button>
+        <button id="rh-tab-btn-contrats"  onclick="rhSwitchTab('contrats')"
+          style="padding:8px 18px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:700;
+          color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px">📄 Contrats</button>
+        <button id="rh-tab-btn-formations" onclick="rhSwitchTab('formations')"
+          style="padding:8px 18px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:700;
+          color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px">🎓 Formations</button>
+      </div>
+
+      <!-- ONGLET 1 : Demandes cadres (existant) -->
+      <div id="rh-tab-demandes">
+        <!-- KPIs RH -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+          <div class="card" style="border-top:3px solid var(--warning)">
+            <div class="kpi"><div class="kpi-label">⏳ En attente</div>
+            <div class="kpi-val" id="rh-k-attente" style="color:var(--warning)">0</div>
+            <div class="kpi-sub">Demandes à traiter</div></div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--success)">
+            <div class="kpi"><div class="kpi-label">✅ Approuvées</div>
+            <div class="kpi-val" id="rh-k-approuve" style="color:var(--success)">0</div>
+            <div class="kpi-sub">Ce mois-ci</div></div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--danger)">
+            <div class="kpi"><div class="kpi-label">❌ Rejetées</div>
+            <div class="kpi-val" id="rh-k-rejete" style="color:var(--danger)">0</div>
+            <div class="kpi-sub">Ce mois-ci</div></div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--primary)">
+            <div class="kpi"><div class="kpi-label">📊 Total demandes</div>
+            <div class="kpi-val" id="rh-k-total" style="color:var(--primary)">0</div>
+            <div class="kpi-sub">Toutes périodes</div></div>
+          </div>
         </div>
-        <div class="card" style="border-top:3px solid var(--success)">
-          <div class="kpi"><div class="kpi-label">✅ Approuvées</div>
-          <div class="kpi-val" id="rh-k-approuve" style="color:var(--success)">0</div>
-          <div class="kpi-sub">Ce mois-ci</div></div>
+        <!-- Filtres -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+          <span style="font-size:12px;font-weight:700;color:var(--muted)">Filtrer :</span>
+          <button class="admin-filter-btn active" onclick="rhAdminFilter('tous',this)">Tous</button>
+          <button class="admin-filter-btn" onclick="rhAdminFilter('en_attente',this)">⏳ En attente</button>
+          <button class="admin-filter-btn" onclick="rhAdminFilter('approuve',this)">✅ Approuvées</button>
+          <button class="admin-filter-btn" onclick="rhAdminFilter('rejete',this)">❌ Rejetées</button>
+          <button class="admin-filter-btn" onclick="rhAdminFilter('correction',this)">✏️ À corriger</button>
         </div>
-        <div class="card" style="border-top:3px solid var(--danger)">
-          <div class="kpi"><div class="kpi-label">❌ Rejetées</div>
-          <div class="kpi-val" id="rh-k-rejete" style="color:var(--danger)">0</div>
-          <div class="kpi-sub">Ce mois-ci</div></div>
-        </div>
-        <div class="card" style="border-top:3px solid var(--primary)">
-          <div class="kpi"><div class="kpi-label">📊 Total demandes</div>
-          <div class="kpi-val" id="rh-k-total" style="color:var(--primary)">0</div>
-          <div class="kpi-sub">Toutes périodes</div></div>
+        <!-- Liste des demandes -->
+        <div id="rh-admin-list" style="display:flex;flex-direction:column;gap:12px">
+          <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Chargement…</div>
         </div>
       </div>
 
-      <!-- Filtres -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
-        <span style="font-size:12px;font-weight:700;color:var(--muted)">Filtrer :</span>
-        <button class="admin-filter-btn active" onclick="rhAdminFilter('tous',this)">Tous</button>
-        <button class="admin-filter-btn" onclick="rhAdminFilter('en_attente',this)">⏳ En attente</button>
-        <button class="admin-filter-btn" onclick="rhAdminFilter('approuve',this)">✅ Approuvées</button>
-        <button class="admin-filter-btn" onclick="rhAdminFilter('rejete',this)">❌ Rejetées</button>
-        <button class="admin-filter-btn" onclick="rhAdminFilter('correction',this)">✏️ À corriger</button>
+      <!-- ONGLET 2 : Contrats -->
+      <div id="rh-tab-contrats" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">📄 Contrats des cadres encadrants</div>
+          <button onclick="rhAjouterContrat()" class="btn btn-p" style="font-size:12px;padding:7px 16px">➕ Nouveau contrat</button>
+        </div>
+        <!-- KPIs contrats -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px">
+          <div class="card" style="border-top:3px solid var(--success)"><div class="kpi"><div class="kpi-label">✅ Actifs</div><div class="kpi-val" id="rh-c-actifs" style="color:var(--success)">—</div><div class="kpi-sub">En cours de validité</div></div></div>
+          <div class="card" style="border-top:3px solid var(--warning)"><div class="kpi"><div class="kpi-label">⚠️ Expirent bientôt</div><div class="kpi-val" id="rh-c-expires" style="color:var(--warning)">—</div><div class="kpi-sub">Dans les 30 jours</div></div></div>
+          <div class="card" style="border-top:3px solid var(--danger)"><div class="kpi"><div class="kpi-label">❌ Expirés</div><div class="kpi-val" id="rh-c-expires-old" style="color:var(--danger)">—</div><div class="kpi-sub">Renouvellement requis</div></div></div>
+          <div class="card" style="border-top:3px solid var(--primary)"><div class="kpi"><div class="kpi-label">📊 Total</div><div class="kpi-val" id="rh-c-total" style="color:var(--primary)">—</div><div class="kpi-sub">Tous contrats</div></div></div>
+        </div>
+        <div id="rh-contrats-list" style="display:flex;flex-direction:column;gap:10px"></div>
       </div>
 
-      <!-- Liste des demandes -->
-      <div id="rh-admin-list" style="display:flex;flex-direction:column;gap:12px">
-        <div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Chargement…</div>
+      <!-- ONGLET 3 : Formations -->
+      <div id="rh-tab-formations" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">🎓 Plan de formation des cadres</div>
+          <button onclick="rhAjouterFormation()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#059669;border-color:#059669">➕ Nouvelle formation</button>
+        </div>
+        <!-- KPIs formations -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px">
+          <div class="card" style="border-top:3px solid var(--primary)"><div class="kpi"><div class="kpi-label">📅 Planifiées</div><div class="kpi-val" id="rh-f-planifiees" style="color:var(--primary)">—</div><div class="kpi-sub">À venir</div></div></div>
+          <div class="card" style="border-top:3px solid var(--success)"><div class="kpi"><div class="kpi-label">✅ Complétées</div><div class="kpi-val" id="rh-f-completees" style="color:var(--success)">—</div><div class="kpi-sub">Cette année</div></div></div>
+          <div class="card" style="border-top:3px solid var(--warning)"><div class="kpi"><div class="kpi-label">⏳ En cours</div><div class="kpi-val" id="rh-f-encours" style="color:var(--warning)">—</div><div class="kpi-sub">Formation active</div></div></div>
+          <div class="card" style="border-top:3px solid var(--teal)"><div class="kpi"><div class="kpi-label">👨‍🏫 Cadres formés</div><div class="kpi-val" id="rh-f-cadres" style="color:var(--teal)">—</div><div class="kpi-sub">Ont suivi au moins 1</div></div></div>
+        </div>
+        <div id="rh-formations-list" style="display:flex;flex-direction:column;gap:10px"></div>
       </div>
     </div>
 
@@ -6399,6 +6463,113 @@ function renderAdminListes(tab) {
 /** Basculer vers un sous-onglet — appelé par les boutons du tab bar */
 function switchListeTab(tab) {
   renderAdminListes(tab);
+  /* Mettre à jour le label info dans la barre d'export */
+  const infoEl = document.getElementById('listes-export-info');
+  if (infoEl) {
+    const labels = {
+      laiha:        'اللائحة الكلية (291 مستفيد)',
+      taqsimat:     'تقسيمات اللوائح (228)',
+      damj:         'المدمجون بالمدارس (45)',
+      'cadres-liste': 'لائحة الأطر (63)'
+    };
+    infoEl.textContent = labels[tab] || '';
+  }
+}
+
+/**
+ * Exporte la liste active en Excel (.xlsx) via SheetJS.
+ * Collecte les lignes du tableau visible dans le sous-onglet actif.
+ */
+function exportListeExcel() {
+  const tab = _listesActiveTab || 'laiha';
+  const tableMap = {
+    laiha:          'laiha-table',
+    taqsimat:       'tq-table',
+    damj:           'dj-table',
+    'cadres-liste': 'cl-table'
+  };
+  const labelMap = {
+    laiha:          'LaichaKoliya',
+    taqsimat:       'Taqsimat',
+    damj:           'Damj',
+    'cadres-liste': 'Laiha_Itar'
+  };
+  const tableEl = document.getElementById(tableMap[tab]);
+  if (!tableEl || typeof XLSX === 'undefined') {
+    showToast('⚠️ Tableau introuvable ou SheetJS non chargé', '#d97706'); return;
+  }
+  try {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(tableEl);
+    XLSX.utils.book_append_sheet(wb, ws, labelMap[tab] || tab);
+    const date = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(wb, `ElAwael_${labelMap[tab]}_${date}.xlsx`);
+    showToast(`✅ Excel exporté — ${labelMap[tab]}`, '#059669');
+    auditLog('export', `Export Excel Liste ${tab}`, `Onglet: ${tab}`);
+  } catch(e) {
+    showToast('❌ Erreur export Excel : ' + e.message, '#dc2626');
+  }
+}
+
+/**
+ * Exporte la liste active en PDF via window.print().
+ * Utilise un style print ciblé sur le tableau actif.
+ */
+function exportListePDF() {
+  const tab = _listesActiveTab || 'laiha';
+  const sectionMap = {
+    laiha:          'adm-section-laiha',
+    taqsimat:       'adm-section-taqsimat',
+    damj:           'adm-section-damj',
+    'cadres-liste': 'adm-section-cadres-liste'
+  };
+  const labelMap = {
+    laiha:          'اللائحة الكلية',
+    taqsimat:       'تقسيمات اللوائح',
+    damj:           'المدمجون بالمدارس',
+    'cadres-liste': 'لائحة الأطر'
+  };
+  const sectionEl = document.getElementById(sectionMap[tab]);
+  if (!sectionEl) { showToast('⚠️ Section introuvable', '#d97706'); return; }
+
+  /* Générer un ID unique pour la règle de style */
+  const _styleId = 'listes-print-style';
+  let styleEl = document.getElementById(_styleId);
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = _styleId;
+    document.head.appendChild(styleEl);
+  }
+  styleEl.textContent = `@media print {
+    body > *:not(#admin-panel) { display:none !important; }
+    #admin-panel > *:not(#adm-section-listes) { display:none !important; }
+    #adm-section-listes > *:not(#${sectionMap[tab]}) { display:none !important; }
+    #${sectionMap[tab]} { display:block !important; padding:0 !important; }
+    .btn, button { display:none !important; }
+    @page { size:A4 landscape; margin:15mm; }
+  }`;
+
+  /* En-tête d'impression */
+  const _hdr = document.getElementById('listes-print-header');
+  if (_hdr) _hdr.remove();
+  const hdr = document.createElement('div');
+  hdr.id = 'listes-print-header';
+  hdr.style.cssText = '@media screen { display:none }';
+  hdr.innerHTML = `<div style="direction:rtl;font-family:Arial;font-size:14px;font-weight:bold;
+    margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #1b3a6b">
+    جمعية الأوائل — ${labelMap[tab]} — ${new Date().toLocaleDateString('fr-FR')}</div>`;
+  sectionEl.insertBefore(hdr, sectionEl.firstChild);
+
+  window.print();
+
+  /* Nettoyer après impression */
+  setTimeout(() => {
+    styleEl.textContent = '';
+    hdr.remove();
+  }, 2000);
+
+  auditLog('export', `Export PDF Liste ${tab}`, `Onglet: ${tab}`);
+  showToast(`📄 PDF en cours d'impression — ${labelMap[tab]}`, '#7c3aed');
 }
 
 /* ─────────────────────────────────────────────────── */
@@ -23971,6 +24142,133 @@ function simReset() {
   showToast('↺ Simulation réinitialisée', 'var(--primary)');
 }
 
+/**
+ * Exporte le scénario de simulation en cours au format PDF via window.print().
+ * Capture : scores actuel/simulé, leviers, interprétation, impact alertes.
+ */
+function simExportPDF() {
+  /* Collecter les valeurs affichées */
+  const _get = id => (document.getElementById(id)||{}).textContent || '—';
+  const scoreActuel  = _get('sim-score-actuel-val');
+  const scoreSimule  = _get('sim-score-simule-val');
+  const badgeActuel  = _get('sim-badge-actuel');
+  const badgeSimule  = _get('sim-badge-simule');
+  const delta        = _get('sim-delta');
+  const deltaSub     = _get('sim-delta-sub');
+  const interp       = document.getElementById('sim-interpretation')?.innerHTML || '—';
+  const dPres        = _get('sim-lbl-pres');
+  const dPEI         = _get('sim-lbl-pei');
+  const dIndep       = _get('sim-lbl-indep');
+  const duree        = _get('sim-lbl-duree');
+  const _now         = new Date().toLocaleString('fr-FR');
+
+  /* Impact alertes avant/après */
+  const urgAct = _get('sim-al-act-urg'), surAct = _get('sim-al-act-sur'), stbAct = _get('sim-al-act-stb');
+  const urgSim = _get('sim-al-sim-urg'), surSim = _get('sim-al-sim-sur'), stbSim = _get('sim-al-sim-stb');
+
+  const win = window.open('', '_blank', 'width=800,height=900');
+  if (!win) { showToast('⚠️ Autorisez les popups pour exporter', '#d97706'); return; }
+
+  win.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+  <title>Scénario Simulation — El Awael</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color:#1a1a2e; padding:32px 40px; }
+    .page-header { background:linear-gradient(135deg,#4c1d95,#7c3aed); border-radius:14px;
+      padding:22px 28px; margin-bottom:24px; color:#fff; }
+    .page-header h1 { font-size:20px; font-weight:800; }
+    .page-header p  { font-size:12px; opacity:.7; margin-top:4px; }
+    .scores-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:20px; }
+    .score-box  { border-radius:12px; padding:16px 20px; text-align:center; border:2px solid #e5e7eb; }
+    .score-box.actuel { border-color:#1b3a6b; }
+    .score-box.simule { border-color:#059669; }
+    .score-box.delta  { border-color:#7c3aed; }
+    .score-val  { font-size:42px; font-weight:800; line-height:1; margin:8px 0; }
+    .score-lbl  { font-size:11px; text-transform:uppercase; letter-spacing:.1em; opacity:.6; }
+    .score-badge{ font-size:12px; font-weight:700; padding:3px 12px; border-radius:100px;
+      background:#f0f0f0; display:inline-block; margin-top:4px; }
+    .leviers    { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+    .levier-box { background:#f8f9fa; border-radius:10px; padding:12px 16px; text-align:center; }
+    .levier-val { font-size:22px; font-weight:800; }
+    .levier-lbl { font-size:11px; color:#666; margin-top:3px; }
+    .impact-row { display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; margin-bottom:20px; }
+    .impact-col { border-radius:10px; padding:12px; border:1px solid #e5e7eb; }
+    .impact-col h3 { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
+    .alerte-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .al-cell { text-align:center; border-radius:8px; padding:8px; }
+    .interp { background:#faf5ff; border-radius:10px; padding:14px 18px; border:1px solid #e9d5ff; margin-bottom:20px; font-size:12px; line-height:1.6; }
+    .footer { font-size:10px; color:#999; text-align:center; margin-top:24px; border-top:1px solid #eee; padding-top:12px; }
+    @media print { body { padding:20px; } }
+  </style></head><body>
+  <div class="page-header">
+    <h1>🎛️ Scénario de Simulation Stratégique</h1>
+    <p>Association El Awael — Généré le ${_now} · Durée plan : ${duree}</p>
+  </div>
+
+  <div class="scores-row">
+    <div class="score-box actuel">
+      <div class="score-lbl">Score actuel</div>
+      <div class="score-val" style="color:#1b3a6b">${scoreActuel}</div>
+      <div class="score-badge">${badgeActuel}</div>
+    </div>
+    <div class="score-box delta">
+      <div class="score-lbl">Variation</div>
+      <div class="score-val" style="color:#7c3aed;font-size:30px">${delta}</div>
+      <div class="score-badge">${deltaSub}</div>
+    </div>
+    <div class="score-box simule">
+      <div class="score-lbl">Score simulé</div>
+      <div class="score-val" style="color:#059669">${scoreSimule}</div>
+      <div class="score-badge">${badgeSimule}</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:13px;font-weight:800;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em;color:#666">🎚️ Leviers d'action appliqués</h3>
+  <div class="leviers">
+    <div class="levier-box">
+      <div class="levier-val" style="color:#2563eb">${dPres}</div>
+      <div class="levier-lbl">Amélioration présence<br>(impact 30%)</div>
+    </div>
+    <div class="levier-box">
+      <div class="levier-val" style="color:#7c3aed">${dPEI}</div>
+      <div class="levier-lbl">Amélioration PEI<br>(impact 40%)</div>
+    </div>
+    <div class="levier-box">
+      <div class="levier-val" style="color:#059669">${dIndep}</div>
+      <div class="levier-lbl">Amélioration autonomie<br>(impact 20%)</div>
+    </div>
+  </div>
+
+  <div class="impact-row">
+    <div class="impact-col">
+      <h3>Situation actuelle</h3>
+      <div class="alerte-grid">
+        <div class="al-cell" style="background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgAct}</div><div style="font-size:10px;color:#dc2626">🔴 Urgents</div></div>
+        <div class="al-cell" style="background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surAct}</div><div style="font-size:10px;color:#d97706">🟡 Surveiller</div></div>
+        <div class="al-cell" style="background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbAct}</div><div style="font-size:10px;color:#059669">🟢 Stables</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:24px;color:#666">→</div>
+    <div class="impact-col">
+      <h3>Situation simulée</h3>
+      <div class="alerte-grid">
+        <div class="al-cell" style="background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgSim}</div><div style="font-size:10px;color:#dc2626">🔴 Urgents</div></div>
+        <div class="al-cell" style="background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surSim}</div><div style="font-size:10px;color:#d97706">🟡 Surveiller</div></div>
+        <div class="al-cell" style="background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbSim}</div><div style="font-size:10px;color:#059669">🟢 Stables</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-size:13px;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em;color:#666">💡 Interprétation & recommandations</h3>
+  <div class="interp">${interp}</div>
+
+  <div class="footer">ElAwail Digital Platform · Rapport confidentiel — usage interne · ${_now}</div>
+  <script>window.onload = function() { window.print(); };<\/script>
+  </body></html>`);
+  win.document.close();
+  auditLog('export', 'Export PDF scénario simulation', `Score: ${scoreActuel} → ${scoreSimule}`);
+}
+
 /* ── Scénarios prédéfinis ─────────────────────────────────
    Charge des valeurs types dans les sliders puis déclenche simUpdate().
    Scénarios CLAUDE.md §5 Module 2.
@@ -25962,6 +26260,362 @@ function renderMyRHDemandes() {
 /* ── Admin : liste + filtres ── */
 let _rhAdminFilter = 'tous';
 
+const RH_CONTRATS_KEY  = 'ea_rh_contrats';
+const RH_FORMATIONS_KEY = 'ea_rh_formations';
+
+/** Basculer entre les 3 onglets RH */
+function rhSwitchTab(tab) {
+  ['demandes','contrats','formations'].forEach(t => {
+    const panel = document.getElementById('rh-tab-' + t);
+    const btn   = document.getElementById('rh-tab-btn-' + t);
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+    if (btn) {
+      btn.style.color       = t === tab ? 'var(--primary)' : 'var(--muted)';
+      btn.style.fontWeight  = t === tab ? '800' : '700';
+      btn.style.borderBottom= t === tab ? '3px solid var(--primary)' : '3px solid transparent';
+    }
+  });
+  if (tab === 'contrats')  rhRenderContrats();
+  if (tab === 'formations') rhRenderFormations();
+}
+
+/* ───── CONTRATS ───── */
+function rhRenderContrats() {
+  const contrats  = loadData(RH_CONTRATS_KEY) || [];
+  const itarUsers = USERS.filter(u => !u.role);
+  const now       = new Date();
+  const in30      = new Date(now.getTime() + 30*86400000);
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  const actifs   = contrats.filter(c => c.dateFin && new Date(c.dateFin) > in30).length;
+  const expires  = contrats.filter(c => c.dateFin && new Date(c.dateFin) > now && new Date(c.dateFin) <= in30).length;
+  const expOld   = contrats.filter(c => c.dateFin && new Date(c.dateFin) <= now).length;
+  setT('rh-c-actifs', actifs);
+  setT('rh-c-expires', expires);
+  setT('rh-c-expires-old', expOld);
+  setT('rh-c-total', contrats.length);
+
+  const container = document.getElementById('rh-contrats-list'); if (!container) return;
+  if (!contrats.length) {
+    container.innerHTML = `
+      <div class="card" style="border:2px dashed var(--border);text-align:center;padding:32px">
+        <div style="font-size:36px;margin-bottom:12px">📄</div>
+        <div style="font-weight:700;color:var(--text);margin-bottom:4px">Aucun contrat enregistré</div>
+        <div style="font-size:12px;color:var(--muted)">Cliquez sur "Nouveau contrat" pour ajouter le premier</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = contrats.map((c, idx) => {
+    const expDate = c.dateFin ? new Date(c.dateFin) : null;
+    const statut  = !expDate ? 'indefini'
+      : expDate <= now  ? 'expire'
+      : expDate <= in30 ? 'bientot'
+      : 'actif';
+    const statutInfo = {
+      actif:    { col:'#059669', bg:'#dcfce7', lbl:'✅ Actif' },
+      bientot:  { col:'#d97706', bg:'#fef3c7', lbl:'⚠️ Expire bientôt' },
+      expire:   { col:'#dc2626', bg:'#fee2e2', lbl:'❌ Expiré' },
+      indefini: { col:'#0d9488', bg:'#f0fdfa', lbl:'∞ CDI / Indéfini' }
+    }[statut];
+
+    return `<div class="card" style="border-left:4px solid ${statutInfo.col}">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="width:40px;height:40px;border-radius:10px;background:${statutInfo.bg};
+          display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📄</div>
+        <div style="flex:1;min-width:180px">
+          <div style="font-size:13px;font-weight:800;color:var(--text)">${c.nomCadre || '—'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${c.typeContrat || 'CDD'} · ${c.poste || '—'}</div>
+        </div>
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:11px;color:var(--muted)">Début</div>
+          <div style="font-size:12px;font-weight:700">${c.dateDebut || '—'}</div>
+        </div>
+        <div style="text-align:center;min-width:100px">
+          <div style="font-size:11px;color:var(--muted)">Fin</div>
+          <div style="font-size:12px;font-weight:700;color:${statutInfo.col}">${c.dateFin || 'Indéfinie'}</div>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;
+          background:${statutInfo.bg};color:${statutInfo.col}">${statutInfo.lbl}</span>
+        <button onclick="rhSupprimerContrat(${idx})"
+          style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)" title="Supprimer">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/** Formulaire ajout contrat — modal inline */
+function rhAjouterContrat() {
+  const itarUsers = USERS.filter(u => !u.role);
+  const existing = document.getElementById('rh-contrat-form-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'rh-contrat-form-modal';
+  modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px`;
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:16px;padding:24px 28px;max-width:460px;width:100%;
+      box-shadow:0 20px 60px rgba(0,0,0,.2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div style="font-size:14px;font-weight:800;color:var(--text)">📄 Nouveau contrat</div>
+        <button onclick="document.getElementById('rh-contrat-form-modal').remove()"
+          style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Cadre *</label>
+          <select id="rh-c-cadre" class="admin-search-input" style="width:100%">
+            ${itarUsers.map(u=>`<option value="${u.name}">${u.name} — ${u.classe}</option>`).join('')}
+            <option value="">— Autre (saisir ci-dessous)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Nom (si "Autre")</label>
+          <input id="rh-c-nom" class="admin-search-input" style="width:100%" placeholder="Nom complet du cadre">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Type</label>
+            <select id="rh-c-type" class="admin-search-input" style="width:100%">
+              <option value="CDI">CDI</option><option value="CDD">CDD</option>
+              <option value="Bénévolat">Bénévolat</option><option value="Stage">Stage</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Poste</label>
+            <input id="rh-c-poste" class="admin-search-input" style="width:100%" placeholder="Ex: Éducateur spécialisé">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Date début *</label>
+            <input type="date" id="rh-c-debut" class="admin-search-input" style="width:100%">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Date fin (vide = CDI)</label>
+            <input type="date" id="rh-c-fin" class="admin-search-input" style="width:100%">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button onclick="rhSauvegarderContrat()" class="btn btn-p" style="flex:1;font-size:12px;padding:9px">💾 Enregistrer</button>
+          <button onclick="document.getElementById('rh-contrat-form-modal').remove()"
+            class="btn" style="font-size:12px;padding:9px 16px">Annuler</button>
+        </div>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function rhSauvegarderContrat() {
+  const cadreEl = document.getElementById('rh-c-cadre');
+  const nomEl   = document.getElementById('rh-c-nom');
+  const nomCadre= (cadreEl?.value && cadreEl.value !== '') ? cadreEl.value : (nomEl?.value||'').trim();
+  if (!nomCadre) { showToast('⚠️ Sélectionnez ou saisissez le nom du cadre', '#d97706'); return; }
+  const debut  = document.getElementById('rh-c-debut')?.value;
+  if (!debut) { showToast('⚠️ La date de début est obligatoire', '#d97706'); return; }
+  const contrat = {
+    nomCadre,
+    typeContrat: document.getElementById('rh-c-type')?.value || 'CDD',
+    poste:       document.getElementById('rh-c-poste')?.value || '',
+    dateDebut:   debut,
+    dateFin:     document.getElementById('rh-c-fin')?.value || null,
+    dateAjout:   new Date().toLocaleDateString('fr-FR')
+  };
+  const contrats = loadData(RH_CONTRATS_KEY) || [];
+  contrats.push(contrat);
+  saveData(RH_CONTRATS_KEY, contrats);
+  document.getElementById('rh-contrat-form-modal')?.remove();
+  showToast(`✅ Contrat ajouté — ${nomCadre}`, '#059669');
+  auditLog('rh', 'Contrat ajouté', `${nomCadre} · ${contrat.typeContrat}`);
+  rhRenderContrats();
+}
+
+function rhSupprimerContrat(idx) {
+  const contrats = loadData(RH_CONTRATS_KEY) || [];
+  const nom = contrats[idx]?.nomCadre || idx;
+  contrats.splice(idx, 1);
+  saveData(RH_CONTRATS_KEY, contrats);
+  showToast(`🗑 Contrat supprimé — ${nom}`, '#dc2626');
+  rhRenderContrats();
+}
+
+/* ───── FORMATIONS ───── */
+function rhRenderFormations() {
+  const formations = loadData(RH_FORMATIONS_KEY) || [];
+  const now        = new Date();
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  const anneeStr   = String(now.getFullYear());
+
+  const planifiees  = formations.filter(f => f.statut === 'planifiee').length;
+  const completees  = formations.filter(f => f.statut === 'completee' && (f.date||'').includes(anneeStr)).length;
+  const enCours     = formations.filter(f => f.statut === 'en_cours').length;
+  const cadresFormes= new Set(formations.filter(f=>f.statut==='completee').flatMap(f=>f.participants||[])).size;
+  setT('rh-f-planifiees', planifiees);
+  setT('rh-f-completees', completees);
+  setT('rh-f-encours', enCours);
+  setT('rh-f-cadres', cadresFormes);
+
+  const container = document.getElementById('rh-formations-list'); if (!container) return;
+  if (!formations.length) {
+    container.innerHTML = `
+      <div class="card" style="border:2px dashed var(--border);text-align:center;padding:32px">
+        <div style="font-size:36px;margin-bottom:12px">🎓</div>
+        <div style="font-weight:700;color:var(--text);margin-bottom:4px">Aucune formation planifiée</div>
+        <div style="font-size:12px;color:var(--muted)">Cliquez sur "Nouvelle formation" pour commencer</div>
+      </div>`;
+    return;
+  }
+
+  const statutStyle = {
+    planifiee:  { col:'#2563eb', bg:'#eff6ff', lbl:'📅 Planifiée' },
+    en_cours:   { col:'#d97706', bg:'#fef3c7', lbl:'⏳ En cours'  },
+    completee:  { col:'#059669', bg:'#dcfce7', lbl:'✅ Complétée' },
+    annulee:    { col:'#dc2626', bg:'#fee2e2', lbl:'❌ Annulée'   }
+  };
+
+  container.innerHTML = formations.map((f, idx) => {
+    const st = statutStyle[f.statut] || statutStyle.planifiee;
+    const parts = (f.participants || []).join(', ') || '—';
+    return `<div class="card" style="border-left:4px solid ${st.col}">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="width:44px;height:44px;border-radius:12px;background:${st.bg};
+          display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🎓</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:13px;font-weight:800;color:var(--text)">${f.titre || '—'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${f.organisme || '—'} · ${f.duree||'—'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;direction:rtl" title="Participants">
+            👤 ${parts.length > 60 ? parts.slice(0,60)+'…' : parts}
+          </div>
+        </div>
+        <div style="text-align:center;min-width:80px">
+          <div style="font-size:11px;color:var(--muted)">Date</div>
+          <div style="font-size:12px;font-weight:700">${f.date || '—'}</div>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;
+          background:${st.bg};color:${st.col}">${st.lbl}</span>
+        <div style="display:flex;gap:6px">
+          ${f.statut === 'planifiee' ? `
+            <button onclick="rhSetFormationStatut(${idx},'en_cours')"
+              style="font-size:10px;padding:4px 10px;border-radius:8px;border:1.5px solid #d97706;
+              background:transparent;color:#d97706;cursor:pointer;font-weight:700">▶ Démarrer</button>
+            <button onclick="rhSetFormationStatut(${idx},'completee')"
+              style="font-size:10px;padding:4px 10px;border-radius:8px;border:1.5px solid #059669;
+              background:transparent;color:#059669;cursor:pointer;font-weight:700">✅ Compléter</button>` : ''}
+          ${f.statut === 'en_cours' ? `
+            <button onclick="rhSetFormationStatut(${idx},'completee')"
+              style="font-size:10px;padding:4px 10px;border-radius:8px;border:1.5px solid #059669;
+              background:transparent;color:#059669;cursor:pointer;font-weight:700">✅ Compléter</button>` : ''}
+          <button onclick="rhSupprimerFormation(${idx})"
+            style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted)" title="Supprimer">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function rhAjouterFormation() {
+  const itarUsers = USERS.filter(u => !u.role);
+  const existing = document.getElementById('rh-formation-form-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'rh-formation-form-modal';
+  modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px`;
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:16px;padding:24px 28px;max-width:500px;width:100%;
+      box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div style="font-size:14px;font-weight:800;color:var(--text)">🎓 Nouvelle formation</div>
+        <button onclick="document.getElementById('rh-formation-form-modal').remove()"
+          style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Titre de la formation *</label>
+          <input id="rh-f-titre" class="admin-search-input" style="width:100%" placeholder="Ex: Formation ABLLS-R niveau 2">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Organisme</label>
+            <input id="rh-f-organisme" class="admin-search-input" style="width:100%" placeholder="Ex: MSAS, ONDH...">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Durée</label>
+            <input id="rh-f-duree" class="admin-search-input" style="width:100%" placeholder="Ex: 2 jours, 20h...">
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Date prévue *</label>
+          <input type="date" id="rh-f-date" class="admin-search-input" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Participants</label>
+          <div style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;
+            padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+            ${itarUsers.map(u => `
+              <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;padding:3px 0">
+                <input type="checkbox" value="${u.name}" id="rh-fp-${u.teacherId}" style="cursor:pointer">
+                <span>${u.name} <span style="color:var(--muted);font-size:10px">— ${u.classe}</span></span>
+              </label>`).join('')}
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button onclick="rhSauvegarderFormation()" class="btn btn-p" style="flex:1;font-size:12px;padding:9px;background:#059669;border-color:#059669">💾 Enregistrer</button>
+          <button onclick="document.getElementById('rh-formation-form-modal').remove()"
+            class="btn" style="font-size:12px;padding:9px 16px">Annuler</button>
+        </div>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+function rhSauvegarderFormation() {
+  const titre = (document.getElementById('rh-f-titre')?.value||'').trim();
+  if (!titre) { showToast('⚠️ Le titre est obligatoire', '#d97706'); return; }
+  const date = document.getElementById('rh-f-date')?.value;
+  if (!date)  { showToast('⚠️ La date est obligatoire', '#d97706'); return; }
+  const itarUsers = USERS.filter(u=>!u.role);
+  const participants = itarUsers
+    .filter(u => document.getElementById('rh-fp-'+u.teacherId)?.checked)
+    .map(u => u.name);
+  const formation = {
+    titre,
+    organisme: document.getElementById('rh-f-organisme')?.value||'',
+    duree:     document.getElementById('rh-f-duree')?.value||'',
+    date, participants, statut: 'planifiee',
+    dateAjout: new Date().toLocaleDateString('fr-FR')
+  };
+  const formations = loadData(RH_FORMATIONS_KEY) || [];
+  formations.push(formation);
+  saveData(RH_FORMATIONS_KEY, formations);
+  document.getElementById('rh-formation-form-modal')?.remove();
+  showToast(`✅ Formation planifiée — ${titre}`, '#059669');
+  auditLog('rh', 'Formation planifiée', titre);
+  rhRenderFormations();
+}
+
+function rhSetFormationStatut(idx, statut) {
+  const formations = loadData(RH_FORMATIONS_KEY) || [];
+  if (!formations[idx]) return;
+  formations[idx].statut = statut;
+  saveData(RH_FORMATIONS_KEY, formations);
+  showToast(statut==='completee' ? '✅ Formation complétée' : '▶ Formation démarrée', '#059669');
+  rhRenderFormations();
+}
+
+function rhSupprimerFormation(idx) {
+  const formations = loadData(RH_FORMATIONS_KEY) || [];
+  const titre = formations[idx]?.titre || idx;
+  formations.splice(idx, 1);
+  saveData(RH_FORMATIONS_KEY, formations);
+  showToast(`🗑 Formation supprimée — ${titre}`, '#dc2626');
+  rhRenderFormations();
+}
+
 function rhAdminFilter(filtre, btn) {
   _rhAdminFilter = filtre;
   document.querySelectorAll('#adm-section-rh .admin-filter-btn')
@@ -26718,14 +27372,104 @@ function renderAdminArchives(){
         <div style="font-size:10px;color:var(--muted);margin-bottom:12px">💾 ${arc.sizeKB} KB archivés</div>
         <!-- Buttons -->
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="admPreviewArchive('${arc.annee}')" class="adm-save-btn" style="flex:1;font-size:12px;background:#6d28d9">🔍 Aperçu rapide</button>
           <button onclick="voirArchive('${arc.annee}')" class="adm-save-btn" style="flex:1;font-size:12px">👁 Consulter</button>
-          <button onclick="exportArchive('${arc.annee}')" class="adm-save-btn" style="background:var(--success);font-size:12px">⬇ Export JSON</button>
+          <button onclick="exportArchive('${arc.annee}')" class="adm-save-btn" style="background:var(--success);font-size:12px">⬇ JSON</button>
           <button onclick="supprimerArchive('${arc.annee}')" class="adm-save-btn" style="background:var(--danger);font-size:12px">🗑</button>
         </div>
       </div>
     </div>`;
   }).join('')}
   </div>`;
+}
+
+/**
+ * Affiche un modal de prévisualisation rapide de l'archive
+ * sans quitter la liste des archives.
+ */
+function admPreviewArchive(anneeCode) {
+  const index = JSON.parse(localStorage.getItem(ARCHIVE_STORAGE_KEY) || '[]');
+  const meta  = index.find(a => a.annee === anneeCode);
+  if (!meta) { showToast('⚠️ Archive introuvable', '#dc2626'); return; }
+
+  /* Supprimer un éventuel modal précédent */
+  const _old = document.getElementById('adm-modal-archive-preview');
+  if (_old) _old.remove();
+
+  const peiC = meta.pctPEI >= 70 ? '#059669' : meta.pctPEI >= 40 ? '#d97706' : '#dc2626';
+  const presC = meta.tauxPres != null
+    ? (meta.tauxPres >= 80 ? '#059669' : meta.tauxPres >= 60 ? '#d97706' : '#dc2626') : 'var(--muted)';
+
+  const modal = document.createElement('div');
+  modal.id = 'adm-modal-archive-preview';
+  modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;
+    display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)`;
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:18px;padding:28px 32px;max-width:540px;width:100%;
+      box-shadow:0 24px 64px rgba(0,0,0,0.22);position:relative;animation:fadeIn .2s">
+      <!-- En-tête -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:3px">🔍 Aperçu rapide — Lecture seule</div>
+          <div style="font-family:Sora,sans-serif;font-size:18px;font-weight:800;color:var(--text)">${meta.label}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Archivé le ${meta.dateArchivage} · ${meta.sizeKB} KB</div>
+        </div>
+        <button onclick="document.getElementById('adm-modal-archive-preview').remove()"
+          style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:4px">✕</button>
+      </div>
+
+      <!-- KPIs grille -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+        ${[
+          ['👥', meta.totalBenef, 'Bénéficiaires', 'var(--primary)'],
+          ['📋', meta.totalRapports, 'Rapports', 'var(--success)'],
+          ['📅', meta.totalPresences, 'Séances', 'var(--teal)'],
+          ['📝', meta.totalSuivis, 'Suivis', 'var(--warning)'],
+          ['🎯', meta.peiBenef, 'Bénéf. PEI', '#7c3aed'],
+          ['📂', meta.totalDossiers||'—', 'Dossiers', 'var(--sky)']
+        ].map(([ic,v,lbl,col]) => `
+          <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center">
+            <div style="font-size:18px;margin-bottom:3px">${ic}</div>
+            <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:${col}">${v}</div>
+            <div style="font-size:10px;color:var(--muted)">${lbl}</div>
+          </div>`).join('')}
+      </div>
+
+      <!-- Progression PEI -->
+      ${meta.peiTotal > 0 ? `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:5px">
+          <span style="color:var(--muted)">🎯 Progression PEI finale</span>
+          <span style="color:${peiC}">${meta.peiDone} / ${meta.peiTotal} · ${meta.pctPEI}%</span>
+        </div>
+        <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden">
+          <div style="width:${meta.pctPEI}%;height:100%;background:${peiC};border-radius:100px"></div>
+        </div>
+      </div>` : ''}
+
+      <!-- Présence -->
+      ${meta.tauxPres != null ? `
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px;padding:8px 12px;border-radius:8px;background:var(--bg)">
+        <span style="color:var(--muted)">📅 Taux de présence global</span>
+        <span style="font-weight:800;color:${presC}">${meta.tauxPres}%</span>
+      </div>` : ''}
+
+      <!-- Actions -->
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button onclick="document.getElementById('adm-modal-archive-preview').remove();voirArchive('${anneeCode}')"
+          class="btn btn-p" style="flex:1;font-size:12px;padding:9px">
+          👁 Ouvrir la consultation complète
+        </button>
+        <button onclick="document.getElementById('adm-modal-archive-preview').remove()"
+          class="btn" style="font-size:12px;padding:9px 16px">
+          Fermer
+        </button>
+      </div>
+    </div>`;
+
+  /* Fermer en cliquant sur le fond */
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
 }
 
 /* ── View archive detail ── */
