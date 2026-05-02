@@ -966,24 +966,29 @@ body.is-consultant .sensitive-data::after {
         </div>
       </div>
 
-      <!-- ══ BANNER enrichi ══ -->
-      <div class="admin-banner">
-        <div style="position:relative;z-index:1;flex:1">
-          <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:3px" id="adm-banner-date">
-            📅 Chargement…
+      <!-- ══ BANNER — Actions du jour (Management 4.0) ══ -->
+      <div class="admin-banner" style="align-items:flex-start;flex-direction:column;gap:14px">
+        <!-- Ligne 1 : Date + semaines restantes -->
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:2px" id="adm-banner-date">📅 Chargement…</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="color:rgba(255,255,255,0.65);font-size:12px" data-i18n="adm_semestre_running">📅 Semestre 2 en cours · Fév – Juin 2026</span>
+              <span id="adm-banner-sem-rest" style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;background:rgba(255,255,255,0.15);color:#fff">— sem. restantes</span>
+            </div>
           </div>
-          <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#fff" data-i18n="adm_espace_label">
-            Espace Administration — El Awael
-          </div>
-          <div style="margin-top:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <span style="color:rgba(255,255,255,0.65);font-size:12px" data-i18n="adm_semestre_running">📅 Semestre 2 en cours · Fév – Juin 2026</span>
-            <span id="adm-banner-sem-rest" style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;background:rgba(255,255,255,0.15);color:#fff">— sem. restantes</span>
+          <div class="wb-stats" style="margin:0">
+            <div class="wb-s"><span class="wb-sv" id="adm-kpi-benef">—</span><span class="wb-sl" data-i18n="adm_banner_benef_lbl">Bénéficiaires</span></div>
+            <div class="wb-s"><span class="wb-sv" id="adm-kpi-classes">—</span><span class="wb-sl" data-i18n="adm_banner_classes_lbl">Classes</span></div>
+            <div class="wb-s"><span class="wb-sv" id="adm-kpi-itars">—</span><span class="wb-sl" data-i18n="adm_banner_cadres_lbl">Cadres</span></div>
           </div>
         </div>
-        <div class="wb-stats">
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-benef">—</span><span class="wb-sl" data-i18n="adm_banner_benef_lbl">Bénéficiaires</span></div>
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-classes">—</span><span class="wb-sl" data-i18n="adm_banner_classes_lbl">Classes</span></div>
-          <div class="wb-s"><span class="wb-sv" id="adm-kpi-itars">—</span><span class="wb-sl" data-i18n="adm_banner_cadres_lbl">Cadres</span></div>
+        <!-- Ligne 2 : Actions du jour (3 items les plus urgents) -->
+        <div style="width:100%">
+          <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">⚡ Actions prioritaires du jour</div>
+          <div id="adm-banner-actions" style="display:flex;gap:8px;flex-wrap:wrap">
+            <div style="font-size:12px;color:rgba(255,255,255,0.5)">Chargement…</div>
+          </div>
         </div>
       </div>
 
@@ -2752,28 +2757,12 @@ body.is-consultant .sensitive-data::after {
         </div>
       </div>
 
-      <!-- KPIs résumé global -->
-      <div id="hm-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
-        <div class="card" style="border-top:3px solid var(--primary)">
-          <div class="kpi"><div class="kpi-label">🏫 Classes suivies</div>
-          <div class="kpi-val" id="hm-k-classes" style="color:var(--primary)">—</div>
-          <div class="kpi-sub">Avec bénéficiaires actifs</div></div>
-        </div>
-        <div class="card" style="border-top:3px solid var(--danger)">
-          <div class="kpi"><div class="kpi-label">🔴 Classes en urgence</div>
-          <div class="kpi-val" id="hm-k-urgentes" style="color:var(--danger)">—</div>
-          <div class="kpi-sub">Score moyen ≥ 61</div></div>
-        </div>
-        <div class="card" style="border-top:3px solid var(--warning)">
-          <div class="kpi"><div class="kpi-label">🟡 À surveiller</div>
-          <div class="kpi-val" id="hm-k-surveiller" style="color:var(--warning)">—</div>
-          <div class="kpi-sub">Score moyen 31–60</div></div>
-        </div>
-        <div class="card" style="border-top:3px solid var(--success)">
-          <div class="kpi"><div class="kpi-label">🟢 Classes stables</div>
-          <div class="kpi-val" id="hm-k-stables" style="color:var(--success)">—</div>
-          <div class="kpi-sub">Score moyen ≤ 30</div></div>
-        </div>
+      <!-- Résumé compact intégré dans l'en-tête — sans doublons avec Alertes -->
+      <div id="hm-kpi-row" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid var(--primary);color:var(--primary);background:var(--primary-light)">🏫 <span id="hm-k-classes">—</span> classes</span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #dc2626;color:#dc2626;background:#fee2e2">🔴 <span id="hm-k-urgentes">—</span> urgentes</span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #d97706;color:#d97706;background:#fef3c7">🟡 <span id="hm-k-surveiller">—</span> surveiller</span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #059669;color:#059669;background:#dcfce7">🟢 <span id="hm-k-stables">—</span> stables</span>
       </div>
 
       <!-- Grille heatmap -->
@@ -20274,6 +20263,99 @@ function renderAdminOverview(){
     _semEl.style.background = _semRest <= 4 ? 'rgba(220,38,38,0.25)' : 'rgba(255,255,255,0.15)';
   }
 
+  /* ── Actions du jour — 3 items les plus urgents pour le directeur ── */
+  (function _renderActionsDuJour() {
+    const bannerAct = document.getElementById('adm-banner-actions');
+    if (!bannerAct) return;
+
+    const actions = [];
+
+    /* 1. Bénéficiaires urgents (risque ≥ 61) */
+    const risquesBanner = BENEFICIAIRES
+      .map(b => ({ b, score: calcRisqueBenef(b, presences).score }))
+      .filter(r => r.score >= 61)
+      .sort((a, bn) => bn.score - a.score);
+    if (risquesBanner.length > 0) {
+      actions.push({
+        icon: '🚨',
+        color: '#fca5a5',
+        bg:   'rgba(220,38,38,0.2)',
+        text: `${risquesBanner.length} bénéficiaire${risquesBanner.length > 1 ? 's' : ''} en urgence`,
+        sub:  risquesBanner.slice(0,2).map(r => r.b.nom).join(', '),
+        onclick: "adminShowSection('alertes')"
+      });
+    }
+
+    /* 2. Cadres sans activité ce mois */
+    const itarsB = USERS.filter(u => !u.role);
+    const _ymB   = _now.getFullYear() + '-' + String(_now.getMonth()+1).padStart(2,'0');
+    const sessMoisB = presences.filter(p => p.date && p.date.startsWith(_ymB));
+    const cadresActifsB = new Set(sessMoisB.map(p => p.teacherId).filter(Boolean));
+    const cadresSansActivite = itarsB.filter(u => !cadresActifsB.has(u.teacherId));
+    if (cadresSansActivite.length > 0) {
+      actions.push({
+        icon: '👨‍🏫',
+        color: '#fde68a',
+        bg:   'rgba(217,119,6,0.2)',
+        text: `${cadresSansActivite.length} cadre${cadresSansActivite.length > 1 ? 's' : ''} sans séance`,
+        sub:  cadresSansActivite.slice(0,2).map(u => u.name.split(' ')[0]).join(', '),
+        onclick: "adminShowSection('cadres')"
+      });
+    }
+
+    /* 3. Objectifs PEI non démarrés (statut 'new') */
+    const peiTotalNew = peiB.reduce((s, b) =>
+      s + (b.pei_domaines||[]).reduce((ss, dom) =>
+        ss + dom.objectifs.filter(o => o.statut === 'new').length, 0), 0);
+    if (peiTotalNew > 0) {
+      actions.push({
+        icon: '📋',
+        color: '#c4b5fd',
+        bg:   'rgba(124,58,237,0.2)',
+        text: `${peiTotalNew} objectif${peiTotalNew > 1 ? 's' : ''} PEI non démarré${peiTotalNew > 1 ? 's' : ''}`,
+        sub:  'Accélérer la mise en œuvre',
+        onclick: "adminShowSection('pei')"
+      });
+    }
+
+    /* 4. Dossiers incomplets (si rien d'autre ou complément) */
+    const dossIncomp = BENEFICIAIRES.filter(b => !b.dossier).length;
+    if (dossIncomp > 0 && actions.length < 3) {
+      actions.push({
+        icon: '📂',
+        color: '#fde68a',
+        bg:   'rgba(217,119,6,0.2)',
+        text: `${dossIncomp} dossier${dossIncomp > 1 ? 's' : ''} incomplet${dossIncomp > 1 ? 's' : ''}`,
+        sub:  'Mettre à jour les fiches',
+        onclick: "adminShowSection('benef')"
+      });
+    }
+
+    /* Afficher les 3 premières actions */
+    const top3 = actions.slice(0, 3);
+
+    if (!top3.length) {
+      bannerAct.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,0.7);padding:5px 12px;
+        border-radius:8px;background:rgba(16,185,129,0.25);border:1px solid rgba(16,185,129,0.35)">
+        ✅ Tout est en ordre — Aucune action urgente</div>`;
+      return;
+    }
+
+    bannerAct.innerHTML = top3.map(a =>
+      `<div onclick="${a.onclick}" style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+        border-radius:10px;background:${a.bg};border:1px solid rgba(255,255,255,0.15);
+        cursor:pointer;flex:1;min-width:160px;transition:transform .15s"
+        onmouseover="this.style.transform='translateY(-2px)'"
+        onmouseout="this.style.transform=''">
+        <span style="font-size:18px;flex-shrink:0">${a.icon}</span>
+        <div>
+          <div style="font-size:12px;font-weight:800;color:${a.color};line-height:1.2">${a.text}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.sub}</div>
+        </div>
+      </div>`
+    ).join('');
+  })();
+
   // ══════════════════════════════════════════════════
   // BARRE DE SANTÉ GLOBALE — 4 feux tricolores
   // ══════════════════════════════════════════════════
@@ -22624,6 +22706,18 @@ function renderAdminClasses(){
   const COLORS=['#1b3a6b','#e11d48','#059669','#d97706','#dc2626','#0d9488','#0891b2','#7c3aed'];
   const BG=['#eff4ff','#fff1f2','#ecfdf5','#fffbeb','#fef2f2','#f0fdfa'];
   const container=document.getElementById('adm-class-cards');if(!container)return;
+
+  /* Calcul du PEI moyen global (pour la comparaison) */
+  const _allPb = BENEFICIAIRES.filter(b=>b.type==='pei');
+  const _gPtot = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
+  const _gPdn  = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+  const _avgPei = _gPtot ? Math.round(_gPdn/_gPtot*100) : 0;
+
+  /* Calcul du taux de présence par bénéficiaire */
+  const _allPres = loadData('ea_presences') || [];
+  const _now = new Date();
+  const _ym  = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+
   container.innerHTML=Object.values(classesMap).map((g,idx)=>{
     const color=g.classeColor||COLORS[idx%COLORS.length];
     const bg=BG[idx%BG.length];
@@ -22634,13 +22728,59 @@ function renderAdminClasses(){
     const ptot=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
     const pdn=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
     const ppct=ptot?Math.round(pdn/ptot*100):0;
+
+    /* Taux de présence moyen de la classe ce mois */
+    let _clObs=0, _clPres=0;
+    _allPres.filter(p=>p.date&&p.date.startsWith(_ym)).forEach(sess=>{
+      (sess.presences||[]).forEach(x=>{
+        if(g.benef.some(b=>b.nom===x.nom)){ _clObs++; if(x.statut==='P')_clPres++; }
+      });
+    });
+    const _clPresVal = _clObs>0 ? Math.round(_clPres/_clObs*100) : null;
+
+    /* Comparaison PEI vs moyenne globale */
+    const _delta = ptot>0 ? ppct - _avgPei : null;
+    const _deltaCol = _delta===null ? 'var(--muted)' : _delta>=0 ? '#059669' : '#dc2626';
+    const _deltaStr = _delta===null ? '' : (_delta>=0?'▲':'▼')+Math.abs(_delta)+'% vs moy.';
+
+    /* Barre de performance PEI enrichie */
+    const _peiBar = ptot>0 ? `
+      <div style="margin:10px 0 6px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:10px;font-weight:700;color:var(--muted)">PEI Réalisation</span>
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="font-size:13px;font-weight:800;color:${peiColor(ppct)}">${ppct}%</span>
+            ${_delta!==null?`<span style="font-size:10px;font-weight:700;color:${_deltaCol}">${_deltaStr}</span>`:''}
+          </div>
+        </div>
+        <div style="background:var(--border);border-radius:100px;height:6px;overflow:hidden;position:relative">
+          <div style="width:${ppct}%;height:100%;background:${peiColor(ppct)};border-radius:100px;transition:width .6s"></div>
+          ${_avgPei>0?`<div style="position:absolute;top:-2px;left:${_avgPei}%;width:2px;height:10px;background:rgba(0,0,0,0.25);border-radius:1px" title="Moyenne globale: ${_avgPei}%"></div>`:''}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+          <span>✅ ${pdn} faits · 🔄 ${pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0)} en cours</span>
+          ${_avgPei>0?`<span>⌀ ${_avgPei}%</span>`:''}
+        </div>
+      </div>` : '';
+
+    /* Indicateur présence ce mois */
+    const _presStr = _clPresVal!==null
+      ? `<span style="font-size:11px;font-weight:700;color:${_clPresVal>=80?'#059669':_clPresVal>=60?'#d97706':'#dc2626'}">${_clPresVal}%</span>`
+      : `<span style="font-size:11px;color:var(--muted)">—</span>`;
+
+    const classeEncoded = g.classe.replace(/'/g,"\\'");
     return `<div class="admin-class-card" style="border-top:3px solid ${color}">
       <div class="admin-class-card-head"><div class="admin-class-icon" style="background:${bg}">${g.classeIcon}</div><div><div class="admin-class-name">${g.classe}</div><div class="admin-class-itar">${g.itars.length} ${t('adm_cadres_short')} · ${g.benef.length} ${t('adm_benef_short')}</div></div></div>
       <div class="admin-stat-row"><span class="admin-stat-label">${t('kpi_beneficiaires')}</span><span class="admin-stat-val" style="color:${color}">${g.benef.length}</span></div>
       <div class="admin-stat-row"><span class="admin-stat-label">${t('kpi_dossiers')}</span><span class="admin-stat-val">${dos}/${g.benef.length}</span></div>
-      ${ptot>0?`<div class="admin-stat-row"><span class="admin-stat-label">PEI</span><div style="display:flex;align-items:center;gap:6px"><div style="width:60px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${ppct}%;height:100%;background:${peiColor(ppct)};border-radius:100px"></div></div><span class="admin-stat-val" style="color:${peiColor(ppct)}">${ppct}%</span></div></div>`:''}
+      <div class="admin-stat-row"><span class="admin-stat-label">📅 Présence mois</span>${_presStr}</div>
+      ${_peiBar}
       <div class="admin-stat-row"><span class="admin-stat-label">${t('kpi_niveaux')}</span><span style="font-size:11px;color:var(--muted)">${[1,2,3,4].map(n=>niv[n]?`N${n}:${niv[n]}`:'').filter(Boolean).join(' · ')}</span></div>
-      <div style="margin-top:10px">${g.itars.map(u=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:${bg};border-radius:8px;margin-bottom:4px"><div style="width:24px;height:24px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff">${(u.name||'').split(' ').slice(0,2).map(w=>w[0]).join('')}</div><span style="font-size:11px;font-weight:700;color:var(--text)">${u.name}</span></div>`).join('')}</div>
+      <div style="margin-top:8px">${g.itars.map(u=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:${bg};border-radius:8px;margin-bottom:4px"><div style="width:24px;height:24px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff">${(u.name||'').split(' ').slice(0,2).map(w=>w[0]).join('')}</div><span style="font-size:11px;font-weight:700;color:var(--text)">${u.name}</span></div>`).join('')}</div>
+      <!-- Bouton Voir les bénéficiaires de cette classe -->
+      <button onclick="heatmapGoToClasse('${classeEncoded}')" style="margin-top:10px;width:100%;padding:7px;border-radius:9px;border:1.5px solid ${color};background:transparent;color:${color};font-size:11px;font-weight:800;cursor:pointer;transition:background .15s" onmouseover="this.style.background='${bg}'" onmouseout="this.style.background='transparent'">
+        👥 Voir les bénéficiaires →
+      </button>
     </div>`;
   }).join('');
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);
@@ -22650,6 +22790,13 @@ function renderAdminCadres(){
   const itarUsers = USERS.filter(u=>!u.role);
   const container = document.getElementById('adm-cadres-list'); if(!container) return;
   const COLORS = ['#1b3a6b','#e11d48','#7c3aed','#059669','#d97706','#0d9488','#2563eb','#dc2626'];
+
+  /* Données communes — presences + mois courant */
+  const allPres = loadData('ea_presences') || [];
+  const _now    = new Date();
+  const _ym     = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const _seancesMois = allPres.filter(p => p.date && p.date.startsWith(_ym));
+
   container.innerHTML = itarUsers.map((u,i)=>{
     const benef = BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId);
     const pei   = benef.filter(b=>b.type==='pei');
@@ -22660,8 +22807,25 @@ function renderAdminCadres(){
     const ini   = (u.name||'').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const rap   = (loadData('ea_rapports')||[]).filter(r=>benef.some(b=>b.nom===r.benef)).length;
     const suiv  = (loadData('ea_suivis')||[]).filter(s=>benef.some(b=>b.nom===s.benef)).length;
-    return `<div class="cadre-row" style="cursor:pointer;transition:background .15s" 
-      onmouseenter="this.style.background='var(--bg)'" 
+
+    /* Séances de ce cadre ce mois */
+    const _sessCadre = _seancesMois.filter(p => p.teacherId === u.teacherId);
+    const _nbSess    = _sessCadre.length;
+    const _sessCol   = _nbSess >= 4 ? '#059669' : _nbSess >= 1 ? '#d97706' : '#dc2626';
+    const _sessLbl   = _nbSess >= 4 ? '✅' : _nbSess >= 1 ? '⚡' : '⚠️';
+
+    /* Taux de présence global des bénéficiaires de ce cadre (toutes séances) */
+    let _prObs=0, _prPres=0;
+    allPres.forEach(sess=>{
+      (sess.presences||[]).forEach(x=>{
+        if(benef.some(b=>b.nom===x.nom)){ _prObs++; if(x.statut==='P')_prPres++; }
+      });
+    });
+    const _tauxPres = _prObs>0 ? Math.round(_prPres/_prObs*100) : null;
+    const _presCol  = _tauxPres===null ? 'var(--muted)' : _tauxPres>=80 ? '#059669' : _tauxPres>=60 ? '#d97706' : '#dc2626';
+
+    return `<div class="cadre-row" style="cursor:pointer;transition:background .15s"
+      onmouseenter="this.style.background='var(--bg)'"
       onmouseleave="this.style.background='transparent'"
       onclick="openAdmCadre('${u.teacherId}')">
       <div class="cadre-av" style="background:${col}">${ini}</div>
@@ -22673,6 +22837,17 @@ function renderAdminCadres(){
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:1px">${u.matiere}</div>
       </div>
+      <!-- Séances ce mois -->
+      <div style="text-align:center;min-width:58px">
+        <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:800;color:${_sessCol}">${_sessLbl} ${_nbSess}</div>
+        <div style="font-size:10px;color:var(--muted)">séances/mois</div>
+      </div>
+      <!-- Taux de présence -->
+      <div style="text-align:center;min-width:58px">
+        <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:800;color:${_presCol}">${_tauxPres!==null?_tauxPres+'%':'—'}</div>
+        <div style="font-size:10px;color:var(--muted)">présence</div>
+      </div>
+      <!-- Bénéficiaires -->
       <div style="text-align:center;min-width:55px">
         <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:800;color:${col}">${benef.length}</div>
         <div style="font-size:10px;color:var(--muted)">${t('adm_benef_short')}</div>
@@ -22691,7 +22866,7 @@ function renderAdminCadres(){
       </div>
     </div>`;
   }).join('');
-  // Re-apply translation after DOM update
+  /* Re-apply translation after DOM update */
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);
 }
 
@@ -23348,6 +23523,9 @@ function renderAdminRisques() {
     return;
   }
 
+  /* Charger les risques déjà traités */
+  const _traites = loadData('ea_risques_traites') || [];
+
   container.innerHTML = aRisque.map(({ b, score, raisons }) => {
     const color  = score >= 61 ? '#dc2626' : score >= 31 ? '#d97706' : '#059669';
     const bg     = score >= 61 ? '#fee2e2' : score >= 31 ? '#fef3c7' : '#dcfce7';
@@ -23356,16 +23534,20 @@ function renderAdminRisques() {
     const cadre = (USERS || []).find(u => u.teacherId === b.teacherId);
     const cadreName = cadre ? cadre.name.split(' ')[0] : (b.teacherId || '—');
     const idx = BENEFICIAIRES.indexOf(b);
+    const isTraite = _traites.includes(b.nom);
 
-    return `<div onclick="adminOpenBenef(${idx})" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;border-radius:6px;padding-left:6px;padding-right:6px" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
-      <!-- Cercle score -->
-      <div style="width:46px;height:46px;border-radius:50%;background:${bg};border:2px solid ${color};
-                  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Sora,sans-serif">
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 6px;border-bottom:1px solid var(--border);transition:background .15s;border-radius:6px;${isTraite?'opacity:0.45;':''}">
+      <!-- Cercle score — cliquable pour ouvrir fiche -->
+      <div onclick="adminOpenBenef(${idx})" style="width:46px;height:46px;border-radius:50%;background:${bg};border:2px solid ${color};
+                  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Sora,sans-serif;cursor:pointer">
         <span style="font-size:13px;font-weight:800;color:${color}">${score}</span>
       </div>
       <!-- Nom + raisons -->
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:var(--text);direction:rtl;margin-bottom:4px">${b.nom}</div>
+      <div onclick="adminOpenBenef(${idx})" style="flex:1;min-width:0;cursor:pointer" onmouseover="this.parentElement.style.background='var(--bg)'" onmouseout="this.parentElement.style.background='transparent'">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:700;color:var(--text);direction:rtl">${b.nom}</span>
+          ${isTraite?`<span style="font-size:10px;font-weight:700;padding:1px 8px;border-radius:100px;background:#dcfce7;color:#059669">✅ Traité</span>`:''}
+        </div>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
           ${raisons.map(r =>
             `<span style="font-size:10px;background:${bg};color:${color};padding:1px 7px;border-radius:100px;font-weight:700">
@@ -23374,16 +23556,55 @@ function renderAdminRisques() {
           ).join('')}
         </div>
       </div>
-      <!-- Niveau + cadre -->
-      <div style="text-align:right;flex-shrink:0;min-width:80px">
+      <!-- Niveau + cadre + bouton traiter -->
+      <div style="text-align:right;flex-shrink:0;min-width:100px">
         <div style="font-size:11px;font-weight:700;color:${color};margin-bottom:4px">${niveau}</div>
-        <div style="width:70px;background:var(--bg);border-radius:100px;height:4px;overflow:hidden;margin-left:auto">
+        <div style="width:70px;background:var(--bg);border-radius:100px;height:4px;overflow:hidden;margin-left:auto;margin-bottom:4px">
           <div style="width:${score}%;height:100%;background:${color};border-radius:100px;transition:width .5s"></div>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px">${cadreName}</div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:5px">${cadreName}</div>
+        ${!isTraite
+          ? `<button onclick="marqueTrait('${b.nom.replace(/'/g,"\\'")}'); event.stopPropagation();"
+              style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1.5px solid #059669;
+                     background:transparent;color:#059669;cursor:pointer;white-space:nowrap"
+              onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='transparent'">
+              ✓ Marquer traité
+            </button>`
+          : `<button onclick="marqueNonTrait('${b.nom.replace(/'/g,"\\'")}'); event.stopPropagation();"
+              style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1.5px solid #d97706;
+                     background:transparent;color:#d97706;cursor:pointer;white-space:nowrap"
+              onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'">
+              ↩ Réouvrir
+            </button>`
+        }
       </div>
     </div>`;
   }).join('');
+}
+
+/**
+ * Marque un bénéficiaire comme "traité" dans les alertes de risque.
+ * L'entrée est persistée dans localStorage ea_risques_traites.
+ */
+function marqueTrait(nom) {
+  const traites = loadData('ea_risques_traites') || [];
+  if (!traites.includes(nom)) {
+    traites.push(nom);
+    saveData('ea_risques_traites', traites);
+  }
+  /* Recalcul du compteur dans le badge sidebar */
+  renderAdminRisques();
+  showToast('✅ Marqué comme traité — ' + nom, 'success');
+}
+
+/**
+ * Réouvre une alerte précédemment marquée comme traitée.
+ */
+function marqueNonTrait(nom) {
+  const traites = (loadData('ea_risques_traites') || []).filter(n => n !== nom);
+  saveData('ea_risques_traites', traites);
+  renderAdminRisques();
+  showToast('↩ Alerte réouverte — ' + nom, 'info');
 }
 
 function renderAdminAlertes(){
