@@ -1512,7 +1512,9 @@ body.is-consultant .sensitive-data::after {
           <span style="font-size:12px;font-weight:700;color:var(--muted);margin-left:6px">Tri :</span>
           <button id="adm-sort-risque-btn" class="admin-filter-btn" onclick="adminToggleSortRisque(this)" title="Trier par score de risque décroissant — urgents en premier">⚠️ Risque ↓</button>
         </div>
-        <div style="overflow-x:auto"><table><thead><tr><th>#</th><th data-i18n="col_beneficiaire">Bénéficiaire</th><th data-i18n="col_classe">Classe</th><th data-i18n="col_cadre">Cadre</th><th data-i18n="col_niveau">Niveau</th><th data-i18n="col_handicap">Handicap</th><th>PEI %</th><th data-i18n="col_dossier">Dossier</th><th title="Score de risque pondéré (0-100) — CLAUDE.md §4 Critique 5">⚠️ Risque</th></tr></thead><tbody id="adm-benef-table"></tbody></table></div>
+        <!-- Bande de résumé statistique — mise à jour par renderAdminBenef() -->
+        <div id="adm-benef-summary" style="display:flex;gap:10px;flex-wrap:wrap;padding:10px 0;margin-bottom:10px"></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>#</th><th data-i18n="col_beneficiaire">Bénéficiaire</th><th data-i18n="col_classe">Classe</th><th data-i18n="col_cadre">Cadre</th><th data-i18n="col_niveau">Niveau</th><th data-i18n="col_handicap">Handicap</th><th>PEI %</th><th data-i18n="col_dossier">Dossier</th><th title="Score de risque pondéré (0-100) — CLAUDE.md §4 Critique 5">⚠️ Risque</th><th>🕐 Dernière activité</th></tr></thead><tbody id="adm-benef-table"></tbody></table></div>
       </div>
       <div id="adm-benef-detail" style="display:none;margin-top:20px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
@@ -2719,6 +2721,13 @@ body.is-consultant .sensitive-data::after {
             <option value="all">👤 Tous les utilisateurs</option>
           </select>
 
+          <!-- Préréglages rapides de période -->
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button onclick="auditSetPreset('today')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Aujourd'hui</button>
+            <button onclick="auditSetPreset('week')"  class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Cette semaine</button>
+            <button onclick="auditSetPreset('month')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Ce mois</button>
+          </div>
+
           <input type="date" id="audit-filter-date-from"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)"
             onchange="auditRender()">
@@ -2933,8 +2942,9 @@ body.is-consultant .sensitive-data::after {
         <div class="card" style="border-top:4px solid var(--teal);background:linear-gradient(135deg,#f0fdfa,#fff)">
           <div class="card-header">
             <div class="card-title" style="color:var(--teal)">👤 Présentez-vous avant de soumettre</div>
+            <button onclick="_admRecomAutoFill()" class="btn" style="font-size:11px;padding:5px 12px;color:var(--teal);border-color:var(--teal);font-weight:700" title="Pré-remplir depuis votre compte Firebase">⚡ Pré-remplir depuis mon profil</button>
           </div>
-          <div style="padding:8px 20px 20px;font-size:13px;color:var(--muted);margin-bottom:4px">
+          <div style="padding:8px 20px 4px;font-size:12px;color:var(--muted)">
             Pour soumettre une recommandation, l'administration a besoin de connaître votre identité.
           </div>
           <div style="padding:0 20px 20px;display:flex;flex-direction:column;gap:12px">
@@ -7386,6 +7396,12 @@ window.onload = () => {
       auditLog('connexion', 'Connexion au tableau de bord',
         `Rôle : ${CURRENT_USER.role} · Classe : ${CURRENT_USER.classe || '—'}`);
     }, 500);
+    /* ── Enregistrer la date de dernière connexion dans Firestore ── */
+    if (typeof db !== 'undefined' && CURRENT_USER.uid) {
+      db.collection('users').doc(CURRENT_USER.uid)
+        .update({ lastLogin: new Date().toISOString() })
+        .catch(e => console.warn('[LastLogin]', e));
+    }
 
     /* Routing selon le rôle (CLAUDE.md §6) */
     if (['admin', 'gestionnaire', 'consultant'].includes(CURRENT_USER.role)) {
@@ -22622,6 +22638,25 @@ function renderAdminBenef(){
   /* Tri par score de risque décroissant (urgents en premier) si activé */
   if(_admSortRisque) list=[...list].sort((a,b)=>calcRisqueBenef(b,_presences).score-calcRisqueBenef(a,_presences).score);
   const COLORS=['#1b3a6b','#e11d48','#7c3aed','#059669','#d97706','#0d9488','#2563eb','#dc2626'];
+
+  /* ── Résumé statistique de la liste filtrée ── */
+  const _sumEl = document.getElementById('adm-benef-summary');
+  if (_sumEl) {
+    const _sPei  = list.filter(b=>b.type==='pei');
+    const _sPtot = _sPei.reduce((s,b)=>(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,ss),0);
+    const _sPdn  = _sPei.reduce((s,b)=>(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,ss),0);
+    const _sPct  = _sPtot ? Math.round(_sPdn/_sPtot*100) : 0;
+    const _sDos  = list.filter(b=>b.dossier).length;
+    const _sUrg  = list.filter(b=>calcRisqueBenef(b,_presences).score>=61).length;
+    const _pill  = (txt, col, bg) =>
+      `<span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;border:1.5px solid ${col};color:${col};background:${bg}">${txt}</span>`;
+    _sumEl.innerHTML =
+      _pill(`👥 ${list.length} bénéficiaires`, 'var(--primary)', 'var(--primary-light)') +
+      (_sPtot ? _pill(`🎯 PEI ${_sPct}%`, peiColor(_sPct), peiColor(_sPct)+'22') : '') +
+      _pill(`📂 ${_sDos}/${list.length} dossiers`, '#059669', '#dcfce7') +
+      (_sUrg  ? _pill(`🚨 ${_sUrg} urgents`, '#dc2626', '#fee2e2') : '');
+  }
+
   tbody.innerHTML=list.map((b,i)=>{
     const user=itarUsers.find(u=>u.teacherId===b.teacherId);
     const ini=(b.nom||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -22636,6 +22671,21 @@ function renderAdminBenef(){
     const _rCol=_r.score>=61?'#dc2626':_r.score>=31?'#d97706':'#059669';
     const _rBg=_r.score>=61?'#fee2e2':_r.score>=31?'#fef3c7':'#dcfce7';
     const _rLbl=_r.score>=61?'🔴 Urgent':_r.score>=31?'🟡 Surveiller':'🟢 Stable';
+    /* ── Dernière activité (dernière séance de présence pour ce bénéficiaire) ── */
+    const _sessB = _presences
+      .filter(p=>p.date && (p.presences||[]).some(x=>x.nom===b.nom))
+      .map(p=>p.date)
+      .sort().reverse();
+    let _lastAct='—', _lastActCol='var(--muted)';
+    if (_sessB.length) {
+      const _d=new Date(_sessB[0]);
+      const _daysAgo = Math.floor((new Date()-_d)/(86400000));
+      _lastAct = _daysAgo===0 ? "Aujourd'hui"
+               : _daysAgo===1 ? 'Hier'
+               : _daysAgo<8  ? `Il y a ${_daysAgo}j`
+               : _d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
+      _lastActCol = _daysAgo<=7?'#059669':_daysAgo<=30?'#d97706':'#dc2626';
+    }
     return `<tr style="cursor:pointer" onclick="adminOpenBenef(${gIdx})">
       <td style="color:var(--muted);font-size:11px;font-weight:700;text-align:center">${i+1}</td>
       <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:${col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff">${ini}</div><div><div style="font-weight:700;direction:rtl;font-size:13px">${b.nom}</div><div style="font-size:10px;color:var(--muted)">${b.nomLatin||''}</div></div></div></td>
@@ -22646,9 +22696,10 @@ function renderAdminBenef(){
       <td>${ptot>0?`<div style="display:flex;align-items:center;gap:5px"><div style="width:50px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px"></div></div><span style="font-size:11px;font-weight:800;color:${peiColor(pct)}">${pct}%</span></div>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
       <td>${b.dossier?'<span class="tag tag-green">✓</span>':'<span class="tag tag-red">✗</span>'}</td>
       <td><span title="${_r.raisons.map(r=>r.label+' (+'+r.pts+')').join(' | ')}" style="background:${_rBg};color:${_rCol};font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px;white-space:nowrap;cursor:help">${_rLbl}</span></td>
+      <td><span style="font-size:11px;font-weight:700;color:${_lastActCol}">${_lastAct}</span></td>
     </tr>`;
   }).join('');
-  if(!tbody.innerHTML)tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">${t('es_aucun_resultat')}</td></tr>`;
+  if(!tbody.innerHTML)tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">${t('es_aucun_resultat')}</td></tr>`;
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);
 }
 
@@ -24721,6 +24772,28 @@ function auditClearFilters() {
 }
 
 /**
+ * Préréglage rapide de période : 'today' | 'week' | 'month'
+ */
+function auditSetPreset(preset) {
+  const _fmt = d => d.toISOString().slice(0,10);
+  const now = new Date();
+  let from, to = now;
+  if (preset === 'today') {
+    from = now;
+  } else if (preset === 'week') {
+    from = new Date(now);
+    from.setDate(now.getDate() - now.getDay() + (now.getDay()===0 ? -6 : 1));
+  } else if (preset === 'month') {
+    from = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+  const frEl = document.getElementById('audit-filter-date-from');
+  const toEl = document.getElementById('audit-filter-date-to');
+  if (frEl) frEl.value = _fmt(from);
+  if (toEl) toEl.value = _fmt(to);
+  auditRender();
+}
+
+/**
  * Export PDF du journal via window.print().
  */
 function auditExportPDF() {
@@ -25603,19 +25676,37 @@ function _renderUsrList(users) {
     const color = roleColors[role] || '#1b3a6b';
     const globalIdx = _usrCache.indexOf(u);
 
+    /* Dernière connexion et indicateur d'activité */
+    const _lastLogin = u.lastLogin || u.lastSignIn || null;
+    let _lastLoginStr = '—', _activityDot = '#9ca3af', _activityTip = 'Connexion inconnue';
+    if (_lastLogin) {
+      const _lDate = _lastLogin.toDate ? _lastLogin.toDate() : new Date(_lastLogin);
+      const _daysAgo = Math.floor((new Date() - _lDate) / 86400000);
+      _lastLoginStr = _daysAgo === 0 ? "Aujourd'hui"
+        : _daysAgo === 1 ? 'Hier'
+        : _daysAgo < 8   ? `Il y a ${_daysAgo}j`
+        : _lDate.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'2-digit' });
+      _activityDot = _daysAgo <= 7 ? '#059669' : _daysAgo <= 30 ? '#d97706' : '#dc2626';
+      _activityTip = `Dernière connexion : ${_lastLoginStr}`;
+    }
+
     return `<div class="user-card" id="usr-card-${globalIdx}" style="${!actif ? 'opacity:0.5' : ''}">
-      <!-- Avatar -->
-      <div class="user-avatar" style="background:${color}">${ini}</div>
+      <!-- Avatar avec indicateur d'activité -->
+      <div style="position:relative;flex-shrink:0">
+        <div class="user-avatar" style="background:${color}">${ini}</div>
+        <span title="${_activityTip}" style="position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;background:${_activityDot};border:2px solid var(--card)"></span>
+      </div>
 
       <!-- Info principale -->
       <div style="flex:1;min-width:0">
         <div style="font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${nom}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${email}</div>
-        <div style="margin-top:4px">
+        <div style="margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap">
           <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:${color}20;color:${color}">
             ${role}
           </span>
-          ${!actif ? '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:#fef2f2;color:#dc2626;margin-left:5px">⛔ Inactif</span>' : ''}
+          ${!actif ? '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:#fef2f2;color:#dc2626">⛔ Inactif</span>' : ''}
+          <span style="font-size:10px;color:var(--muted)" title="${_activityTip}">🕐 ${_lastLoginStr}</span>
         </div>
       </div>
 
@@ -26335,10 +26426,29 @@ function renderConsultantMesRecommandations() {
     /* Pas encore présenté → afficher formulaire présentation */
     if (presCard) presCard.style.display = 'block';
     if (idCard)   idCard.style.display   = 'none';
+    /* Auto-remplir depuis le profil Firebase si disponible */
+    _admRecomAutoFill();
   }
 
   /* Rendre la liste des recommandations */
   _renderAdmMesRecomList();
+}
+
+/**
+ * Pré-remplit le formulaire de présentation consultant depuis CURRENT_USER.
+ * Si un profil Firestore existe, charge nom/org/fonction automatiquement.
+ */
+function _admRecomAutoFill() {
+  if (!CURRENT_USER) return;
+  /* Champs prioritaires : données Firestore → fallback email */
+  const _nom      = CURRENT_USER.nom || CURRENT_USER.name || CURRENT_USER.email || '';
+  const _org      = CURRENT_USER.consultantOrg  || CURRENT_USER.organisation || 'Association El Awael';
+  const _fonction = CURRENT_USER.consultantFonction || CURRENT_USER.fonction || 'Consultant';
+  const _set = (id, v) => { const el = document.getElementById(id); if (el && !el.value) el.value = v; };
+  _set('adm-pres-nom',      _nom);
+  _set('adm-pres-org',      _org);
+  _set('adm-pres-fonction', _fonction);
+  if (_nom || _org) showToast('⚡ Formulaire pré-rempli depuis votre profil', '#0d9488');
 }
 
 /** Sauvegarder la présentation du consultant (formulaire adm-pres-*) */
