@@ -55,6 +55,26 @@
   --sky:#0284c7;--sky-light:#f0f9ff;
   --text:#1e293b;--muted:#94a3b8;--border:#e2e8f0;--card:#fff;
 }
+
+/* ── MODE SOMBRE ── */
+body.dark{
+  --bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#64748b;--border:#334155;
+  --primary-light:#1e3a5f;--primary-mid:#3b82f6;
+  --success-light:#052e16;--warning-light:#2d1a00;--danger-light:#2d0505;
+  --purple-light:#2e1065;--teal-light:#042f2e;--sky-light:#0c2a3a;--orange-light:#2d1300;
+}
+body.dark .topbar{background:#1e293b !important;box-shadow:0 1px 4px rgba(0,0,0,.25) !important;}
+body.dark .main-tabs{background:#1e293b !important;border-color:var(--border) !important;}
+body.dark .main-tab.active{background:var(--primary-mid) !important;}
+body.dark .topbar-btn{background:#1e293b !important;border-color:var(--border) !important;color:var(--text) !important;}
+body.dark .topbar-btn#lang-toggle-btn{background:#1e293b !important;}
+body.dark .adm-nav-item:not(.active){color:rgba(255,255,255,0.55) !important;}
+body.dark input,body.dark select,body.dark textarea{background:#0f172a !important;color:var(--text) !important;border-color:var(--border) !important;}
+body.dark .adm-form-section,body.dark .card,body.dark .admin-class-card,body.dark .admin-benef-section{background:var(--card) !important;border-color:var(--border) !important;}
+body.dark table thead th{background:var(--bg) !important;color:var(--muted) !important;border-color:var(--border) !important;}
+body.dark table tbody td{border-color:var(--border) !important;}
+body.dark .admin-sidebar{background:#0f172a !important;border-color:var(--border) !important;}
+body.dark .admin-banner{filter:brightness(0.85) !important;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px;}
 
 /* ── SIDEBAR ── */
@@ -680,7 +700,8 @@ textarea.form-control{resize:vertical;min-height:80px;}
   .mob-hamburger{display:flex;}
   .topbar{padding:0 14px!important;gap:10px;}
   .topbar-tag{display:none!important;}
-  .topbar-btn:not(#lang-toggle-btn){display:none!important;}
+  .topbar-btn:not(#lang-toggle-btn):not(#dark-mode-btn){display:none!important;}
+  #topbar-offline-badge{font-size:10px!important;padding:3px 7px!important;}
 
   /* Tabs → défilement horizontal fluide */
   .main-tabs{overflow-x:auto;flex-wrap:nowrap!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;border-radius:10px;}
@@ -745,7 +766,24 @@ textarea.form-control{resize:vertical;min-height:80px;}
   .admin-banner{padding:12px!important;}
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* ── Animation badge offline ── */
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* ── Bouton retour en haut ── */
+#back-to-top{
+  position:fixed;bottom:28px;right:28px;z-index:900;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--primary);color:#fff;
+  border:none;cursor:pointer;font-size:18px;font-weight:800;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(27,58,107,0.35);
+  transition:all .25s;opacity:0;transform:translateY(12px);
+}
+#back-to-top.visible{display:flex;opacity:1;transform:translateY(0);}
+#back-to-top:hover{background:var(--primary-mid);transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,0.4);}
+body.dark #back-to-top{box-shadow:0 4px 16px rgba(0,0,0,.5);}
+
+/* ═══════════════════════════════════════════════════════════════
    SYSTÈME DE RÔLES — Restrictions visuelles (CLAUDE.md §6)
    .role-admin-only     → visible ADMIN uniquement
    .role-no-consultant  → visible ADMIN + GESTIONNAIRE (masqué pour CONSULTANT)
@@ -3286,6 +3324,17 @@ body.is-consultant .sensitive-data::after {
     </div>
     <div class="topbar-right">
       <span class="topbar-tag" id="topbar-tag-main">💻 Informatique — Semestre 2</span>
+      <!-- ── Indicateur connexion Firebase ── -->
+      <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
+           style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite">
+        ⚠️ Hors ligne
+      </div>
+      <!-- ── Bouton mode sombre ── -->
+      <div class="topbar-btn" id="dark-mode-btn" onclick="toggleDarkMode()"
+           title="Mode sombre / Mode clair"
+           style="font-size:16px;cursor:pointer;transition:all .2s;user-select:none">
+        <span id="dark-mode-icon">🌙</span>
+      </div>
       <!-- ── Bouton bascule langue FR/AR ── -->
       <div class="topbar-btn" id="lang-toggle-btn" onclick="toggleLang()"
            title="Changer la langue / تغيير اللغة"
@@ -6333,6 +6382,108 @@ function _tTitle(id, key) { const el=document.getElementById(id); if(el) el.inne
 function _tPh   (id, key) { const el=document.getElementById(id); if(el) el.placeholder=t(key); }
 
 /* ── Bascule FR ↔ AR ── */
+/* ═══════════════════════════════════════════════════════════════
+   MODE SOMBRE — persistance localStorage
+   ─────────────────────────────────────────────────────────────── */
+/**
+ * Bascule le mode sombre (body.dark) et persiste le choix.
+ */
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('ea_dark_mode', isDark ? '1' : '0');
+  const icon = document.getElementById('dark-mode-icon');
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+  // Toast discret
+  showToast(isDark ? '🌙 Mode sombre activé' : '☀️ Mode clair activé', isDark ? '#334155' : '#0d9488');
+}
+
+/** Applique le mode sombre sauvegardé au démarrage. */
+function initDarkMode() {
+  const saved = localStorage.getItem('ea_dark_mode');
+  if (saved === '1') {
+    document.body.classList.add('dark');
+    const icon = document.getElementById('dark-mode-icon');
+    if (icon) icon.textContent = '☀️';
+  }
+}
+// Appliquer dès que le DOM est prêt (avant tout render)
+document.addEventListener('DOMContentLoaded', initDarkMode);
+
+/* ═══════════════════════════════════════════════════════════════
+   INDICATEUR HORS-LIGNE — détection réseau + Firebase
+   ─────────────────────────────────────────────────────────────── */
+(function initOfflineDetector() {
+  const badge = () => document.getElementById('topbar-offline-badge');
+
+  function setOnline() {
+    const b = badge();
+    if (b) b.style.display = 'none';
+  }
+  function setOffline() {
+    const b = badge();
+    if (b) b.style.display = 'flex';
+  }
+
+  // Écoute les événements réseau natifs du navigateur
+  window.addEventListener('online',  setOnline);
+  window.addEventListener('offline', setOffline);
+  if (!navigator.onLine) setOffline();
+
+  // Écoute Firebase Firestore si disponible (se déclenche après auth)
+  document.addEventListener('ea:firebase-ready', function() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase.firestore) {
+        const db = firebase.firestore();
+        // Callback sur changement d'état de connexion Firebase
+        db.collection('_ping').doc('status')
+          .onSnapshot(() => setOnline(), err => {
+            if (err.code === 'unavailable') setOffline();
+          });
+      }
+    } catch(e) { /* Firestore optionnel */ }
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   BOUTON RETOUR EN HAUT — apparaît après 300px de scroll
+   ─────────────────────────────────────────────────────────────── */
+(function initBackToTop() {
+  const btn = document.getElementById('back-to-top');
+  if (!btn) return;
+
+  // Écouter le scroll sur .content et .admin-main
+  function handleScroll(e) {
+    const top = e.target.scrollTop || window.scrollY || 0;
+    if (top > 300) btn.classList.add('visible');
+    else           btn.classList.remove('visible');
+  }
+
+  // Scroll principal (body / window)
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  // Scroll dans .content (onglets éducateurs)
+  document.addEventListener('DOMContentLoaded', function() {
+    const contentEl = document.querySelector('.content');
+    if (contentEl) contentEl.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Scroll dans .admin-main (panneau admin)
+    const adminMainEl = document.querySelector('.admin-main');
+    if (adminMainEl) adminMainEl.addEventListener('scroll', function(e) {
+      handleScroll({ target: adminMainEl });
+    }, { passive: true });
+  });
+
+  // Clic → remonter intelligemment selon la zone active
+  btn.onclick = function() {
+    const adminOverlay = document.getElementById('admin-overlay');
+    if (adminOverlay && adminOverlay.style.display !== 'none') {
+      const adminMain = adminOverlay.querySelector('.admin-main');
+      if (adminMain) { adminMain.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+})();
+
 function toggleLang() {
   CURRENT_LANG = CURRENT_LANG === 'fr' ? 'ar' : 'fr';
   localStorage.setItem('ea_lang', CURRENT_LANG);
@@ -19510,7 +19661,12 @@ function buildPerfDashboard(b, idx) {
    STOCKAGE LOCAL — Données de saisie
 ══════════════════════════════════════════════════════ */
 function loadData(key){ try{return JSON.parse(localStorage.getItem(key)||'[]');}catch(e){return [];} }
-function saveData(key,arr){ localStorage.setItem(key,JSON.stringify(arr)); if(typeof _pushToFirestore==='function') _pushToFirestore(key,arr); }
+function saveData(key,arr){
+  localStorage.setItem(key,JSON.stringify(arr));
+  /* Vider le cache de risque si les données qui l'alimentent changent */
+  if(key==='ea_presences'||key==='ea_pei'||key==='ea_dossiers') clearRisqueCache();
+  if(typeof _pushToFirestore==='function') _pushToFirestore(key,arr);
+}
 
 let PRESENCES = loadData('ea_presences');
 let NOTES     = loadData('ea_notes');
@@ -22814,8 +22970,8 @@ function renderAdminBenef(){
   const _sumEl = document.getElementById('adm-benef-summary');
   if (_sumEl) {
     const _sPei  = list.filter(b=>b.type==='pei');
-    const _sPtot = _sPei.reduce((s,b)=>(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,ss),0);
-    const _sPdn  = _sPei.reduce((s,b)=>(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,ss),0);
+    const _sPtot = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
+    const _sPdn  = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
     const _sPct  = _sPtot ? Math.round(_sPdn/_sPtot*100) : 0;
     const _sDos  = list.filter(b=>b.dossier).length;
     const _sUrg  = list.filter(b=>calcRisqueBenef(b,_presences).score>=61).length;
@@ -23640,7 +23796,28 @@ function renderAlertesDirecteur() {
  * @param {Array}  presences — ea_presences (toutes séances)
  * @returns {{ score: number, raisons: Array<{label, pts}> }}
  */
+/* ── Cache memoization pour calcRisqueBenef ── */
+const _risqueCache = new Map();
+
+/**
+ * Vide le cache des scores de risque.
+ * À appeler après tout changement de données (présences, PEI, dossier).
+ */
+function clearRisqueCache() { _risqueCache.clear(); }
+
+/**
+ * Calcule le score de risque pondéré d'un bénéficiaire (0-100).
+ * Résultats mis en cache par clé (nom + hash présences) pour éviter
+ * les recalculs en boucle (8-10 appels par render avec 30+ bénéficiaires).
+ */
 function calcRisqueBenef(b, presences) {
+  /* ── Clé de cache : nom + count présences + timestamp PEI ── */
+  const _cacheKey = (b.nom || '') + '|' +
+    (presences ? presences.length : 0) + '|' +
+    (b.pei_domaines ? b.pei_domaines.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0) : 0) +
+    '|' + (b.dossier ? '1' : '0');
+  if (_risqueCache.has(_cacheKey)) return _risqueCache.get(_cacheKey);
+
   let score = 0;
   const raisons = [];
 
@@ -23683,7 +23860,9 @@ function calcRisqueBenef(b, presences) {
     raisons.push({ label: 'Inactif ce mois', pts: 10 });
   }
 
-  return { score: Math.min(100, score), raisons };
+  const result = { score: Math.min(100, score), raisons };
+  _risqueCache.set(_cacheKey, result);
+  return result;
 }
 
 /**
@@ -28318,6 +28497,9 @@ function openLaihaDetail(idx) {
 
 <!-- ── Overlay backdrop mobile (sidebar éducateur + admin) ── -->
 <div id="mob-overlay" onclick="mobCloseSidebar()"></div>
+
+<!-- ── Bouton retour en haut ── -->
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Retour en haut" aria-label="Retour en haut">↑</button>
 
 </body>
 </html>
