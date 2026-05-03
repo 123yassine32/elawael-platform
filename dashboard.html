@@ -20105,8 +20105,14 @@ async function initSync(uid) {
     document.dispatchEvent(new CustomEvent('ea:firebase-ready'));
 
   } catch(e) {
-    console.warn('[initSync]', e.message || e);
-    showToast(t('sync_error'), '#d97706');
+    /* Silencieux si permission-denied (Firestore non configuré ou collection absente).
+       L'app fonctionne normalement en mode localStorage — aucun toast alarmant. */
+    const code = e?.code || '';
+    if (code !== 'permission-denied' && code !== 'unavailable') {
+      console.warn('[initSync]', e.message || e);
+    }
+    /* Toujours dispatcher firebase-ready pour que l'indicateur offline reste caché */
+    document.dispatchEvent(new CustomEvent('ea:firebase-ready'));
   }
 }
 
