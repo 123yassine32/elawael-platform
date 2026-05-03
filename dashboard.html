@@ -17110,8 +17110,8 @@ function renderTable(){
       const globalIdx = BENEFICIAIRES.indexOf(b);
       const col=COLORS[i%COLORS.length];
       const ini=initials(b.nom);
-      const totalObj = (b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.length,0);
-      const done = (b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
+      const totalObj = (b.pei_domaines||[]).reduce((s,d)=>s+(d.objectifs||[]).length,0);
+      const done = (b.pei_domaines||[]).reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
       const pct = totalObj ? Math.round(done/totalObj*100) : 0;
       const domCodes = (b.pei_domaines||[]).map(d =>
         `<span style="background:${d.color}15;color:${d.color};border:1px solid ${d.color}30;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:700">${d.code}</span>`
@@ -17922,9 +17922,9 @@ function refreshBenefIfOpen(tab) {
 }
 
 function openBeneficiairePEI(b, globalIdx, col, ini, itarUser, itarName, classeLabel, classeIcon, tagColor) {
-  const totalObj = b.pei_domaines.reduce((s,d) => s + d.objectifs.length, 0);
-  const done = b.pei_domaines.reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
-  const inProgress = b.pei_domaines.reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='progress').length, 0);
+  const totalObj = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+  const done = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+  const inProgress = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='progress').length, 0);
   const pct = totalObj ? Math.round(done/totalObj*100) : 0;
 
   const backFn = adminMode ? 'backToAdmin()' : "showTab('beneficiaires')";
@@ -17936,10 +17936,10 @@ function openBeneficiairePEI(b, globalIdx, col, ini, itarUser, itarName, classeL
   const mySuivis = PEI_SUIVIS.filter(s => s.benef === b.nom);
   const myRaps = PEI_RAPPORTS.filter(r => r.benef === b.nom);
 
-  const domainesHTML = b.pei_domaines.map((d, di) => {
-    const dDone = d.objectifs.filter(o=>o.statut==='done').length;
-    const dPct = d.objectifs.length ? Math.round(dDone/d.objectifs.length*100) : 0;
-    const rows = d.objectifs.map((obj, oi) => {
+  const domainesHTML = (b.pei_domaines||[]).map((d, di) => {
+    const dDone = (d.objectifs||[]).filter(o=>o.statut==='done').length;
+    const dPct = (d.objectifs||[]).length ? Math.round(dDone/(d.objectifs||[]).length*100) : 0;
+    const rows = (d.objectifs||[]).map((obj, oi) => {
       const sClass = {new:'status-pei-new', progress:'status-pei-prog', done:'status-pei-done'}[obj.statut];
       const sLabel = {new:'⭕ لم يبدأ', progress:'🔄 قيد التنفيذ', done:'✅ أُتقن'}[obj.statut];
       const rowBg = {new:'', progress:'#fffbeb', done:'#f0fdf4'}[obj.statut];
@@ -17987,7 +17987,7 @@ function openBeneficiairePEI(b, globalIdx, col, ini, itarUser, itarName, classeL
         <div style="width:38px;height:38px;border-radius:10px;background:${d.color};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0">${d.code}</div>
         <div>
           <div style="font-size:14px;font-weight:800;color:var(--text);direction:rtl">${d.nom}</div>
-          <div style="font-size:12px;color:var(--muted)">${d.objectifs.length} أهداف · ${dDone} مكتملة (${dPct}%)</div>
+          <div style="font-size:12px;color:var(--muted)">${(d.objectifs||[]).length} أهداف · ${dDone} مكتملة (${dPct}%)</div>
         </div>
         <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
           <div style="width:80px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${dPct}%;height:100%;background:${d.color};border-radius:100px"></div></div>
@@ -18047,14 +18047,14 @@ function openBeneficiairePEI(b, globalIdx, col, ini, itarUser, itarName, classeL
     </div>`;
   }).join('');
 
-  const statsHTML = b.pei_domaines.map(d => {
-    const dDone = d.objectifs.filter(o=>o.statut==='done').length;
-    const dPct = d.objectifs.length ? Math.round(dDone/d.objectifs.length*100) : 0;
+  const statsHTML = (b.pei_domaines||[]).map(d => {
+    const dDone = (d.objectifs||[]).filter(o=>o.statut==='done').length;
+    const dPct = (d.objectifs||[]).length ? Math.round(dDone/(d.objectifs||[]).length*100) : 0;
     return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
       <span style="width:28px;height:28px;border-radius:7px;background:${d.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0">${d.code}</span>
       <span style="font-size:12px;font-weight:700;color:var(--text);direction:rtl;flex:1">${d.nom}</span>
       <div style="width:80px;background:var(--bg);border-radius:100px;height:6px;overflow:hidden"><div style="width:${dPct}%;height:100%;background:${d.color};border-radius:100px"></div></div>
-      <span style="font-size:12px;font-weight:800;color:${d.color};min-width:40px;text-align:right">${dDone}/${d.objectifs.length}</span>
+      <span style="font-size:12px;font-weight:800;color:${d.color};min-width:40px;text-align:right">${dDone}/${(d.objectifs||[]).length}</span>
     </div>`;
   }).join('');
 
@@ -18224,11 +18224,11 @@ function openBeneficiairePEI(b, globalIdx, col, ini, itarUser, itarName, classeL
   <!-- ══ إحصائيات الأداء ══ -->
   <div id="pdv-ihsaiyat" style="display:none">
     ${(()=>{
-      const totalByDom = b.pei_domaines.map(d => ({
+      const totalByDom = (b.pei_domaines||[]).map(d => ({
         code: d.code, nom: d.nom, color: d.color,
-        total: d.objectifs.length,
-        done: d.objectifs.filter(o=>o.statut==='done').length,
-        progress: d.objectifs.filter(o=>o.statut==='progress').length,
+        total: (d.objectifs||[]).length,
+        done: (d.objectifs||[]).filter(o=>o.statut==='done').length,
+        progress: (d.objectifs||[]).filter(o=>o.statut==='progress').length,
       }));
       const domBars = totalByDom.map(d => {
         const p = d.total ? Math.round(d.done/d.total*100) : 0;
@@ -18773,8 +18773,8 @@ function buildDinaProfile(user, myBenef, total) {
   const profileEl = document.getElementById('view-profile');
   if (!profileEl) return;
 
-  const totalObj = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + d.objectifs.length, 0), 0);
-  const totalDone = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+  const totalObj = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + (d.objectifs||[]).length, 0), 0);
+  const totalDone = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
 
   profileEl.innerHTML = `
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
@@ -18844,17 +18844,17 @@ function buildPEIDashboard(user, myBenef, total, dossiers, modules) {
   if (!accueil) return;
 
   // Compute global PEI stats across all beneficiaires
-  const totalObj = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + d.objectifs.length, 0), 0);
-  const totalDone = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
-  const totalProgress = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + d.objectifs.filter(o=>o.statut==='progress').length, 0), 0);
+  const totalObj = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + (d.objectifs||[]).length, 0), 0);
+  const totalDone = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
+  const totalProgress = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).reduce((s2,d) => s2 + (d.objectifs||[]).filter(o=>o.statut==='progress').length, 0), 0);
   const pctGlobal = totalObj ? Math.round(totalDone/totalObj*100) : 0;
 
   // Beneficiaires summary rows
   const benRows = myBenef.map((b, i) => {
     const globalIdx = BENEFICIAIRES.indexOf(b);
-    const bTotal = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
-    const bDone = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
-    const bProg = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='progress').length, 0);
+    const bTotal = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+    const bDone = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+    const bProg = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='progress').length, 0);
     const bPct = bTotal ? Math.round(bDone/bTotal*100) : 0;
     const domCodes = (b.pei_domaines||[]).map(d =>
       `<span style="background:${d.color}15;color:${d.color};border:1px solid ${d.color}30;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:700">${d.code}</span>`
@@ -18883,8 +18883,8 @@ function buildPEIDashboard(user, myBenef, total, dossiers, modules) {
     const nom = {A:'التعاون وفعالية المعزز',B:'الأداء البصري',C:'اللغة الاستقبالية',F:'الطلب (Manding)',G:'التسمية (Tacting)',L:'التفاعل الاجتماعي',M:'اتباع التعليمات ضمن مجموعة',N:'روتين الفصل'}[code]||code;
     const hasIt = myBenef.some(b => (b.pei_domaines||[]).some(d => d.code===code));
     if (!hasIt) return '';
-    const totalD = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).filter(d=>d.code===code).reduce((s2,d)=>s2+d.objectifs.length,0), 0);
-    const doneD = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).filter(d=>d.code===code).reduce((s2,d)=>s2+d.objectifs.filter(o=>o.statut==='done').length,0), 0);
+    const totalD = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).filter(d=>d.code===code).reduce((s2,d)=>s2+(d.objectifs||[]).length,0), 0);
+    const doneD = myBenef.reduce((s,b) => s + (b.pei_domaines||[]).filter(d=>d.code===code).reduce((s2,d)=>s2+(d.objectifs||[]).filter(o=>o.statut==='done').length,0), 0);
     const pctD = totalD ? Math.round(doneD/totalD*100) : 0;
     return `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:#fff;border:1px solid var(--border)">
       <div style="width:32px;height:32px;border-radius:8px;background:${color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0">${code}</div>
@@ -19527,9 +19527,9 @@ function renderKPI(){
 
   // ── Calculs KPI ──
   const kpiData = myBenef.map(b => {
-    const totalObj=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.length,0);
-    const done=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
-    const inProg=(b.pei_domaines||[]).reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='progress').length,0);
+    const totalObj=(b.pei_domaines||[]).reduce((s,d)=>s+(d.objectifs||[]).length,0);
+    const done=(b.pei_domaines||[]).reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
+    const inProg=(b.pei_domaines||[]).reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='progress').length,0);
     const pct=totalObj?Math.round(done/totalObj*100):0;
     // Ghiyab
     const ghKey=`ea_gh_${b.nom}_${year}_${month}`;
@@ -21107,9 +21107,9 @@ function getAdminData(){
   const totalBenef   = benefUniques.length;
   const totalDossiers= benefUniques.filter(b => b.dossier).length;
   const peiBenef     = benefUniques.filter(b => b.type === 'pei');
-  const peiTotal=peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-  const peiDone =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-  const peiProg =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
+  const peiTotal=peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+  const peiDone =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
+  const peiProg =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0),0);
   return{itarUsers,groupedClasses,totalBenef,totalDossiers,totalClasses:groupedClasses.length,totalItars:itarUsers.length,peiTotal,peiDone,peiProg};
 }
 
@@ -21220,7 +21220,7 @@ function renderAdminOverview(){
     /* 3. Objectifs PEI non démarrés (statut 'new') */
     const peiTotalNew = peiB.reduce((s, b) =>
       s + (b.pei_domaines||[]).reduce((ss, dom) =>
-        ss + dom.objectifs.filter(o => o.statut === 'new').length, 0), 0);
+        ss + (dom.objectifs||[]).filter(o => o.statut === 'new').length, 0), 0);
     if (peiTotalNew > 0) {
       actions.push({
         icon: '📋',
@@ -21327,8 +21327,8 @@ function renderAdminOverview(){
     }
     /* Réalisation PEI bénéficiaire */
     if (b.type === 'pei') {
-      const bPeiT = (b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.length, 0);
-      const bPeiD = (b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.filter(o=>o.statut==='done').length, 0);
+      const bPeiT = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).length, 0);
+      const bPeiD = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).filter(o=>o.statut==='done').length, 0);
       if (bPeiT > 0) {
         const bPeiPct = Math.round(bPeiD / bPeiT * 100);
         if (bPeiPct < 30)       pts += 35;
@@ -21752,8 +21752,8 @@ function renderAdminOverview(){
 
       /* PEI */
       const pb = g.benef.filter(b=>b.type==='pei');
-      const pt = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+d2.objectifs.length,0),0);
-      const pd = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+d2.objectifs.filter(o=>o.statut==='done').length,0),0);
+      const pt = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+(d2.objectifs||[]).length,0),0);
+      const pd = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+(d2.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
       const pct = pt ? Math.round(pd/pt*100) : null;
 
       /* Présence de la classe ce mois */
@@ -21776,8 +21776,8 @@ function renderAdminOverview(){
         if(bObs>0){ const bP=Math.round(bPres/bObs*100); if(bP<50) pts+=40; else if(bP<70) pts+=25; }
         else pts+=10;
         if(b.type==='pei'){
-          const bT=(b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.length,0);
-          const bD=(b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.filter(o=>o.statut==='done').length,0);
+          const bT=(b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).length,0);
+          const bD=(b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).filter(o=>o.statut==='done').length,0);
           if(bT>0){ const bP=Math.round(bD/bT*100); if(bP<30) pts+=35; else if(bP<50) pts+=20; }
         }
         if(!b.dossier) pts+=15;
@@ -22071,8 +22071,8 @@ function renderAdminOverview(){
         } else { pts += 10; }
         /* PEI */
         if (b.type === 'pei') {
-          const bT = (b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.length, 0);
-          const bD = (b.pei_domaines||[]).reduce((s,dd)=>s+dd.objectifs.filter(o=>o.statut==='done').length, 0);
+          const bT = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).length, 0);
+          const bD = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).filter(o=>o.statut==='done').length, 0);
           if (bT > 0) {
             const bPct = Math.round(bD / bT * 100);
             if (bPct < 30) pts += 35; else if (bPct < 50) pts += 20;
@@ -22883,10 +22883,10 @@ function renderAdminChartPEI(groupedClasses){
     const pb = g.benef.filter(b=>b.type==='pei');
     if(!pb.length) return;
     labels.push(g.classe.replace('Autisme ','A').replace('Informatique','Info'));
-    const tot = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-    const dn  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-    const pr  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
-    const s2  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.date_inzal&&(o.date_inzal.includes('/02/2026')||o.date_inzal.includes('/03/2026'))).length,0),0);
+    const tot = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+    const dn  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
+    const pr  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0),0);
+    const s2  = pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.date_inzal&&(o.date_inzal.includes('/02/2026')||o.date_inzal.includes('/03/2026'))).length,0),0);
     const s1  = tot - s2;
     s1Arr.push(s1); s2Arr.push(s2); doneArr.push(dn); progArr.push(pr);
   });
@@ -23028,9 +23028,9 @@ function renderAdminPEI(){
   const pb = filteredClasses.flatMap(g => g.benef.filter(b => b.type === 'pei'));
 
   /* ── 2. Agrégats globaux ── */
-  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
-  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
-  const pr  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='in-progress').length, 0), 0);
+  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).length, 0), 0);
+  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
+  const pr  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='in-progress').length, 0), 0);
   const nw  = tot - dn - pr;
 
   const pctDone = tot ? Math.round(dn / tot * 100) : 0;
@@ -23090,9 +23090,9 @@ function renderAdminPEI(){
       (b.pei_domaines || []).forEach(d => {
         if (!domaineMap[d.label]) domaineMap[d.label] = { label: d.label, color: d.color || '#7c3aed', done: 0, prog: 0, tot: 0 };
         const dm = domaineMap[d.label];
-        dm.tot  += d.objectifs.length;
-        dm.done += d.objectifs.filter(o => o.statut === 'done').length;
-        dm.prog += d.objectifs.filter(o => o.statut === 'in-progress').length;
+        dm.tot  += (d.objectifs||[]).length;
+        dm.done += (d.objectifs||[]).filter(o => o.statut === 'done').length;
+        dm.prog += (d.objectifs||[]).filter(o => o.statut === 'in-progress').length;
       });
     });
     const domList = Object.values(domaineMap)
@@ -23135,8 +23135,8 @@ function renderAdminPEI(){
     // Calcul PEI% par cadre
     const cadrePerf = allUsers.map(u => {
       const bPEI = BENEFICIAIRES.filter(b => b.teacherId === u.teacherId && b.type === 'pei');
-      const cTot = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
-      const cDn  = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+      const cTot = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).length, 0), 0);
+      const cDn  = bPEI.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
       const cPct = cTot ? Math.round(cDn / cTot * 100) : 0;
       return { nom: u.nom || '—', classe: u.classe, classeIcon: u.classeIcon || '📚', classeColor: u.classeColor || '#1b3a6b', pct: cPct, done: cDn, tot: cTot, nbBenef: bPEI.length };
     }).filter(c => c.tot > 0).sort((a,b) => a.pct - b.pct); // pire en premier
@@ -23240,14 +23240,14 @@ function renderAdminPEI(){
     const seuilStale    = semRestantes_s <= 4 ? 20 : 40;
 
     const staleBenef = allPB.filter(b => {
-      const bTot  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
-      const bDn   = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
-      const bPr   = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='in-progress').length, 0);
+      const bTot  = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+      const bDn   = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+      const bPr   = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='in-progress').length, 0);
       const bPct  = bTot ? Math.round(bDn / bTot * 100) : 0;
       return bPr > 0 && bPct < seuilStale; // en cours mais très peu réalisés
     }).map(b => {
-      const bTot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
-      const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+      const bTot = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+      const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
       const bPct = bTot ? Math.round(bDn / bTot * 100) : 0;
       return { ...b, _bPct: bPct, _bTot: bTot, _bDn: bDn, _gIdx: BENEFICIAIRES.indexOf(b) };
     }).sort((a,b) => a._bPct - b._bPct); // pire en premier
@@ -23300,9 +23300,9 @@ function renderAdminPEI(){
     const classePB = g.benef.filter(b => b.type === 'pei');
     if (!classePB.length) return '';
 
-    const ptot = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
-    const pdn  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
-    const ppr  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='in-progress').length, 0), 0);
+    const ptot = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).length, 0), 0);
+    const pdn  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
+    const ppr  = classePB.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='in-progress').length, 0), 0);
     const pct  = ptot ? Math.round(pdn / ptot * 100) : 0;
     const classeRiskScore = classePB.length
       ? Math.round(classePB.reduce((s,b) => s + calcRisqueBenef(b, presences), 0) / classePB.length)
@@ -23331,9 +23331,9 @@ function renderAdminPEI(){
         <!-- Cartes bénéficiaires enrichies -->
         <div style="display:grid;grid-template-columns:repeat(${Math.min(classePB.length,4)},1fr);gap:10px">
           ${classePB.map(b => {
-            const btot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
-            const bdn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
-            const bpr  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='in-progress').length, 0);
+            const btot = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+            const bdn  = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+            const bpr  = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='in-progress').length, 0);
             const bpct = btot ? Math.round(bdn / btot * 100) : 0;
             const gIdx = BENEFICIAIRES.indexOf(b);
             // Badge de risque individuel
@@ -23385,11 +23385,11 @@ function exportPeiExcel() {
     const nomCadres = [user?.name, userF?.name].filter(Boolean).join(' + ');
     const info = { nom: nomCadres || '—', classe: user?.classe || '—' };
     (b.pei_domaines || []).forEach(d => {
-      const done = d.objectifs.filter(o => o.statut === 'done').length;
-      const prog = d.objectifs.filter(o => o.statut === 'in-progress').length;
-      const nw   = d.objectifs.length - done - prog;
-      const pct  = d.objectifs.length ? Math.round(done / d.objectifs.length * 100) : 0;
-      rows.push([b.nom, info.classe, info.nom, d.label, d.objectifs.length, done, prog, nw, pct + '%']);
+      const done = (d.objectifs||[]).filter(o => o.statut === 'done').length;
+      const prog = (d.objectifs||[]).filter(o => o.statut === 'in-progress').length;
+      const nw   = (d.objectifs||[]).length - done - prog;
+      const pct  = (d.objectifs||[]).length ? Math.round(done / (d.objectifs||[]).length * 100) : 0;
+      rows.push([b.nom, info.classe, info.nom, d.label, (d.objectifs||[]).length, done, prog, nw, pct + '%']);
     });
   });
 
@@ -23425,8 +23425,8 @@ function exportPeiPDF() {
   const allUsers = USERS.filter(u => !u.role);
   /* Utiliser la liste dédupliquée pour le PDF */
   const pb = getBeneficiairesAdmin().filter(b => b.type === 'pei');
-  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
-  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
+  const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).length, 0), 0);
+  const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0), 0);
   const pct = tot ? Math.round(dn / tot * 100) : 0;
 
   // Générer contenu HTML pour impression
@@ -23437,8 +23437,8 @@ function exportPeiPDF() {
       nom:    [u?.name, uF?.name].filter(Boolean).join(' + ') || '—',
       classe: u?.classe || '—'
     };
-    const bTot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
-    const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
+    const bTot = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).length, 0);
+    const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
     const bPct = bTot ? Math.round(bDn / bTot * 100) : 0;
     return `<tr><td style="direction:rtl">${b.nom}</td><td>${info.classe}</td><td>${info.nom}</td><td>${bTot}</td><td>${bDn}</td><td style="font-weight:800;color:${bPct>=70?'green':bPct>=40?'orange':'red'}">${bPct}%</td></tr>`;
   }).join('');
@@ -23529,8 +23529,8 @@ function renderAdminBenef(){
   const _sumEl = document.getElementById('adm-benef-summary');
   if (_sumEl) {
     const _sPei  = list.filter(b=>b.type==='pei');
-    const _sPtot = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-    const _sPdn  = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+    const _sPtot = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+    const _sPdn  = _sPei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
     const _sPct  = _sPtot ? Math.round(_sPdn/_sPtot*100) : 0;
     const _sDos  = list.filter(b=>b.dossier).length;
     const _sUrg  = list.filter(b=>calcRisqueBenef(b,_presences).score>=61).length;
@@ -23552,8 +23552,8 @@ function renderAdminBenef(){
     const ini=(b.nom||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const col=COLORS[i%COLORS.length];
     const pei=b.pei_domaines||[];
-    const ptot=pei.reduce((s,d)=>s+d.objectifs.length,0);
-    const pdn=pei.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
+    const ptot=pei.reduce((s,d)=>s+(d.objectifs||[]).length,0);
+    const pdn=pei.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
     const pct=ptot?Math.round(pdn/ptot*100):0;
     /* Index dans le tableau original (pour adminOpenBenef) */
     const gIdx=BENEFICIAIRES.findIndex(
@@ -23658,8 +23658,8 @@ function renderAdminClasses(){
 
   /* Calcul du PEI moyen global (pour la comparaison) — liste dédupliquée */
   const _allPb = getBeneficiairesAdmin().filter(b=>b.type==='pei');
-  const _gPtot = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-  const _gPdn  = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+  const _gPtot = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+  const _gPdn  = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
   const _avgPei = _gPtot ? Math.round(_gPdn/_gPtot*100) : 0;
 
   /* Calcul du taux de présence par bénéficiaire */
@@ -23674,8 +23674,8 @@ function renderAdminClasses(){
     const niv=[0,0,0,0,0];
     g.benef.forEach(b=>{if(b.niveau>=1&&b.niveau<=4)niv[b.niveau]++;});
     const pb=g.benef.filter(b=>b.type==='pei');
-    const ptot=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-    const pdn=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+    const ptot=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+    const pdn=pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
     const ppct=ptot?Math.round(pdn/ptot*100):0;
 
     /* Taux de présence moyen de la classe ce mois */
@@ -23707,7 +23707,7 @@ function renderAdminClasses(){
           ${_avgPei>0?`<div style="position:absolute;top:-2px;left:${_avgPei}%;width:2px;height:10px;background:rgba(0,0,0,0.25);border-radius:1px" title="Moyenne globale: ${_avgPei}%"></div>`:''}
         </div>
         <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
-          <span>✅ ${pdn} faits · 🔄 ${pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0)} en cours</span>
+          <span>✅ ${pdn} faits · 🔄 ${pb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0),0)} en cours</span>
           ${_avgPei>0?`<span>⌀ ${_avgPei}%</span>`:''}
         </div>
       </div>` : '';
@@ -23749,8 +23749,8 @@ function renderAdminCadres(){
   container.innerHTML = itarUsers.map((u,i)=>{
     const benef = BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId);
     const pei   = benef.filter(b=>b.type==='pei');
-    const ptot  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-    const pdn   = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+    const ptot  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+    const pdn   = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
     const ppct  = ptot?Math.round(pdn/ptot*100):0;
     const col   = u.classeColor||COLORS[i%COLORS.length];
     const ini   = (u.name||'').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -23842,9 +23842,9 @@ function openAdmCadre(teacherId){
   const myNotes = allNotes.filter(n=>benef.some(b=>b.nom===n.benef));
 
   // Stats
-  const ptot = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-  const pdn  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-  const ppr  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
+  const ptot = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
+  const pdn  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
+  const ppr  = pei.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0),0);
   const ppct = ptot?Math.round(pdn/ptot*100):0;
 
   let totalPres=0, totalAbs=0;
@@ -23946,9 +23946,9 @@ function admcRenderBenef(benef, col, isPEI, teacherId){
     const ini = (b.nom||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const bc  = COLORS[i%COLORS.length];
     const pei = b.pei_domaines||[];
-    const ptot= pei.reduce((s,d)=>s+d.objectifs.length,0);
-    const pdn = pei.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
-    const ppr = pei.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='in-progress').length,0);
+    const ptot= pei.reduce((s,d)=>s+(d.objectifs||[]).length,0);
+    const pdn = pei.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
+    const ppr = pei.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0);
     const pct = ptot?Math.round(pdn/ptot*100):0;
     const gIdx= BENEFICIAIRES.indexOf(b);
     return `<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px 16px;cursor:pointer;transition:all .15s"
@@ -23990,9 +23990,9 @@ function admcRenderPEI(benef, col){
   if(!pei.length) return `<div class="empty-state"><div class="es-icon">🎯</div><div class="es-text">${t('adm_aucun_pei')}</div></div>`;
   return pei.map(b=>{
     const pdom = b.pei_domaines||[];
-    const ptot = pdom.reduce((s,d)=>s+d.objectifs.length,0);
-    const pdn  = pdom.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
-    const ppr  = pdom.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='in-progress').length,0);
+    const ptot = pdom.reduce((s,d)=>s+(d.objectifs||[]).length,0);
+    const pdn  = pdom.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
+    const ppr  = pdom.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='in-progress').length,0);
     const pct  = ptot?Math.round(pdn/ptot*100):0;
     const ini  = (b.nom||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     return `<div class="card" style="margin-bottom:14px">
@@ -24010,9 +24010,9 @@ function admcRenderPEI(benef, col){
       </div>
       <div class="card-body" style="padding:10px 16px">
         ${pdom.map(d=>{
-          const ddn  = d.objectifs.filter(o=>o.statut==='done').length;
-          const dinp = d.objectifs.filter(o=>o.statut==='in-progress').length;
-          const dpct = d.objectifs.length?Math.round(ddn/d.objectifs.length*100):0;
+          const ddn  = (d.objectifs||[]).filter(o=>o.statut==='done').length;
+          const dinp = (d.objectifs||[]).filter(o=>o.statut==='in-progress').length;
+          const dpct = (d.objectifs||[]).length?Math.round(ddn/(d.objectifs||[]).length*100):0;
           return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
             <span style="width:28px;height:28px;border-radius:7px;background:${d.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0">${d.code}</span>
             <span style="flex:1;font-size:12px;font-weight:700;direction:rtl">${d.nom}</span>
@@ -24021,7 +24021,7 @@ function admcRenderPEI(benef, col){
             <div style="width:50px;background:var(--bg);border-radius:100px;height:4px;overflow:hidden">
               <div style="width:${dpct}%;height:100%;background:${d.color};border-radius:100px"></div>
             </div>
-            <span style="font-size:10px;font-weight:800;color:${d.color};min-width:28px;text-align:right">${ddn}/${d.objectifs.length}</span>
+            <span style="font-size:10px;font-weight:800;color:${d.color};min-width:28px;text-align:right">${ddn}/${(d.objectifs||[]).length}</span>
           </div>`;
         }).join('')}
       </div>
@@ -24205,8 +24205,8 @@ function admcRenderProfil(u, benef, nivCount, nivLabels, nivColors, hCount){
         <thead><tr><th data-i18n="lbl_beneficiaire">Bénéficiaire</th><th data-i18n="adm_lbl_niveau">Niveau</th><th>Handicap</th><th>Dossier</th><th>PEI</th></tr></thead>
         <tbody>${benef.map(b=>{
           const pei=b.pei_domaines||[];
-          const pt=pei.reduce((s,d)=>s+d.objectifs.length,0);
-          const pd=pei.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
+          const pt=pei.reduce((s,d)=>s+(d.objectifs||[]).length,0);
+          const pd=pei.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
           const pc=pt?Math.round(pd/pt*100):0;
           return `<tr>
             <td style="direction:rtl;font-weight:600">${b.nom}</td>
@@ -25497,8 +25497,8 @@ function _rappRenderTableClasses(d, presences) {
   tbody.innerHTML = d.groupedClasses.map(g => {
     const dos = g.benef.filter(b=>b.dossier).length;
     const peiB = g.benef.filter(b=>b.type==='pei');
-    const pt   = peiB.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+d2.objectifs.length,0),0);
-    const pd   = peiB.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+d2.objectifs.filter(o=>o.statut==='done').length,0),0);
+    const pt   = peiB.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+(d2.objectifs||[]).length,0),0);
+    const pd   = peiB.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d2)=>ss+(d2.objectifs||[]).filter(o=>o.statut==='done').length,0),0);
     const pct  = pt ? Math.round(pd/pt*100) : null;
     /* Risque moyen de la classe */
     const risques = g.benef.map(b => calcRisqueBenef(b, presences).score);
@@ -25982,8 +25982,8 @@ function exportExcelBeneficiaires() {
   const rows3 = d.groupedClasses.map(g => {
     const dos = g.benef.filter(b => b.dossier).length;
     const peiB = g.benef.filter(b => b.type === 'pei');
-    const pt   = peiB.reduce((s, b) => s + (b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0), 0);
-    const pd   = peiB.reduce((s, b) => s + (b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0), 0);
+    const pt   = peiB.reduce((s, b) => s + (b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0), 0);
+    const pd   = peiB.reduce((s, b) => s + (b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).filter(o=>o.statut==='done').length,0), 0);
     return [
       g.classe,
       g.benef.length,
@@ -26510,7 +26510,7 @@ function computeArchiveMeta(snapshot, annee) {
   const _benefArch = getBeneficiairesAdmin();
   const doneObjs = Object.values(peiSt).filter(v => v && v.statut === 'done').length;
   const totalObjs = _benefArch.filter(b=>b.type==='pei')
-    .reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
+    .reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+(d.objectifs||[]).length,0),0);
 
   // Count beneficiaires
   const totalBenef = _benefArch.length;
@@ -28267,9 +28267,9 @@ function voirArchive(anneeCode){
         return o;
       })}));
     }
-    const tot  = domaines.reduce((s,d)=>s+d.objectifs.length,0);
-    const done = domaines.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
-    const prog = domaines.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='in-progress'||o.statut==='progress').length,0);
+    const tot  = domaines.reduce((s,d)=>s+(d.objectifs||[]).length,0);
+    const done = domaines.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='done').length,0);
+    const prog = domaines.reduce((s,d)=>s+(d.objectifs||[]).filter(o=>o.statut==='in-progress'||o.statut==='progress').length,0);
     const pct  = tot?Math.round(done/tot*100):0;
     return {b, tot, done, prog, pct, col:peiColor};
   });
@@ -28499,8 +28499,8 @@ function buildS2ProgHTML(b, semestre) {
   html += '<span>📌 ' + sp.strategie + '</span>';
   html += '</div></div>';
   sp.domaines.forEach(function(dom, dIdx) {
-    const doneCount = dom.objectifs.filter(function(o){return o.statut==='done';}).length;
-    const total     = dom.objectifs.length;
+    const doneCount = (dom.objectifs||[]).filter(function(o){return o.statut==='done';}).length;
+    const total     = (dom.objectifs||[]).length;
     const pct       = total ? Math.round(doneCount/total*100) : 0;
     const col       = dom.color;
     const uid       = bIdx+'_'+semestre+'_'+dIdx;
