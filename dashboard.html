@@ -7887,15 +7887,23 @@ window.onload = () => {
       'GESTIONNAIRE' : 'gestionnaire',
       'CONSULTANT'   : 'consultant'
     };
-    CURRENT_USER = Object.assign({}, profil, {
-      name:        profil.nom         || profil.name || '',
-      role:        _roleMap[profil.role] || (profil.role || 'educateur'),
-      teacherId:   profil.teacherId   || '',
-      classe:      profil.classe      || '',
-      classeColor: profil.classeColor || '#1b3a6b',
-      classeIcon:  profil.classeIcon  || '📚',
-      stats:       profil.stats       || { niveaux: 2, modules: 4 },
-      matiere:     profil.matiere     || ''
+
+    /* ── Résolution USERS : l'email donne username (ex: 'delhawari'),
+       mais USERS contient teacherId réel (ex: 'hawari').
+       On cherche l'entrée USERS par username pour récupérer
+       teacherId, name, classe, stats, matiere corrects. ── */
+    const _username  = (profil.teacherId || profil.nom || '').toLowerCase();
+    const _userEntry = USERS.find(u => u.username === _username);
+
+    CURRENT_USER = Object.assign({}, _userEntry || {}, profil, {
+      name:        _userEntry ? _userEntry.name        : (profil.nom || profil.name || ''),
+      role:        _roleMap[profil.role] || (profil.role ? profil.role.toLowerCase() : ''),
+      teacherId:   _userEntry ? _userEntry.teacherId   : (profil.teacherId || ''),
+      classe:      _userEntry ? _userEntry.classe      : (profil.classe      || ''),
+      classeColor: _userEntry ? _userEntry.classeColor : (profil.classeColor || '#1b3a6b'),
+      classeIcon:  _userEntry ? _userEntry.classeIcon  : (profil.classeIcon  || '📚'),
+      stats:       _userEntry ? _userEntry.stats       : (profil.stats       || { niveaux: 2, modules: 4 }),
+      matiere:     _userEntry ? _userEntry.matiere     : (profil.matiere     || '')
     });
 
     /* Appliquer les restrictions d'interface selon le rôle */
