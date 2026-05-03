@@ -20769,12 +20769,22 @@ function renderAlertes(){
                  : isPEI ? STATIC_ALERTES_HAWARI
                  : []; // tous les autres cadres → aucune alerte statique par défaut
 
-  // Alertes dynamiques : filtrer par teacherId du cadre connecté (isolation des données)
+  // Alertes dynamiques : filtrer selon le rôle et le teacherId
   const myTid = CURRENT_USER ? CURRENT_USER.teacherId : null;
-  const filteredAl = ALERTES.filter(a =>
-    !a.teacherId ||                    // anciennes alertes sans teacherId (rétrocompat)
-    a.teacherId === myTid              // alertes du cadre connecté uniquement
-  );
+  const isAdminOrGest = CURRENT_USER && (CURRENT_USER.role === 'admin' || CURRENT_USER.role === 'gestionnaire');
+
+  const filteredAl = ALERTES.filter(a => {
+    // 1. Alertes admin-only (nouvelles demandes RH, recommandations) → réservées à admin/gestionnaire
+    if (a.adminOnly && !isAdminOrGest) return false;
+    // 2. Rétrocompat : anciens titres sans adminOnly flag — même logique
+    if (!isAdminOrGest && a.titre && (
+      a.titre.startsWith('📋 Nouvelle demande RH') ||
+      a.titre.startsWith('📬 Nouvelle recommandation')
+    )) return false;
+    // 3. Filtrer par teacherId si présent
+    if (a.teacherId && a.teacherId !== myTid && !isAdminOrGest) return false;
+    return true;
+  });
   const allAl=[...staticAl,...filteredAl];
   if(!allAl.length){ container.innerHTML=`<div class="empty-state"><div class="es-icon">🔔</div><div class="es-text">${t('es_aucune_alerte')}</div></div>`; return; }
 
@@ -27010,7 +27020,8 @@ function rhSoumettreDemande() {
     detail   : `${RH_TYPE_LABELS[type]} · ${priorite === 'urgente' ? '🔴 Urgente' : ''}`,
     date     : new Date().toLocaleString('fr-FR'),
     resolved : false,
-    rhId     : nouvelleDemande.id
+    rhId     : nouvelleDemande.id,
+    adminOnly: true  // visible uniquement par admin/gestionnaire
   });
   saveData('ea_alertes', alertes);
 
@@ -28016,10 +28027,11 @@ function admRecomSoumettre() {
   const alertes = loadData('ea_alertes') || [];
   alertes.unshift({
     id: Date.now(), type: 'warn',
-    titre: `📬 Nouvelle recommandation — ${profil.nom}`,
-    message: titre,
-    dateCreation: new Date().toLocaleDateString('fr-FR'),
-    resolved: false, source: 'consultant'
+    titre    : `📬 Nouvelle recommandation — ${profil.nom}`,
+    detail   : titre,                                        // corrigé : était 'message'
+    date     : new Date().toLocaleDateString('fr-FR'),       // corrigé : était 'dateCreation'
+    resolved : false, source: 'consultant',
+    adminOnly: true  // visible uniquement par admin/gestionnaire
   });
   saveData('ea_alertes', alertes);
 
