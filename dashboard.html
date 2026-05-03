@@ -3342,6 +3342,8 @@ body.is-consultant .sensitive-data::after {
     </div>
     <div class="topbar-right">
       <span class="topbar-tag" id="topbar-tag-main">💻 Informatique — Semestre 2</span>
+      <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── -->
+      <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v2.5.3</span>
       <!-- ── Indicateur connexion Firebase ── -->
       <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
            style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite">
@@ -20990,30 +20992,51 @@ function _adminShowSectionCore(sec) {
     if (ni) ni.classList.add('active');
   }
 
-  /* Renderers — aucune logique métier modifiée */
-  if (sec === 'overview')   renderAdminOverview();
-  if (sec === 'pei')        renderAdminPEI();
+  /* ── Helper : exécute fn() avec catch — affiche l'erreur exacte dans la section ── */
+  function _safeRender(fn, sectionId) {
+    try {
+      fn();
+    } catch(err) {
+      console.error('[adminShowSection] crash dans', sectionId, err);
+      /* Afficher l'erreur visible dans la section pour diagnostic */
+      const target = document.getElementById('adm-section-' + sectionId);
+      if (target) {
+        const existing = target.querySelector('.admin-crash-msg');
+        if (!existing) {
+          const div = document.createElement('div');
+          div.className = 'admin-crash-msg';
+          div.style.cssText = 'margin:20px;padding:14px 18px;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;font-size:12px;color:#dc2626;font-family:monospace;white-space:pre-wrap;line-height:1.6';
+          div.textContent = '❌ Erreur JavaScript :\n' + (err.message || err) + '\n\nStack :\n' + (err.stack || '—');
+          target.prepend(div);
+        }
+      }
+    }
+  }
+
+  /* Renderers — protégés par try-catch pour diagnostic des crashes */
+  if (sec === 'overview')   _safeRender(renderAdminOverview, 'overview');
+  if (sec === 'pei')        _safeRender(renderAdminPEI, 'pei');
   if (sec === 'benef') {
     const dd = document.getElementById('adm-benef-detail');
     const bs = document.querySelector('.admin-benef-section');
     if (dd) dd.style.display = 'none';
     if (bs) bs.style.display = 'block';
-    renderAdminBenef();
+    _safeRender(renderAdminBenef, 'benef');
   }
-  if (sec === 'classes')    renderAdminClasses();
+  if (sec === 'classes')    _safeRender(renderAdminClasses, 'classes');
   if (sec === 'cadres') {
     const lv = document.getElementById('adm-cadres-liste-view');
     const dv = document.getElementById('adm-cadre-detail-view');
     if (lv) lv.style.display = 'block';
     if (dv) dv.style.display = 'none';
-    renderAdminCadres();
+    _safeRender(renderAdminCadres, 'cadres');
   }
-  if (sec === 'alertes')          renderAdminAlertes();
-  if (sec === 'heatmap')          renderAdminHeatmap();
-  if (sec === 'simulation')       initSimulation();
-  if (sec === 'rapport')          renderRapportInstitutionnel();
-  if (sec === 'audit')            renderAuditJournal();
-  if (sec === 'ajouter')          initAdminAjouter();
+  if (sec === 'alertes')    _safeRender(renderAdminAlertes, 'alertes');
+  if (sec === 'heatmap')    _safeRender(renderAdminHeatmap, 'heatmap');
+  if (sec === 'simulation') _safeRender(initSimulation, 'simulation');
+  if (sec === 'rapport')    _safeRender(renderRapportInstitutionnel, 'rapport');
+  if (sec === 'audit')      _safeRender(renderAuditJournal, 'audit');
+  if (sec === 'ajouter')    _safeRender(initAdminAjouter, 'ajouter');
   if (sec === 'archives') {
     const av = document.getElementById('adm-archive-detail');
     const al = document.getElementById('adm-archives-list');
