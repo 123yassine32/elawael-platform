@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup Comptes — ElAwail</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',sans-serif; background:#f1f5f9; color:#1e293b; padding:30px 20px; }
+  h1  { color:#1b3a6b; font-size:22px; margin-bottom:6px; }
+  .sub { color:#64748b; font-size:13px; margin-bottom:28px; }
+
+  .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-bottom:20px; }
+
+  label { display:block; font-size:12px; font-weight:700; color:#475569; margin-bottom:6px; }
+  input { width:100%; padding:10px 14px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:14px; outline:none; }
+  input:focus { border-color:#1b3a6b; }
+
+  .btn { display:inline-flex; align-items:center; gap:8px; background:#1b3a6b; color:#fff; border:none; border-radius:10px; padding:12px 28px; font-size:14px; font-weight:700; cursor:pointer; margin-top:14px; }
+  .btn:hover { background:#2563eb; }
+  .btn:disabled { background:#94a3b8; cursor:not-allowed; }
+  .btn-danger { background:#dc2626; }
+  .btn-danger:hover { background:#b91c1c; }
+
+  /* Barre de progression */
+  .progress-wrap { background:#e2e8f0; border-radius:100px; height:10px; margin:14px 0 6px; overflow:hidden; }
+  .progress-bar  { height:100%; background:#1b3a6b; border-radius:100px; transition:width .3s ease; width:0%; }
+  .progress-lbl  { font-size:12px; color:#64748b; }
+
+  /* Journal en temps réel */
+  #log { max-height:420px; overflow-y:auto; background:#0f172a; border-radius:10px; padding:16px; font-family:monospace; font-size:12px; line-height:1.8; }
+  .log-ok   { color:#4ade80; }
+  .log-skip { color:#facc15; }
+  .log-err  { color:#f87171; }
+  .log-info { color:#93c5fd; }
+  .log-head { color:#e2e8f0; font-weight:700; }
+
+  /* Tableau résumé */
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th    { background:#1b3a6b; color:#fff; padding:8px 12px; text-align:left; }
+  td    { padding:7px 12px; border-bottom:1px solid #e2e8f0; }
+  tr:hover td { background:#f8fafc; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:100px; font-size:10px; font-weight:800; }
+  .badge-admin { background:#fef2f2; color:#dc2626; }
+  .badge-cadre { background:#eff6ff; color:#1b3a6b; }
+
+  .summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+  .s-card { background:#fff; border-radius:10px; padding:16px; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,.06); }
+  .s-val  { font-size:28px; font-weight:800; color:#1b3a6b; }
+  .s-lbl  { font-size:11px; color:#64748b; margin-top:4px; }
+
+  .warn-box { background:#fffbeb; border:1.5px solid #fde68a; border-radius:10px; padding:14px 18px; font-size:12px; color:#92400e; margin-bottom:16px; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<h1>🔧 Setup des comptes ElAwail</h1>
+<p class="sub">Crée automatiquement les 41 comptes Firebase Authentication + documents Firestore</p>
+
+<!-- Étape 1 : connexion admin -->
+<div class="card" id="step-login">
+  <div style="font-size:15px;font-weight:800;color:#1b3a6b;margin-bottom:16px">Étape 1 — Connexion Admin</div>
+  <div class="warn-box">
+    ⚠️ Connecte-toi avec le compte admin (<strong>admin@elawail.ma</strong>) avant de lancer le setup.
+    Ce compte doit déjà exister dans Firebase.
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div>
+      <label>Email admin</label>
+      <input type="email" id="adm-email" value="admin@elawail.ma">
+    </div>
+    <div>
+      <label>Mot de passe admin</label>
+      <input type="password" id="adm-pass" placeholder="••••••••">
+    </div>
+  </div>
+  <button class="btn" onclick="loginAdmin()">🔐 Se connecter</button>
+  <div id="login-status" style="margin-top:10px;font-size:13px"></div>
+</div>
+
+<!-- Étape 2 : configuration du mot de passe temporaire -->
+<div class="card" id="step-config" style="display:none">
+  <div style="font-size:15px;font-weight:800;color:#1b3a6b;margin-bottom:16px">Étape 2 — Mot de passe temporaire</div>
+  <p style="font-size:13px;color:#64748b;margin-bottom:14px">
+    Tous les comptes seront créés avec ce mot de passe. Chaque cadre pourra le changer après sa première connexion.
+  </p>
+  <div>
+    <label>Mot de passe temporaire (pour tous les cadres)</label>
+    <input type="text" id="tmp-pass" value="Elawail2026!" style="max-width:300px">
+  </div>
+  <button class="btn" onclick="showPreview()">👁 Prévisualiser les comptes →</button>
+</div>
+
+<!-- Étape 3 : prévisualisation -->
+<div class="card" id="step-preview" style="display:none">
+  <div style="font-size:15px;font-weight:800;color:#1b3a6b;margin-bottom:16px">Étape 3 — Prévisualisation des 41 comptes</div>
+
+  <div class="summary-grid">
+    <div class="s-card"><div class="s-val">41</div><div class="s-lbl">Comptes à créer</div></div>
+    <div class="s-card"><div class="s-val">40</div><div class="s-lbl">Cadres éducatifs</div></div>
+    <div class="s-card"><div class="s-val">1</div><div class="s-lbl">Admin</div></div>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:16px">
+    <table id="accounts-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Email</th>
+          <th>Nom</th>
+          <th>Classe</th>
+          <th>Rôle</th>
+        </tr>
+      </thead>
+      <tbody id="accounts-tbody"></tbody>
+    </table>
+  </div>
+
+  <button class="btn" onclick="startSetup()">🚀 Lancer la création des 41 comptes</button>
+  <button class="btn btn-danger" onclick="resetStep()" style="margin-left:8px">✖ Annuler</button>
+</div>
+
+<!-- Étape 4 : exécution -->
+<div class="card" id="step-run" style="display:none">
+  <div style="font-size:15px;font-weight:800;color:#1b3a6b;margin-bottom:16px">Étape 4 — Création en cours…</div>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+  <div class="progress-lbl" id="progress-lbl">0 / 41</div>
+
+  <div id="log" style="margin-top:14px"><div class="log-info">En attente…</div></div>
+
+  <div id="step-done" style="display:none;margin-top:20px">
+    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:16px 20px;font-size:13px;color:#166534">
+      <strong>✅ Setup terminé !</strong><br>
+      <span id="done-summary"></span><br><br>
+      Mot de passe temporaire de tous les cadres : <strong id="done-pass" style="font-family:monospace;font-size:14px"></strong><br>
+      <span style="color:#374151">→ Communique ce mot de passe aux cadres. Ils pourront le changer depuis leur profil.</span>
+    </div>
+    <button class="btn" onclick="window.location.href='dashboard.html'" style="margin-top:12px">→ Aller au Dashboard</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG FIREBASE
+═══════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey:            "AIzaSyAM29BVKLyohD9WnmUcOIhZPb_HIqnR_XY",
+  authDomain:        "elawael-platform-df2e3.firebaseapp.com",
+  projectId:         "elawael-platform-df2e3",
+  storageBucket:     "elawael-platform-df2e3.firebasestorage.app",
+  messagingSenderId: "43664796026",
+  appId:             "1:43664796026:web:6f1ce1da9a692d7b278ec3"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+/* ═══════════════════════════════════════════════════
+   LISTE COMPLÈTE DES 41 COMPTES
+   Format : { username, name, email, teacherId, classe, role }
+═══════════════════════════════════════════════════ */
+const ACCOUNTS = [
+  /* ── Autisme ─────────────────────────────── */
+  { username:'delhawari',      name:'Dina El Hawari',            email:'delhawari@elawail.ma',      teacherId:'hawari',        classe:'Autisme',                         role:null },
+  { username:'yahjam',         name:'Youssra Ahjam',             email:'yahjam@elawail.ma',         teacherId:'ahjam',         classe:'Autisme',                         role:null },
+  { username:'fbouhdidi',      name:'Fatima El Bouhdidi',        email:'fbouhdidi@elawail.ma',      teacherId:'bouhdidi',      classe:'Autisme',                         role:null },
+  { username:'kbassi',         name:'Khadouja El Bassi',         email:'kbassi@elawail.ma',         teacherId:'bassi',         classe:'Autisme',                         role:null },
+  { username:'adakni',         name:'Amima Dakni',               email:'adakni@elawail.ma',         teacherId:'dakni',         classe:'Autisme',                         role:null },
+  { username:'fazlou',         name:'Faouzia Azlou',             email:'fazlou@elawail.ma',         teacherId:'azlou',         classe:'Autisme',                         role:null },
+  { username:'dkhajou',        name:'Douae Khajou',              email:'dkhajou@elawail.ma',        teacherId:'khajou',        classe:'Autisme',                         role:null },
+  { username:'czeznaki',       name:'Chaimaa El Znaki',          email:'czeznaki@elawail.ma',       teacherId:'eznaki',        classe:'Autisme',                         role:null },
+  { username:'mbenchahboun',   name:'Mariam Benchahboun',        email:'mbenchahboun@elawail.ma',   teacherId:'benchahboun',   classe:'Autisme',                         role:null },
+  { username:'fzekehili',      name:'Fatima Zahra El Kehili',    email:'fzekehili@elawail.ma',      teacherId:'elkehili',      classe:'Autisme',                         role:null },
+  { username:'rbourdan',       name:'Rajaa Bourdan',             email:'rbourdan@elawail.ma',       teacherId:'bourdan',       classe:'Autisme',                         role:null },
+  { username:'isahnoune',      name:'إحسان سحنون',               email:'isahnoune@elawail.ma',      teacherId:'sahnoune',      classe:'Autisme',                         role:null },
+  { username:'szarqiq',        name:'سناء زرقيق',                email:'szarqiq@elawail.ma',        teacherId:'zarqiq',        classe:'Autisme',                         role:null },
+  { username:'hamtiou',        name:'هاجر أمتيو',                email:'hamtiou@elawail.ma',        teacherId:'amtiou',        classe:'Autisme',                         role:null },
+  /* ── Informatique ────────────────────────── */
+  { username:'ffatimy',        name:'فردوس فاطمي',               email:'ffatimy@elawail.ma',        teacherId:'fatimy',        classe:'Informatique',                    role:null },
+  { username:'odghoughi',      name:'أميمة الذغوغي',             email:'odghoughi@elawail.ma',      teacherId:'dghoughi',      classe:'Informatique',                    role:null },
+  { username:'aakarkoub',      name:'عادل أكركوب',               email:'aakarkoub@elawail.ma',      teacherId:'akarkoub',      classe:'Informatique',                    role:null },
+  { username:'mymarzouk',      name:'محمد ياسين مرزوق',          email:'mymarzouk@elawail.ma',      teacherId:'marzouk',       classe:'Informatique',                    role:null },
+  /* ── Couture ─────────────────────────────── */
+  { username:'ibelhali',       name:'إكرام بلعلي',               email:'ibelhali@elawail.ma',       teacherId:'belhali',       classe:'Couture',                         role:null },
+  { username:'nrawah',         name:'نزيهة الرواح',              email:'nrawah@elawail.ma',         teacherId:'rawah',         classe:'Couture',                         role:null },
+  { username:'haarab',         name:'حنان اعراب',                email:'haarab@elawail.ma',         teacherId:'hanan',         classe:'Couture',                         role:null },
+  { username:'szaidi',         name:'سارة زيدي',                 email:'szaidi@elawail.ma',         teacherId:'zaidi',         classe:'Couture',                         role:null },
+  /* ── IMC ─────────────────────────────────── */
+  { username:'oamghar',        name:'أميمة أمغار',               email:'oamghar@elawail.ma',        teacherId:'amghar',        classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'sbenamour',      name:'سلمى بنعمور',               email:'sbenamour@elawail.ma',      teacherId:'benamour',      classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'mouahabi',       name:'مريم الوهابي',              email:'mouahabi@elawail.ma',       teacherId:'ouahabi',       classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'kdghoughy',      name:'كوثر الدغوغي',              email:'kdghoughy@elawail.ma',      teacherId:'kouthar',       classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'hessanhaji',     name:'حفصة الصنهاجي',             email:'hessanhaji@elawail.ma',     teacherId:'essanhaji',     classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'mibnmendil',     name:'محمد ابن منديل',            email:'mibnmendil@elawail.ma',     teacherId:'ibnmendil',     classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'abenhakou',      name:'أسماء بنهكو',               email:'abenhakou@elawail.ma',      teacherId:'benhakou',      classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'mlamnasra',      name:'محمد المناصرة',             email:'mlamnasra@elawail.ma',      teacherId:'lamnasra',      classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'achahchouh',     name:'أحمد الشحشوح',              email:'achahchouh@elawail.ma',     teacherId:'chahchouh',     classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'nlaaroussi',     name:'نهيلة عافية لعروسي',        email:'nlaaroussi@elawail.ma',     teacherId:'laaroussi',     classe:'Infirmité motrice cérébrale',     role:null },
+  { username:'saloui',         name:'صفاء العلوي',               email:'saloui@elawail.ma',         teacherId:'aloui',         classe:'Infirmité motrice cérébrale',     role:null },
+  /* ── Déficience auditive ─────────────────── */
+  { username:'fbakali',        name:'فيروز البقالي',             email:'fbakali@elawail.ma',        teacherId:'bakali',        classe:'Déficience auditive',             role:null },
+  /* ── Déficience intellectuelle profonde ──── */
+  { username:'fakdi',          name:'فدوى أكدي',                 email:'fakdi@elawail.ma',          teacherId:'akdi',          classe:'Déficience intellectuelle profonde', role:null },
+  { username:'mbenabdrahim',   name:'محمد بنعبد الرحيم',         email:'mbenabdrahim@elawail.ma',   teacherId:'benabdrahim',   classe:'Déficience intellectuelle profonde', role:null },
+  /* ── Déficience intellectuelle ───────────── */
+  { username:'ibakkour',       name:'احسان بكور',                email:'ibakkour@elawail.ma',       teacherId:'bakkour',       classe:'Déficience intellectuelle',       role:null },
+  { username:'ncherkaoui',     name:'نصر الدين الشرقاوي',        email:'ncherkaoui@elawail.ma',     teacherId:'cherkaoui',     classe:'Déficience intellectuelle',       role:null },
+  { username:'aroudani',       name:'آية الروداني',              email:'aroudani@elawail.ma',       teacherId:'roudani',       classe:'Déficience intellectuelle',       role:null },
+  { username:'couladyoussef',  name:'شيماء أولاد يوسف',          email:'couladyoussef@elawail.ma',  teacherId:'ouladyoussef',  classe:'Déficience intellectuelle',       role:null },
+  /* ── Admin ───────────────────────────────── */
+  { username:'admin',          name:'Administration — El Awael', email:'admin@elawail.ma',          teacherId:null,            classe:null,                              role:'admin' }
+];
+
+/* ═══════════════════════════════════════════════════
+   ÉTAT GLOBAL
+═══════════════════════════════════════════════════ */
+let tmpPassword = '';
+let adminUid    = null;
+let adminEmail  = null;
+let adminPass   = null;
+
+/* ═══════════════════════════════════════════════════
+   ÉTAPE 1 — Connexion admin
+═══════════════════════════════════════════════════ */
+async function loginAdmin() {
+  const email = document.getElementById('adm-email').value.trim();
+  const pass  = document.getElementById('adm-pass').value;
+  const status= document.getElementById('login-status');
+
+  status.textContent = '⏳ Connexion…';
+  status.style.color = '#64748b';
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    adminUid   = cred.user.uid;
+    adminEmail = email;
+    adminPass  = pass;
+
+    status.textContent = '✅ Connecté en tant que ' + email;
+    status.style.color = '#059669';
+
+    // Passer à l'étape 2
+    document.getElementById('step-config').style.display = 'block';
+    document.getElementById('step-login').querySelector('button').disabled = true;
+
+  } catch(e) {
+    status.textContent = '❌ Erreur : ' + e.message;
+    status.style.color = '#dc2626';
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   ÉTAPE 2 → 3 — Prévisualisation
+═══════════════════════════════════════════════════ */
+function showPreview() {
+  tmpPassword = document.getElementById('tmp-pass').value.trim();
+  if (tmpPassword.length < 6) {
+    alert('Le mot de passe doit faire au moins 6 caractères.');
+    return;
+  }
+
+  // Remplir le tableau
+  const tbody = document.getElementById('accounts-tbody');
+  tbody.innerHTML = '';
+  ACCOUNTS.forEach((a, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--muted,#64748b)">${i+1}</td>
+      <td style="font-family:monospace;font-size:11px">${a.email}</td>
+      <td>${a.name}</td>
+      <td>${a.classe || '—'}</td>
+      <td><span class="badge ${a.role === 'admin' ? 'badge-admin' : 'badge-cadre'}">${a.role === 'admin' ? '🛡️ Admin' : '👤 Cadre'}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('step-preview').style.display = 'block';
+  document.getElementById('step-preview').scrollIntoView({ behavior:'smooth' });
+}
+
+function resetStep() {
+  document.getElementById('step-preview').style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITAIRES JOURNAL
+═══════════════════════════════════════════════════ */
+function logLine(cls, msg) {
+  const div = document.createElement('div');
+  div.className = cls;
+  div.textContent = msg;
+  const logEl = document.getElementById('log');
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function updateProgress(done, total) {
+  const pct = Math.round(done / total * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-lbl').textContent = done + ' / ' + total + ' (' + pct + '%)';
+}
+
+/* ═══════════════════════════════════════════════════
+   ÉTAPE 4 — Création des comptes
+   Technique : app Firebase secondaire pour créer chaque
+   compte sans déconnecter l'admin de l'app principale.
+═══════════════════════════════════════════════════ */
+async function startSetup() {
+  document.getElementById('step-run').style.display = 'block';
+  document.getElementById('step-run').scrollIntoView({ behavior:'smooth' });
+  document.getElementById('log').innerHTML = '';
+
+  const total   = ACCOUNTS.length;
+  let created   = 0;
+  let skipped   = 0;
+  let errors    = 0;
+
+  logLine('log-head', '══════════════════════════════════════');
+  logLine('log-info', '  Démarrage — ' + total + ' comptes à traiter');
+  logLine('log-info', '  Mot de passe : ' + tmpPassword);
+  logLine('log-head', '══════════════════════════════════════');
+
+  for (let i = 0; i < ACCOUNTS.length; i++) {
+    const acc = ACCOUNTS[i];
+    logLine('log-info', '\n[' + (i+1) + '/' + total + '] ' + acc.email + ' …');
+
+    // Créer une app Firebase secondaire isolée pour ne pas déconnecter l'admin
+    const secondaryApp = firebase.initializeApp(firebaseConfig, 'setup_' + i + '_' + Date.now());
+    const secondaryAuth = secondaryApp.auth();
+
+    try {
+      // 1. Créer le compte Firebase Authentication
+      const cred = await secondaryAuth.createUserWithEmailAndPassword(acc.email, tmpPassword);
+      const newUid = cred.user.uid;
+
+      // 2. Mettre à jour le displayName dans Firebase Auth
+      await cred.user.updateProfile({ displayName: acc.name });
+
+      // 3. Créer le document Firestore users/{uid} (écrit par l'admin sur l'app principale)
+      await db.collection('users').doc(newUid).set({
+        uid:       newUid,
+        username:  acc.username,
+        name:      acc.name,
+        email:     acc.email,
+        teacherId: acc.teacherId || null,
+        classe:    acc.classe    || null,
+        role:      acc.role      || null,
+        createdAt: new Date().toISOString(),
+        mustChangePassword: true   // flag pour forcer le changement au 1er login
+      });
+
+      logLine('log-ok', '  ✅ Créé — UID : ' + newUid);
+      created++;
+
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') {
+        logLine('log-skip', '  ⏭ Déjà existant — ignoré');
+        skipped++;
+      } else {
+        logLine('log-err', '  ❌ Erreur : ' + e.message);
+        errors++;
+      }
+    }
+
+    // Déconnecter et supprimer l'app secondaire
+    try {
+      await secondaryAuth.signOut();
+      await secondaryApp.delete();
+    } catch(_) { /* silencieux */ }
+
+    updateProgress(i + 1, total);
+
+    // Petite pause pour éviter les rate limits Firebase (max 10 req/s)
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  // ── Résumé final ──
+  logLine('log-head', '\n══════════════════════════════════════');
+  logLine('log-ok',   '  ✅ Créés    : ' + created);
+  logLine('log-skip', '  ⏭ Ignorés  : ' + skipped + ' (déjà existants)');
+  if (errors > 0) logLine('log-err', '  ❌ Erreurs  : ' + errors);
+  logLine('log-head', '══════════════════════════════════════');
+
+  // Afficher le panneau "terminé"
+  document.getElementById('step-done').style.display = 'block';
+  document.getElementById('done-summary').textContent =
+    created + ' compte(s) créé(s), ' + skipped + ' ignoré(s), ' + errors + ' erreur(s).';
+  document.getElementById('done-pass').textContent = tmpPassword;
+}
+</script>
+</body>
+</html>
