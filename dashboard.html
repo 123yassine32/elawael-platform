@@ -24303,7 +24303,7 @@ function renderAlertesDirecteur() {
       listAbandons.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Aucun abandon détecté</div>`;
     } else {
       listAbandons.innerHTML = abandons.slice(0, 5).map(({ b, jours, dernier }) => {
-        const idx = BENEFICIAIRES.indexOf(b);
+        const idx = BENEFICIAIRES.findIndex(x => x.teacherId === b.teacherId && _normNom(x.nom) === _normNom(b.nom));
         return `
         <div onclick="adminOpenBenef(${idx})" style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
           <span style="font-size:18px">⚠️</span>
@@ -24337,7 +24337,7 @@ function renderAlertesDirecteur() {
       listPEI.innerHTML = peiNonDemarres.slice(0, 5).map(b => {
         const total = (b.pei_domaines || []).reduce((s, d) => s + (d.objectifs || []).length, 0);
         const cadre = (USERS || []).find(u => u.teacherId === b.teacherId);
-        const idx   = BENEFICIAIRES.indexOf(b);
+        const idx   = BENEFICIAIRES.findIndex(x => x.teacherId === b.teacherId && _normNom(x.nom) === _normNom(b.nom));
         return `
           <div onclick="adminOpenBenef(${idx})" style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
             <span style="font-size:18px">📋</span>
