@@ -17012,8 +17012,8 @@ function _normNom(nom) {
 function getBeneficiairesAdmin(classeFilter) {
   const itarUsers = USERS.filter(u => !u.role);
 
-  /* 1. Exclure les entrées formateurs (doublons) */
-  let list = BENEFICIAIRES.filter(b => !FORMATEURS_IDS.has(b.teacherId));
+  /* 1. Exclure les entrées formateurs (doublons) et les entrées nulles/undefined */
+  let list = BENEFICIAIRES.filter(b => b && !FORMATEURS_IDS.has(b.teacherId));
 
   /* 2. Filtre par classe si demandé */
   if (classeFilter && classeFilter !== 'all') {
@@ -17030,7 +17030,7 @@ function getBeneficiairesAdmin(classeFilter) {
     /* Trouver l'entrée formateur correspondante par nom normalisé */
     const normB = _normNom(b.nom);
     const fbRaw = BENEFICIAIRES.find(fb =>
-      fb.teacherId === formateurId && _normNom(fb.nom) === normB
+      fb && fb.teacherId === formateurId && _normNom(fb.nom) === normB
     );
     if (!fbRaw) return b; // pas de correspondance → retour sans fusion
 
