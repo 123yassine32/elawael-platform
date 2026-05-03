@@ -16939,6 +16939,156 @@ const BENEFICIAIRES_DGHOUGHI = [
 ]
 BENEFICIAIRES_DGHOUGHI.forEach(b => BENEFICIAIRES.push(b));
 
+/* ═══════════════════════════════════════════════════════════════════════
+   DÉDUPLICATION BÉNÉFICIAIRES — VUES ADMIN UNIQUEMENT
+   ───────────────────────────────────────────────────────────────────────
+   Contexte : Dans les classes Formation Professionnelle (Informatique,
+   Couture, Déficience intellectuelle profonde), chaque bénéficiaire est
+   encadré par DEUX éducateurs :
+     • un Formateur        → gère les modules théoriques + pratiques
+     • un Éducateur spécialisé → gère le PEI, le comportement, la présence
+
+   Les deux ont leurs propres entrées dans BENEFICIAIRES (même élève,
+   deux teacherIds différents). Les vues admin doivent afficher chaque
+   bénéficiaire UNE SEULE fois, en regroupant les deux cadres.
+
+   Les espaces éducateurs individuels NE SONT PAS affectés :
+   chaque éducateur continue de voir uniquement ses propres élèves.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Binômes formateur ↔ éducateur spécialisé.
+ * Clé   = teacherId du formateur  (dont les entrées sont masquées en vue admin)
+ * Valeur = teacherId de l'éducateur spécialisé (entrée canonique conservée)
+ */
+const CADRE_BINOMES = {
+  'marzouk':     'dghoughi',   // Informatique — Fouj 2
+  'fatimy':      'akarkoub',   // Informatique — Fouj 1
+  'belhali':     'rawah',      // Couture — Fouj 1
+  'zaidi':       'hanan',      // Couture — Fouj 2
+  'benabdrahim': 'akdi'        // Déficience intellectuelle profonde
+};
+
+/** Set des teacherIds formateurs (entrées à exclure des vues admin) */
+const FORMATEURS_IDS = new Set(Object.keys(CADRE_BINOMES));
+
+/** Map inverse : éducateur spécialisé → teacherId formateur binômé */
+const EDU_TO_FORMATEUR = Object.fromEntries(
+  Object.entries(CADRE_BINOMES).map(([f, e]) => [e, f])
+);
+
+/**
+ * Normalise un nom arabe pour la comparaison (supprime harakat,
+ * harmonise alef/hamza/taa marbouta/alef maqsoura).
+ * @param {string} nom
+ * @returns {string}
+ */
+function _normNom(nom) {
+  if (!nom) return '';
+  return nom
+    .replace(/[ً-ٰٟـ]/g, '') // harakat + tatweel
+    .replace(/[أإآ]/g,  'ا')                       // alef variants → alef
+    .replace(/ة/g,      'ه')                       // taa marbouta → haa
+    .replace(/ى/g,      'ي')                       // alef maqsoura → yaa
+    .replace(/\s+/g,    ' ')                        // espaces multiples
+    .trim().toLowerCase();
+}
+
+/**
+ * Retourne la liste des bénéficiaires dédupliquée pour les vues admin.
+ *
+ * Règles :
+ *  1. Les entrées dont le teacherId est un formateur binômé sont exclues.
+ *  2. Chaque entrée conservée est enrichie de `cadreFormateurId`
+ *     (teacherId du formateur binômé) quand il existe.
+ *  3. Les données théoriques/pratiques du formateur sont fusionnées si
+ *     l'éducateur spécialisé n'en a pas.
+ *
+ * @param {string} [classeFilter] - 'all' ou 'classe:NomDeLaClasse'
+ * @returns {Array} Liste dédupliquée, prête pour l'affichage admin
+ */
+function getBeneficiairesAdmin(classeFilter) {
+  const itarUsers = USERS.filter(u => !u.role);
+
+  /* 1. Exclure les entrées formateurs (doublons) */
+  let list = BENEFICIAIRES.filter(b => !FORMATEURS_IDS.has(b.teacherId));
+
+  /* 2. Filtre par classe si demandé */
+  if (classeFilter && classeFilter !== 'all') {
+    const cn   = classeFilter.replace('classe:', '');
+    const tids = itarUsers.filter(u => u.classe === cn).map(u => u.teacherId);
+    list = list.filter(b => tids.includes(b.teacherId));
+  }
+
+  /* 3. Enrichir chaque entrée avec les infos du formateur binômé */
+  return list.map(b => {
+    const formateurId = EDU_TO_FORMATEUR[b.teacherId];
+    if (!formateurId) return b; // classe sans binôme → retour direct
+
+    /* Trouver l'entrée formateur correspondante par nom normalisé */
+    const normB = _normNom(b.nom);
+    const fbRaw = BENEFICIAIRES.find(fb =>
+      fb.teacherId === formateurId && _normNom(fb.nom) === normB
+    );
+    if (!fbRaw) return b; // pas de correspondance → retour sans fusion
+
+    /* Fusion : éducateur spécialisé = base, formateur = complémentaire */
+    return Object.assign({}, b, {
+      cadreFormateurId: formateurId,
+      /* Copier les modules théo/prat du formateur si absents */
+      theo_s1: b.theo_s1?.length ? b.theo_s1 : fbRaw.theo_s1,
+      theo_s2: b.theo_s2?.length ? b.theo_s2 : fbRaw.theo_s2,
+      prat_s1: b.prat_s1?.length ? b.prat_s1 : fbRaw.prat_s1,
+      prat_s2: b.prat_s2?.length ? b.prat_s2 : fbRaw.prat_s2,
+      /* Compléter nomLatin si manquant */
+      nomLatin: b.nomLatin || fbRaw.nomLatin || ''
+    });
+  });
+}
+
+/**
+ * Construit un classesMap dédupliqué pour les vues admin
+ * (Overview, Classes, PEI, Heatmap).
+ * Chaque classe ne contient ses bénéficiaires qu'une seule fois.
+ * @returns {Object} classesMap { nomClasse: { classe, itars, benef, ... } }
+ */
+function _buildClassesMapAdmin() {
+  const itarUsers = USERS.filter(u => !u.role);
+  const classesMap = {};
+
+  itarUsers.forEach(u => {
+    if (!classesMap[u.classe]) {
+      classesMap[u.classe] = {
+        classe:      u.classe,
+        classeIcon:  u.classeIcon  || '📚',
+        classeColor: u.classeColor || '#1b3a6b',
+        itars: [],
+        benef: []
+      };
+    }
+    classesMap[u.classe].itars.push(u);
+    /* N'ajouter les bénéficiaires QUE pour les éducateurs non-formateurs */
+    if (!FORMATEURS_IDS.has(u.teacherId)) {
+      const enriched = getBeneficiairesAdmin('classe:' + u.classe)
+        .filter(b => b.teacherId === u.teacherId);
+      enriched.forEach(b => classesMap[u.classe].benef.push(b));
+    }
+  });
+
+  /* Dédupliquer une dernière fois par sécurité (nom normalisé) */
+  Object.values(classesMap).forEach(g => {
+    const seen = new Set();
+    g.benef = g.benef.filter(b => {
+      const key = _normNom(b.nom);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  });
+
+  return classesMap;
+}
+
 const NIV_COLOR={4:'var(--success)',3:'var(--primary)',2:'var(--warning)',1:'var(--danger)',0:'var(--muted)'};
 const NIV_LABEL_CLASS={4:'lvl-d',3:'lvl-b',2:'lvl-c',1:'lvl-a'};
 
@@ -20949,20 +21099,17 @@ function appliquerRestrictionsAdmin() {
 function peiColor(pct){return pct>=70?'var(--success)':pct>=40?'var(--warning)':'var(--danger)';}
 
 function getAdminData(){
-  const itarUsers=USERS.filter(u=>!u.role);
-  const classesMap={};
-  itarUsers.forEach(u=>{
-    if(!classesMap[u.classe])classesMap[u.classe]={classe:u.classe,classeIcon:u.classeIcon||'📚',classeColor:u.classeColor||'#1b3a6b',itars:[],benef:[]};
-    classesMap[u.classe].itars.push(u);
-    BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId).forEach(b=>classesMap[u.classe].benef.push(b));
-  });
-  const groupedClasses=Object.values(classesMap);
-  const totalBenef=BENEFICIAIRES.length;
-  const totalDossiers=BENEFICIAIRES.filter(b=>b.dossier).length;
-  const peiBenef=BENEFICIAIRES.filter(b=>b.type==='pei');
+  const itarUsers    = USERS.filter(u => !u.role);
+  /* Utiliser la liste dédupliquée pour tous les compteurs admin */
+  const classesMap   = _buildClassesMapAdmin();
+  const groupedClasses = Object.values(classesMap);
+  const benefUniques = getBeneficiairesAdmin(); // liste globale dédupliquée
+  const totalBenef   = benefUniques.length;
+  const totalDossiers= benefUniques.filter(b => b.dossier).length;
+  const peiBenef     = benefUniques.filter(b => b.type === 'pei');
   const peiTotal=peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
-  const peiDone=peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
-  const peiProg=peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
+  const peiDone =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
+  const peiProg =peiBenef.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='in-progress').length,0),0);
   return{itarUsers,groupedClasses,totalBenef,totalDossiers,totalClasses:groupedClasses.length,totalItars:itarUsers.length,peiTotal,peiDone,peiProg};
 }
 
@@ -21001,9 +21148,11 @@ function renderAdminOverview(){
   setT('adm-kpi-itars', d.totalItars);
 
   // ── Données communes ─────────────────────────────
-  const presences = loadData('ea_presences') || [];
-  const peiB      = BENEFICIAIRES.filter(b => b.type === 'pei');
-  const pctD      = d.totalBenef ? Math.round(d.totalDossiers / d.totalBenef * 100) : 0;
+  const presences  = loadData('ea_presences') || [];
+  /* Utiliser la liste dédupliquée admin (sans doublons formateur/éducateur) */
+  const benefAdmin = getBeneficiairesAdmin();
+  const peiB       = benefAdmin.filter(b => b.type === 'pei');
+  const pctD       = d.totalBenef ? Math.round(d.totalDossiers / d.totalBenef * 100) : 0;
 
   // ── Mois courant (format YYYY-MM pour filtrage) ──
   const _now  = new Date();
@@ -21035,8 +21184,8 @@ function renderAdminOverview(){
 
     const actions = [];
 
-    /* 1. Bénéficiaires urgents (risque ≥ 61) */
-    const risquesBanner = BENEFICIAIRES
+    /* 1. Bénéficiaires urgents (risque ≥ 61) — liste dédupliquée */
+    const risquesBanner = benefAdmin
       .map(b => ({ b, score: calcRisqueBenef(b, presences).score }))
       .filter(r => r.score >= 61)
       .sort((a, bn) => bn.score - a.score);
@@ -21083,8 +21232,8 @@ function renderAdminOverview(){
       });
     }
 
-    /* 4. Dossiers incomplets (si rien d'autre ou complément) */
-    const dossIncomp = BENEFICIAIRES.filter(b => !b.dossier).length;
+    /* 4. Dossiers incomplets (si rien d'autre ou complément) — liste dédupliquée */
+    const dossIncomp = benefAdmin.filter(b => !b.dossier).length;
     if (dossIncomp > 0 && actions.length < 3) {
       actions.push({
         icon: '📂',
@@ -21161,8 +21310,8 @@ function renderAdminOverview(){
   const _sc3Card = document.getElementById('sante-card-dossiers');
   if (_sc3Card) _sc3Card.style.borderColor = _sc3.border;
 
-  /* 4. Risque moyen — score de risque pondéré (Critique 5 CLAUDE.md) */
-  const _risqueScores = BENEFICIAIRES.map(b => {
+  /* 4. Risque moyen — score de risque pondéré (Critique 5 CLAUDE.md) — liste dédupliquée */
+  const _risqueScores = benefAdmin.map(b => {
     let pts = 0;
     /* Présence bénéficiaire ce mois */
     let bObs = 0, bPres = 0;
@@ -21550,7 +21699,8 @@ function renderAdminOverview(){
      Signal direct et actionnable : qui n'a pas été vu ce mois ? */
   const _benefAvecSeance = new Set();
   seancesMois.forEach(p => (p.presences||[]).forEach(x => { if(x.nom) _benefAvecSeance.add(x.nom); }));
-  const _nbSansSeance  = BENEFICIAIRES.filter(b => !_benefAvecSeance.has(b.nom)).length;
+  /* Utiliser la liste dédupliquée pour éviter de compter les doublons formateur */
+  const _nbSansSeance  = benefAdmin.filter(b => !_benefAvecSeance.has(b.nom)).length;
   const _pctSansSeance = d.totalBenef ? Math.round(_nbSansSeance / d.totalBenef * 100) : 0;
   const _ssColor = _nbSansSeance === 0 ? 'var(--success)'
     : _nbSansSeance <= 5               ? 'var(--warning)'
@@ -22019,6 +22169,9 @@ function renderAdminOverview(){
  */
 function calcOrgScore(d, presences) {
 
+  /* Liste dédupliquée — sans les doublons formateur/éducateur spécialisé */
+  const _benefAdmin = getBeneficiairesAdmin();
+
   /* ════════════════════════════════════════════════════════════════
      P1 — PEI PROGRESSIF
      Avant : binaire — seul "done" comptait (0 ou 100)
@@ -22077,7 +22230,7 @@ function calcOrgScore(d, presences) {
     const _s2Annee = 2026;
     let _ghObs = 0, _ghPres = 0;
 
-    BENEFICIAIRES.forEach(b => {
+    _benefAdmin.forEach(b => {
       _s2Mois.forEach(mm => {
         const _ghKey  = `ea_gh_${b.nom}_${_s2Annee}_${mm}`;
         const _ghData = JSON.parse(localStorage.getItem(_ghKey) || '{}');
@@ -22109,7 +22262,7 @@ function calcOrgScore(d, presences) {
 
   /* 2a. Score ABLLS réel depuis ea_ta9_${b.nom} */
   let _totalItems = 0, _moustaqilItems = 0;
-  BENEFICIAIRES.forEach(b => {
+  _benefAdmin.forEach(b => {
     const _ta9 = JSON.parse(localStorage.getItem('ea_ta9_' + b.nom) || '{}');
     TA9YIM_DOMAINS.forEach((dom, di) => {
       dom.items.forEach((_, ii) => {
@@ -22125,7 +22278,7 @@ function calcOrgScore(d, presences) {
     : null;
 
   /* 2b. Niveau moyen bénéficiaires — fallback si pas d'ABLLS */
-  const _niveaux     = BENEFICIAIRES.map(b => b.niveau || 1);
+  const _niveaux     = _benefAdmin.map(b => b.niveau || 1);
   const _niveauMoyen = _niveaux.length
     ? _niveaux.reduce((s, n) => s + n, 0) / _niveaux.length
     : 1;
@@ -22584,11 +22737,11 @@ function renderAdminTendances(d, presences) {
     moisLabels.push(dt.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }));
   }
 
-  /* ── Indicateurs fixes (PEI + indépendance + dossiers) ── */
+  /* ── Indicateurs fixes (PEI + indépendance + dossiers) — liste dédupliquée ── */
   const tauxPEI_fixe = d.peiTotal > 0
     ? Math.round(d.peiDone / d.peiTotal * 100)
     : 0;
-  const niveaux      = BENEFICIAIRES.map(b => b.niveau || 1);
+  const niveaux      = getBeneficiairesAdmin().map(b => b.niveau || 1);
   const niveauMoyen  = niveaux.length ? niveaux.reduce((s, n) => s + n, 0) / niveaux.length : 1;
   const tauxIndep    = Math.min(100, Math.round((niveauMoyen - 1) / 3 * 100));
   const tauxDossiers = d.totalBenef > 0
@@ -22761,7 +22914,8 @@ function renderAdminChartNiveaux(){
   const canvas=document.getElementById('adm-chart-niveaux');if(!canvas)return;
   if(canvas._ci)canvas._ci.destroy();
   const counts={1:0,2:0,3:0,4:0};
-  BENEFICIAIRES.forEach(b=>{if(b.niveau)counts[b.niveau]=(counts[b.niveau]||0)+1;});
+  /* Liste dédupliquée — sans les doublons formateur/éducateur */
+  getBeneficiairesAdmin().forEach(b=>{if(b.niveau)counts[b.niveau]=(counts[b.niveau]||0)+1;});
   const labels=['مبتدئ (1)','متوسط (2)','جيد (3)','ممتاز (4)'];
   const data=[counts[1],counts[2],counts[3],counts[4]];
   const colors=['#dc2626','#d97706','#2563eb','#059669'];
@@ -22774,9 +22928,9 @@ function renderAdminChartHandicap(){
   const canvas = document.getElementById('adm-chart-handicap');
   if(!canvas) return;
   if(canvas._ci) canvas._ci.destroy();
-  // Count from static data
+  // Compter depuis la liste dédupliquée
   const hCount = {};
-  BENEFICIAIRES.forEach(b=>{
+  getBeneficiairesAdmin().forEach(b=>{
     const h = b.handicap||'Autre';
     // Simplify labels for chart
     let label = h;
@@ -22862,23 +23016,9 @@ function renderAdminPEI(){
   /* ── 0. Données de base ── */
   const presences  = loadData('ea_presences') || [];
   const allUsers   = USERS.filter(u => !u.role); // cadres uniquement
-  const allPB      = BENEFICIAIRES.filter(b => b.type === 'pei');
 
-  /* ── 1. Filtre par classe ── */
-  // Construire la carte classe→{cadre, bénéficiaires}
-  const classesMap = {};
-  allUsers.forEach(u => {
-    if (!classesMap[u.classe]) classesMap[u.classe] = {
-      classe: u.classe,
-      classeColor: u.classeColor || '#1b3a6b',
-      classeIcon:  u.classeIcon  || '📚',
-      cadreNom:    u.nom         || '—',
-      teacherId:   u.teacherId,
-      benef: []
-    };
-    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId)
-                 .forEach(b => classesMap[u.classe].benef.push(b));
-  });
+  /* ── 1. Filtre par classe — liste dédupliquée ── */
+  const classesMap = _buildClassesMapAdmin();
   const allClasses = Object.values(classesMap);
 
   // Bénéficiaires PEI selon le filtre actif
@@ -23236,17 +23376,14 @@ function renderAdminPEI(){
  */
 function exportPeiExcel() {
   const rows = [];
-  rows.push(['Nom', 'Classe', 'Cadre', 'Domaine', 'Total Obj', 'Réalisés', 'En cours', 'Non démarrés', '% Achèvement']);
+  rows.push(['Nom', 'Classe', 'Cadre(s)', 'Domaine', 'Total Obj', 'Réalisés', 'En cours', 'Non démarrés', '% Achèvement']);
   const allUsers = USERS.filter(u => !u.role);
-  // Construire cadreMap
-  const cadreMap = {};
-  allUsers.forEach(u => {
-    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId).forEach(b => {
-      cadreMap[b.teacherId] = { nom: u.nom, classe: u.classe };
-    });
-  });
-  BENEFICIAIRES.filter(b => b.type === 'pei').forEach(b => {
-    const info = cadreMap[b.teacherId] || { nom: '—', classe: '—' };
+  /* Utiliser la liste dédupliquée pour l'export */
+  getBeneficiairesAdmin().filter(b => b.type === 'pei').forEach(b => {
+    const user = allUsers.find(u => u.teacherId === b.teacherId);
+    const userF= b.cadreFormateurId ? allUsers.find(u => u.teacherId === b.cadreFormateurId) : null;
+    const nomCadres = [user?.name, userF?.name].filter(Boolean).join(' + ');
+    const info = { nom: nomCadres || '—', classe: user?.classe || '—' };
     (b.pei_domaines || []).forEach(d => {
       const done = d.objectifs.filter(o => o.statut === 'done').length;
       const prog = d.objectifs.filter(o => o.statut === 'in-progress').length;
@@ -23286,20 +23423,20 @@ function exportPeiExcel() {
 function exportPeiPDF() {
   const dateStr = new Date().toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
   const allUsers = USERS.filter(u => !u.role);
-  const cadreMap = {};
-  allUsers.forEach(u => {
-    BENEFICIAIRES.filter(b => b.teacherId === u.teacherId).forEach(b => {
-      cadreMap[b.nom] = { nom: u.nom, classe: u.classe };
-    });
-  });
-  const pb = BENEFICIAIRES.filter(b => b.type === 'pei');
+  /* Utiliser la liste dédupliquée pour le PDF */
+  const pb = getBeneficiairesAdmin().filter(b => b.type === 'pei');
   const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.length, 0), 0);
   const dn  = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + d.objectifs.filter(o=>o.statut==='done').length, 0), 0);
   const pct = tot ? Math.round(dn / tot * 100) : 0;
 
   // Générer contenu HTML pour impression
   const lignes = pb.map(b => {
-    const info = cadreMap[b.nom] || { nom: '—', classe: '—' };
+    const u  = allUsers.find(u => u.teacherId === b.teacherId);
+    const uF = b.cadreFormateurId ? allUsers.find(u => u.teacherId === b.cadreFormateurId) : null;
+    const info = {
+      nom:    [u?.name, uF?.name].filter(Boolean).join(' + ') || '—',
+      classe: u?.classe || '—'
+    };
     const bTot = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.length, 0);
     const bDn  = (b.pei_domaines||[]).reduce((s,d) => s + d.objectifs.filter(o=>o.statut==='done').length, 0);
     const bPct = bTot ? Math.round(bDn / bTot * 100) : 0;
@@ -23380,8 +23517,8 @@ function renderAdminBenef(){
   const tbody=document.getElementById('adm-benef-table');if(!tbody)return;
   /* Charger les présences une seule fois (performance) */
   const _presences = loadData('ea_presences') || [];
-  let list=BENEFICIAIRES;
-  if(_admBenefFilter!=='all'){const cn=_admBenefFilter.replace('classe:','');const tids=itarUsers.filter(u=>u.classe===cn).map(u=>u.teacherId);list=list.filter(b=>tids.includes(b.teacherId));}
+  /* ── Liste dédupliquée (chaque bénéficiaire = 1 entrée même s'il a 2 cadres) ── */
+  let list = getBeneficiairesAdmin(_admBenefFilter);
   if(_admNivFilter!=='all')list=list.filter(b=>String(b.niveau)===_admNivFilter);
   if(search.trim())list=list.filter(b=>(b.nom+(b.nomLatin||'')).toLowerCase().includes(search.toLowerCase()));
   /* Tri par score de risque décroissant (urgents en premier) si activé */
@@ -23408,13 +23545,20 @@ function renderAdminBenef(){
 
   tbody.innerHTML=list.map((b,i)=>{
     const user=itarUsers.find(u=>u.teacherId===b.teacherId);
+    /* Cadre formateur binômé (si existe) */
+    const userFormateur = b.cadreFormateurId
+      ? itarUsers.find(u=>u.teacherId===b.cadreFormateurId)
+      : null;
     const ini=(b.nom||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const col=COLORS[i%COLORS.length];
     const pei=b.pei_domaines||[];
     const ptot=pei.reduce((s,d)=>s+d.objectifs.length,0);
     const pdn=pei.reduce((s,d)=>s+d.objectifs.filter(o=>o.statut==='done').length,0);
     const pct=ptot?Math.round(pdn/ptot*100):0;
-    const gIdx=BENEFICIAIRES.indexOf(b);
+    /* Index dans le tableau original (pour adminOpenBenef) */
+    const gIdx=BENEFICIAIRES.findIndex(
+      x => x.teacherId===b.teacherId && _normNom(x.nom)===_normNom(b.nom)
+    );
     /* ── Score de risque pondéré (CLAUDE.md §4 Critique 5) ── */
     const _r=calcRisqueBenef(b,_presences);
     const _rCol=_r.score>=61?'#dc2626':_r.score>=31?'#d97706':'#059669';
@@ -23439,7 +23583,16 @@ function renderAdminBenef(){
       <td style="color:var(--muted);font-size:11px;font-weight:700;text-align:center">${i+1}</td>
       <td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:${col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff">${ini}</div><div><div style="font-weight:700;direction:rtl;font-size:13px">${b.nom}</div><div style="font-size:10px;color:var(--muted)">${b.nomLatin||''}</div></div></div></td>
       <td><span style="background:${(user?.classeColor||col)+'22'};color:${user?.classeColor||col};font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px">${user?.classeIcon||'📚'} ${user?.classe||'—'}</span></td>
-      <td><span style="font-size:12px;color:var(--muted)">${(user?.name||'—').split(' ').slice(0,2).join(' ')}</span></td>
+      <td>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:12px;color:var(--text);font-weight:600"
+                title="${user?.matiere||''}">${(user?.name||'—').split(' ').slice(0,2).join(' ')}</span>
+          ${userFormateur
+            ? `<span style="font-size:10px;color:var(--muted);font-weight:600"
+                     title="${userFormateur.matiere||''}">+ ${userFormateur.name.split(' ').slice(0,2).join(' ')}</span>`
+            : ''}
+        </div>
+      </td>
       <td><span class="${['','lvl-a','lvl-b','lvl-c','lvl-d'][b.niveau]||'lvl-b'} lvl">N${b.niveau}</span></td>
       <td><span style="font-size:11px;color:var(--muted)">${b.handicap||'—'}</span></td>
       <td>${ptot>0?`<div style="display:flex;align-items:center;gap:5px"><div style="width:50px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px"></div></div><span style="font-size:11px;font-weight:800;color:${peiColor(pct)}">${pct}%</span></div>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
@@ -23497,18 +23650,14 @@ function admOpenBenefFromCadre(idx){
 
 function renderAdminClasses(){
   const itarUsers=USERS.filter(u=>!u.role);
-  const classesMap={};
-  itarUsers.forEach(u=>{
-    if(!classesMap[u.classe])classesMap[u.classe]={classe:u.classe,classeIcon:u.classeIcon||'📚',classeColor:u.classeColor||'#1b3a6b',itars:[],benef:[]};
-    classesMap[u.classe].itars.push(u);
-    BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId).forEach(b=>classesMap[u.classe].benef.push(b));
-  });
+  /* Utiliser la map dédupliquée (chaque bénéficiaire compté une seule fois) */
+  const classesMap = _buildClassesMapAdmin();
   const COLORS=['#1b3a6b','#e11d48','#059669','#d97706','#dc2626','#0d9488','#0891b2','#7c3aed'];
   const BG=['#eff4ff','#fff1f2','#ecfdf5','#fffbeb','#fef2f2','#f0fdfa'];
   const container=document.getElementById('adm-class-cards');if(!container)return;
 
-  /* Calcul du PEI moyen global (pour la comparaison) */
-  const _allPb = BENEFICIAIRES.filter(b=>b.type==='pei');
+  /* Calcul du PEI moyen global (pour la comparaison) — liste dédupliquée */
+  const _allPb = getBeneficiairesAdmin().filter(b=>b.type==='pei');
   const _gPtot = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
   const _gPdn  = _allPb.reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.filter(o=>o.statut==='done').length,0),0);
   const _avgPei = _gPtot ? Math.round(_gPdn/_gPtot*100) : 0;
@@ -24129,7 +24278,9 @@ function renderAlertesDirecteur() {
 
   /* ── 2. Abandons potentiels — dernière séance > 30 jours ─ */
   const abandonsSeuil = 30; /* jours */
-  const abandons = BENEFICIAIRES.filter(b => {
+  /* Liste dédupliquée — sans les doublons formateur/éducateur spécialisé */
+  const _benefAdminDir = getBeneficiairesAdmin();
+  const abandons = _benefAdminDir.filter(b => {
     /* Toutes les séances de ce bénéficiaire, triées du plus récent */
     const mesSeances = presences
       .filter(p => p.date && (p.presences || []).some(x => x.nom === b.nom))
@@ -24167,8 +24318,8 @@ function renderAlertesDirecteur() {
     }
   }
 
-  /* ── 3. PEI non démarrés — 0 objectif commencé ─────────── */
-  const peiNonDemarres = BENEFICIAIRES.filter(b => {
+  /* ── 3. PEI non démarrés — 0 objectif commencé — liste dédupliquée ─────────── */
+  const peiNonDemarres = _benefAdminDir.filter(b => {
     if (b.type !== 'pei') return false;
     const domaines = b.pei_domaines || [];
     const total   = domaines.reduce((s, d) => s + (d.objectifs || []).length, 0);
@@ -24297,8 +24448,9 @@ function renderAdminRisques() {
   const presences = loadData('ea_presences') || [];
   const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
 
-  /* Calculer les risques pour tous les bénéficiaires */
-  const risques = BENEFICIAIRES
+  /* Calculer les risques — liste dédupliquée (sans doublons formateur/éducateur) */
+  const _benefAdminR = getBeneficiairesAdmin();
+  const risques = _benefAdminR
     .map(b => ({ b, ...calcRisqueBenef(b, presences) }))
     .sort((a, b) => b.score - a.score);
 
@@ -24317,7 +24469,7 @@ function renderAdminRisques() {
   const benefAvecSeance = new Set(
     seancesMois2.flatMap(p => (p.presences || []).map(x => x.nom))
   );
-  const sansSance = BENEFICIAIRES.filter(b => !benefAvecSeance.has(b.nom)).length;
+  const sansSance = _benefAdminR.filter(b => !benefAvecSeance.has(b.nom)).length;
   const nsEl   = document.getElementById('adm-al-no-seance');
   const nsCard = document.getElementById('adm-al-no-seance-card');
   if (nsEl) {
@@ -24954,9 +25106,10 @@ function simUpdateExtras(deltaPres, deltaPEI, deltaIndep, simPres, simPEI, simIn
   /* ── 1. Radar avant/après ── */
   _simUpdateRadar(simPres, simPEI, simIndep, simDoss);
 
-  /* ── 2. Impact sur les alertes (bénéficiaires) ── */
-  const risquesAct = BENEFICIAIRES.map(b => calcRisqueBenef(b, presences).score);
-  const risquesSim = BENEFICIAIRES.map(b => _simRisqueBenef(b, presences, deltaPres, deltaPEI));
+  /* ── 2. Impact sur les alertes — liste dédupliquée ── */
+  const _benefAdminSim = getBeneficiairesAdmin();
+  const risquesAct = _benefAdminSim.map(b => calcRisqueBenef(b, presences).score);
+  const risquesSim = _benefAdminSim.map(b => _simRisqueBenef(b, presences, deltaPres, deltaPEI));
 
   const cntAct = { urg: 0, sur: 0, stb: 0 };
   const cntSim = { urg: 0, sur: 0, stb: 0 };
@@ -24985,9 +25138,9 @@ function simUpdateExtras(deltaPres, deltaPEI, deltaIndep, simPres, simPEI, simIn
     }
   }
 
-  /* ── 3. Impact par classe ── */
+  /* ── 3. Impact par classe — liste dédupliquée ── */
   const classMap = new Map();
-  BENEFICIAIRES.forEach((b, i) => {
+  _benefAdminSim.forEach((b, i) => {
     const cadre = itarUsers.find(u => u.teacherId === b.teacherId);
     if (!cadre) return;
     const cl = cadre.classe || 'Non classé';
@@ -25208,7 +25361,9 @@ function renderRapportInstitutionnel() {
 
   /* KPI 2 — Bénéficiaires */
   setT('rapp-k-benef', d.totalBenef);
-  setT('rapp-k-benef-sub', `${BENEFICIAIRES.filter(b=>b.type==='pei').length} PEI · ${BENEFICIAIRES.filter(b=>b.type!=='pei').length} autres`);
+  /* Utiliser la liste dédupliquée pour les sous-totaux PEI */
+  const _benefAdminRapp = getBeneficiairesAdmin();
+  setT('rapp-k-benef-sub', `${_benefAdminRapp.filter(b=>b.type==='pei').length} PEI · ${_benefAdminRapp.filter(b=>b.type!=='pei').length} autres`);
 
   /* KPI 3 — Présence (couleur dynamique) */
   const _presColor = tauxPresence >= 80 ? '#059669' : tauxPresence >= 60 ? '#d97706' : '#dc2626';
@@ -25264,7 +25419,8 @@ function _rappRenderEvolution(d, presences) {
   }
 
   const tauxPEI_fixe = d.peiTotal > 0 ? Math.round(d.peiDone/d.peiTotal*100) : 0;
-  const niveaux      = BENEFICIAIRES.map(b => b.niveau || 1);
+  /* Utiliser la liste dédupliquée pour le niveau moyen */
+  const niveaux      = getBeneficiairesAdmin().map(b => b.niveau || 1);
   const niveauMoyen  = niveaux.length ? niveaux.reduce((s,n)=>s+n,0)/niveaux.length : 1;
   const tauxIndep    = Math.min(100, Math.round((niveauMoyen-1)/3*100));
   const tauxDoss     = d.totalBenef > 0 ? Math.round(d.totalDossiers/d.totalBenef*100) : 0;
@@ -25386,10 +25542,11 @@ function _rappRenderSynthese(d, score, tauxPresence, tauxRealisation, tauxDossie
   const scoreBadge  = score >= 70 ? 'excellent' : score >= 40 ? 'satisfaisant' : 'qui nécessite une attention particulière';
   const scoreColor  = score >= 70 ? '#059669'   : score >= 40 ? '#d97706'      : '#dc2626';
 
-  /* Nombre de classes en urgence */
+  /* Nombre de classes en urgence — liste dédupliquée */
   const itarUsers  = (USERS||[]).filter(u=>!u.role);
+  const _benefAdminSynth = getBeneficiairesAdmin();
   const classMap   = new Map();
-  BENEFICIAIRES.forEach(b => {
+  _benefAdminSynth.forEach(b => {
     const cadre = itarUsers.find(u=>u.teacherId===b.teacherId);
     if (!cadre) return;
     const cl = cadre.classe||'Non classé';
@@ -25402,8 +25559,8 @@ function _rappRenderSynthese(d, score, tauxPresence, tauxRealisation, tauxDossie
     if (avg >= 61) classesUrgentes++;
   });
 
-  /* Abandons potentiels */
-  const abandons = BENEFICIAIRES.filter(b => {
+  /* Abandons potentiels — liste dédupliquée */
+  const abandons = _benefAdminSynth.filter(b => {
     const seances = presences.filter(p=>p.date&&(p.presences||[]).some(x=>x.nom===b.nom)).sort((a,c)=>new Date(c.date)-new Date(a.date));
     if (!seances.length) return false;
     return (now-new Date(seances[0].date))/(86400000) > 30;
@@ -25748,15 +25905,17 @@ function exportExcelBeneficiaires() {
     return;
   }
 
-  const itarUsers = (USERS || []).filter(u => !u.role);
-  const presences = loadData('ea_presences') || [];
+  const itarUsers  = (USERS || []).filter(u => !u.role);
+  const presences  = loadData('ea_presences') || [];
+  /* Liste dédupliquée — chaque bénéficiaire une seule fois */
+  const _benefExp  = getBeneficiairesAdmin();
 
   /* ── Feuille 1 : Informations générales ── */
   const headers1 = ['#', 'Nom complet', 'Nom latin', 'Sexe', 'Date naissance', 'Âge',
     'Classe', 'Cadre encadrant', 'Type', 'Niveau', 'Handicap', 'Degré',
     'Couverture médicale', 'Téléphone', 'Dossier complet', 'Date inscription', 'Services'];
 
-  const rows1 = BENEFICIAIRES.map((b, i) => {
+  const rows1 = _benefExp.map((b, i) => {
     const cadre = itarUsers.find(u => u.teacherId === b.teacherId);
     return [
       i + 1,
@@ -25793,7 +25952,7 @@ function exportExcelBeneficiaires() {
     'Statut', 'Date inzal', '% Réalisation domaine'];
 
   const rows2 = [];
-  BENEFICIAIRES.filter(b => b.type === 'pei').forEach(b => {
+  _benefExp.filter(b => b.type === 'pei').forEach(b => {
     const cadre = itarUsers.find(u => u.teacherId === b.teacherId);
     const classe = cadre ? cadre.classe : '';
     (b.pei_domaines || []).forEach(dom => {
@@ -25863,15 +26022,16 @@ function exportExcelPresences() {
     return;
   }
 
-  const presences = loadData('ea_presences') || [];
-  const wb        = XLSX.utils.book_new();
+  const presences  = loadData('ea_presences') || [];
+  const wb         = XLSX.utils.book_new();
 
-  /* ── Feuille récapitulative globale ── */
-  const itarUsers = (USERS || []).filter(u => !u.role);
-  const headersG  = ['Bénéficiaire', 'Classe', 'Cadre', 'Séances total',
+  /* ── Feuille récapitulative globale — liste dédupliquée ── */
+  const itarUsers  = (USERS || []).filter(u => !u.role);
+  const _benefPres = getBeneficiairesAdmin();
+  const headersG   = ['Bénéficiaire', 'Classe', 'Cadre', 'Séances total',
     'Présences', 'Absences', 'Taux présence %'];
 
-  const rowsG = BENEFICIAIRES.map(b => {
+  const rowsG = _benefPres.map(b => {
     const cadre     = itarUsers.find(u => u.teacherId === b.teacherId);
     const mySeances = presences.filter(p => (p.presences||[]).some(x=>x.nom===b.nom));
     let totalObs=0, totalPres=0;
@@ -25903,9 +26063,9 @@ function exportExcelPresences() {
     const moisSeances = presences.filter(p => p.date && p.date.startsWith(ym));
     if (!moisSeances.length) continue;
 
-    const headersM = ['Date', 'Type', 'Module', ...BENEFICIAIRES.map(b=>b.nom.split(' ')[0])];
+    const headersM = ['Date', 'Type', 'Module', ..._benefPres.map(b=>b.nom.split(' ')[0])];
     const rowsM    = moisSeances.map(p => {
-      const statuts = BENEFICIAIRES.map(b => {
+      const statuts = _benefPres.map(b => {
         const x = (p.presences||[]).find(x=>x.nom===b.nom);
         return x ? (x.statut==='P'?'P':'A') : '—';
       });
@@ -25913,7 +26073,7 @@ function exportExcelPresences() {
     });
 
     const wsM = XLSX.utils.aoa_to_sheet([headersM, ...rowsM]);
-    wsM['!cols'] = [{wch:12},{wch:12},{wch:18},...BENEFICIAIRES.map(()=>({wch:5}))];
+    wsM['!cols'] = [{wch:12},{wch:12},{wch:18},..._benefPres.map(()=>({wch:5}))];
     XLSX.utils.book_append_sheet(wb, wsM, lbl);
   }
 
@@ -25986,29 +26146,18 @@ function renderAdminHeatmap() {
   const presences  = loadData('ea_presences') || [];
   const itarUsers  = (USERS || []).filter(u => !u.role);
 
-  /* ── 1. Grouper les bénéficiaires par classe ── */
-  /* Construire un map classe → { label, icon, color, cadres[], benefs[] } */
+  /* ── 1. Grouper les bénéficiaires par classe — liste dédupliquée ── */
+  const dedupMap = _buildClassesMapAdmin();
   const classMap = new Map();
 
-  BENEFICIAIRES.forEach(b => {
-    const cadre = itarUsers.find(u => u.teacherId === b.teacherId);
-    if (!cadre) return;
-    const cl = cadre.classe || 'Non classé';
-    if (!classMap.has(cl)) {
-      classMap.set(cl, {
-        label:  cl,
-        icon:   cadre.classeIcon  || '🏫',
-        color:  cadre.classeColor || '#1b3a6b',
-        cadres: [],
-        benefs: []
-      });
-    }
-    const entry = classMap.get(cl);
-    entry.benefs.push(b);
-    /* Ajouter le cadre s'il n'est pas déjà dans la liste */
-    if (!entry.cadres.find(c => c.teacherId === cadre.teacherId)) {
-      entry.cadres.push(cadre);
-    }
+  Object.values(dedupMap).forEach(g => {
+    classMap.set(g.classe, {
+      label:  g.classe,
+      icon:   g.classeIcon  || '🏫',
+      color:  g.classeColor || '#1b3a6b',
+      cadres: g.itars,
+      benefs: g.benef
+    });
   });
 
   /* ── 2. Calculer le score de risque pour chaque classe ── */
@@ -26357,14 +26506,15 @@ function computeArchiveMeta(snapshot, annee) {
   const notes = JSON.parse(snapshot['ea_notes'] || '[]');
   const peiSt = JSON.parse(snapshot['ea_pei_statuses'] || '{}');
 
-  // Count PEI objectives done
+  // Count PEI objectives done — liste dédupliquée
+  const _benefArch = getBeneficiairesAdmin();
   const doneObjs = Object.values(peiSt).filter(v => v && v.statut === 'done').length;
-  const totalObjs = BENEFICIAIRES.filter(b=>b.type==='pei')
+  const totalObjs = _benefArch.filter(b=>b.type==='pei')
     .reduce((s,b)=>s+(b.pei_domaines||[]).reduce((ss,d)=>ss+d.objectifs.length,0),0);
 
   // Count beneficiaires
-  const totalBenef = BENEFICIAIRES.length;
-  const peiBenef   = BENEFICIAIRES.filter(b=>b.type==='pei').length;
+  const totalBenef = _benefArch.length;
+  const peiBenef   = _benefArch.filter(b=>b.type==='pei').length;
 
   // Presence rate
   let pTotal=0, pAbs=0;
