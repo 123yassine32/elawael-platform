@@ -23073,7 +23073,8 @@ function renderAdminPEI(){
   const filteredClasses = _peiClasseFilter === 'all'
     ? allClasses
     : allClasses.filter(g => g.classe === _peiClasseFilter);
-  const pb = filteredClasses.flatMap(g => g.benef.filter(b => b.type === 'pei'));
+  const pb    = filteredClasses.flatMap(g => g.benef.filter(b => b.type === 'pei'));
+  const allPB = allClasses.flatMap(g => g.benef.filter(b => b.type === 'pei')); // tous les PEI (hors filtre)
 
   /* ── 2. Agrégats globaux ── */
   const tot = pb.reduce((s,b) => s + (b.pei_domaines||[]).reduce((ss,d) => ss + (d.objectifs||[]).length, 0), 0);
