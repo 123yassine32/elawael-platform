@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Diagnostic ElAwail</title>
+<style>
+  body { font-family: monospace; margin: 20px; background: #f8fafc; color: #1e293b; }
+  h2 { color: #1b3a6b; }
+  .ok   { background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:10px; margin:8px 0; }
+  .warn { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px; margin:8px 0; }
+  .err  { background:#fef2f2; border:1px solid #fca5a5; border-radius:8px; padding:10px; margin:8px 0; }
+  .info { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px; margin:8px 0; }
+  pre  { white-space:pre-wrap; font-size:11px; margin:4px 0; }
+  button { background:#1b3a6b; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:14px; cursor:pointer; margin:10px 4px 0; }
+  button:hover { background:#2563eb; }
+  #results { margin-top:20px; }
+  .section-title { font-size:16px; font-weight:bold; color:#1b3a6b; margin:16px 0 8px; border-bottom:2px solid #1b3a6b; padding-bottom:4px; }
+</style>
+</head>
+<body>
+<h2>🔬 Diagnostic ElAwail — Analyse des données locales</h2>
+<p style="color:#64748b;font-size:13px">Cette page lit vos données localStorage et identifie exactement ce qui cause les problèmes d'affichage.</p>
+
+<button onclick="runDiagnostic()">▶️ Lancer le diagnostic</button>
+<button onclick="copyResults()">📋 Copier les résultats</button>
+
+<div id="results"></div>
+
+<script>
+function log(container, type, title, detail) {
+  const div = document.createElement('div');
+  div.className = type;
+  div.innerHTML = '<strong>' + title + '</strong>' + (detail ? '<pre>' + detail + '</pre>' : '');
+  container.appendChild(div);
+}
+
+function section(container, title) {
+  const div = document.createElement('div');
+  div.className = 'section-title';
+  div.textContent = title;
+  container.appendChild(div);
+}
+
+function runDiagnostic() {
+  const R = document.getElementById('results');
+  R.innerHTML = '';
+
+  // ── 1. Données localStorage présentes ──
+  section(R, '1. Données localStorage');
+  const keys = ['ea_presences','ea_notes','ea_suivis','ea_rapports','ea_alertes','ea_pei_statuses','ea_documents'];
+  let totalKeys = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('ea_')) totalKeys++;
+  }
+  log(R, 'info', 'Clés ea_* trouvées dans localStorage : ' + totalKeys);
+
+  keys.forEach(k => {
+    const raw = localStorage.getItem(k);
+    if (!raw) {
+      log(R, 'warn', '⚠️ ' + k + ' : VIDE (absent)');
+    } else {
+      try {
+        const data = JSON.parse(raw);
+        const count = Array.isArray(data) ? data.length : (typeof data === 'object' ? Object.keys(data).length : '?');
+        log(R, 'ok', '✅ ' + k + ' : ' + count + ' entrée(s)');
+      } catch(e) {
+        log(R, 'err', '❌ ' + k + ' : JSON invalide — ' + e.message);
+      }
+    }
+  });
+
+  // ── 2. Données BENEFICIAIRES (ea_u_* ou dans le fichier HTML) ──
+  section(R, '2. Données BENEFICIAIRES dans localStorage');
+  let benefKeys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && (k.startsWith('ea_u_') || k === 'ea_beneficiaires')) benefKeys.push(k);
+  }
+  if (benefKeys.length === 0) {
+    log(R, 'info', 'ℹ️ Aucune clé ea_u_* — Les bénéficiaires sont définis dans dashboard.html (BENEFICIAIRES hardcodés)');
+  } else {
+    benefKeys.forEach(k => log(R, 'ok', '✅ ' + k));
+  }
+
+  // ── 3. Test simulation PEI ──
+  section(R, '3. Test crash PEI (d.objectifs)');
+  const presRaw = localStorage.getItem('ea_presences');
+  const presences = presRaw ? JSON.parse(presRaw) : [];
+  log(R, 'info', 'ea_presences : ' + presences.length + ' séance(s)');
+
+  // Simuler ce que fait getAdminData() avec des données fictives
+  try {
+    const testDomains = [
+      { label: 'Test A', objectifs: [{statut:'done'},{statut:'new'}] },
+      { label: 'Test B', objectifs: undefined }, // ← cas qui crashait
+      { label: 'Test C' }  // ← cas sans propriété objectifs
+    ];
+    const tot = testDomains.reduce((s,d) => s + (d.objectifs||[]).length, 0);
+    const dn  = testDomains.reduce((s,d) => s + (d.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+    log(R, 'ok', '✅ Test null-safety (d.objectifs||[]) : tot=' + tot + ', done=' + dn + ' — Pas de crash');
+  } catch(e) {
+    log(R, 'err', '❌ Crash détecté dans le test PEI : ' + e.message);
+  }
+
+  // ── 4. Vérifier la version chargée ──
+  section(R, '4. Version du dashboard chargé');
+  log(R, 'info',
+    'Cette page de diagnostic est locale.\n' +
+    'Pour vérifier la version sur le site en ligne :\n' +
+    '→ Ouvrir https://123yassine32.github.io/elawael-platform/dashboard.html\n' +
+    '→ Regarder en haut à droite : si "v2.5.3" apparaît → nouveau code chargé\n' +
+    '→ Appuyer sur F12 → Console → copier les erreurs rouges ici'
+  );
+
+  // ── 5. Test Firebase config ──
+  section(R, '5. Test connectivité Firebase');
+  const scripts = document.querySelectorAll('script[src]');
+  log(R, 'info', 'Note : Firebase ne peut pas être testé depuis cette page standalone.\nVérification faite dans dashboard.html via Firebase SDK.');
+
+  // ── 6. Résumé ea_presences ──
+  section(R, '6. Résumé des séances (ea_presences)');
+  if (!presences.length) {
+    log(R, 'warn', '⚠️ Aucune séance dans ea_presences — Les KPIs de présence afficheront "—" ou 0%\nC\'est NORMAL si aucune séance n\'a encore été saisie.');
+  } else {
+    const classes = {};
+    presences.forEach(p => {
+      if (!classes[p.teacherId]) classes[p.teacherId] = 0;
+      classes[p.teacherId]++;
+    });
+    log(R, 'ok', '✅ ' + presences.length + ' séance(s) trouvée(s)\nRépartition : ' + JSON.stringify(classes));
+  }
+
+  // ── 7. Clés ea_gh_ (ghiyab) ──
+  section(R, '7. Clés ghiyab (ea_gh_*)');
+  let ghCount = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('ea_gh_')) ghCount++;
+  }
+  if (ghCount === 0) {
+    log(R, 'warn', '⚠️ Aucune clé ea_gh_* — Feuilles de ghiyab vides');
+  } else {
+    log(R, 'ok', '✅ ' + ghCount + ' feuille(s) ghiyab trouvée(s)');
+  }
+
+  // ── 8. Instructions finales ──
+  section(R, '8. Prochaine étape');
+  log(R, 'info',
+    'Pour identifier l\'erreur exacte sur le site en ligne :\n\n' +
+    '1. Aller sur https://123yassine32.github.io/elawael-platform/dashboard.html\n' +
+    '2. Appuyer sur F12 → onglet "Console"\n' +
+    '3. Se connecter en tant qu\'admin\n' +
+    '4. Naviguer vers "Cockpit Directeur"\n' +
+    '5. Copier TOUS les messages rouges (erreurs) et les envoyer'
+  );
+
+  log(R, 'ok', '✅ Diagnostic terminé — ' + new Date().toLocaleString());
+}
+
+function copyResults() {
+  const text = document.getElementById('results').innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Résultats copiés !')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('Résultats copiés !');
+  });
+}
+</script>
+</body>
+</html>

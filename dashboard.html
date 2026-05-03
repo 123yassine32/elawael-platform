@@ -21143,21 +21143,37 @@ function getAdminData(){
 }
 
 function renderAdminDashboard(){
-  const d=getAdminData();
-  const setT=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  setT('adm-total-benef',d.totalBenef);setT('adm-total-itars',d.totalItars);
-  setT('adm-total-classes',d.totalClasses);setT('adm-total-dossiers',d.totalDossiers+'/'+d.totalBenef);
-  setT('adm-badge-benef',d.totalBenef);setT('adm-badge-classes',d.totalClasses);
-  setT('adm-badge-cadres',d.totalItars);setT('adm-badge-pei',d.peiTotal);
-  const autoAl=buildAdminAutoAlertes();
-  const unresolved=autoAl.filter(a=>a.type==='danger'||a.type==='warn').length;
-  const badge=document.getElementById('adm-badge-alertes');
-  if(badge){badge.textContent=unresolved;badge.style.display=unresolved>0?'inline-flex':'none';}
-  adminShowSection('overview');
-  // Update archive badge
-  const arcIdx = JSON.parse(localStorage.getItem('ea_archives_index') || '[]');
-  const arcBadge = document.getElementById('adm-badge-archives');
-  if(arcBadge) arcBadge.textContent = arcIdx.length;
+  try {
+    const d=getAdminData();
+    const setT=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setT('adm-total-benef',d.totalBenef);setT('adm-total-itars',d.totalItars);
+    setT('adm-total-classes',d.totalClasses);setT('adm-total-dossiers',d.totalDossiers+'/'+d.totalBenef);
+    setT('adm-badge-benef',d.totalBenef);setT('adm-badge-classes',d.totalClasses);
+    setT('adm-badge-cadres',d.totalItars);setT('adm-badge-pei',d.peiTotal);
+    const autoAl=buildAdminAutoAlertes();
+    const unresolved=autoAl.filter(a=>a.type==='danger'||a.type==='warn').length;
+    const badge=document.getElementById('adm-badge-alertes');
+    if(badge){badge.textContent=unresolved;badge.style.display=unresolved>0?'inline-flex':'none';}
+    adminShowSection('overview');
+    // Update archive badge
+    const arcIdx = JSON.parse(localStorage.getItem('ea_archives_index') || '[]');
+    const arcBadge = document.getElementById('adm-badge-archives');
+    if(arcBadge) arcBadge.textContent = arcIdx.length;
+  } catch(err) {
+    console.error('[renderAdminDashboard] CRASH CRITIQUE :', err);
+    // Afficher l'erreur directement dans l'overlay admin
+    const overlay = document.getElementById('admin-overlay');
+    if (overlay) {
+      const existing = overlay.querySelector('.admin-crash-global');
+      if (!existing) {
+        const div = document.createElement('div');
+        div.className = 'admin-crash-global';
+        div.style.cssText = 'margin:30px auto;max-width:700px;padding:20px 24px;background:#fef2f2;border:2px solid #fca5a5;border-radius:14px;font-size:12px;color:#dc2626;font-family:monospace;white-space:pre-wrap;line-height:1.7';
+        div.textContent = '❌ Erreur critique dans renderAdminDashboard :\n' + (err.message || err) + '\n\nStack :\n' + (err.stack || '—') + '\n\n→ Appuyez F12 → Console pour voir les détails complets.';
+        overlay.prepend(div);
+      }
+    }
+  }
 }
 
 function buildAdminAutoAlertes(){
