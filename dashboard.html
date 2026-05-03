@@ -3313,7 +3313,8 @@ body.is-consultant .sensitive-data::after {
   </div>
   <div class="sidebar-section" id="sidebar-pei-section" style="display:none">
     <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div>
-    <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-pei" onclick="showTab('accueil')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_pei">برنامج PEI</span></div>
+    <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📚</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div>
     <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> <span data-i18n="pei_nav_ghiyab">تتبع الحضور والغياب</span></div>
     <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣️</span> <span data-i18n="pei_nav_talabat">جدول الطلبات</span></div>
     <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> <span data-i18n="pei_nav_ri3aya">جدول الرعاية الذاتية</span></div>
@@ -5144,13 +5145,14 @@ var I18N = {
 
     // ── Section PEI sidebar ──
     pei_section_label: '🧩 Documents PEI',
-    pei_nav_barnamaj: 'Programme PEI',
-    pei_nav_ghiyab: 'Suivi présences / absences',
-    pei_nav_talabat: 'Planning des demandes',
-    pei_nav_ri3aya: 'Planning autonomie',
-    pei_nav_tan9it: 'Programme notation',
-    pei_nav_ta9yim: 'Évaluation ABLLS',
-    pei_nav_kpi: 'Statistiques de classe',
+    pei_nav_pei:      'Programme PEI',
+    pei_nav_barnamaj: 'Grand Programme',
+    pei_nav_ghiyab:   'Suivi présences / absences',
+    pei_nav_talabat:  'Planning des demandes',
+    pei_nav_ri3aya:   'Planning autonomie',
+    pei_nav_tan9it:   'Programme notation',
+    pei_nav_ta9yim:   'Évaluation ABLLS',
+    pei_nav_kpi:      'Statistiques de classe',
 
     // ── Vue Ghiyab ──
     ghiyab_title: '📅 Suivi des présences et absences',
@@ -6154,13 +6156,14 @@ var I18N = {
 
     // ── قائمة PEI ──
     pei_section_label: '🧩 وثائق الاشتغال',
+    pei_nav_pei:      'برنامج PEI',
     pei_nav_barnamaj: 'البرنامج الكبير',
-    pei_nav_ghiyab: 'تتبع الحضور والغياب',
-    pei_nav_talabat: 'جدول الطلبات',
-    pei_nav_ri3aya: 'جدول الرعاية الذاتية',
-    pei_nav_tan9it: 'برنامج التنقيط',
-    pei_nav_ta9yim: 'التقييم الأساسي (ABLLS)',
-    pei_nav_kpi: 'إحصائيات الأداء',
+    pei_nav_ghiyab:   'تتبع الحضور والغياب',
+    pei_nav_talabat:  'جدول الطلبات',
+    pei_nav_ri3aya:   'جدول الرعاية الذاتية',
+    pei_nav_tan9it:   'برنامج التنقيط',
+    pei_nav_ta9yim:   'التقييم الأساسي (ABLLS)',
+    pei_nav_kpi:      'إحصائيات الأداء',
 
     // ── واجهة الغياب ──
     ghiyab_title: '📅 تتبع الحضور والغياب',
@@ -8561,7 +8564,7 @@ function showTab(tab) {
   // Mettre à jour la sidebar : retirer active sur tous, puis activer le bon
   document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
   var navMap = {
-    'accueil':        'snav-0',
+    'accueil':        'snav-pei-pei',    // pour cadres PEI → highlight "برنامج PEI"
     'beneficiaires':  'snav-1',
     'alertes':        'snav-3',
     'saisie':         'snav-4',
