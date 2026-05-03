@@ -1,32 +1,86 @@
 rules_version = '2';
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 // RÈGLES FIRESTORE — ElAwail Digital Platform
-// CRITIQUE 2 (CLAUDE.md §4) — Sécurité des données
+// CLAUDE.md §4 Critique 1 — Sécurité maximale
 //
-// À copier dans : Firebase Console → Firestore → Règles
-// ═══════════════════════════════════════════════════════════
+// À copier dans : Firebase Console → Firestore Database → Règles
+// ═══════════════════════════════════════════════════════════════════
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Données personnelles par utilisateur ──────────────
-    // Chaque éducateur/admin accède uniquement à ses propres données
-    match /users/{uid}/{col}/{doc=**} {
-      allow read, write: if request.auth != null
-                         && request.auth.uid == uid;
+    // ── Helpers ──────────────────────────────────────────────────
+    // Vérifie que l'utilisateur est authentifié
+    function isAuth() {
+      return request.auth != null;
     }
 
-    // ── Nouveaux bénéficiaires (partagés) ─────────────────
-    // Tous les utilisateurs authentifiés peuvent lire/écrire
-    match /org_new_benef/{doc} {
-      allow read, write: if request.auth != null;
+    // Vérifie que l'utilisateur accède à ses propres données
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
     }
 
-    // ── Journal d'audit (partagé) ─────────────────────────
+    // Récupère le rôle de l'utilisateur connecté depuis Firestore
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Vérifie si l'utilisateur est admin
+    function isAdmin() {
+      return isAuth() && myRole() == 'admin';
+    }
+
+    // Vérifie si l'utilisateur est admin ou gestionnaire
+    function isAdminOrGestionnaire() {
+      return isAuth() && (myRole() == 'admin' || myRole() == 'gestionnaire');
+    }
+
+    // ── Profils utilisateurs ──────────────────────────────────────
+    // Lecture : tout utilisateur authentifié (nécessaire pour le panneau admin)
+    // Écriture : chacun sur son propre doc OU admin sur tous les docs
+    match /users/{uid} {
+      allow read:  if isAuth();
+      allow write: if isOwner(uid) || isAdmin();
+    }
+
+    // ── Synchronisation localStorage ↔ Firestore ─────────────────
+    // Structure : userData/{uid}/keys/{clé}
+    // Chaque utilisateur accède UNIQUEMENT à ses propres données
+    match /userData/{uid}/keys/{key} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // ── Journal d'audit ───────────────────────────────────────────
+    // Lecture : admin + gestionnaire (pour consultation)
+    // Écriture : tout utilisateur authentifié (pour enregistrer les actions)
     match /audit_logs/{doc} {
-      allow read, write: if request.auth != null;
+      allow read:  if isAdminOrGestionnaire();
+      allow write: if isAuth();
     }
 
-    // ── Refuser tout le reste ─────────────────────────────
+    // ── Demandes RH ───────────────────────────────────────────────
+    // Lecture : admin + gestionnaire
+    // Écriture : tout utilisateur authentifié (soumettre une demande)
+    match /rh_demandes/{doc} {
+      allow read:  if isAdminOrGestionnaire();
+      allow write: if isAuth();
+    }
+
+    // ── Recommandations pédagogiques ─────────────────────────────
+    // Lecture : tout utilisateur authentifié
+    // Écriture : tout utilisateur authentifié
+    match /recommandations/{doc} {
+      allow read, write: if isAuth();
+    }
+
+    // ── Ping Firebase (détecteur hors-ligne) ──────────────────────
+    // Lecture uniquement pour vérifier la connectivité
+    match /_ping/{doc} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    // ── Refuser TOUT le reste ─────────────────────────────────────
+    // Sécurité par défaut : accès zéro aux collections non déclarées
     match /{document=**} {
       allow read, write: if false;
     }
