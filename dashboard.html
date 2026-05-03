@@ -16941,6 +16941,9 @@ const BENEFICIAIRES_DGHOUGHI = [
 ]
 BENEFICIAIRES_DGHOUGHI.forEach(b => BENEFICIAIRES.push(b));
 
+/* ── Nettoyage défensif : retirer toute entrée null/undefined/invalide ── */
+BENEFICIAIRES = BENEFICIAIRES.filter(b => b != null && typeof b === 'object' && b.teacherId);
+
 /* ═══════════════════════════════════════════════════════════════════════
    DÉDUPLICATION BÉNÉFICIAIRES — VUES ADMIN UNIQUEMENT
    ───────────────────────────────────────────────────────────────────────
