@@ -3311,6 +3311,11 @@ body.is-consultant .sensitive-data::after {
     <div class="nav-item" id="snav-6" onclick="showTab('saisie');showSaisieTab('suivi')"><span class="nav-icon">📝</span> <span data-i18n="nav_suivi_short">Suivi quotidien</span></div>
     <div class="nav-item" id="snav-7" onclick="showTab('saisie');showSaisieTab('rapports')"><span class="nav-icon">📊</span> <span data-i18n="nav_rapports_short">Rapports</span></div>
   </div>
+  <div class="sidebar-section" id="sidebar-gestion-section">
+    <div class="sidebar-label">Gestion</div>
+    <div class="nav-item" id="snav-planning" onclick="showTab('planning')"><span class="nav-icon">📅</span> Planning hebdomadaire</div>
+    <div class="nav-item" id="snav-objectifs" onclick="showTab('objectifs')"><span class="nav-icon">🎯</span> Objectifs SMART</div>
+  </div>
   <div class="sidebar-section" id="sidebar-pei-section" style="display:none">
     <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div>
     <div class="nav-item pei-nav" id="snav-pei-pei" onclick="showTab('accueil')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_pei">برنامج PEI</span></div>
@@ -3345,7 +3350,7 @@ body.is-consultant .sensitive-data::after {
     <div class="topbar-right">
       <span class="topbar-tag" id="topbar-tag-main">💻 Informatique — Semestre 2</span>
       <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── -->
-      <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v2.7.0</span>
+      <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v2.8.0</span>
       <!-- ── Indicateur connexion Firebase ── -->
       <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
            style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite">
@@ -3376,6 +3381,8 @@ body.is-consultant .sensitive-data::after {
       <div class="main-tab" id="tab-alertes" onclick="showTab('alertes')" data-i18n="tab_alertes">🔔 <span data-i18n="nav_alertes_short">Alertes</span></div>
       <div class="main-tab" id="tab-saisie" onclick="showTab('saisie')" data-i18n="tab_saisie">✏️ Saisie</div>
       <div class="main-tab" id="tab-rh" onclick="showTab('rh')">📋 Mes demandes RH <span id="rh-badge" style="display:none;background:#dc2626;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:100px;margin-left:3px">!</span></div>
+      <div class="main-tab" id="tab-planning" onclick="showTab('planning')">📅 Planning</div>
+      <div class="main-tab" id="tab-objectifs" onclick="showTab('objectifs')">🎯 Objectifs SMART</div>
       <div class="main-tab" id="tab-recommandations" onclick="showTab('recommandations')" style="display:none">📬 Mes recommandations</div>
       <div class="main-tab" id="tab-profile" onclick="showTab('profile')" data-i18n="tab_profil">👤 Profil</div>
     </div>
@@ -3910,6 +3917,16 @@ body.is-consultant .sensitive-data::after {
           <div class="card">
             <div class="card-header"><div class="card-title">📝 Saisir une observation de suivi</div></div>
             <div class="card-body">
+              <!-- ── Templates de saisie rapide ── -->
+              <div style="margin-bottom:14px">
+                <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">⚡ Templates rapides</div>
+                <div style="display:flex;gap:7px;flex-wrap:wrap">
+                  <button onclick="applyTemplate('individuelle')" style="background:#eff6ff;color:#1b3a6b;border:1px solid #bfdbfe;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s" onmouseover="this.style.background='#1b3a6b';this.style.color='#fff'" onmouseout="this.style.background='#eff6ff';this.style.color='#1b3a6b'">📚 Séance individuelle</button>
+                  <button onclick="applyTemplate('groupe')" style="background:#f0fdfa;color:#0d9488;border:1px solid #99f6e4;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s" onmouseover="this.style.background='#0d9488';this.style.color='#fff'" onmouseout="this.style.background='#f0fdfa';this.style.color='#0d9488'">👥 Séance groupe</button>
+                  <button onclick="applyTemplate('incident')" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s" onmouseover="this.style.background='#dc2626';this.style.color='#fff'" onmouseout="this.style.background='#fef2f2';this.style.color='#dc2626'">🚨 Incident comportemental</button>
+                  <button onclick="applyTemplate('autonomie')" style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s" onmouseover="this.style.background='#7c3aed';this.style.color='#fff'" onmouseout="this.style.background='#f5f3ff';this.style.color='#7c3aed'">🌱 Autonomie</button>
+                </div>
+              </div>
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Bénéficiaire</label>
@@ -4293,6 +4310,152 @@ body.is-consultant .sensitive-data::after {
       </div>
 
     </div><!-- /view-rh -->
+
+    <!-- ════════ PLANNING HEBDOMADAIRE ════════ -->
+    <div id="view-planning" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-family:Sora,sans-serif;font-size:18px;font-weight:800">📅 Planning hebdomadaire</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px">Planifiez vos séances avec vos bénéficiaires</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button onclick="planNavWeek(-1)" style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text)">‹ Semaine préc.</button>
+          <span id="plan-week-label" style="font-weight:700;font-size:13px;color:var(--primary);min-width:180px;text-align:center"></span>
+          <button onclick="planNavWeek(1)" style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text)">Semaine suiv. ›</button>
+          <button onclick="planAujoudhui()" style="background:var(--primary);color:#fff;border:none;border-radius:9px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer">Aujourd'hui</button>
+        </div>
+      </div>
+
+      <!-- Grille 5 jours -->
+      <div id="plan-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px"></div>
+
+      <!-- Formulaire ajout séance (modal inline) -->
+      <div id="plan-form-wrap" style="display:none;margin-bottom:20px">
+        <div class="card" style="border-top:3px solid var(--primary)">
+          <div class="card-header">
+            <div class="card-title">➕ Nouvelle séance — <span id="plan-form-day-label" style="color:var(--primary)"></span></div>
+            <button onclick="document.getElementById('plan-form-wrap').style.display='none'" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Bénéficiaire</label>
+                <select id="plan-benef" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Heure</label>
+                <input type="time" id="plan-heure" value="09:00" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Durée</label>
+                <select id="plan-duree" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+                  <option value="30">30 min</option>
+                  <option value="45">45 min</option>
+                  <option value="60" selected>1 heure</option>
+                  <option value="90">1h30</option>
+                  <option value="120">2 heures</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Type de séance</label>
+                <select id="plan-type" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+                  <option>📚 Séance individuelle</option>
+                  <option>👥 Séance groupe</option>
+                  <option>📋 Évaluation PEI</option>
+                  <option>🌱 Autonomie</option>
+                  <option>🤝 Réunion famille</option>
+                  <option>📊 Bilan</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Statut</label>
+                <select id="plan-statut" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+                  <option value="planifie">📌 Planifiée</option>
+                  <option value="realise">✅ Réalisée</option>
+                  <option value="annule">❌ Annulée</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Objectif travaillé</label>
+                <input type="text" id="plan-objectif" placeholder="Ex : Communication fonctionnelle" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+            </div>
+            <div style="display:flex;gap:10px">
+              <button onclick="savePlanSeance()" style="background:var(--primary);color:#fff;border:none;border-radius:9px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer">💾 Enregistrer la séance</button>
+              <button onclick="document.getElementById('plan-form-wrap').style.display='none'" style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Légende -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:600;color:var(--muted)">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#dbeafe;border-radius:3px;display:inline-block"></span>Planifiée</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#dcfce7;border-radius:3px;display:inline-block"></span>Réalisée</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:#fee2e2;border-radius:3px;display:inline-block"></span>Annulée</span>
+      </div>
+    </div><!-- /view-planning -->
+
+    <!-- ════════ OBJECTIFS SMART ════════ -->
+    <div id="view-objectifs" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-family:Sora,sans-serif;font-size:18px;font-weight:800">🎯 Objectifs SMART</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px">Spécifique · Mesurable · Atteignable · Réaliste · Temporel</div>
+        </div>
+        <button onclick="openObjectifForm()" style="background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer">➕ Nouvel objectif</button>
+      </div>
+
+      <!-- Formulaire nouvel objectif -->
+      <div id="obj-form-wrap" style="display:none;margin-bottom:20px">
+        <div class="card" style="border-top:3px solid #7c3aed">
+          <div class="card-header">
+            <div class="card-title" style="color:#7c3aed">🎯 Définir un nouvel objectif SMART</div>
+            <button onclick="document.getElementById('obj-form-wrap').style.display='none'" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+              <div style="grid-column:span 2">
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Titre de l'objectif (Spécifique)</label>
+                <input type="text" id="obj-titre" placeholder="Ex : Améliorer le taux de présence à 85%" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Valeur cible (Mesurable)</label>
+                <input type="number" id="obj-cible" placeholder="Ex: 85" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Unité de mesure</label>
+                <select id="obj-unite" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+                  <option>%</option>
+                  <option>séances</option>
+                  <option>rapports</option>
+                  <option>objectifs PEI</option>
+                  <option>observations</option>
+                  <option>heures</option>
+                  <option>jours</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Valeur actuelle</label>
+                <input type="number" id="obj-actuel" placeholder="Ex: 72" value="0" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Deadline (Temporel)</label>
+                <input type="date" id="obj-deadline" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div style="grid-column:span 2">
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Description / Plan d'action</label>
+                <textarea id="obj-desc" placeholder="Comment allez-vous atteindre cet objectif ? Quelles actions concrètes ?" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;min-height:80px;resize:vertical"></textarea>
+              </div>
+            </div>
+            <button onclick="saveObjectif()" style="background:#7c3aed;color:#fff;border:none;border-radius:9px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer">💾 Enregistrer l'objectif</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste des objectifs -->
+      <div id="obj-list-wrap"></div>
+    </div><!-- /view-objectifs -->
 
     <!-- ════════ MES RECOMMANDATIONS (CONSULTANT) ════════ -->
     <div id="view-recommandations" style="display:none">
@@ -8659,7 +8822,7 @@ function showTab(tab) {
   // Masquer toutes les vues
   ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile',
    'jadwal-talabat','jadwal-ri3aya','tan9it','ta9yim-asasi','ghiyab','kpi-classe',
-   'rh','recommandations'].forEach(function(t) {
+   'rh','recommandations','planning','objectifs'].forEach(function(t) {
     var el = document.getElementById('view-' + t);
     if (el) el.style.display = 'none';
   });
@@ -8671,9 +8834,11 @@ function showTab(tab) {
   // Charger les données selon la vue
   if (tab === 'rh')              renderMyRHDemandes();
   if (tab === 'recommandations') renderMyRecommandations();
+  if (tab === 'planning')        { renderPlanning(); /* Peupler le select bénéficiaires */ const sel=document.getElementById('plan-benef'); if(sel&&CURRENT_USER){ const mb=BENEFICIAIRES.filter(b=>b.teacherId===CURRENT_USER.teacherId); sel.innerHTML='<option value="">— Choisir —</option>'+mb.map(b=>`<option value="${b.nom}">${b.nom}</option>`).join(''); } }
+  if (tab === 'objectifs')       renderObjectifs();
 
   // Mettre à jour les onglets principaux (main-tabs)
-  ['accueil','beneficiaires','alertes','saisie','profile','rh','recommandations'].forEach(function(t) {
+  ['accueil','beneficiaires','alertes','saisie','profile','rh','recommandations','planning','objectifs'].forEach(function(t) {
     var el = document.getElementById('tab-' + t);
     if (el) el.className = 'main-tab' + (t === tab ? ' active' : '');
   });
@@ -8691,7 +8856,9 @@ function showTab(tab) {
     'jadwal-ri3aya':  'snav-pei-ri3aya',
     'tan9it':         'snav-pei-tan9it',
     'ta9yim-asasi':   'snav-pei-ta9yim',
-    'kpi-classe':     'snav-pei-kpi'
+    'kpi-classe':     'snav-pei-kpi',
+    'planning':       'snav-planning',
+    'objectifs':      'snav-objectifs'
   };
   var activeNav = document.getElementById(navMap[tab]);
   if (activeNav) activeNav.classList.add('active');
@@ -20389,7 +20556,8 @@ const SYNC_KEYS = [
   'ea_presences','ea_notes','ea_suivis','ea_rapports','ea_alertes',
   'ea_risques_traites','ea_rh_contrats','ea_rh_formations',
   'ea_audit_log','ea_pei_statuses','ea_documents',
-  'ea_pei_criteres','ea_pei_notes','ea_vacances'
+  'ea_pei_criteres','ea_pei_notes','ea_vacances',
+  'ea_planning','ea_objectifs_smart'
 ];
 
 /**
@@ -21498,6 +21666,347 @@ function runSmartNotifications(){
 
   /* Mettre à jour le badge alertes */
   if(typeof updateAlertesBadge==='function') updateAlertesBadge();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMPLATES DE SUIVI RAPIDE
+   Pré-remplit le formulaire de suivi selon le type de séance
+══════════════════════════════════════════════════════════════ */
+function applyTemplate(type){
+  const TEMPLATES = {
+    individuelle:{
+      dom:'Théorique', status:'✅ Réussi',
+      supp:'Fiche d\'activité, matériel adapté',
+      obs:'Séance individuelle — L\'apprenant(e) a travaillé sur [objectif].\n\n'
+        +'Comportement observé : [décrire le comportement].\n'
+        +'Progrès réalisés : [décrire les acquis].\n'
+        +'Points à renforcer : [décrire les difficultés].\n'
+        +'Recommandations pour la prochaine séance : [actions].'
+    },
+    groupe:{
+      dom:'Pratique', status:'✅ Réussi',
+      supp:'Supports visuels, matériel de groupe',
+      obs:'Séance en groupe — [nombre] bénéficiaires présents.\n\n'
+        +'Dynamique de groupe : [description de la dynamique].\n'
+        +'Participation de l\'apprenant(e) : [niveau de participation].\n'
+        +'Interactions sociales observées : [description].\n'
+        +'Progrès collectifs : [acquis du groupe].\n'
+        +'Suivi individuel nécessaire : [oui/non — pourquoi].'
+    },
+    incident:{
+      dom:'Comportement', status:'⚠️ Difficultés',
+      supp:'',
+      obs:'INCIDENT COMPORTEMENTAL — [heure]\n\n'
+        +'Description de l\'incident : [décrire précisément].\n'
+        +'Facteur déclencheur identifié : [décrire le contexte].\n'
+        +'Comportement de l\'apprenant(e) : [décrire].\n'
+        +'Intervention appliquée : [stratégie utilisée].\n'
+        +'Résultat de l\'intervention : [efficace / partiellement / non].\n'
+        +'Suivi recommandé : [actions à prendre].\n'
+        +'Famille informée : [oui / non].'
+    },
+    autonomie:{
+      dom:'Social', status:'🔄 En cours',
+      supp:'Grille d\'observation autonomie, checklist',
+      obs:'Séance d\'autonomie — Compétence ciblée : [compétence].\n\n'
+        +'Niveau d\'autonomie observé : [totalement / partiellement / avec aide].\n'
+        +'Tâche réalisée : [description de la tâche].\n'
+        +'Aide apportée : [type d\'aide — physique / verbale / visuelle].\n'
+        +'Objectif prochain : [prochaine étape d\'autonomisation].'
+    }
+  };
+  const tmpl=TEMPLATES[type]; if(!tmpl) return;
+  /* Domaine */
+  const domSel=document.getElementById('s-dom');
+  if(domSel){ for(let i=0;i<domSel.options.length;i++){ if(domSel.options[i].text.includes(tmpl.dom)){domSel.selectedIndex=i;break;} } }
+  /* Statut */
+  const stSel=document.getElementById('s-status');
+  if(stSel){ for(let i=0;i<stSel.options.length;i++){ if(stSel.options[i].text===tmpl.status){stSel.selectedIndex=i;break;} } }
+  /* Observation */
+  const obsEl=document.getElementById('s-obs');
+  if(obsEl){ obsEl.value=tmpl.obs; obsEl.focus(); }
+  /* Supports */
+  const suppEl=document.getElementById('s-supp');
+  if(suppEl) suppEl.value=tmpl.supp;
+  /* Date = aujourd'hui si vide */
+  const dateEl=document.getElementById('s-date');
+  if(dateEl&&!dateEl.value) dateEl.value=new Date().toISOString().split('T')[0];
+  showToast(`📋 Template "${type}" appliqué — personnalisez les [crochets]`,'#0d9488');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PLANNING HEBDOMADAIRE
+   Gestion des séances planifiées par semaine
+══════════════════════════════════════════════════════════════ */
+let _planCurrentMonday = null; /* Date du lundi affiché */
+let _planAddDate = null;       /* Date sélectionnée pour l'ajout */
+
+/* Retourner le lundi de la semaine contenant `date` */
+function _planGetMonday(date){
+  const d=new Date(date);
+  const day=d.getDay();
+  const diff=d.getDate()-(day===0?6:day-1);
+  d.setDate(diff); d.setHours(0,0,0,0);
+  return d;
+}
+
+/* Formater YYYY-MM-DD */
+function _planFmt(date){ return date.toISOString().split('T')[0]; }
+
+/* Naviguer entre semaines */
+function planNavWeek(delta){
+  if(!_planCurrentMonday) _planCurrentMonday=_planGetMonday(new Date());
+  _planCurrentMonday=new Date(_planCurrentMonday.getTime()+delta*7*24*60*60*1000);
+  renderPlanning();
+}
+
+/* Aller à la semaine courante */
+function planAujoudhui(){
+  _planCurrentMonday=_planGetMonday(new Date());
+  renderPlanning();
+}
+
+/* Ouvrir le formulaire d'ajout pour un jour donné */
+function planOpenForm(dateStr){
+  _planAddDate=dateStr;
+  const wrap=document.getElementById('plan-form-wrap');
+  const lbl=document.getElementById('plan-form-day-label');
+  if(!wrap||!lbl) return;
+  const d=new Date(dateStr+'T00:00:00');
+  const jours=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  lbl.textContent=jours[d.getDay()]+' '+d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  /* Peupler le select bénéficiaires */
+  const sel=document.getElementById('plan-benef');
+  if(sel&&CURRENT_USER){
+    const myBenef=BENEFICIAIRES.filter(b=>b.teacherId===CURRENT_USER.teacherId);
+    sel.innerHTML='<option value="">— Choisir un bénéficiaire —</option>'
+      +myBenef.map(b=>`<option value="${b.nom}">${b.nom}</option>`).join('');
+  }
+  wrap.style.display='block';
+  wrap.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* Enregistrer une séance dans le planning */
+function savePlanSeance(){
+  if(!_planAddDate){ showToast('⚠️ Sélectionnez un jour d\'abord','#d97706'); return; }
+  const benef=document.getElementById('plan-benef')?.value;
+  const heure=document.getElementById('plan-heure')?.value||'09:00';
+  const duree=document.getElementById('plan-duree')?.value||'60';
+  const type=document.getElementById('plan-type')?.value||'📚 Séance individuelle';
+  const statut=document.getElementById('plan-statut')?.value||'planifie';
+  const objectif=document.getElementById('plan-objectif')?.value?.trim()||'';
+  if(!benef){ showToast('⚠️ Choisissez un bénéficiaire','#d97706'); return; }
+  const planning=loadData('ea_planning')||[];
+  planning.push({ id:Date.now(), date:_planAddDate, benef, heure, duree:parseInt(duree), type, statut, objectif,
+    teacher:CURRENT_USER?.name||'', createdAt:new Date().toISOString() });
+  saveData('ea_planning',planning);
+  auditLog('planning','Séance planifiée',`${benef} · ${_planAddDate} · ${heure} · ${type}`);
+  document.getElementById('plan-form-wrap').style.display='none';
+  document.getElementById('plan-objectif').value='';
+  renderPlanning();
+  showToast('📅 Séance planifiée !','#1b3a6b');
+}
+
+/* Supprimer une séance */
+function deletePlanSeance(id){
+  const planning=(loadData('ea_planning')||[]).filter(s=>s.id!==id);
+  saveData('ea_planning',planning);
+  renderPlanning();
+  showToast('🗑 Séance supprimée','#64748b');
+}
+
+/* Changer statut séance */
+function togglePlanStatut(id){
+  const planning=loadData('ea_planning')||[];
+  const idx=planning.findIndex(s=>s.id===id);
+  if(idx<0) return;
+  const cycle=['planifie','realise','annule'];
+  const cur=planning[idx].statut||'planifie';
+  planning[idx].statut=cycle[(cycle.indexOf(cur)+1)%cycle.length];
+  saveData('ea_planning',planning);
+  renderPlanning();
+}
+
+/* Rendu de la grille hebdomadaire */
+function renderPlanning(){
+  if(!_planCurrentMonday) _planCurrentMonday=_planGetMonday(new Date());
+  const lundi=_planCurrentMonday;
+  const vendredi=new Date(lundi.getTime()+4*24*60*60*1000);
+  const lbl=document.getElementById('plan-week-label');
+  if(lbl){
+    lbl.textContent='Semaine du '+lundi.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})
+      +' au '+vendredi.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  }
+  const grid=document.getElementById('plan-grid');
+  if(!grid) return;
+  const planning=loadData('ea_planning')||[];
+  const myBenefNoms=CURRENT_USER?new Set(BENEFICIAIRES.filter(b=>b.teacherId===CURRENT_USER.teacherId).map(b=>b.nom)):new Set();
+  const today=_planFmt(new Date());
+  const JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const COLORS_ST={planifie:{bg:'#dbeafe',border:'#93c5fd',txt:'#1d4ed8',label:'📌 Planifiée'},
+    realise:{bg:'#dcfce7',border:'#86efac',txt:'#15803d',label:'✅ Réalisée'},
+    annule:{bg:'#fee2e2',border:'#fca5a5',txt:'#b91c1c',label:'❌ Annulée'}};
+  let html='';
+  for(let i=0;i<5;i++){
+    const day=new Date(lundi.getTime()+i*24*60*60*1000);
+    const ds=_planFmt(day);
+    const isToday=ds===today;
+    const daySeances=planning.filter(s=>s.date===ds&&(!myBenefNoms.size||myBenefNoms.has(s.benef)))
+      .sort((a,z)=>a.heure.localeCompare(z.heure));
+    const cs=isToday?'border:2px solid var(--primary);':'border:1px solid var(--border);';
+    html+=`<div style="background:var(--card);border-radius:12px;${cs}padding:0;overflow:hidden">
+      <div style="background:${isToday?'var(--primary)':'var(--bg)'};padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-weight:800;font-size:13px;color:${isToday?'#fff':'var(--text)'}">
+            ${JOURS[i]}${isToday?' 🔵':''}
+          </div>
+          <div style="font-size:11px;color:${isToday?'rgba(255,255,255,0.75)':'var(--muted)'}">
+            ${day.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}
+          </div>
+        </div>
+        <button onclick="planOpenForm('${ds}')" style="background:${isToday?'rgba(255,255,255,0.2)':'var(--card)'};border:1px solid ${isToday?'rgba(255,255,255,0.3)':'var(--border)'};border-radius:7px;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:${isToday?'#fff':'var(--text)'}">+</button>
+      </div>
+      <div style="padding:10px;display:flex;flex-direction:column;gap:6px;min-height:80px">`;
+    if(!daySeances.length){
+      html+=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:12px 0;font-style:italic">Aucune séance</div>`;
+    } else {
+      daySeances.forEach(s=>{
+        const cs2=COLORS_ST[s.statut]||COLORS_ST.planifie;
+        html+=`<div style="background:${cs2.bg};border:1px solid ${cs2.border};border-radius:8px;padding:7px 9px;cursor:pointer" onclick="togglePlanStatut(${s.id})" title="Cliquer pour changer le statut">
+          <div style="font-size:11px;font-weight:800;color:${cs2.txt};display:flex;align-items:center;justify-content:space-between">
+            <span>${s.heure} (${s.duree}min)</span>
+            <button onclick="event.stopPropagation();deletePlanSeance(${s.id})" style="background:none;border:none;cursor:pointer;font-size:13px;color:${cs2.txt};opacity:.6;padding:0;line-height:1">✕</button>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${s.benef}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">${s.type}</div>
+          ${s.objectif?`<div style="font-size:10px;color:${cs2.txt};margin-top:2px;font-style:italic">${s.objectif.substring(0,35)}${s.objectif.length>35?'…':''}</div>`:''}
+        </div>`;
+      });
+    }
+    html+='</div></div>';
+  }
+  grid.innerHTML=html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   OBJECTIFS SMART
+   Définir, suivre et mesurer des objectifs SMART personnels
+══════════════════════════════════════════════════════════════ */
+function openObjectifForm(){
+  const w=document.getElementById('obj-form-wrap');
+  if(!w) return;
+  w.style.display=w.style.display==='none'?'block':'none';
+  /* Date deadline = fin du mois par défaut */
+  const dl=document.getElementById('obj-deadline');
+  if(dl&&!dl.value){
+    const d=new Date(); d.setMonth(d.getMonth()+1,0);
+    dl.value=d.toISOString().split('T')[0];
+  }
+}
+
+function saveObjectif(){
+  const titre=document.getElementById('obj-titre')?.value?.trim();
+  const cible=parseFloat(document.getElementById('obj-cible')?.value||0);
+  const actuel=parseFloat(document.getElementById('obj-actuel')?.value||0);
+  const unite=document.getElementById('obj-unite')?.value||'%';
+  const deadline=document.getElementById('obj-deadline')?.value||'';
+  const desc=document.getElementById('obj-desc')?.value?.trim()||'';
+  if(!titre){ showToast('⚠️ Saisissez un titre pour l\'objectif','#d97706'); return; }
+  if(!cible){ showToast('⚠️ Saisissez une valeur cible','#d97706'); return; }
+  const objectives=loadData('ea_objectifs_smart')||[];
+  objectives.unshift({
+    id:Date.now(), titre, cible, actuel, unite, deadline, desc,
+    teacherId:CURRENT_USER?.teacherId||'',
+    teacher:CURRENT_USER?.name||'',
+    statut:'en_cours',
+    createdAt:new Date().toISOString()
+  });
+  saveData('ea_objectifs_smart',objectives);
+  auditLog('objectif','Objectif SMART créé',`${titre} → cible ${cible}${unite} · deadline ${deadline}`);
+  /* Reset form */
+  ['obj-titre','obj-cible','obj-actuel','obj-deadline','obj-desc'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('obj-form-wrap').style.display='none';
+  renderObjectifs();
+  showToast('🎯 Objectif SMART enregistré !','#7c3aed');
+}
+
+function updateObjectifValue(id, delta){
+  const objectives=loadData('ea_objectifs_smart')||[];
+  const idx=objectives.findIndex(o=>o.id===id);
+  if(idx<0) return;
+  objectives[idx].actuel=Math.max(0,Math.min(objectives[idx].actuel+delta, objectives[idx].cible*1.5));
+  /* Auto-complétion */
+  if(objectives[idx].actuel>=objectives[idx].cible) objectives[idx].statut='atteint';
+  objectives[idx].updatedAt=new Date().toISOString();
+  saveData('ea_objectifs_smart',objectives);
+  renderObjectifs();
+}
+
+function deleteObjectif(id){
+  const objectives=(loadData('ea_objectifs_smart')||[]).filter(o=>o.id!==id);
+  saveData('ea_objectifs_smart',objectives);
+  renderObjectifs();
+  showToast('🗑 Objectif supprimé','#64748b');
+}
+
+function renderObjectifs(){
+  const wrap=document.getElementById('obj-list-wrap');
+  if(!wrap) return;
+  const teacherId=CURRENT_USER?.teacherId||'';
+  const objectives=(loadData('ea_objectifs_smart')||[]).filter(o=>!o.teacherId||o.teacherId===teacherId);
+  if(!objectives.length){
+    wrap.innerHTML=`<div style="text-align:center;padding:48px 24px;background:var(--card);border-radius:14px;border:2px dashed var(--border)">
+      <div style="font-size:48px;margin-bottom:12px">🎯</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px">Aucun objectif SMART défini</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">Définissez vos objectifs professionnels pour le semestre.<br>Un objectif SMART est Spécifique, Mesurable, Atteignable, Réaliste et Temporel.</div>
+    </div>`;
+    return;
+  }
+  wrap.innerHTML=objectives.map(o=>{
+    const pct=o.cible>0?Math.min(Math.round(o.actuel/o.cible*100),100):0;
+    const color=o.statut==='atteint'?'#059669':pct>=60?'#d97706':'#7c3aed';
+    const bg=o.statut==='atteint'?'#ecfdf5':pct>=60?'#fffbeb':'#f5f3ff';
+    const border=o.statut==='atteint'?'#bbf7d0':pct>=60?'#fde68a':'#ddd6fe';
+    const now=new Date(); const dl=o.deadline?new Date(o.deadline):null;
+    const joursRestants=dl?Math.ceil((dl-now)/(24*60*60*1000)):null;
+    const dlColor=joursRestants!==null?(joursRestants<7?'#dc2626':joursRestants<30?'#d97706':'#059669'):'#64748b';
+    return `<div style="background:${bg};border:2px solid ${border};border-radius:14px;padding:20px;margin-bottom:14px;transition:all .2s">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+            ${o.statut==='atteint'?'✅':pct>=60?'🔄':'🎯'} ${o.titre}
+            ${o.statut==='atteint'?`<span style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:800;padding:2px 10px;border-radius:100px">ATTEINT 🎉</span>`:''}
+          </div>
+          ${o.desc?`<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px">${o.desc.substring(0,120)}${o.desc.length>120?'…':''}</div>`:''}
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:11px;font-weight:700;color:var(--muted)">
+            ${o.deadline?`<span style="color:${dlColor}">📅 ${joursRestants>0?joursRestants+' jours restants':'Échu'} — ${o.deadline}</span>`:''}
+            <span>👤 ${o.teacher||'Moi'}</span>
+          </div>
+        </div>
+        <div style="text-align:center;flex-shrink:0">
+          <div style="font-family:Sora,sans-serif;font-size:36px;font-weight:900;color:${color};line-height:1">${pct}%</div>
+          <div style="font-size:11px;color:${color};font-weight:700">${o.actuel} / ${o.cible} ${o.unite}</div>
+        </div>
+      </div>
+      <!-- Barre de progression -->
+      <div style="background:rgba(0,0,0,0.08);border-radius:100px;height:8px;overflow:hidden;margin-bottom:14px">
+        <div style="height:100%;border-radius:100px;background:${color};width:${pct}%;transition:width .6s"></div>
+      </div>
+      <!-- Actions -->
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:11px;font-weight:700;color:var(--muted)">Mettre à jour :</span>
+        <button onclick="updateObjectifValue(${o.id},-1)" style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)">−1</button>
+        <button onclick="updateObjectifValue(${o.id},1)" style="background:${color};color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer">+1</button>
+        <button onclick="updateObjectifValue(${o.id},5)" style="background:${color};color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer">+5</button>
+        <button onclick="updateObjectifValue(${o.id},10)" style="background:${color};color:#fff;border:none;border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer">+10</button>
+        <div style="margin-left:auto">
+          <button onclick="deleteObjectif(${o.id})" style="background:none;border:1px solid #fecaca;border-radius:7px;padding:4px 10px;font-size:11px;cursor:pointer;color:#dc2626">🗑 Supprimer</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* ── Ajouter une alerte intelligente (sans doublon) ── */
