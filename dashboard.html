@@ -3532,16 +3532,34 @@ body.is-consultant .sensitive-data::after {
           </div>
         </div>
         <!-- Stats rapides -->
-        <div id="gh-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px"></div>
-        <!-- Grille calendrier -->
+        <div id="gh-stats" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px"></div>
+        <!-- Grille jours (1→31) -->
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
           <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
             <span style="font-weight:800;font-size:14px" data-i18n="ghiyab_tableau_title">📅 جدول الحضور اليومي</span>
-            <div style="display:flex;gap:12px;font-size:12px">
-              <span data-i18n="ghiyab_present">✅ حاضر</span><span data-i18n="ghiyab_absent_excuse">❌ غائب بعذر</span><span data-i18n="ghiyab_absent_nxcuse">⛔ غائب بدون عذر</span><span data-i18n="ghiyab_malade">🏥 مرض</span>
+            <div style="display:flex;gap:10px;font-size:12px;flex-wrap:wrap">
+              <span data-i18n="ghiyab_present">✅ حاضر</span>
+              <span data-i18n="ghiyab_absent_excuse">❌ غائب بعذر</span>
+              <span data-i18n="ghiyab_absent_nxcuse">⛔ غائب بدون عذر</span>
+              <span data-i18n="ghiyab_malade">🏥 مرض</span>
+              <span data-i18n="ghiyab_vacances">🏖️ عطلة</span>
             </div>
           </div>
           <div id="gh-table" style="overflow-x:auto;padding:14px"></div>
+        </div>
+        <!-- Calendrier mensuel des présences/absences -->
+        <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05);margin-top:16px">
+          <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <span style="font-weight:800;font-size:14px">📆 التقويم الشهري</span>
+            <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap;align-items:center">
+              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">✅ حاضر</span>
+              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">❌ بعذر</span>
+              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">⛔ بدون عذر</span>
+              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">🏥 مرض</span>
+              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">🏖️ عطلة</span>
+            </div>
+          </div>
+          <div id="gh-calendar" style="padding:16px"></div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveGhiyab()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="ghiyab_btn_save">💾 حفظ</button>
@@ -3583,13 +3601,16 @@ body.is-consultant .sensitive-data::after {
           </div>
         </div>
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
-          <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:10px">
+          <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_seul">لوحده</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">+</span>
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_avec_aide">بمساعدة</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">~</span>
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_ne_demande_pas">لا يطلب</span>
             <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">−</span>
+            <span style="width:1px;height:16px;background:rgba(255,255,255,.3)"></span>
+            <span style="font-size:14px;font-weight:800">🏖️ عطلة</span>
+            <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">🏖</span>
           </div>
           <div id="jt-table-container" style="overflow-x:auto"></div>
         </div>
@@ -3611,10 +3632,13 @@ body.is-consultant .sensitive-data::after {
           </div>
         </div>
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
-          <div style="padding:14px 18px;background:#059669;color:#fff;display:flex;align-items:center;gap:10px">
+          <div style="padding:14px 18px;background:#059669;color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_seul">لوحده</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">+</span>
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_avec_aide">بمساعدة</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">~</span>
             <span style="font-size:14px;font-weight:800" data-i18n="jadwal_ne_fait_pas">لا يؤدي</span><span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">−</span>
+            <span style="width:1px;height:16px;background:rgba(255,255,255,.3)"></span>
+            <span style="font-size:14px;font-weight:800">🏖️ عطلة</span>
+            <span style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:100px;font-size:12px">🏖</span>
           </div>
           <div id="rd-table-container" style="overflow-x:auto"></div>
         </div>
@@ -3638,7 +3662,7 @@ body.is-consultant .sensitive-data::after {
         <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05)">
           <div style="padding:14px 18px;background:#7c3aed;color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <span style="font-weight:800;font-size:14px">📊 تنقيط الأهداف اليومي</span>
-            <span style="font-size:12px;opacity:0.8">✅ أتقن &nbsp;|&nbsp; 🔄 بمساعدة &nbsp;|&nbsp; ⭕ لم يحقق</span>
+            <span style="font-size:12px;opacity:0.8">✅ أتقن &nbsp;|&nbsp; 🔄 بمساعدة &nbsp;|&nbsp; ⭕ لم يحقق &nbsp;|&nbsp; 🏖️ عطلة</span>
           </div>
           <div id="tn-table-container" style="overflow-x:auto"></div>
         </div>
@@ -5246,6 +5270,7 @@ var I18N = {
     ghiyab_absent_excuse: '❌ Absent (excusé)',
     ghiyab_absent_nxcuse: '⛔ Absent (non excusé)',
     ghiyab_malade: '🏥 Malade',
+    ghiyab_vacances: '🏖️ Vacances',
     ghiyab_btn_save: '💾 Sauvegarder',
     ghiyab_btn_rapport: '📄 Rapport d\'absences',
     ghiyab_sijil_title: '📊 Registre global des absences — Année scolaire 2025-2026',
@@ -6257,6 +6282,7 @@ var I18N = {
     ghiyab_absent_excuse: '❌ غائب بعذر',
     ghiyab_absent_nxcuse: '⛔ غائب بدون عذر',
     ghiyab_malade: '🏥 مرض',
+    ghiyab_vacances: '🏖️ عطلة',
     ghiyab_btn_save: '💾 حفظ',
     ghiyab_btn_rapport: '📄 تقرير الغياب',
     ghiyab_sijil_title: '📊 سجل الغياب الإجمالي — السنة الدراسية 2025-2026',
@@ -19087,7 +19113,7 @@ function renderJadwalTalabat(){
   html+=`</tr></thead><tbody>`;
   TALABAT_ITEMS.forEach((item,ri)=>{
     html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:#f8fafc;white-space:nowrap">${ri+1}. ${item}</td>`;
-    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleJT('${key}','${k}',this)">${v}</td>`;}
+    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleJT('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
   html+=`</tbody></table>`;
@@ -19095,7 +19121,7 @@ function renderJadwalTalabat(){
   window._jtKey=key;
 
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);}
-function cycleJT(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','+','~','-'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
+function cycleJT(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','+','~','-','🏖️'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
 function saveJadwalTalabat(){showToast('✅ تم الحفظ تلقائياً عند كل نقرة','#059669');}
 function clearJadwalTalabat(){showConfirm('مسح بيانات هذا الشهر؟',()=>{if(window._jtKey){localStorage.removeItem(window._jtKey);renderJadwalTalabat();}});}
 
@@ -19124,7 +19150,7 @@ function renderJadwalRi3aya(){
   html+=`</tr></thead><tbody>`;
   RI3AYA_ITEMS.forEach((item,ri)=>{
     html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:#f0fdf4;white-space:nowrap">${ri+1}. ${item}</td>`;
-    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleRD('${key}','${k}',this)">${v}</td>`;}
+    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleRD('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
   html+=`</tbody></table>`;
@@ -19132,7 +19158,7 @@ function renderJadwalRi3aya(){
   window._rdKey=key;
 
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);}
-function cycleRD(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','+','~','-'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
+function cycleRD(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','+','~','-','🏖️'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
 function saveJadwalRi3aya(){showToast('✅ تم الحفظ تلقائياً عند كل نقرة','#059669');}
 function clearJadwalRi3aya(){showConfirm('مسح بيانات هذا الشهر؟',()=>{if(window._rdKey){localStorage.removeItem(window._rdKey);renderJadwalRi3aya();}});}
 
@@ -19163,7 +19189,7 @@ function renderTan9it(){
     html+=`<tr>
       <td style="padding:6px 10px;border:1px solid var(--border);text-align:center"><span style="background:${obj.color}20;color:${obj.color};font-weight:800;font-size:10px;padding:2px 6px;border-radius:5px">${obj.code}</span></td>
       <td style="padding:6px 10px;border:1px solid var(--border);font-size:11px;font-weight:600;direction:rtl">${obj.nom.substring(0,50)}</td>`;
-    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'✅':'#dcfce7','🔄':'#fef3c7','⭕':'#fee2e2'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-size:12px" onclick="cycleTN('${key}','${k}',this)">${v}</td>`;}
+    for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'✅':'#dcfce7','🔄':'#fef3c7','⭕':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-size:12px" onclick="cycleTN('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
   html+=`</tbody></table>`;
@@ -19171,7 +19197,7 @@ function renderTan9it(){
   window._tnKey=key;
 
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);}
-function cycleTN(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','✅','🔄','⭕'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'✅':'#dcfce7','🔄':'#fef3c7','⭕':'#fee2e2'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
+function cycleTN(key,k,el){const s=JSON.parse(localStorage.getItem(key)||'{}');const c=['','✅','🔄','⭕','🏖️'];const n=c[(c.indexOf(s[k]||'')+1)%c.length];s[k]=n;localStorage.setItem(key,JSON.stringify(s));const bg={'✅':'#dcfce7','🔄':'#fef3c7','⭕':'#fee2e2','🏖️':'#fff7ed'}[n]||'transparent';el.style.background=bg;el.textContent=n;}
 function saveTan9it(){showToast('✅ تم الحفظ تلقائياً عند كل نقرة','#059669');}
 
 // ── TA9YIM ASASI — ABLLS-R ──
@@ -19248,12 +19274,13 @@ function saveTa9yimNotes(key,nk,val){
 // ════════════════════════════════════════════════════════
 // GHIYAB — تتبع الحضور والغياب
 // ════════════════════════════════════════════════════════
-const GHIYAB_STATES = ['', '✅', '❌', '⛔', '🏥'];
+const GHIYAB_STATES = ['', '✅', '❌', '⛔', '🏥', '🏖️'];
 const GHIYAB_LABELS = {
   '✅':['حاضر','#dcfce7','#059669'],
   '❌':['غائب بعذر','#fef3c7','#d97706'],
   '⛔':['غائب بدون عذر','#fee2e2','#dc2626'],
   '🏥':['مرض','#ede9fe','#7c3aed'],
+  '🏖️':['عطلة','#fff7ed','#d97706'],
   '':['','transparent','var(--muted)']
 };
 
@@ -19266,15 +19293,17 @@ function renderGhiyab(){
   const key=`ea_gh_${benef}_${year}_${month}`;
   const saved=JSON.parse(localStorage.getItem(key)||'{}');
 
-  // Compute stats
-  let hadir=0,ghayibAdhour=0,ghayibBla=0,marad=0;
+  // Compute stats (🏖️ عطلة exclue du total de présence)
+  let hadir=0,ghayibAdhour=0,ghayibBla=0,marad=0,vacance=0;
   for(let d=1;d<=days;d++){
     const v=saved[d]||'';
     if(v==='✅')hadir++;
     else if(v==='❌')ghayibAdhour++;
     else if(v==='⛔')ghayibBla++;
     else if(v==='🏥')marad++;
+    else if(v==='🏖️')vacance++;
   }
+  /* Exclure les jours de vacances du calcul du taux de présence */
   const total=hadir+ghayibAdhour+ghayibBla+marad;
   const pctHadir=total?Math.round(hadir/total*100):0;
 
@@ -19294,6 +19323,10 @@ function renderGhiyab(){
     <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:14px;text-align:center;border-top:3px solid var(--primary)">
       <div style="font-size:28px;font-weight:900;color:var(--primary);font-family:Sora,sans-serif">${pctHadir}%</div>
       <div style="font-size:11px;font-weight:700;color:var(--muted)">نسبة الحضور</div>
+    </div>
+    <div style="background:#fff7ed;border-radius:10px;border:1px solid #fde68a;padding:14px;text-align:center;border-top:3px solid #d97706">
+      <div style="font-size:28px;font-weight:900;color:#d97706;font-family:Sora,sans-serif">${vacance}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted)">🏖️ أيام العطلة</div>
     </div>`;
 
   // Calendar grid
@@ -19312,9 +19345,93 @@ function renderGhiyab(){
   html+=`</tr></tbody></table>`;
   document.getElementById('gh-table').innerHTML=html;
   window._ghKey=key;
+  /* Rendu du calendrier mensuel */
+  renderGhiyabCalendar(benef, month, year, saved);
   renderSijilGhiyabTotal();
 
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);}
+
+/* ════════════════════════════════════════════════════════════════════
+   CALENDRIER MENSUEL — تتبع الحضور والغياب (vue calendrier)
+   Affiche chaque jour du mois comme une cellule colorée selon le statut
+   ════════════════════════════════════════════════════════════════════ */
+function renderGhiyabCalendar(benef, month, year, saved) {
+  const container = document.getElementById('gh-calendar');
+  if (!container) return;
+
+  const daysInMonth = getDaysInMonth(year, month);
+  /* Premier jour de la semaine (Lundi = 0) */
+  let startDow = new Date(year, parseInt(month) - 1, 1).getDay();
+  startDow = (startDow + 6) % 7;
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const MOIS_AR = ['','يناير','فبراير','مارس','أبريل','ماي','يونيو','يوليوز','غشت','شتنبر','أكتوبر','نونبر','دجنبر'];
+  const JOURS_AR = ['الإث','الثل','الأر','الخم','الجم','السب','الأح'];
+
+  /* Mapping statut → couleurs */
+  const COL_BG  = {'✅':'#dcfce7','❌':'#fef3c7','⛔':'#fee2e2','🏥':'#ede9fe','🏖️':'#fff7ed','':'#f8fafc'};
+  const COL_BDR = {'✅':'#86efac','❌':'#fde68a','⛔':'#fca5a5','🏥':'#c4b5fd','🏖️':'#fde68a','':'var(--border)'};
+  const COL_TXT = {'✅':'#059669','❌':'#d97706','⛔':'#dc2626','🏥':'#7c3aed','🏖️':'#d97706','':'var(--muted)'};
+  const LABEL   = {'✅':'حاضر','❌':'بعذر','⛔':'بدون عذر','🏥':'مرض','🏖️':'عطلة',''  :''};
+
+  let html = `<div style="text-align:center;font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px;direction:rtl">${MOIS_AR[parseInt(month)]} ${year} — ${benef}</div>`;
+  html += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;direction:ltr">`;
+
+  /* En-têtes jours */
+  JOURS_AR.forEach(j => {
+    html += `<div style="text-align:center;font-size:10px;font-weight:800;color:var(--muted);padding:4px 0;border-bottom:2px solid var(--border)">${j}</div>`;
+  });
+
+  /* Cellules vides avant le 1er */
+  for (let i = 0; i < startDow; i++) {
+    html += `<div style="min-height:60px"></div>`;
+  }
+
+  /* Cellules des jours */
+  for (let day = 1; day <= daysInMonth; day++) {
+    const ds  = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const v   = saved[day] || '';
+    const bg  = COL_BG[v]  || '#f8fafc';
+    const bdr = COL_BDR[v] || 'var(--border)';
+    const txt = COL_TXT[v] || 'var(--muted)';
+    const lbl = LABEL[v]   || '';
+    const isToday = ds === todayStr;
+
+    html += `<div
+      onclick="ghCalDayClick(${day})"
+      title="${ds} — ${lbl||'غير مسجل'}"
+      style="
+        min-height:60px;border-radius:8px;padding:6px 4px;cursor:pointer;
+        background:${bg};border:2px solid ${bdr};
+        ${isToday ? 'box-shadow:0 0 0 3px var(--primary);' : ''}
+        transition:opacity .15s;text-align:center;
+      "
+      onmouseover="this.style.opacity='.8'"
+      onmouseout="this.style.opacity='1'"
+    >
+      <div style="font-size:11px;font-weight:${isToday?'900':'700'};color:${isToday?'var(--primary)':txt}">${day}</div>
+      ${v ? `<div style="font-size:18px;margin-top:4px">${v}</div>
+             <div style="font-size:9px;color:${txt};margin-top:2px;font-weight:700">${lbl}</div>` : ''}
+    </div>`;
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+/* Clic sur un jour dans le calendrier ghiyab → cycle le statut + re-render */
+function ghCalDayClick(day) {
+  if (!window._ghKey) return;
+  const s = JSON.parse(localStorage.getItem(window._ghKey) || '{}');
+  const c = GHIYAB_STATES;
+  const n = c[(c.indexOf(s[day] || '') + 1) % c.length];
+  s[day] = n;
+  localStorage.setItem(window._ghKey, JSON.stringify(s));
+  /* Re-render complet pour sync tableau + calendrier + stats */
+  const benef = document.getElementById('gh-benef')?.value;
+  const month = document.getElementById('gh-month')?.value;
+  if (benef && month) renderGhiyab();
+}
 
 function cycleGH(key,day,el){
   const s=JSON.parse(localStorage.getItem(key)||'{}');
