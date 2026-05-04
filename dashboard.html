@@ -3547,20 +3547,8 @@ body.is-consultant .sensitive-data::after {
           </div>
           <div id="gh-table" style="overflow-x:auto;padding:14px"></div>
         </div>
-        <!-- Calendrier mensuel des présences/absences -->
-        <div style="background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.05);margin-top:16px">
-          <div style="padding:14px 18px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <span style="font-weight:800;font-size:14px">📆 التقويم الشهري</span>
-            <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap;align-items:center">
-              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">✅ حاضر</span>
-              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">❌ بعذر</span>
-              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">⛔ بدون عذر</span>
-              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">🏥 مرض</span>
-              <span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:20px">🏖️ عطلة</span>
-            </div>
-          </div>
-          <div id="gh-calendar" style="padding:16px"></div>
-        </div>
+        <!-- gh-calendar : vide (le calendrier est désormais intégré dans gh-table) -->
+        <div id="gh-calendar" style="display:none"></div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveGhiyab()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="ghiyab_btn_save">💾 حفظ</button>
           <button onclick="exportGhiyabReport()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" data-i18n="ghiyab_btn_rapport">📄 تقرير الغياب</button>
@@ -19329,20 +19317,81 @@ function renderGhiyab(){
       <div style="font-size:11px;font-weight:700;color:var(--muted)">🏖️ أيام العطلة</div>
     </div>`;
 
-  // Calendar grid
-  let html=`<table style="border-collapse:collapse;width:100%;font-size:12px;direction:rtl">
-    <thead><tr>
-      <th style="padding:10px 14px;text-align:right;font-weight:800;border:1px solid var(--border);background:var(--bg);min-width:150px">اليوم</th>`;
-  for(let d=1;d<=days;d++) html+=`<th style="padding:6px 3px;text-align:center;border:1px solid var(--border);background:var(--bg);min-width:34px;font-size:10px;font-weight:700;color:var(--muted)">${d}</th>`;
-  html+=`</tr></thead><tbody><tr>
-    <td style="padding:8px 14px;border:1px solid var(--border);font-weight:700;background:#f8fafc;direction:rtl">${benef}</td>`;
+  // ── Grille jours avec numéro de date dans chaque cellule ──
+  /* Noms des jours de semaine (Lundi=0 … Dimanche=6) */
+  const JOURS_COURT = ['الإث','الثل','الأر','الخم','الجم','السب','الأح'];
+  /* Noms courts des mois arabes */
+  const MOIS_COURT_AR = ['','يناير','فبراير','مارس','أبريل','ماي','يونيو','يوليوز','غشت','شتنبر','أكتوبر','نونبر','دجنبر'];
+
+  /* En-tête : nom du bénéficiaire + mois/année */
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;direction:rtl;flex-wrap:wrap;gap:8px">
+    <div style="font-size:15px;font-weight:800;color:var(--primary)">${benef}</div>
+    <div style="font-size:13px;font-weight:700;color:var(--muted)">${MOIS_COURT_AR[parseInt(month)]} ${year}</div>
+  </div>`;
+
+  /* Grille calendrier : 7 colonnes (Lun→Dim), lignes selon le nombre de semaines */
+  let startDow = new Date(year, parseInt(month)-1, 1).getDay();
+  startDow = (startDow + 6) % 7; /* Lundi = 0 */
+  const todayStr = new Date().toISOString().slice(0,10);
+
+  html += `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">`;
+
+  /* En-têtes des 7 jours */
+  JOURS_COURT.forEach(j => {
+    html += `<div style="text-align:center;font-size:10px;font-weight:800;color:var(--muted);padding:5px 0;border-bottom:2px solid var(--border)">${j}</div>`;
+  });
+
+  /* Cellules vides avant le 1er */
+  for(let i=0;i<startDow;i++){
+    html+=`<div style="min-height:62px"></div>`;
+  }
+
+  /* Cellules des jours */
   for(let d=1;d<=days;d++){
+    const ds=`${year}-${String(parseInt(month)).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const v=saved[d]||'';
     const info=GHIYAB_LABELS[v]||GHIYAB_LABELS[''];
-    html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${info[1]};font-size:16px;height:38px" 
-      title="${info[0]}" onclick="cycleGH('${key}',${d},this)">${v}</td>`;
+    const bg   = info[1]||'transparent';
+    const col  = info[2]||'var(--muted)';
+    const lbl  = info[0]||'';
+    const isToday = ds===todayStr;
+    const dow  = new Date(ds).getDay(); /* 0=Dim,6=Sam */
+    const isWeekend = (dow===5||dow===6); /* Ven/Sam = weekend marocain */
+
+    html+=`<div
+      onclick="cycleGH('${key}',${d},this)"
+      data-day="${d}"
+      title="${ds} — ${lbl||'انقر للتسجيل'}"
+      style="
+        min-height:62px;border-radius:8px;padding:5px 4px 4px;cursor:pointer;
+        background:${v?bg:'#f8fafc'};
+        border:2px solid ${v?col:isWeekend?'#e2e8f0':'var(--border)'};
+        ${isToday?'box-shadow:0 0 0 3px var(--primary);':''}
+        ${isWeekend&&!v?'background:#f1f5f9;':''}
+        transition:all .15s;text-align:center;
+      "
+      onmouseover="this.style.opacity='.8'"
+      onmouseout="this.style.opacity='1'"
+    >
+      <div style="font-size:11px;font-weight:${isToday?'900':'700'};color:${isToday?'var(--primary)':isWeekend&&!v?'#94a3b8':'var(--muted)'};line-height:1">${d}</div>
+      ${v
+        ? `<div style="font-size:18px;margin-top:4px;line-height:1">${v}</div>
+           <div style="font-size:8px;color:${col};margin-top:2px;font-weight:800;line-height:1">${lbl}</div>`
+        : `<div style="font-size:9px;color:#cbd5e1;margin-top:8px">${isWeekend?'':'—'}</div>`
+      }
+    </div>`;
   }
-  html+=`</tr></tbody></table>`;
+  html+=`</div>`;
+
+  /* Ligne récapitulative sous la grille */
+  html+=`<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center">
+    <span style="background:#dcfce7;color:#059669;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">✅ حاضر: ${hadir}</span>
+    <span style="background:#fef3c7;color:#d97706;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">❌ بعذر: ${ghayibAdhour}</span>
+    <span style="background:#fee2e2;color:#dc2626;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">⛔ بلا عذر: ${ghayibBla}</span>
+    <span style="background:#ede9fe;color:#7c3aed;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">🏥 مرض: ${marad}</span>
+    <span style="background:#fff7ed;color:#d97706;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">🏖️ عطلة: ${vacance}</span>
+    <span style="background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:800">نسبة الحضور: ${pctHadir}%</span>
+  </div>`;
   document.getElementById('gh-table').innerHTML=html;
   window._ghKey=key;
   /* Rendu du calendrier mensuel */
@@ -19438,10 +19487,11 @@ function cycleGH(key,day,el){
   const c=GHIYAB_STATES;
   const n=c[(c.indexOf(s[day]||'')+1)%c.length];
   s[day]=n;localStorage.setItem(key,JSON.stringify(s));
-  const info=GHIYAB_LABELS[n]||GHIYAB_LABELS[''];
-  el.style.background=info[1];el.textContent=n;el.title=info[0];
-  renderGhiyabStats();
-  renderSijilGhiyabTotal();
+  /* Re-render complet : les cellules sont maintenant des divs complexes */
+  const benef=document.getElementById('gh-benef')?.value;
+  const month=document.getElementById('gh-month')?.value;
+  if(benef&&month) renderGhiyab();
+  else renderSijilGhiyabTotal();
 }
 
 function renderGhiyabStats(){
