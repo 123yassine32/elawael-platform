@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Export Excel — Comptes ElAwail</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI',sans-serif; background:#f1f5f9; display:flex;
+  align-items:center; justify-content:center; min-height:100vh; }
+.card { background:#fff; border-radius:16px; padding:40px 48px; box-shadow:0 4px 24px rgba(0,0,0,.1);
+  text-align:center; max-width:460px; width:100%; }
+h1 { color:#1b3a6b; font-size:20px; margin-bottom:8px; }
+p  { color:#64748b; font-size:13px; margin-bottom:28px; line-height:1.7; }
+.btn { display:inline-flex; align-items:center; gap:10px; background:#059669; color:#fff;
+  border:none; border-radius:12px; padding:14px 36px; font-size:15px; font-weight:800;
+  cursor:pointer; letter-spacing:.3px; }
+.btn:hover { background:#047857; }
+.note { margin-top:18px; font-size:11px; color:#94a3b8; }
+.badge { display:inline-block; background:#eff6ff; color:#1b3a6b; border-radius:100px;
+  padding:4px 14px; font-size:12px; font-weight:700; margin-bottom:20px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="badge">📊 41 comptes — ElAwail Digital Platform</div>
+  <h1>Export Excel des identifiants</h1>
+  <p>Génère un fichier <strong>Excel (.xlsx)</strong> avec tous les comptes,<br>
+     mots de passe originaux, classes et rôles.<br>
+     Le fichier s'enregistre directement sur ton ordinateur.</p>
+
+  <button class="btn" onclick="genererExcel()">
+    ⬇️ Télécharger le fichier Excel
+  </button>
+  <div class="note">Fichier : <strong>Comptes_ElAwail_2026.xlsx</strong></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DONNÉES COMPLÈTES — 41 comptes ElAwail
+   Source : elawail-portal-v22_S2_AR (5).html
+═══════════════════════════════════════════════════ */
+const COMPTES = [
+  /* ── Autisme ── */
+  ['1',  'Dina El Hawari',           'delhawari@elawail.ma',     'Autisme2024',   'Autisme 1',                      'Cadre éducatif'],
+  ['2',  'Youssra Ahjam',            'yahjam@elawail.ma',        'Autisme2025',   'Autisme 2',                      'Cadre éducatif'],
+  ['3',  'Fatima El Bouhdidi',       'fbouhdidi@elawail.ma',     'Autisme2025b',  'Autisme 3',                      'Cadre éducatif'],
+  ['4',  'Khadouja El Bassi',        'kbassi@elawail.ma',        'Autisme2025c',  'Autisme 4',                      'Cadre éducatif'],
+  ['5',  'Amima Dakni',              'adakni@elawail.ma',        'Autisme2025d',  'Autisme 5',                      'Cadre éducatif'],
+  ['6',  'Faouzia Azlou',            'fazlou@elawail.ma',        'Autisme2025e',  'Autisme 6',                      'Cadre éducatif'],
+  ['7',  'Douae Khajou',             'dkhajou@elawail.ma',       'Autisme2025f',  'Autisme 7',                      'Cadre éducatif'],
+  ['8',  'Chaimaa El Znaki',         'czeznaki@elawail.ma',      'Autisme2025g',  'Autisme 8',                      'Cadre éducatif'],
+  ['9',  'Mariam Benchahboun',       'mbenchahboun@elawail.ma',  'Autisme2025h',  'Autisme 9',                      'Cadre éducatif'],
+  ['10', 'Fatima Zahra El Kehili',   'fzekehili@elawail.ma',     'Autisme2025i',  'Autisme 10',                     'Cadre éducatif'],
+  ['11', 'Rajaa Bourdan',            'rbourdan@elawail.ma',      'Autisme2025j',  'Autisme 11',                     'Cadre éducatif'],
+  ['12', 'إحسان سحنون',              'isahnoune@elawail.ma',     'Autisme2026s',  'Autisme 12',                     'Cadre éducatif'],
+  ['13', 'سناء زرقيق',               'szarqiq@elawail.ma',       'Autisme2026z',  'Autisme 13',                     'Cadre éducatif'],
+  ['14', 'هاجر أمتيو',               'hamtiou@elawail.ma',       'Autisme2026a',  'Autisme 14',                     'Cadre éducatif'],
+  /* ── Informatique ── */
+  ['15', 'فردوس فاطمي',              'ffatimy@elawail.ma',       'Info2026f',     'Informatique (Foj 1)',           'Cadre éducatif'],
+  ['16', 'أميمة الذغوغي',            'odghoughi@elawail.ma',     'Dghoughi2025',  'Informatique (Foj 2)',           'Cadre éducatif'],
+  ['17', 'عادل أكركوب',              'aakarkoub@elawail.ma',     'Akarkoub2026',  'Réhabilitation (Foj 1)',         'Cadre éducatif'],
+  ['18', 'محمد ياسين مرزوق',         'mymarzouk@elawail.ma',     'Marzouk2026',   'Informatique (Foj 2)',           'Cadre éducatif'],
+  /* ── Couture ── */
+  ['19', 'إكرام بلعلي',              'ibelhali@elawail.ma',      'Couture2026i',  'Couture (Foj 1)',                'Cadre éducatif'],
+  ['20', 'نزيهة الرواح',             'nrawah@elawail.ma',        'Couture2026n',  'Couture (Foj 1)',                'Cadre éducatif'],
+  ['21', 'حنان اعراب',               'haarab@elawail.ma',        'Couture2026h',  'Couture (Foj 2)',                'Cadre éducatif'],
+  ['22', 'سارة زيدي',                'szaidi@elawail.ma',        'Couture2026s',  'Couture (Foj 2)',                'Cadre éducatif'],
+  /* ── Déficience auditive ── */
+  ['23', 'فيروز البقالي',            'fbakali@elawail.ma',       'Samia2026',     'Déficience auditive',            'Cadre éducatif'],
+  /* ── Déficience intellectuelle profonde ── */
+  ['24', 'فدوى أكدي',                'fakdi@elawail.ma',         'Dhania2026',    'Déf. intellectuelle profonde',   'Cadre éducatif'],
+  ['25', 'محمد بنعبد الرحيم',        'mbenabdrahim@elawail.ma',  'Dhania2026b',   'Déf. intellectuelle profonde',   'Cadre éducatif'],
+  /* ── Déficience intellectuelle ── */
+  ['26', 'احسان بكور',               'ibakkour@elawail.ma',      'DI2026b',       'Déficience intellectuelle',      'Cadre éducatif'],
+  ['27', 'نصر الدين الشرقاوي',       'ncherkaoui@elawail.ma',    'DI2026c',       'Déficience intellectuelle',      'Cadre éducatif'],
+  ['28', 'آية الروداني',             'aroudani@elawail.ma',      'DI2026r',       'Déficience intellectuelle',      'Cadre éducatif'],
+  ['29', 'شيماء أولاد يوسف',         'couladyoussef@elawail.ma', 'DI2026o',       'Déficience intellectuelle',      'Cadre éducatif'],
+  /* ── IMC ── */
+  ['30', 'أميمة أمغار',              'oamghar@elawail.ma',       'IMC2026a',      'IMC',                            'Cadre éducatif'],
+  ['31', 'سلمى بنعمور',              'sbenamour@elawail.ma',     'IMC2026b',      'IMC',                            'Cadre éducatif'],
+  ['32', 'مريم الوهابي',             'mouahabi@elawail.ma',      'IMC2026c',      'IMC',                            'Cadre éducatif'],
+  ['33', 'كوثر الدغوغي',             'kdghoughy@elawail.ma',     'IMC2026k',      'IMC',                            'Cadre éducatif'],
+  ['34', 'حفصة الصنهاجي',            'hessanhaji@elawail.ma',    'IMC2026h',      'IMC',                            'Cadre éducatif'],
+  ['35', 'محمد ابن منديل',           'mibnmendil@elawail.ma',    'IMC2026m',      'IMC',                            'Cadre éducatif'],
+  ['36', 'أسماء بنهكو',              'abenhakou@elawail.ma',     'IMC2026as',     'IMC',                            'Cadre éducatif'],
+  ['37', 'محمد المناصرة',            'mlamnasra@elawail.ma',     'IMC2026mn',     'IMC',                            'Cadre éducatif'],
+  ['38', 'أحمد الشحشوح',             'achahchouh@elawail.ma',    'IMC2026ch',     'IMC',                            'Cadre éducatif'],
+  ['39', 'نهيلة عافية لعروسي',       'nlaaroussi@elawail.ma',    'IMC2026l',      'IMC',                            'Cadre éducatif'],
+  ['40', 'صفاء العلوي',              'saloui@elawail.ma',        'IMC2026sf',     'IMC',                            'Cadre éducatif'],
+  /* ── Admin ── */
+  ['41', 'Administration — El Awael','admin@elawail.ma',          'Admin2024',     '—',                              'Administrateur'],
+];
+
+function genererExcel() {
+  /* ── Créer le workbook ── */
+  const wb = XLSX.utils.book_new();
+
+  /* ── Données avec en-tête ── */
+  const wsData = [
+    ['N°', 'Nom', 'Email de connexion', 'Mot de passe', 'Classe', 'Rôle'],
+    ...COMPTES
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  /* ── Largeurs de colonnes ── */
+  ws['!cols'] = [
+    { wch: 5  },   /* N° */
+    { wch: 28 },   /* Nom */
+    { wch: 32 },   /* Email */
+    { wch: 18 },   /* Mot de passe */
+    { wch: 30 },   /* Classe */
+    { wch: 18 },   /* Rôle */
+  ];
+
+  /* ── Style de l'en-tête (remplissage bleu, texte blanc, gras) ── */
+  const headerStyle = {
+    font:      { bold: true, color: { rgb: 'FFFFFF' }, sz: 12 },
+    fill:      { fgColor: { rgb: '1B3A6B' } },
+    alignment: { horizontal: 'center', vertical: 'center' },
+    border: {
+      bottom: { style: 'thin', color: { rgb: 'FFFFFF' } }
+    }
+  };
+
+  /* Appliquer le style à chaque cellule d'en-tête (ligne 1 = index 0) */
+  ['A1','B1','C1','D1','E1','F1'].forEach(ref => {
+    if (ws[ref]) ws[ref].s = headerStyle;
+  });
+
+  /* ── Style des lignes de données ── */
+  COMPTES.forEach((row, rowIdx) => {
+    const excelRow = rowIdx + 2; /* +2 car ligne 1 = en-tête */
+    const isEven   = rowIdx % 2 === 0;
+
+    /* Couleur de fond alternée */
+    const bgColor  = isEven ? 'F8FAFC' : 'FFFFFF';
+
+    /* Colonne Mot de passe (D) → vert */
+    const passRef  = `D${excelRow}`;
+    if (ws[passRef]) {
+      ws[passRef].s = {
+        font:      { bold: true, color: { rgb: '059669' }, name: 'Courier New', sz: 11 },
+        fill:      { fgColor: { rgb: bgColor } },
+        alignment: { horizontal: 'center' }
+      };
+    }
+
+    /* N° → gris centré */
+    const numRef = `A${excelRow}`;
+    if (ws[numRef]) {
+      ws[numRef].s = {
+        font:      { color: { rgb: '94A3B8' } },
+        fill:      { fgColor: { rgb: bgColor } },
+        alignment: { horizontal: 'center' }
+      };
+    }
+
+    /* Autres colonnes */
+    ['B','C','E','F'].forEach(col => {
+      const ref = `${col}${excelRow}`;
+      if (ws[ref]) {
+        ws[ref].s = {
+          fill: { fgColor: { rgb: bgColor } },
+          alignment: { horizontal: 'left' }
+        };
+      }
+    });
+
+    /* Ligne Admin → fond rouge pâle */
+    if (rowIdx === COMPTES.length - 1) {
+      ['A','B','C','D','E','F'].forEach(col => {
+        const ref = `${col}${excelRow}`;
+        if (ws[ref]) {
+          ws[ref].s = Object.assign({}, ws[ref].s || {}, {
+            fill: { fgColor: { rgb: 'FFF1F2' } },
+            font: Object.assign({}, (ws[ref].s || {}).font || {}, { bold: true })
+          });
+        }
+      });
+    }
+  });
+
+  /* ── Hauteur des lignes ── */
+  ws['!rows'] = [
+    { hpt: 22 }, /* en-tête */
+    ...COMPTES.map(() => ({ hpt: 18 }))
+  ];
+
+  /* ── Ajouter la feuille au workbook ── */
+  XLSX.utils.book_append_sheet(wb, ws, 'Comptes ElAwail');
+
+  /* ── Feuille 2 : résumé par classe ── */
+  const classes = {};
+  COMPTES.forEach(([n, nom, email, pass, classe, role]) => {
+    if (role === 'Administrateur') return;
+    if (!classes[classe]) classes[classe] = [];
+    classes[classe].push([nom, email, pass]);
+  });
+
+  const resumeData = [['Classe', 'Nombre de cadres']];
+  Object.entries(classes).forEach(([cl, members]) => {
+    resumeData.push([cl, members.length]);
+  });
+  resumeData.push(['', '']);
+  resumeData.push(['TOTAL CADRES', COMPTES.length - 1]);
+  resumeData.push(['TOTAL COMPTES', COMPTES.length]);
+
+  const wsResume = XLSX.utils.aoa_to_sheet(resumeData);
+  wsResume['!cols'] = [{ wch: 32 }, { wch: 18 }];
+
+  /* Style en-tête résumé */
+  ['A1','B1'].forEach(ref => {
+    if (wsResume[ref]) {
+      wsResume[ref].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '1B3A6B' } },
+        alignment: { horizontal: 'center' }
+      };
+    }
+  });
+
+  XLSX.utils.book_append_sheet(wb, wsResume, 'Résumé par classe');
+
+  /* ── Télécharger le fichier ── */
+  const date = new Date();
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  XLSX.writeFile(wb, `Comptes_ElAwail_${dateStr}.xlsx`);
+}
+
+/* ── Lancer automatiquement à l'ouverture ── */
+window.addEventListener('load', () => {
+  setTimeout(genererExcel, 500);
+});
+</script>
+</body>
+</html>
