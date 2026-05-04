@@ -3315,6 +3315,7 @@ body.is-consultant .sensitive-data::after {
     <div class="sidebar-label">Gestion</div>
     <div class="nav-item" id="snav-planning" onclick="showTab('planning')"><span class="nav-icon">📅</span> Planning hebdomadaire</div>
     <div class="nav-item" id="snav-objectifs" onclick="showTab('objectifs')"><span class="nav-icon">🎯</span> Objectifs SMART</div>
+    <div class="nav-item" id="snav-messages" onclick="showTab('messages')"><span class="nav-icon">💬</span> Messagerie interne <span id="msg-badge-nav" style="display:none;background:#dc2626;color:#fff;border-radius:100px;font-size:10px;font-weight:800;padding:1px 6px;margin-left:3px"></span></div>
   </div>
   <div class="sidebar-section" id="sidebar-pei-section" style="display:none">
     <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div>
@@ -3350,7 +3351,7 @@ body.is-consultant .sensitive-data::after {
     <div class="topbar-right">
       <span class="topbar-tag" id="topbar-tag-main">💻 Informatique — Semestre 2</span>
       <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── -->
-      <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v2.8.0</span>
+      <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v2.9.0</span>
       <!-- ── Indicateur connexion Firebase ── -->
       <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
            style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite">
@@ -3383,6 +3384,7 @@ body.is-consultant .sensitive-data::after {
       <div class="main-tab" id="tab-rh" onclick="showTab('rh')">📋 Mes demandes RH <span id="rh-badge" style="display:none;background:#dc2626;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:100px;margin-left:3px">!</span></div>
       <div class="main-tab" id="tab-planning" onclick="showTab('planning')">📅 Planning</div>
       <div class="main-tab" id="tab-objectifs" onclick="showTab('objectifs')">🎯 Objectifs SMART</div>
+      <div class="main-tab" id="tab-messages" onclick="showTab('messages')">💬 Messagerie</div>
       <div class="main-tab" id="tab-recommandations" onclick="showTab('recommandations')" style="display:none">📬 Mes recommandations</div>
       <div class="main-tab" id="tab-profile" onclick="showTab('profile')" data-i18n="tab_profil">👤 Profil</div>
     </div>
@@ -4456,6 +4458,80 @@ body.is-consultant .sensitive-data::after {
       <!-- Liste des objectifs -->
       <div id="obj-list-wrap"></div>
     </div><!-- /view-objectifs -->
+
+    <!-- ════════ MESSAGERIE INTERNE ════════ -->
+    <div id="view-messages" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-family:Sora,sans-serif;font-size:18px;font-weight:800">💬 Messagerie interne</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:3px">Annonces de la direction · Messages entre cadres de votre classe</div>
+        </div>
+        <button onclick="msgOpenForm()" style="background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer">✍️ Nouveau message</button>
+      </div>
+
+      <!-- Formulaire nouveau message -->
+      <div id="msg-form-wrap" style="display:none;margin-bottom:20px">
+        <div class="card" style="border-top:3px solid #1b3a6b">
+          <div class="card-header">
+            <div class="card-title" style="color:#1b3a6b">💬 Rédiger un message</div>
+            <button onclick="document.getElementById('msg-form-wrap').style.display='none'" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Destinataire</label>
+                <select id="msg-dest" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+                  <option value="direction">📢 Direction (El Awael)</option>
+                  <option value="classe">👥 Toute ma classe</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Priorité</label>
+                <select id="msg-priorite" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+                  <option value="normale">⚪ Normale</option>
+                  <option value="haute">🟡 Haute</option>
+                  <option value="urgente">🔴 Urgente</option>
+                </select>
+              </div>
+              <div style="grid-column:span 2">
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Sujet</label>
+                <input type="text" id="msg-sujet" placeholder="Ex : Demande de matériel pédagogique" style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none">
+              </div>
+              <div style="grid-column:span 2">
+                <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Message</label>
+                <textarea id="msg-texte" rows="4" placeholder="Rédigez votre message ici..." style="width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;outline:none;resize:vertical"></textarea>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button onclick="document.getElementById('msg-form-wrap').style.display='none'" style="background:#f8fafc;color:#64748b;border:1px solid var(--border);border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">Annuler</button>
+              <button onclick="sendMessage()" style="background:var(--primary);color:#fff;border:none;border-radius:9px;padding:9px 24px;font-size:13px;font-weight:800;cursor:pointer">📤 Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annonces direction (reçus) -->
+      <div class="card" style="margin-bottom:16px;border-top:3px solid #7c3aed">
+        <div class="card-header">
+          <div class="card-title" style="color:#7c3aed">📢 Annonces de la direction</div>
+          <span id="msg-annonces-count" style="background:#ede9fe;color:#7c3aed;border-radius:100px;font-size:11px;font-weight:800;padding:3px 12px">0</span>
+        </div>
+        <div class="card-body" id="msg-annonces-list" style="max-height:280px;overflow-y:auto">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Aucune annonce pour le moment</div>
+        </div>
+      </div>
+
+      <!-- Messages envoyés et reçus -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📬 Messages de ma classe</div>
+          <span id="msg-classe-count" style="background:#eff6ff;color:#1b3a6b;border-radius:100px;font-size:11px;font-weight:800;padding:3px 12px">0</span>
+        </div>
+        <div class="card-body" id="msg-classe-list" style="max-height:340px;overflow-y:auto">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Aucun message dans votre classe</div>
+        </div>
+      </div>
+    </div><!-- /view-messages -->
 
     <!-- ════════ MES RECOMMANDATIONS (CONSULTANT) ════════ -->
     <div id="view-recommandations" style="display:none">
@@ -7020,7 +7096,9 @@ if (typeof applyUserToPortal !== 'undefined') {
       translatePage();
       // Also translate any newly rendered content
       if(typeof renderTable === 'function') renderTable();
-    }, 400); 
+      /* Mettre à jour le badge messagerie */
+      if(typeof renderMessages === 'function') renderMessages();
+    }, 400);
   };
 }
 
@@ -8822,7 +8900,7 @@ function showTab(tab) {
   // Masquer toutes les vues
   ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile',
    'jadwal-talabat','jadwal-ri3aya','tan9it','ta9yim-asasi','ghiyab','kpi-classe',
-   'rh','recommandations','planning','objectifs'].forEach(function(t) {
+   'rh','recommandations','planning','objectifs','messages'].forEach(function(t) {
     var el = document.getElementById('view-' + t);
     if (el) el.style.display = 'none';
   });
@@ -8836,9 +8914,10 @@ function showTab(tab) {
   if (tab === 'recommandations') renderMyRecommandations();
   if (tab === 'planning')        { renderPlanning(); /* Peupler le select bénéficiaires */ const sel=document.getElementById('plan-benef'); if(sel&&CURRENT_USER){ const mb=BENEFICIAIRES.filter(b=>b.teacherId===CURRENT_USER.teacherId); sel.innerHTML='<option value="">— Choisir —</option>'+mb.map(b=>`<option value="${b.nom}">${b.nom}</option>`).join(''); } }
   if (tab === 'objectifs')       renderObjectifs();
+  if (tab === 'messages')        renderMessages();
 
   // Mettre à jour les onglets principaux (main-tabs)
-  ['accueil','beneficiaires','alertes','saisie','profile','rh','recommandations','planning','objectifs'].forEach(function(t) {
+  ['accueil','beneficiaires','alertes','saisie','profile','rh','recommandations','planning','objectifs','messages'].forEach(function(t) {
     var el = document.getElementById('tab-' + t);
     if (el) el.className = 'main-tab' + (t === tab ? ' active' : '');
   });
@@ -8858,7 +8937,8 @@ function showTab(tab) {
     'ta9yim-asasi':   'snav-pei-ta9yim',
     'kpi-classe':     'snav-pei-kpi',
     'planning':       'snav-planning',
-    'objectifs':      'snav-objectifs'
+    'objectifs':      'snav-objectifs',
+    'messages':       'snav-messages'
   };
   var activeNav = document.getElementById(navMap[tab]);
   if (activeNav) activeNav.classList.add('active');
@@ -18966,7 +19046,28 @@ function buildInfoProfile(user, myBenef) {
     + '<div class="card" style="margin-bottom:20px"><div class="card-header"><div class="card-title">📖 '+t('profil_prog_theo_s2')+'</div><span class="tag tag-green">'+modules+' '+t('profil_objectifs')+'</span></div><div class="card-body"><ul class="obj-list">'+theoItems+'</ul></div></div>'
     + '<div class="card" style="margin-bottom:20px"><div class="card-header"><div class="card-title">🖥️ '+t('profil_prog_prat_s2')+'</div><span class="tag tag-green">'+pratMod+' '+t('profil_objectifs')+'</span></div><div class="card-body"><ul class="obj-list">'+pratItems+'</ul></div></div>'
     + '<div class="card"><div class="card-header"><div class="card-title">👥 '+t('profil_liste_benef')+'</div><span class="tag tag-blue">'+total+'</span></div>'
-    + '<div class="card-body"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">'+benGrid+'</div></div></div>';
+    + '<div class="card-body"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">'+benGrid+'</div></div></div>'
+    /* ── Section Mon Parcours Formation ── */
+    + '<div class="card" style="margin-top:20px;border-top:3px solid #059669"><div class="card-header"><div class="card-title" style="color:#059669">🎓 Mon Parcours Formation</div><button onclick="openFormationForm()" style="background:#ecfdf5;color:#059669;border:1px solid #bbf7d0;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer">➕ Ajouter</button></div>'
+    + '<div class="card-body">'
+    + '<div id="formation-form-wrap" style="display:none;margin-bottom:16px;padding:16px;background:#f8fafc;border-radius:10px;border:1.5px solid #e2e8f0">'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    + '<div style="grid-column:span 2"><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Titre de la formation</label><input type="text" id="form-titre" placeholder="Ex : Formation en ABA Thérapie" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>'
+    + '<div><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Organisme</label><input type="text" id="form-orga" placeholder="Ex : CNFMH" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>'
+    + '<div><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Date</label><input type="date" id="form-date" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>'
+    + '<div><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Durée (heures)</label><input type="number" id="form-heures" min="1" placeholder="Ex: 8" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>'
+    + '<div><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Type</label><select id="form-type" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"><option value="formation">📚 Formation</option><option value="certification">🏆 Certification</option><option value="seminaire">🎤 Séminaire</option><option value="webinaire">💻 Webinaire</option><option value="atelier">🛠️ Atelier</option></select></div>'
+    + '<div><label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Certification obtenue</label><input type="text" id="form-certif" placeholder="Ex: Certificat ABA Niveau 1" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px;justify-content:flex-end">'
+    + '<button onclick="document.getElementById(\'formation-form-wrap\').style.display=\'none\'" style="background:#f8fafc;color:#64748b;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer">Annuler</button>'
+    + '<button onclick="saveFormation()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer">💾 Enregistrer</button>'
+    + '</div></div>'
+    + '<div id="formations-list-wrap"></div>'
+    + '</div></div>';
+
+  /* Rendre les formations dès l'affichage du profil */
+  setTimeout(renderFormations, 60);
 }
 
 // ──────────────────────────────────────────────────────────
@@ -19122,6 +19223,11 @@ function buildInfoAccueil(user, myBenef) {
     + '</div></div>'
     /* ── BLOC KPI PERSONNEL ── */
     + kpiPersoBlock
+    /* ── GRAPHIQUES COMPARATIFS 6 MOIS ── */
+    + '<div class="g2" style="margin-bottom:20px">'
+    + '<div class="card"><div class="card-header"><div class="card-title">📊 Taux de présence — 6 derniers mois</div><span style="font-size:11px;background:#eff6ff;color:#1b3a6b;border-radius:100px;padding:3px 10px;font-weight:700">Évolution mensuelle</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-presence-6m" height="160"></canvas></div></div>'
+    + '<div class="card"><div class="card-header"><div class="card-title">📋 Rapports soumis — 6 derniers mois</div><span style="font-size:11px;background:#ecfdf5;color:#059669;border-radius:100px;padding:3px 10px;font-weight:700">Par mois</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-rapports-6m" height="160"></canvas></div></div>'
+    + '</div>'
     + '<div class="g4" style="margin-bottom:20px">'
     + '<div class="card"><div class="kpi"><div class="kpi-label">'+t('adm_kpi_total_benef')+'</div><div class="kpi-val" style="color:var(--primary)">'+total+'</div><div class="kpi-sub">'+t('tag_semestre2')+' · '+niveaux+' '+t('kpi_niveaux').toLowerCase()+'</div><div class="kbar"><div class="kfill" style="width:100%;background:var(--primary-mid)"></div></div></div></div>'
     + '<div class="card"><div class="kpi"><div class="kpi-label">'+t('adm_kpi_dossiers')+'</div><div class="kpi-val" style="color:var(--success)">'+dossiers+'</div><div class="kpi-sub"><span class="ktrend tu">✓ '+pct+'% '+t('adm_100_complets')+'</span></div><div class="kbar"><div class="kfill" style="width:'+pct+'%;background:var(--success)"></div></div></div></div>'
@@ -19134,6 +19240,9 @@ function buildInfoAccueil(user, myBenef) {
     + '</div>'
     + '<div class="card"><div class="card-header"><div class="card-title">👥 '+t('nav_beneficiaires_short')+'</div><span class="tag tag-blue">'+total+' '+t('kpi_beneficiaires').toLowerCase()+'</span></div>'
     + '<div class="card-body"><div style="display:flex;flex-wrap:wrap;gap:8px">'+benList+'</div></div></div>';
+
+  /* ── Initialiser les graphiques comparatifs après rendu ── */
+  setTimeout(()=>{ if(typeof renderComparativeCharts==='function') renderComparativeCharts(myBenef); }, 120);
 }
 
 function buildDinaProfile(user, myBenef, total) {
@@ -20557,7 +20666,8 @@ const SYNC_KEYS = [
   'ea_risques_traites','ea_rh_contrats','ea_rh_formations',
   'ea_audit_log','ea_pei_statuses','ea_documents',
   'ea_pei_criteres','ea_pei_notes','ea_vacances',
-  'ea_planning','ea_objectifs_smart'
+  'ea_planning','ea_objectifs_smart',
+  'ea_messages','ea_formations'
 ];
 
 /**
@@ -21504,6 +21614,7 @@ function renderSavedLists(){
           <div class="entry-meta">${e.date} · ${e.appre} · ${e.taux?e.taux+'% réussite':''}</div>
           ${e.realises?`<div style="font-size:11px;color:var(--success);margin-top:3px">✅ ${e.realises.substring(0,60)}</div>`:''}
           ${e.nonrealises?`<div style="font-size:11px;color:var(--danger);margin-top:2px">❌ ${e.nonrealises.substring(0,60)}</div>`:''}
+          ${e.signature?`<div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:3px 10px"><span style="font-size:10px">✍️</span><span style="font-size:10px;font-weight:800;color:#059669;font-family:monospace">${e.signature.code}</span><span style="font-size:10px;color:#64748b">· ${e.signature.horodatage}</span></div>`:''}
         </div>
         <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
           ${btnSoumettre}
@@ -21520,11 +21631,24 @@ function soumettreRapport(id){
   const idx=RAPPORTS.findIndex(e=>e.id===id);
   if(idx<0) return;
   RAPPORTS[idx].statut='soumis';
-  RAPPORTS[idx].dateStatut=new Date().toISOString();
+  const now=new Date();
+  RAPPORTS[idx].dateStatut=now.toISOString();
+  /* ── Signature électronique ── */
+  const user=CURRENT_USER?.name||'Cadre';
+  const initiales=(user.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()||'EL');
+  const ts=String(now.getTime());
+  /* Code vérification : initiales + 4 derniers chiffres timestamp + checksum simple */
+  const chk=((RAPPORTS[idx].taux||0)+(RAPPORTS[idx].realises||'').length)%90+10;
+  RAPPORTS[idx].signature={
+    code:`${initiales}-${ts.slice(-5)}-${chk}`,
+    horodatage:now.toLocaleString('fr-MA'),
+    signataire:user,
+    hash:btoa(unescape(encodeURIComponent(`${RAPPORTS[idx].benef}|${RAPPORTS[idx].periode}|${ts}`))).slice(0,16)
+  };
   saveData('ea_rapports',RAPPORTS);
   auditLog('rapport','Rapport soumis à la direction',`${RAPPORTS[idx].benef} · ${RAPPORTS[idx].periode}`);
   renderSavedLists();
-  showToast('📤 Rapport soumis à la direction !','#1b3a6b');
+  showToast('📤 Rapport soumis — Signature : '+RAPPORTS[idx].signature.code,'#1b3a6b');
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -22007,6 +22131,299 @@ function renderObjectifs(){
       </div>
     </div>`;
   }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MESSAGERIE INTERNE — v2.9.0
+   Stockage : ea_messages (array d'objets)
+   Chaque message : {id, from, fromId, classe, dest, sujet, texte, priorite, date, lu}
+══════════════════════════════════════════════════════════════ */
+
+function msgOpenForm(){
+  const w=document.getElementById('msg-form-wrap');
+  if(w){ w.style.display=w.style.display==='none'?'block':'none'; }
+}
+
+function sendMessage(){
+  const dest=document.getElementById('msg-dest')?.value||'direction';
+  const sujet=(document.getElementById('msg-sujet')?.value||'').trim();
+  const texte=(document.getElementById('msg-texte')?.value||'').trim();
+  const priorite=document.getElementById('msg-priorite')?.value||'normale';
+
+  if(!sujet){ showToast('⚠️ Veuillez saisir un sujet','#d97706'); return; }
+  if(!texte){ showToast('⚠️ Veuillez rédiger votre message','#d97706'); return; }
+
+  const messages=loadData('ea_messages')||[];
+  const entry={
+    id:Date.now(),
+    from:CURRENT_USER?.name||'Cadre',
+    fromId:CURRENT_USER?.teacherId||'',
+    classe:CURRENT_USER?.classe||'',
+    dest,
+    sujet,
+    texte,
+    priorite,
+    date:new Date().toISOString(),
+    lu:false
+  };
+  messages.unshift(entry); /* plus récent en premier */
+  saveData('ea_messages',messages);
+  auditLog('message','Message envoyé',`${dest} · ${sujet}`);
+
+  /* Vider le formulaire */
+  ['msg-sujet','msg-texte'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('msg-form-wrap').style.display='none';
+  renderMessages();
+  showToast('📤 Message envoyé avec succès !','#059669');
+}
+
+function renderMessages(){
+  const messages=loadData('ea_messages')||[];
+  const teacherId=CURRENT_USER?.teacherId||'';
+  const classe=CURRENT_USER?.classe||'';
+
+  /* ── Séparer annonces direction et messages classe ── */
+  /* Annonces : envoyées depuis le compte admin ou marquées dest=classe et venant d'admin */
+  const annonces=messages.filter(m=>m.fromId==='admin'||m.dest==='direction'&&m.fromId!==teacherId);
+  const classeMessages=messages.filter(m=>(m.classe===classe||m.dest==='classe')&&m.fromId!==teacherId);
+  const mesEnvois=messages.filter(m=>m.fromId===teacherId);
+  const tousCombines=[...classeMessages,...mesEnvois].sort((a,b)=>b.id-a.id);
+
+  /* ── Compteurs ── */
+  const anCount=document.getElementById('msg-annonces-count');
+  const clCount=document.getElementById('msg-classe-count');
+  if(anCount) anCount.textContent=annonces.length;
+  if(clCount) clCount.textContent=tousCombines.length;
+
+  /* Badge sidebar */
+  const nonLus=messages.filter(m=>!m.lu&&m.fromId!==teacherId).length;
+  const badge=document.getElementById('msg-badge-nav');
+  if(badge){ badge.textContent=nonLus||''; badge.style.display=nonLus?'inline':'none'; }
+
+  const prioIcon={normale:'⚪',haute:'🟡',urgente:'🔴'};
+  const prioColor={normale:'#64748b',haute:'#d97706',urgente:'#dc2626'};
+
+  function buildMsgCard(m, isMine){
+    const dt=new Date(m.date).toLocaleString('fr-MA',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    return `<div style="padding:14px;background:${isMine?'#f0fdf4':'#f8fafc'};border-radius:10px;border-left:4px solid ${prioColor[m.priorite||'normale']};margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+            ${prioIcon[m.priorite||'normale']} ${m.sujet}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${isMine?'📤 Envoyé à : '+m.dest:('📨 De : '+m.from+' · '+m.classe)} · ${dt}</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.6;background:#fff;padding:8px 12px;border-radius:7px;border:1px solid #e2e8f0">${m.texte.replace(/\n/g,'<br>')}</div>
+        </div>
+        ${isMine?`<button onclick="deleteMessage(${m.id})" style="background:none;border:1px solid #fecaca;border-radius:7px;padding:3px 8px;font-size:11px;cursor:pointer;color:#dc2626;flex-shrink:0">🗑</button>`:''}
+      </div>
+    </div>`;
+  }
+
+  /* ── Annonces ── */
+  const anList=document.getElementById('msg-annonces-list');
+  if(anList){
+    anList.innerHTML=annonces.length
+      ? annonces.map(m=>buildMsgCard(m,false)).join('')
+      : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Aucune annonce de la direction</div>';
+  }
+
+  /* ── Messages classe ── */
+  const clList=document.getElementById('msg-classe-list');
+  if(clList){
+    clList.innerHTML=tousCombines.length
+      ? tousCombines.map(m=>buildMsgCard(m,m.fromId===teacherId)).join('')
+      : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">Aucun message dans votre classe</div>';
+  }
+}
+
+function deleteMessage(id){
+  const messages=(loadData('ea_messages')||[]).filter(m=>m.id!==id);
+  saveData('ea_messages',messages);
+  renderMessages();
+  showToast('🗑 Message supprimé','#64748b');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MON PARCOURS FORMATION — v2.9.0
+   Stockage : ea_formations (array)
+   Chaque formation : {id, titre, orga, date, heures, type, certif, teacherId}
+══════════════════════════════════════════════════════════════ */
+
+function openFormationForm(){
+  const w=document.getElementById('formation-form-wrap');
+  if(w){ w.style.display=w.style.display==='none'?'block':'none'; }
+}
+
+function saveFormation(){
+  const titre=(document.getElementById('form-titre')?.value||'').trim();
+  const orga=(document.getElementById('form-orga')?.value||'').trim();
+  const date=document.getElementById('form-date')?.value||'';
+  const heures=parseInt(document.getElementById('form-heures')?.value||'0');
+  const type=document.getElementById('form-type')?.value||'formation';
+  const certif=(document.getElementById('form-certif')?.value||'').trim();
+
+  if(!titre){ showToast('⚠️ Veuillez saisir le titre de la formation','#d97706'); return; }
+
+  const formations=loadData('ea_formations')||[];
+  formations.unshift({
+    id:Date.now(),
+    titre,orga,date,heures,type,certif,
+    teacherId:CURRENT_USER?.teacherId||''
+  });
+  saveData('ea_formations',formations);
+  auditLog('formation','Formation ajoutée',titre);
+  ['form-titre','form-orga','form-date','form-certif'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const fh=document.getElementById('form-heures'); if(fh) fh.value='';
+  document.getElementById('formation-form-wrap').style.display='none';
+  renderFormations();
+  showToast('🎓 Formation enregistrée !','#059669');
+}
+
+function deleteFormation(id){
+  const formations=(loadData('ea_formations')||[]).filter(f=>f.id!==id);
+  saveData('ea_formations',formations);
+  renderFormations();
+  showToast('🗑 Formation supprimée','#64748b');
+}
+
+function renderFormations(){
+  const wrap=document.getElementById('formations-list-wrap');
+  if(!wrap) return;
+  const teacherId=CURRENT_USER?.teacherId||'';
+  const formations=(loadData('ea_formations')||[]).filter(f=>!f.teacherId||f.teacherId===teacherId);
+
+  if(!formations.length){
+    wrap.innerHTML=`<div style="text-align:center;padding:32px 24px;background:#f8fafc;border-radius:12px;border:2px dashed var(--border)">
+      <div style="font-size:40px;margin-bottom:10px">🎓</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:5px">Aucune formation enregistrée</div>
+      <div style="font-size:12px;color:var(--muted)">Ajoutez vos formations, certifications et séminaires pour construire votre parcours professionnel.</div>
+    </div>`;
+    return;
+  }
+
+  /* Calculer total heures */
+  const totalH=formations.reduce((s,f)=>s+(f.heures||0),0);
+  const typeIcon={formation:'📚',certification:'🏆',seminaire:'🎤',webinaire:'💻',atelier:'🛠️'};
+  const typeColor={formation:'#1b3a6b',certification:'#059669',seminaire:'#7c3aed',webinaire:'#0d9488',atelier:'#d97706'};
+  const typeBg={formation:'#eff6ff',certification:'#ecfdf5',seminaire:'#f5f3ff',webinaire:'#f0fdfa',atelier:'#fffbeb'};
+
+  wrap.innerHTML=`<div style="background:linear-gradient(90deg,#ecfdf5,#f0fdf4);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap">
+    <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:#059669">${formations.length}</div><div style="font-size:11px;color:var(--muted);font-weight:700">Formations</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:#7c3aed">${totalH}h</div><div style="font-size:11px;color:var(--muted);font-weight:700">Heures totales</div></div>
+    <div style="text-align:center"><div style="font-size:24px;font-weight:900;color:#1b3a6b">${formations.filter(f=>f.certif).length}</div><div style="font-size:11px;color:var(--muted);font-weight:700">Certifications</div></div>
+  </div>`
+  + formations.map(f=>{
+    const ico=typeIcon[f.type]||'📚';
+    const tc=typeColor[f.type]||'#1b3a6b';
+    const tbg=typeBg[f.type]||'#eff6ff';
+    return `<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">
+      <div style="width:40px;height:40px;background:${tbg};border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${ico}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:800;font-size:14px;margin-bottom:3px">${f.titre}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${f.orga||'—'} · ${f.date||'—'} · <span style="color:${tc};font-weight:700">${f.heures||0}h</span></div>
+        ${f.certif?`<div style="display:inline-flex;align-items:center;gap:5px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:6px;padding:3px 10px"><span style="font-size:11px">🏆</span><span style="font-size:11px;font-weight:700;color:#059669">${f.certif}</span></div>`:''}
+      </div>
+      <button onclick="deleteFormation(${f.id})" style="background:none;border:1px solid #fecaca;border-radius:7px;padding:4px 8px;font-size:11px;cursor:pointer;color:#dc2626;flex-shrink:0">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GRAPHIQUES COMPARATIFS — 6 MOIS — v2.9.0
+   Présence et rapports mensuels via Chart.js
+══════════════════════════════════════════════════════════════ */
+
+/* Instances Chart.js — singletons pour éviter les erreurs canvas */
+let _chartPresence6m=null, _chartRapports6m=null;
+
+function renderComparativeCharts(myBenef){
+  const myBenefNoms=new Set(myBenef.map(b=>b.nom));
+
+  /* ── Générer les 6 derniers mois (YYYY-MM) ── */
+  const months=[];
+  const labels=[];
+  const now=new Date();
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const ym=d.toISOString().slice(0,7);
+    months.push(ym);
+    labels.push(d.toLocaleDateString('fr-MA',{month:'short',year:'2-digit'}));
+  }
+
+  /* ── Données présence : taux moyen mensuel ── */
+  const presences=loadData('ea_presences')||[];
+  const presData=months.map(m=>{
+    const monthPres=presences.filter(p=>p.date?.startsWith(m)&&myBenefNoms.has(p.nom));
+    if(!monthPres.length) return 0;
+    const presents=monthPres.filter(p=>p.statut==='present'||p.statut==='حاضر').length;
+    return Math.round(presents/monthPres.length*100);
+  });
+
+  /* ── Données rapports soumis par mois ── */
+  const rapports=loadData('ea_rapports')||[];
+  const rapsData=months.map(m=>{
+    return rapports.filter(r=>myBenefNoms.has(r.benef)&&r.date?.startsWith(m)).length;
+  });
+
+  /* ── Chart Présence ── */
+  const canvasP=document.getElementById('chart-presence-6m');
+  if(canvasP){
+    if(_chartPresence6m){ _chartPresence6m.destroy(); _chartPresence6m=null; }
+    _chartPresence6m=new Chart(canvasP,{
+      type:'bar',
+      data:{
+        labels,
+        datasets:[{
+          label:'Taux de présence (%)',
+          data:presData,
+          backgroundColor:presData.map(v=>v>=75?'rgba(5,150,105,0.7)':v>=50?'rgba(217,119,6,0.7)':'rgba(220,38,38,0.7)'),
+          borderRadius:6,
+          borderSkipped:false
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}% présence`}}},
+        scales:{
+          y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
+          x:{ticks:{font:{size:10}},grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  /* ── Chart Rapports ── */
+  const canvasR=document.getElementById('chart-rapports-6m');
+  if(canvasR){
+    if(_chartRapports6m){ _chartRapports6m.destroy(); _chartRapports6m=null; }
+    _chartRapports6m=new Chart(canvasR,{
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          label:'Rapports ce mois',
+          data:rapsData,
+          borderColor:'#059669',
+          backgroundColor:'rgba(5,150,105,0.08)',
+          borderWidth:2.5,
+          pointBackgroundColor:'#059669',
+          pointRadius:5,
+          tension:0.35,
+          fill:true
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} rapport(s)`}}},
+        scales:{
+          y:{min:0,ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
+          x:{ticks:{font:{size:10}},grid:{display:false}}
+        }
+      }
+    });
+  }
 }
 
 /* ── Ajouter une alerte intelligente (sans doublon) ── */
