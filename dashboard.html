@@ -3467,12 +3467,12 @@ body.is-consultant .sensitive-data::after {
       <div class="main-tab" id="tab-beneficiaires" onclick="showTab('beneficiaires')" data-i18n="tab_beneficiaires">👥 Bénéficiaires</div>
       <div class="main-tab" id="tab-alertes" onclick="showTab('alertes')" data-i18n="tab_alertes">🔔 <span data-i18n="nav_alertes_short">Alertes</span></div>
       <div class="main-tab" id="tab-saisie" onclick="showTab('saisie')" data-i18n="tab_saisie">✏️ Saisie</div>
-      <div class="main-tab" id="tab-rh" onclick="showTab('rh')">📋 Mes demandes RH <span id="rh-badge" style="display:none;background:#dc2626;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:100px;margin-left:3px">!</span></div>
-      <div class="main-tab" id="tab-planning" onclick="showTab('planning')">📅 Planning</div>
-      <div class="main-tab" id="tab-objectifs" onclick="showTab('objectifs')">🎯 Objectifs SMART</div>
-      <div class="main-tab" id="tab-messages" onclick="showTab('messages')">💬 Messagerie</div>
-      <div class="main-tab" id="tab-bilan" onclick="showTab('bilan')">📊 Mon Bilan</div>
-      <div class="main-tab" id="tab-calendrier" onclick="showTab('calendrier')">🗓️ Calendrier</div>
+      <div class="main-tab" id="tab-rh" onclick="showTab('rh')"><span data-i18n="tab_rh">📋 Mes demandes RH</span> <span id="rh-badge" style="display:none;background:#dc2626;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:100px;margin-left:3px">!</span></div>
+      <div class="main-tab" id="tab-planning" onclick="showTab('planning')" data-i18n="tab_planning">📅 Planning</div>
+      <div class="main-tab" id="tab-objectifs" onclick="showTab('objectifs')" data-i18n="tab_objectifs">🎯 Objectifs SMART</div>
+      <div class="main-tab" id="tab-messages" onclick="showTab('messages')" data-i18n="tab_messages">💬 Messagerie</div>
+      <div class="main-tab" id="tab-bilan" onclick="showTab('bilan')" data-i18n="tab_bilan">📊 Mon Bilan</div>
+      <div class="main-tab" id="tab-calendrier" onclick="showTab('calendrier')" data-i18n="tab_calendrier">🗓️ Calendrier</div>
       <div class="main-tab" id="tab-recommandations" onclick="showTab('recommandations')" style="display:none">📬 Mes recommandations</div>
       <div class="main-tab" id="tab-profile" onclick="showTab('profile')" data-i18n="tab_profil">👤 Profil</div>
     </div>
@@ -5919,6 +5919,58 @@ var I18N = {
     err_date_requise:        'La date est obligatoire',
     err_champ_requis:        'Ce champ est obligatoire',
     err_format_invalide:     'Format invalide',
+
+    // ── Main tabs supplémentaires ──
+    tab_rh:               '📋 Mes demandes RH',
+    tab_planning:         '📅 Planning',
+    tab_objectifs:        '🎯 Objectifs SMART',
+    tab_messages:         '💬 Messagerie',
+    tab_bilan:            '📊 Mon Bilan',
+    tab_calendrier:       '🗓️ Calendrier',
+
+    // ── buildInfoAccueil — tableau de bord personnel ──
+    wb_dashboard_title:   '🏆 Mon tableau de bord personnel',
+    wb_realtime_sub:      'Calculé depuis vos données en temps réel',
+    kpi_score_cadre:      'Score cadre',
+    sc_excellent:         'Excellent 🌟',
+    sc_bien:              'Bien 👍',
+    sc_a_ameliorer:       'À améliorer ⚠️',
+    sc_critique:          'Critique 🔴',
+    kpi_pei_completes:    'PEI complétés',
+    kpi_objectifs_lbl:    'objectifs',
+    kpi_presence_moy:     'Présence moy.',
+    kpi_presences_saisies:'présences saisies',
+    kpi_rapports_mois:    'Rapports / mois',
+    kpi_soumis_lbl:       'soumis',
+    kpi_total_lbl:        'total',
+    kpi_risque_presence:  'Risque présence',
+    kpi_presence_seuil:   'présence < 70%',
+    kpi_tous_stables:     'Tous stables ✓',
+    kpi_observations_lbl: 'Observations',
+    kpi_ce_mois:          'ce mois ·',
+
+    // ── Agenda de la semaine ──
+    agenda_title:         '📆 Agenda de la semaine',
+    agenda_voir_planning: '📅 Voir le planning →',
+    agenda_seances_count: '📅 Séances planifiées',
+    agenda_actions_req:   '⚡ Actions requises',
+    agenda_tout_ok:       'Tout est à jour ! Excellent travail.',
+    agenda_auj:           '🔵 Aujourd\'hui',
+    agenda_seance_lbl:    'Séance',
+    agenda_aucune_seance: 'Aucune séance planifiée cette semaine',
+    agenda_echu:          'Échu !',
+    agenda_auj_excl:      'Aujourd\'hui !',
+    agenda_jours_restants:'jour(s) restant(s)',
+    agenda_complete:      'complété',
+    agenda_aucun_obj:     'Aucun objectif urgent cette semaine ✅',
+    agenda_rap_brouillon: 'rapport(s) en brouillon à soumettre',
+    agenda_soumettre:     'Cliquez sur Saisie → Rapports pour les soumettre',
+
+    // ── Graphiques comparatifs ──
+    chart_presence_6m:    '📊 Taux de présence — 6 derniers mois',
+    chart_rapports_6m:    '📋 Rapports soumis — 6 derniers mois',
+    chart_evol_mensuelle: 'Évolution mensuelle',
+    chart_par_mois:       'Par mois',
   },
 
   ar: {
@@ -6950,6 +7002,58 @@ var I18N = {
     err_date_requise:        'التاريخ إلزامي',
     err_champ_requis:        'هذا الحقل إلزامي',
     err_format_invalide:     'صيغة غير صالحة',
+
+    // ── Main tabs supplémentaires ──
+    tab_rh:               '📋 طلباتي الإدارية',
+    tab_planning:         '📅 التخطيط',
+    tab_objectifs:        '🎯 الأهداف الذكية',
+    tab_messages:         '💬 المراسلة',
+    tab_bilan:            '📊 تقييمي',
+    tab_calendrier:       '🗓️ التقويم',
+
+    // ── buildInfoAccueil — لوحة التحكم الشخصية ──
+    wb_dashboard_title:   '🏆 لوحة التحكم الشخصية',
+    wb_realtime_sub:      'محسوب من بياناتك في الوقت الحقيقي',
+    kpi_score_cadre:      'نقطة المؤطر',
+    sc_excellent:         'ممتاز 🌟',
+    sc_bien:              'جيد 👍',
+    sc_a_ameliorer:       'يحتاج تحسيناً ⚠️',
+    sc_critique:          'حرج 🔴',
+    kpi_pei_completes:    'أهداف PEI مكتملة',
+    kpi_objectifs_lbl:    'هدف',
+    kpi_presence_moy:     'معدل الحضور',
+    kpi_presences_saisies:'حضور مسجل',
+    kpi_rapports_mois:    'تقارير / شهر',
+    kpi_soumis_lbl:       'مُرسَل',
+    kpi_total_lbl:        'المجموع',
+    kpi_risque_presence:  'خطر الحضور',
+    kpi_presence_seuil:   'حضور < 70%',
+    kpi_tous_stables:     'الكل مستقر ✓',
+    kpi_observations_lbl: 'ملاحظات',
+    kpi_ce_mois:          'هذا الشهر ·',
+
+    // ── جدول أعمال الأسبوع ──
+    agenda_title:         '📆 جدول أعمال الأسبوع',
+    agenda_voir_planning: '📅 عرض التخطيط →',
+    agenda_seances_count: '📅 الحصص المجدولة',
+    agenda_actions_req:   '⚡ إجراءات مطلوبة',
+    agenda_tout_ok:       'كل شيء محدث ! عمل رائع.',
+    agenda_auj:           '🔵 اليوم',
+    agenda_seance_lbl:    'حصة',
+    agenda_aucune_seance: 'لا توجد حصة مجدولة هذا الأسبوع',
+    agenda_echu:          'منتهية !',
+    agenda_auj_excl:      'اليوم !',
+    agenda_jours_restants:'يوم(أيام) متبقية',
+    agenda_complete:      'مكتمل',
+    agenda_aucun_obj:     'لا توجد أهداف عاجلة هذا الأسبوع ✅',
+    agenda_rap_brouillon: 'تقرير(ات) في المسودة للإرسال',
+    agenda_soumettre:     'انقر على الإدخال ← التقارير لإرسالها',
+
+    // ── المخططات البيانية المقارنة ──
+    chart_presence_6m:    '📊 معدل الحضور — آخر 6 أشهر',
+    chart_rapports_6m:    '📋 التقارير المرسلة — آخر 6 أشهر',
+    chart_evol_mensuelle: 'التطور الشهري',
+    chart_par_mois:       'شهرياً',
   }
 };
 
@@ -7090,8 +7194,10 @@ function translatePage() {
   /* 11 ── Topbar tag */
   const topbarTag = document.getElementById('topbar-tag-main');
   if (topbarTag && typeof CURRENT_USER !== 'undefined' && CURRENT_USER) {
-    const TOPBAR_LABELS = {'Autisme':'قسم التوحد','Informatique':'قسم الإعلاميات','Déficience auditive':'قسم الإعاقة السمعية','Déficience intellectuelle profonde':'قسم الإعاقة الذهنية العميقة','Déficience intellectuelle':'قسم الإعاقة الذهنية','Couture':'قسم الخياطة','Infirmité motrice cérébrale':'قسم الشلل الدماغي'};
-    topbarTag.textContent = (CURRENT_USER.classeIcon||'📚') + ' ' + (TOPBAR_LABELS[CURRENT_USER.classe] || CURRENT_USER.classe||'') + ' — ' + t('tag_semestre2');
+    const TOPBAR_LABELS_AR = {'Autisme':'قسم التوحد','Informatique':'قسم الإعلاميات','Déficience auditive':'قسم الإعاقة السمعية','Déficience intellectuelle profonde':'قسم الإعاقة الذهنية العميقة','Déficience intellectuelle':'قسم الإعاقة الذهنية','Couture':'قسم الخياطة','Infirmité motrice cérébrale':'قسم الشلل الدماغي'};
+    /* Afficher le nom de classe dans la langue active */
+    const classeLabel = isAR ? (TOPBAR_LABELS_AR[CURRENT_USER.classe] || CURRENT_USER.classe||'') : (CURRENT_USER.classe||'');
+    topbarTag.textContent = (CURRENT_USER.classeIcon||'📚') + ' ' + classeLabel + ' — ' + t('tag_semestre2');
   }
 
   /* 12 ── RTL / LTR */
@@ -19423,24 +19529,24 @@ function buildInfoAccueil(user, myBenef) {
   const scColor = sc>=70?'#059669':sc>=40?'#d97706':'#dc2626';
   const scBg    = sc>=70?'#ecfdf5':sc>=40?'#fffbeb':'#fef2f2';
   const scBorder= sc>=70?'#bbf7d0':sc>=40?'#fde68a':'#fecaca';
-  const scLabel = sc>=70?'Excellent 🌟':sc>=40?'Bien 👍':sc>=20?'À améliorer ⚠️':'Critique 🔴';
+  const scLabel = sc>=70?t('sc_excellent'):sc>=40?t('sc_bien'):sc>=20?t('sc_a_ameliorer'):t('sc_critique');
 
   /* Bloc KPI Personnel — injecté dans el.innerHTML plus bas */
   const kpiPersoBlock = `
   <div style="background:linear-gradient(135deg,#f8fafc,#eff6ff);border-radius:16px;border:2px solid #c7d7f8;padding:20px 22px;margin-bottom:20px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <div style="font-family:Sora,sans-serif;font-weight:800;font-size:15px;color:#1b3a6b;display:flex;align-items:center;gap:8px">
-        🏆 Mon tableau de bord personnel
+        ${t('wb_dashboard_title')}
         <span style="font-size:10px;font-weight:700;background:#dbeafe;color:#1d4ed8;padding:2px 10px;border-radius:100px">${perf.curMonth}</span>
       </div>
-      <div style="font-size:11px;color:#64748b">Calculé depuis vos données en temps réel</div>
+      <div style="font-size:11px;color:#64748b">${t('wb_realtime_sub')}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">
 
       <!-- Score de performance global -->
       <div style="background:${scBg};border-radius:12px;border:2px solid ${scBorder};padding:14px;text-align:center;grid-column:span 1">
         <div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:${scColor};line-height:1">${sc}</div>
-        <div style="font-size:10px;font-weight:800;color:${scColor};margin:3px 0 1px;text-transform:uppercase;letter-spacing:.5px">Score cadre</div>
+        <div style="font-size:10px;font-weight:800;color:${scColor};margin:3px 0 1px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_score_cadre')}</div>
         <div style="font-size:11px;color:${scColor};font-weight:700">${scLabel}</div>
         <div style="background:rgba(0,0,0,0.08);border-radius:100px;height:4px;margin-top:8px;overflow:hidden"><div style="height:100%;border-radius:100px;background:${scColor};width:${sc}%;transition:width .6s"></div></div>
       </div>
@@ -19448,39 +19554,39 @@ function buildInfoAccueil(user, myBenef) {
       <!-- % PEI complétés -->
       <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">
         <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:#7c3aed;line-height:1">${perf.pctPEI}%</div>
-        <div style="font-size:10px;font-weight:800;color:#7c3aed;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">PEI complétés</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.peiDone} / ${perf.peiTotal} objectifs</div>
+        <div style="font-size:10px;font-weight:800;color:#7c3aed;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_pei_completes')}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.peiDone} / ${perf.peiTotal} ${t('kpi_objectifs_lbl')}</div>
         <div style="background:#f5f3ff;border-radius:100px;height:4px;margin-top:8px;overflow:hidden"><div style="height:100%;border-radius:100px;background:#7c3aed;width:${perf.pctPEI}%;transition:width .6s"></div></div>
       </div>
 
       <!-- Taux de présence moyen -->
       <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">
         <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:${perf.pctPresence>=80?'#059669':perf.pctPresence>=60?'#d97706':'#dc2626'};line-height:1">${perf.pctPresence}%</div>
-        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Présence moy.</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.presTotal} présences saisies</div>
+        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_presence_moy')}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.presTotal} ${t('kpi_presences_saisies')}</div>
         <div style="background:#e2e8f0;border-radius:100px;height:4px;margin-top:8px;overflow:hidden"><div style="height:100%;border-radius:100px;background:${perf.pctPresence>=80?'#059669':perf.pctPresence>=60?'#d97706':'#dc2626'};width:${perf.pctPresence}%;transition:width .6s"></div></div>
       </div>
 
       <!-- Rapports ce mois -->
       <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">
         <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:#0d9488;line-height:1">${perf.rapsCeMois}</div>
-        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Rapports / mois</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.rapsSubmis} soumis · ${perf.rapsTotal} total</div>
+        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_rapports_mois')}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.rapsSubmis} ${t('kpi_soumis_lbl')} · ${perf.rapsTotal} ${t('kpi_total_lbl')}</div>
         <div style="background:#f0fdfa;border-radius:100px;height:4px;margin-top:8px;overflow:hidden"><div style="height:100%;border-radius:100px;background:#0d9488;width:${Math.min(perf.rapsCeMois/Math.max(myBenef.length,1)*100,100)}%;transition:width .6s"></div></div>
       </div>
 
       <!-- Bénéficiaires à risque -->
       <div style="background:${perf.bensRisque>0?'#fef2f2':'#ecfdf5'};border-radius:12px;border:1px solid ${perf.bensRisque>0?'#fecaca':'#bbf7d0'};padding:14px;text-align:center">
         <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:${perf.bensRisque>0?'#dc2626':'#059669'};line-height:1">${perf.bensRisque}</div>
-        <div style="font-size:10px;font-weight:800;color:${perf.bensRisque>0?'#dc2626':'#059669'};margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Risque présence</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.bensRisque>0?'présence < 70%':'Tous stables ✓'}</div>
+        <div style="font-size:10px;font-weight:800;color:${perf.bensRisque>0?'#dc2626':'#059669'};margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_risque_presence')}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${perf.bensRisque>0?t('kpi_presence_seuil'):t('kpi_tous_stables')}</div>
       </div>
 
       <!-- Saisies suivi ce mois -->
       <div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">
         <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:#ea580c;line-height:1">${perf.suivisCeMois}</div>
-        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">Observations</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">ce mois · ${perf.curMonth}</div>
+        <div style="font-size:10px;font-weight:800;color:#475569;margin-top:3px;text-transform:uppercase;letter-spacing:.5px">${t('kpi_observations_lbl')}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">${t('kpi_ce_mois')} ${perf.curMonth}</div>
       </div>
 
     </div>
@@ -19538,8 +19644,13 @@ function buildInfoAccueil(user, myBenef) {
   /* ══ AGENDA DE LA SEMAINE ══ */
   const todayDate  = new Date();
   const todayStr   = todayDate.toISOString().slice(0,10);
-  const weekDays   = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  const dayNames   = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  /* Noms de jours selon la langue active */
+  const weekDays = CURRENT_LANG==='ar'
+    ? ['أح','إث','ثل','أر','خم','جم','سب']
+    : ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const dayNames = CURRENT_LANG==='ar'
+    ? ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']
+    : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 
   /* Calculer lundi et vendredi de la semaine courante */
   const dow = todayDate.getDay(); // 0=dim
@@ -19579,17 +19690,17 @@ function buildInfoAccueil(user, myBenef) {
   let seanceLignes = seancesSemaine.slice(0,5).map(s=>{
     const dtS = new Date(s.date);
     const isToday = s.date===todayStr;
-    const dayLabel = isToday ? '🔵 Aujourd\'hui' : weekDays[dtS.getDay()]+' '+dtS.getDate();
+    const dayLabel = isToday ? t('agenda_auj') : weekDays[dtS.getDay()]+' '+dtS.getDate();
     const ico = statutIcon[s.statut]||'🕐';
     return `<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:${isToday?'#eff6ff':'#f8fafc'};border-radius:9px;border-left:3px solid ${isToday?'#2563eb':'#e2e8f0'}">
       <span style="font-size:13px">${ico}</span>
       <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:700;color:var(--text)">${s.beneficiaire||'—'} · ${s.activite||'Séance'}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text)">${s.beneficiaire||'—'} · ${s.activite||t('agenda_seance_lbl')}</div>
         <div style="font-size:11px;color:var(--muted)">${dayLabel} · ${s.heure||'—'} · ${s.duree||45} min</div>
       </div>
     </div>`;
   }).join('');
-  if(!seanceLignes) seanceLignes='<div style="text-align:center;color:var(--muted);font-size:12px;padding:12px">Aucune séance planifiée cette semaine</div>';
+  if(!seanceLignes) seanceLignes=`<div style="text-align:center;color:var(--muted);font-size:12px;padding:12px">${t('agenda_aucune_seance')}</div>`;
 
   /* Construire les lignes objectifs urgents */
   let objUrgLignes = objectives.slice(0,3).map(o=>{
@@ -19598,18 +19709,18 @@ function buildInfoAccueil(user, myBenef) {
       <span style="font-size:16px">🎯</span>
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:700;color:var(--text)">${o.titre.substring(0,50)}</div>
-        <div style="font-size:11px;color:${jColor};font-weight:700">${o.joursR<0?'Échu !':o.joursR===0?'Aujourd\'hui !':o.joursR+' jour(s) restant(s)'} · ${Math.round(o.actuel/(o.cible||1)*100)}% complété</div>
+        <div style="font-size:11px;color:${jColor};font-weight:700">${o.joursR<0?t('agenda_echu'):o.joursR===0?t('agenda_auj_excl'):o.joursR+' '+t('agenda_jours_restants')} · ${Math.round(o.actuel/(o.cible||1)*100)}% ${t('agenda_complete')}</div>
       </div>
     </div>`;
   }).join('');
-  if(!objUrgLignes && objectives.length===0) objUrgLignes='<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Aucun objectif urgent cette semaine ✅</div>';
+  if(!objUrgLignes && objectives.length===0) objUrgLignes=`<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">${t('agenda_aucun_obj')}</div>`;
 
   /* Construire les rappels rapports */
   const rapRappels = rapportsNonSoumis.length>0
     ? `<div style="padding:9px 12px;background:#fff7ed;border-radius:9px;border-left:3px solid #d97706;display:flex;align-items:center;gap:10px">
         <span style="font-size:16px">📤</span>
-        <div><div style="font-size:12px;font-weight:700;color:var(--text)">${rapportsNonSoumis.length} rapport(s) en brouillon à soumettre</div>
-        <div style="font-size:11px;color:var(--muted)">Cliquez sur Saisie → Rapports pour les soumettre</div></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--text)">${rapportsNonSoumis.length} ${t('agenda_rap_brouillon')}</div>
+        <div style="font-size:11px;color:var(--muted)">${t('agenda_soumettre')}</div></div>
        </div>`
     : '';
 
@@ -19617,23 +19728,23 @@ function buildInfoAccueil(user, myBenef) {
   <div style="background:linear-gradient(135deg,#fff,#f8fafc);border-radius:16px;border:2px solid #e2e8f0;padding:20px 22px;margin-bottom:20px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <div style="font-family:Sora,sans-serif;font-weight:800;font-size:15px;color:#1b3a6b;display:flex;align-items:center;gap:8px">
-        📆 Agenda de la semaine
-        <span style="font-size:10px;font-weight:700;background:#dbeafe;color:#1d4ed8;padding:2px 10px;border-radius:100px">${mondayDt.getDate()}–${fridayDt.getDate()} ${mondayDt.toLocaleDateString('fr-MA',{month:'short'})}</span>
+        ${t('agenda_title')}
+        <span style="font-size:10px;font-weight:700;background:#dbeafe;color:#1d4ed8;padding:2px 10px;border-radius:100px">${mondayDt.getDate()}–${fridayDt.getDate()} ${mondayDt.toLocaleDateString(CURRENT_LANG==='ar'?'ar-MA':'fr-MA',{month:'short'})}</span>
       </div>
-      <button onclick="showTab('planning')" style="background:#eff6ff;color:#1b3a6b;border:1px solid #bfdbfe;border-radius:8px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer">📅 Voir le planning →</button>
+      <button onclick="showTab('planning')" style="background:#eff6ff;color:#1b3a6b;border:1px solid #bfdbfe;border-radius:8px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer">${t('agenda_voir_planning')}</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
-        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">📅 Séances planifiées (${seancesSemaine.length})</div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">${t('agenda_seances_count')} (${seancesSemaine.length})</div>
         <div style="display:flex;flex-direction:column;gap:7px">${seanceLignes}</div>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">⚡ Actions requises</div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">${t('agenda_actions_req')}</div>
         <div style="display:flex;flex-direction:column;gap:7px">
           ${objUrgLignes}
           ${rapRappels}
           ${alertesUrgentes.map(a=>`<div style="padding:9px 12px;background:#fef2f2;border-radius:9px;border-left:3px solid #dc2626;display:flex;align-items:center;gap:10px"><span>🔴</span><div style="font-size:12px;font-weight:700;color:#dc2626">${(a.titre||a.benef||'Alerte urgente').substring(0,60)}</div></div>`).join('')}
-          ${!objectives.length&&!rapportsNonSoumis.length&&!alertesUrgentes.length?'<div style="text-align:center;padding:20px;background:#ecfdf5;border-radius:10px;border:1px dashed #bbf7d0"><div style="font-size:24px">🌟</div><div style="font-size:12px;font-weight:700;color:#059669;margin-top:6px">Tout est à jour ! Excellent travail.</div></div>':''}
+          ${!objectives.length&&!rapportsNonSoumis.length&&!alertesUrgentes.length?`<div style="text-align:center;padding:20px;background:#ecfdf5;border-radius:10px;border:1px dashed #bbf7d0"><div style="font-size:24px">🌟</div><div style="font-size:12px;font-weight:700;color:#059669;margin-top:6px">${t('agenda_tout_ok')}</div></div>`:''}
         </div>
       </div>
     </div>
@@ -19660,7 +19771,7 @@ function buildInfoAccueil(user, myBenef) {
     + '</div><div class="wb-stats">'
     + '<div class="wb-s"><span class="wb-sv">'+total+'</span><span class="wb-sl">'+t('kpi_beneficiaires')+'</span></div>'
     + '<div class="wb-s"><span class="wb-sv">'+niveaux+'</span><span class="wb-sl">'+t('kpi_niveaux')+'</span></div>'
-    + '<div class="wb-s"><span class="wb-sv">'+sc+'</span><span class="wb-sl">Score cadre</span></div>'
+    + '<div class="wb-s"><span class="wb-sv">'+sc+'</span><span class="wb-sl">'+t('kpi_score_cadre')+'</span></div>'
     + '</div></div>'
     /* ── BLOC KPI PERSONNEL ── */
     + kpiPersoBlock
@@ -19668,8 +19779,8 @@ function buildInfoAccueil(user, myBenef) {
     + agendaBlock
     /* ── GRAPHIQUES COMPARATIFS 6 MOIS ── */
     + '<div class="g2" style="margin-bottom:20px">'
-    + '<div class="card"><div class="card-header"><div class="card-title">📊 Taux de présence — 6 derniers mois</div><span style="font-size:11px;background:#eff6ff;color:#1b3a6b;border-radius:100px;padding:3px 10px;font-weight:700">Évolution mensuelle</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-presence-6m" height="160"></canvas></div></div>'
-    + '<div class="card"><div class="card-header"><div class="card-title">📋 Rapports soumis — 6 derniers mois</div><span style="font-size:11px;background:#ecfdf5;color:#059669;border-radius:100px;padding:3px 10px;font-weight:700">Par mois</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-rapports-6m" height="160"></canvas></div></div>'
+    + '<div class="card"><div class="card-header"><div class="card-title">'+t('chart_presence_6m')+'</div><span style="font-size:11px;background:#eff6ff;color:#1b3a6b;border-radius:100px;padding:3px 10px;font-weight:700">'+t('chart_evol_mensuelle')+'</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-presence-6m" height="160"></canvas></div></div>'
+    + '<div class="card"><div class="card-header"><div class="card-title">'+t('chart_rapports_6m')+'</div><span style="font-size:11px;background:#ecfdf5;color:#059669;border-radius:100px;padding:3px 10px;font-weight:700">'+t('chart_par_mois')+'</span></div><div class="card-body" style="padding:10px 0"><canvas id="chart-rapports-6m" height="160"></canvas></div></div>'
     + '</div>'
     + '<div class="g4" style="margin-bottom:20px">'
     + '<div class="card"><div class="kpi"><div class="kpi-label">'+t('adm_kpi_total_benef')+'</div><div class="kpi-val" style="color:var(--primary)">'+total+'</div><div class="kpi-sub">'+t('tag_semestre2')+' · '+niveaux+' '+t('kpi_niveaux').toLowerCase()+'</div><div class="kbar"><div class="kfill" style="width:100%;background:var(--primary-mid)"></div></div></div></div>'
@@ -23701,7 +23812,7 @@ function renderComparativeCharts(myBenef){
       data:{
         labels,
         datasets:[{
-          label:'Taux de présence (%)',
+          label:t('kpi_presence_moy')+' (%)',
           data:presData,
           backgroundColor:presData.map(v=>v>=75?'rgba(5,150,105,0.7)':v>=50?'rgba(217,119,6,0.7)':'rgba(220,38,38,0.7)'),
           borderRadius:6,
@@ -23711,7 +23822,7 @@ function renderComparativeCharts(myBenef){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}% présence`}}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw}% ${t('kpi_presence_moy')}`}}},
         scales:{
           y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
           x:{ticks:{font:{size:10}},grid:{display:false}}
@@ -23729,7 +23840,7 @@ function renderComparativeCharts(myBenef){
       data:{
         labels,
         datasets:[{
-          label:'Rapports ce mois',
+          label:t('kpi_rapports_mois'),
           data:rapsData,
           borderColor:'#059669',
           backgroundColor:'rgba(5,150,105,0.08)',
@@ -23743,7 +23854,7 @@ function renderComparativeCharts(myBenef){
       options:{
         responsive:true,
         maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} rapport(s)`}}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} ${t('adm_rapports_short')}`}}},
         scales:{
           y:{min:0,ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
           x:{ticks:{font:{size:10}},grid:{display:false}}
