@@ -771,6 +771,7 @@ textarea.form-control{resize:vertical;min-height:80px;}
 
 /* ── Validation formulaires inline ── */
 @keyframes errFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .field-error-msg{
   color:#dc2626;font-size:11px;font-weight:700;
   margin-top:4px;display:flex;align-items:center;gap:4px;
@@ -3583,6 +3584,7 @@ body.is-consultant .sensitive-data::after {
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveGhiyab()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="ghiyab_btn_save">💾 حفظ</button>
           <button onclick="exportGhiyabReport()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" data-i18n="ghiyab_btn_rapport">📄 تقرير الغياب</button>
+          <button onclick="openRecopieModal('gh')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="نسخ بيانات الحضور إلى مستفيدين آخرين">📋 نسخ إلى...</button>
         </div>
 
         <!-- ══ سجل الغياب الإجمالي ══ -->
@@ -3636,6 +3638,8 @@ body.is-consultant .sensitive-data::after {
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveJadwalTalabat()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_save">💾 حفظ</button>
           <button onclick="clearJadwalTalabat()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_clear">🗑️ مسح</button>
+          <button onclick="openRecopieModal('jt')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="نسخ بيانات هذا الشهر إلى مستفيدين آخرين">📋 نسخ إلى...</button>
+          <button onclick="openCustomObjModal('jt')" style="background:#f0fdf4;color:#059669;border:1.5px solid #bbf7d0;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="إضافة هدف مخصص جديد">➕ هدف جديد</button>
         </div>
       </div>
     </div>
@@ -3664,6 +3668,8 @@ body.is-consultant .sensitive-data::after {
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveJadwalRi3aya()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_save">💾 حفظ</button>
           <button onclick="clearJadwalRi3aya()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:13px;cursor:pointer" data-i18n="jadwal_btn_clear">🗑️ مسح</button>
+          <button onclick="openRecopieModal('rd')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="نسخ بيانات هذا الشهر إلى مستفيدين آخرين">📋 نسخ إلى...</button>
+          <button onclick="openCustomObjModal('rd')" style="background:#f0fdf4;color:#059669;border:1.5px solid #bbf7d0;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="إضافة هدف مخصص جديد">➕ هدف جديد</button>
         </div>
       </div>
     </div>
@@ -3685,8 +3691,10 @@ body.is-consultant .sensitive-data::after {
           </div>
           <div id="tn-table-container" style="overflow-x:auto"></div>
         </div>
-        <div style="margin-top:12px;display:flex;gap:8px">
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
           <button onclick="saveTan9it()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:13px;cursor:pointer">💾 حفظ</button>
+          <button onclick="openRecopieModal('tn')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="نسخ بيانات هذا الشهر إلى مستفيدين آخرين">📋 نسخ إلى...</button>
+          <button onclick="openCustomObjModal('tn')" style="background:#faf5ff;color:#7c3aed;border:1.5px solid #ddd6fe;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" title="إضافة هدف مخصص للتنقيط">➕ هدف جديد</button>
         </div>
       </div>
     </div>
@@ -3920,7 +3928,10 @@ body.is-consultant .sensitive-data::after {
                 <label class="form-label" id="lbl-n-comment">Commentaire</label>
                 <textarea class="form-control" id="n-comment" placeholder="Observations sur la performance..."></textarea>
               </div>
-              <button class="btn-save" onclick="saveNote()">💾 Enregistrer la note</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <button class="btn-save" onclick="saveNote()" style="flex:1;min-width:160px">💾 Enregistrer la note</button>
+                <button onclick="openRecopieSaisieModal('n')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" title="Appliquer la même note à d'autres bénéficiaires">📋 Appliquer à d'autres</button>
+              </div>
             </div>
           </div>
           <div class="card">
@@ -3994,7 +4005,10 @@ body.is-consultant .sensitive-data::after {
                 <label class="form-label" id="s-supp-label">Supports utilisés</label>
                 <input type="text" class="form-control" id="s-supp" placeholder="Ex: Ordinateur, vidéoprojecteur...">
               </div>
-              <button class="btn-save" onclick="saveSuivi()">💾 Enregistrer l'observation</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <button class="btn-save" onclick="saveSuivi()" style="flex:1;min-width:160px">💾 Enregistrer l'observation</button>
+                <button onclick="openRecopieSaisieModal('s')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" title="Appliquer la même observation à d'autres bénéficiaires">📋 Appliquer à d'autres</button>
+              </div>
             </div>
           </div>
           <div class="card">
@@ -4072,7 +4086,10 @@ body.is-consultant .sensitive-data::after {
                   <option value="soumis">📤 Soumis à la direction</option>
                 </select>
               </div>
-              <button class="btn-save" onclick="saveRapport()">💾 Enregistrer le rapport</button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <button class="btn-save" onclick="saveRapport()" style="flex:1;min-width:160px">💾 Enregistrer le rapport</button>
+                <button onclick="openRecopieSaisieModal('r')" style="background:#eff6ff;color:var(--primary);border:1.5px solid #bfdbfe;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" title="Appliquer le même rapport à d'autres bénéficiaires">📋 Appliquer à d'autres</button>
+              </div>
             </div>
           </div>
           <div class="card">
@@ -19731,12 +19748,19 @@ function renderJadwalTalabat(){
   const days=getDaysInMonth(year,month);
   const key=`ea_jt_${benef}_${year}_${month}`;
   const saved=JSON.parse(localStorage.getItem(key)||'{}');
+  /* Fusionner les items fixes + items personnalisés */
+  const effectiveItems = getEffectiveItems('jt');
+  const customCount = effectiveItems.length - TALABAT_ITEMS.length;
+
   let html=`<table style="border-collapse:collapse;direction:rtl;min-width:100%;font-size:11px"><thead><tr style="background:#f8fafc">
-    <th style="padding:10px 14px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:200px">الطلبات</th>`;
+    <th style="padding:10px 14px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:200px">الطلبات ${customCount > 0 ? `<span style="background:#eff6ff;color:var(--primary);font-size:10px;padding:1px 6px;border-radius:4px;margin-right:6px">+${customCount} مخصص</span>` : ''}</th>`;
   for(let d=1;d<=days;d++)html+=`<th style="padding:6px 3px;text-align:center;border:1px solid var(--border);min-width:34px;font-weight:700;color:var(--muted);font-size:10px">${d}</th>`;
   html+=`</tr></thead><tbody>`;
-  TALABAT_ITEMS.forEach((item,ri)=>{
-    html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:#f8fafc;white-space:nowrap">${ri+1}. ${item}</td>`;
+  effectiveItems.forEach((item,ri)=>{
+    const isCustom = ri >= TALABAT_ITEMS.length;
+    const rowBg = isCustom ? '#fafbff' : '#f8fafc';
+    const itemLabel = isCustom ? `${ri+1}. <span style="color:var(--primary)">★</span> ${item}` : `${ri+1}. ${item}`;
+    html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:${rowBg};white-space:nowrap">${itemLabel}</td>`;
     for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleJT('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
@@ -19768,12 +19792,19 @@ function renderJadwalRi3aya(){
   const days=getDaysInMonth(year,month);
   const key=`ea_rd_${benef}_${year}_${month}`;
   const saved=JSON.parse(localStorage.getItem(key)||'{}');
+  /* Fusionner les items fixes + items personnalisés */
+  const effectiveItems = getEffectiveItems('rd');
+  const customCount = effectiveItems.length - RI3AYA_ITEMS.length;
+
   let html=`<table style="border-collapse:collapse;direction:rtl;min-width:100%;font-size:11px"><thead><tr style="background:#f0fdf4">
-    <th style="padding:10px 14px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:220px">الأهداف</th>`;
+    <th style="padding:10px 14px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:220px">الأهداف ${customCount > 0 ? `<span style="background:#f0fdf4;color:#059669;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:6px">+${customCount} مخصص</span>` : ''}</th>`;
   for(let d=1;d<=days;d++)html+=`<th style="padding:6px 3px;text-align:center;border:1px solid var(--border);min-width:34px;font-weight:700;color:#059669;font-size:10px">${d}</th>`;
   html+=`</tr></thead><tbody>`;
-  RI3AYA_ITEMS.forEach((item,ri)=>{
-    html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:#f0fdf4;white-space:nowrap">${ri+1}. ${item}</td>`;
+  effectiveItems.forEach((item,ri)=>{
+    const isCustom = ri >= RI3AYA_ITEMS.length;
+    const rowBg = isCustom ? '#f0fff8' : '#f0fdf4';
+    const itemLabel = isCustom ? `${ri+1}. <span style="color:#059669">★</span> ${item}` : `${ri+1}. ${item}`;
+    html+=`<tr><td style="padding:8px 14px;border:1px solid var(--border);font-weight:600;background:${rowBg};white-space:nowrap">${itemLabel}</td>`;
     for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'+':'#dcfce7','~':'#fef3c7','-':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-weight:700;font-size:13px" onclick="cycleRD('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
@@ -19794,8 +19825,10 @@ function renderTan9it(){
   const b=BENEFICIAIRES.find(x=>x.nom===benef);
   const cont=document.getElementById('tn-table-container');
   if(!b){cont.innerHTML='<div style="padding:40px;color:var(--muted);direction:rtl;text-align:center">لا توجد بيانات للمستفيد</div>';return;}
-  if(!b.pei_domaines||b.pei_domaines.length===0||b.pei_domaines.reduce((s,d)=>s+(d.objectifs||[]).length,0)===0){
-    cont.innerHTML='<div style="padding:40px;color:var(--muted);direction:rtl;text-align:center;background:#faf5ff;border-radius:12px;margin:14px"><div style="font-size:24px;margin-bottom:10px">📋</div><div style="font-size:14px;font-weight:700;color:#7c3aed;margin-bottom:6px">لا توجد أهداف مسجلة لهذا المستفيد</div><div style="font-size:12px;color:var(--muted)">يجب أولاً إضافة أهداف في <strong>البرنامج الكبير</strong> قبل البدء في التنقيط اليومي</div></div>';
+  const hasPeiObjs = b.pei_domaines && b.pei_domaines.length > 0 && b.pei_domaines.reduce((s,d)=>s+(d.objectifs||[]).length,0) > 0;
+  const hasCustomTnObjs = (JSON.parse(localStorage.getItem(customObjKey('tn')) || '[]')).length > 0;
+  if(!hasPeiObjs && !hasCustomTnObjs){
+    cont.innerHTML='<div style="padding:40px;color:var(--muted);direction:rtl;text-align:center;background:#faf5ff;border-radius:12px;margin:14px"><div style="font-size:24px;margin-bottom:10px">📋</div><div style="font-size:14px;font-weight:700;color:#7c3aed;margin-bottom:6px">لا توجد أهداف مسجلة لهذا المستفيد</div><div style="font-size:12px;color:var(--muted)">يجب أولاً إضافة أهداف في <strong>البرنامج الكبير</strong> أو إضافة أهداف مخصصة عبر زر <strong>➕ هدف جديد</strong></div></div>';
     return;
   }
   const year=2025+(parseInt(month)<9?1:0);
@@ -19803,16 +19836,22 @@ function renderTan9it(){
   const key=`ea_tn_${benef}_${year}_${month}`;
   const saved=JSON.parse(localStorage.getItem(key)||'{}');
   const allObjs=[];
-  b.pei_domaines.forEach(d=>d.objectifs.forEach(o=>allObjs.push({code:o.code,nom:o.nom,color:d.color})));
+  b.pei_domaines.forEach(d=>d.objectifs.forEach(o=>allObjs.push({code:o.code,nom:o.nom,color:d.color,custom:false})));
+  /* Ajouter les objectifs personnalisés برنامج التنقيط */
+  const customTnItems = JSON.parse(localStorage.getItem(customObjKey('tn')) || '[]');
+  customTnItems.forEach((nom, i) => allObjs.push({ code: `م${i+1}`, nom, color: '#7c3aed', custom: true }));
+  const customCount = customTnItems.length;
   let html=`<table style="border-collapse:collapse;direction:rtl;min-width:100%;font-size:11px"><thead><tr style="background:#faf5ff">
     <th style="padding:8px 10px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:60px">الرمز</th>
-    <th style="padding:8px 10px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:170px">الهدف</th>`;
+    <th style="padding:8px 10px;text-align:right;font-weight:800;border:1px solid var(--border);min-width:170px">الهدف ${customCount > 0 ? `<span style="background:#faf5ff;color:#7c3aed;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:6px">+${customCount} مخصص</span>` : ''}</th>`;
   for(let d=1;d<=days;d++)html+=`<th style="padding:5px 2px;text-align:center;border:1px solid var(--border);min-width:30px;font-weight:700;color:#7c3aed;font-size:10px">${d}</th>`;
   html+=`</tr></thead><tbody>`;
   allObjs.forEach((obj,ri)=>{
-    html+=`<tr>
+    const rowBg = obj.custom ? '#faf5ff' : '#fff';
+    const objNomDisplay = obj.custom ? `<span style="color:#7c3aed">★</span> ${obj.nom.substring(0,50)}` : obj.nom.substring(0,50);
+    html+=`<tr style="background:${rowBg}">
       <td style="padding:6px 10px;border:1px solid var(--border);text-align:center"><span style="background:${obj.color}20;color:${obj.color};font-weight:800;font-size:10px;padding:2px 6px;border-radius:5px">${obj.code}</span></td>
-      <td style="padding:6px 10px;border:1px solid var(--border);font-size:11px;font-weight:600;direction:rtl">${obj.nom.substring(0,50)}</td>`;
+      <td style="padding:6px 10px;border:1px solid var(--border);font-size:11px;font-weight:600;direction:rtl">${objNomDisplay}</td>`;
     for(let d=1;d<=days;d++){const k=`${ri}_${d}`;const v=saved[k]||'';const bg={'✅':'#dcfce7','🔄':'#fef3c7','⭕':'#fee2e2','🏖️':'#fff7ed'}[v]||'transparent';html+=`<td style="border:1px solid var(--border);text-align:center;cursor:pointer;background:${bg};font-size:12px" onclick="cycleTN('${key}','${k}',this)">${v}</td>`;}
     html+=`</tr>`;
   });
@@ -19893,6 +19932,328 @@ function saveTa9yimNotes(key,nk,val){
   const s=JSON.parse(localStorage.getItem(key)||'{}');s[nk]=val;localStorage.setItem(key,JSON.stringify(s));
   /* Sync bundle ABLLS → Firestore (CRITIQUE 2) */
   if(typeof syncSchedule==='function') syncSchedule(key, s, 3000);
+}
+
+// ════════════════════════════════════════════════════════
+// RECOPIE INCRÉMENTÉE — نسخ البيانات إلى مستفيدين آخرين
+// ════════════════════════════════════════════════════════
+
+/* État partagé du module recopie */
+let _recopieState = { tool: null, sourceKey: null, sourceBenef: null, month: null, year: null, saisieFormGetter: null };
+
+/* Ouvre le modal recopie pour les outils PEI (jt / rd / tn / gh) */
+function openRecopieModal(tool) {
+  if (!CURRENT_USER) return;
+  /* Identifiants des sélecteurs selon l'outil */
+  const benefIds = { gh: 'gh-benef', jt: 'jt-benef', rd: 'rd-benef', tn: 'tn-benef' };
+  const monthIds = { gh: 'gh-month', jt: 'jt-month', rd: 'rd-month', tn: 'tn-month' };
+  const toolLabels = {
+    gh: 'تتبع الحضور والغياب',
+    jt: 'جدول الطلبات',
+    rd: 'جدول الرعاية الذاتية',
+    tn: 'برنامج التنقيط'
+  };
+
+  const sourceBenef = document.getElementById(benefIds[tool])?.value;
+  const month       = document.getElementById(monthIds[tool])?.value;
+
+  if (!sourceBenef || !month) {
+    showToast('⚠️ اختر المستفيد والشهر أولاً', '#d97706');
+    return;
+  }
+
+  const year      = 2025 + (parseInt(month) < 9 ? 1 : 0);
+  const sourceKey = `ea_${tool}_${sourceBenef}_${year}_${month}`;
+  const data      = localStorage.getItem(sourceKey);
+
+  if (!data || data === '{}') {
+    showToast('⚠️ لا توجد بيانات مسجلة لهذا المستفيد في هذا الشهر', '#d97706');
+    return;
+  }
+
+  /* Mémoriser l'état pour executeRecopie() */
+  _recopieState = { tool, sourceKey, sourceBenef, month, year, saisieFormGetter: null };
+
+  /* Construire la liste des bénéficiaires (sauf la source) */
+  const otherBenef = BENEFICIAIRES.filter(b => b.teacherId === CURRENT_USER.teacherId && b.nom !== sourceBenef);
+  const modal = document.getElementById('recopie-modal');
+
+  /* En-tête : source info */
+  document.getElementById('recopie-source-name').textContent =
+    `${sourceBenef}  —  ${MONTHS_AR[parseInt(month) - 1]} ${year}  ·  ${toolLabels[tool]}`;
+  document.getElementById('recopie-note').textContent =
+    'سيتم نسخ بيانات هذا الشهر بالكامل إلى المستفيدين المختارين (ستُستبدل بياناتهم الحالية)';
+
+  /* Remplir les cases à cocher */
+  if (otherBenef.length === 0) {
+    document.getElementById('recopie-benef-checkboxes').innerHTML =
+      '<div style="padding:20px;text-align:center;color:var(--muted);direction:rtl">لا يوجد مستفيدون آخرون في فصلك</div>';
+  } else {
+    document.getElementById('recopie-benef-checkboxes').innerHTML = otherBenef.map(b => `
+      <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;background:#fafbfc;transition:background .15s"
+             onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fafbfc'">
+        <input type="checkbox" value="${b.nom}" style="width:16px;height:16px;cursor:pointer;accent-color:var(--primary);flex-shrink:0">
+        <span style="font-size:13px;font-weight:700;color:var(--text)">${b.nom}</span>
+      </label>`).join('');
+  }
+
+  modal.style.display = 'flex';
+  document.getElementById('custom-obj-modal').style.display = 'none'; /* fermer l'autre modal si ouvert */
+}
+
+/* Ouvre le modal recopie pour la saisie générale (notes/suivi/rapports) */
+function openRecopieSaisieModal(tool) {
+  if (!CURRENT_USER) return;
+  const benefIds = { n: 'n-benef', s: 's-benef', r: 'r-benef' };
+  const toolLabels = { n: 'Notes', s: 'Suivi quotidien', r: 'Rapports' };
+
+  const sourceBenef = document.getElementById(benefIds[tool])?.value;
+  if (!sourceBenef) {
+    showToast('⚠️ Choisissez un bénéficiaire dans le formulaire', '#d97706');
+    return;
+  }
+
+  /* Mémoriser l'état — saisieFormGetter indique que c'est un formulaire de saisie générale */
+  _recopieState = { tool: 'saisie_' + tool, sourceKey: null, sourceBenef, month: null, year: null, saisieFormGetter: tool };
+
+  const otherBenef = BENEFICIAIRES.filter(b => b.teacherId === CURRENT_USER.teacherId && b.nom !== sourceBenef);
+  const modal = document.getElementById('recopie-modal');
+
+  document.getElementById('recopie-source-name').textContent =
+    `${sourceBenef}  —  ${toolLabels[tool]}`;
+  document.getElementById('recopie-note').textContent =
+    'سيتم تطبيق نفس المعلومات الحالية في النموذج على المستفيدين المختارين تلقائياً';
+
+  if (otherBenef.length === 0) {
+    document.getElementById('recopie-benef-checkboxes').innerHTML =
+      '<div style="padding:20px;text-align:center;color:var(--muted);direction:rtl">لا يوجد مستفيدون آخرون</div>';
+  } else {
+    document.getElementById('recopie-benef-checkboxes').innerHTML = otherBenef.map(b => `
+      <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:8px;background:#fafbfc;transition:background .15s"
+             onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fafbfc'">
+        <input type="checkbox" value="${b.nom}" style="width:16px;height:16px;cursor:pointer;accent-color:var(--primary);flex-shrink:0">
+        <span style="font-size:13px;font-weight:700;color:var(--text)">${b.nom}</span>
+      </label>`).join('');
+  }
+
+  modal.style.display = 'flex';
+}
+
+/* Sélectionner / désélectionner tous les bénéficiaires */
+function recopieSelectAll(checked) {
+  document.querySelectorAll('#recopie-benef-checkboxes input[type=checkbox]').forEach(cb => { cb.checked = checked; });
+}
+
+/* Exécuter la recopie après confirmation */
+function executeRecopie() {
+  const checked = [...document.querySelectorAll('#recopie-benef-checkboxes input[type=checkbox]:checked')];
+  if (checked.length === 0) {
+    showToast('⚠️ اختر مستفيداً واحداً على الأقل', '#d97706');
+    return;
+  }
+
+  const { tool, sourceKey, month, year, saisieFormGetter } = _recopieState;
+  let count = 0;
+
+  if (saisieFormGetter) {
+    /* === Recopie saisie générale (notes / suivi / rapports) === */
+    const saisieToolId = saisieFormGetter; /* 'n', 's', 'r' */
+    checked.forEach(cb => {
+      const targetBenef = cb.value;
+      if (saisieToolId === 'n') {
+        /* Lire les champs du formulaire note */
+        const date    = document.getElementById('n-date')?.value;
+        const type    = document.getElementById('n-type')?.value;
+        const module  = document.getElementById('n-module')?.value?.trim();
+        const noteVal = parseFloat(document.getElementById('n-note')?.value);
+        const appre   = document.getElementById('n-appre')?.value;
+        const comment = document.getElementById('n-comment')?.value?.trim();
+        if (!date || isNaN(noteVal)) return;
+        const entry = { id: Date.now() + Math.random(), benef: targetBenef, date, type, module, note: noteVal, appre, comment, teacher: CURRENT_USER?.name || '' };
+        NOTES.unshift(entry);
+        count++;
+      } else if (saisieToolId === 's') {
+        /* Lire les champs du formulaire suivi */
+        const date   = document.getElementById('s-date')?.value;
+        const dom    = document.getElementById('s-dom')?.value;
+        const status = document.getElementById('s-status')?.value;
+        const obj    = document.getElementById('s-obj')?.value?.trim();
+        const obs    = document.getElementById('s-obs')?.value?.trim();
+        const supp   = document.getElementById('s-supp')?.value?.trim();
+        if (!date || !obs) return;
+        const entry = { id: Date.now() + Math.random(), benef: targetBenef, date, dom, status, obj, obs, supp, teacher: CURRENT_USER?.name || '' };
+        SUIVIS.unshift(entry);
+        count++;
+      } else if (saisieToolId === 'r') {
+        /* Lire les champs du formulaire rapport */
+        const periode         = document.getElementById('r-periode')?.value;
+        const realises        = document.getElementById('r-realises')?.value?.trim();
+        const encours         = document.getElementById('r-encours')?.value?.trim();
+        const nonrealises     = document.getElementById('r-nonrealises')?.value?.trim();
+        const recommandations = document.getElementById('r-recommandations')?.value?.trim();
+        const taux            = document.getElementById('r-taux')?.value;
+        const appre           = document.getElementById('r-appre')?.value;
+        const statut          = document.getElementById('r-statut')?.value || 'brouillon';
+        const entry = {
+          id: Date.now() + Math.random(), benef: targetBenef, periode,
+          realises, encours, nonrealises, recommandations, taux, appre, statut,
+          date: new Date().toISOString().split('T')[0],
+          teacher: CURRENT_USER?.name || '', dateStatut: new Date().toISOString()
+        };
+        RAPPORTS.unshift(entry);
+        count++;
+      }
+    });
+    /* Sauvegarder les données en bloc */
+    if (saisieToolId === 'n') saveData('ea_notes', NOTES);
+    else if (saisieToolId === 's') saveData('ea_suivis', SUIVIS);
+    else if (saisieToolId === 'r') saveData('ea_rapports', RAPPORTS);
+    renderSavedLists();
+
+  } else {
+    /* === Recopie PEI / Ghiyab (copie brute du localStorage) === */
+    const data = localStorage.getItem(sourceKey);
+    if (!data) { showToast('⚠️ لا توجد بيانات للنسخ', '#d97706'); return; }
+
+    const toolBase = tool; /* 'gh', 'jt', 'rd', 'tn' */
+    checked.forEach(cb => {
+      const targetKey = `ea_${toolBase}_${cb.value}_${year}_${month}`;
+      localStorage.setItem(targetKey, data);
+      count++;
+    });
+  }
+
+  document.getElementById('recopie-modal').style.display = 'none';
+  showToast(`✅ تم النسخ إلى ${count} مستفيد/ة بنجاح`, '#059669');
+}
+
+/* Fermer le modal recopie */
+function closeRecopieModal() {
+  document.getElementById('recopie-modal').style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
+// OBJECTIFS PERSONNALISÉS — إضافة أهداف مخصصة
+// Stockage : ea_custom_jt_{teacherId} / ea_custom_rd_{teacherId} / ea_custom_tn_{teacherId}
+// ════════════════════════════════════════════════════════
+
+/* Mapping outil → config */
+const CUSTOM_OBJ_CONFIG = {
+  jt: { label: 'جدول الطلبات', color: '#1b3a6b', storagePrefix: 'ea_custom_jt_' },
+  rd: { label: 'جدول الرعاية الذاتية', color: '#059669', storagePrefix: 'ea_custom_rd_' },
+  tn: { label: 'برنامج التنقيط', color: '#7c3aed', storagePrefix: 'ea_custom_tn_' }
+};
+
+/* Clé de stockage des objectifs personnalisés */
+function customObjKey(tool) {
+  const tid = CURRENT_USER?.teacherId || 'default';
+  return CUSTOM_OBJ_CONFIG[tool]?.storagePrefix + tid;
+}
+
+/* Récupère la liste d'items effectifs (fixes + custom) pour un outil */
+function getEffectiveItems(tool) {
+  const base = tool === 'jt' ? [...TALABAT_ITEMS] : tool === 'rd' ? [...RI3AYA_ITEMS] : [];
+  const custom = JSON.parse(localStorage.getItem(customObjKey(tool)) || '[]');
+  return [...base, ...custom];
+}
+
+/* Ouvre le modal d'ajout d'objectif personnalisé */
+function openCustomObjModal(tool) {
+  if (!CURRENT_USER) return;
+  const cfg = CUSTOM_OBJ_CONFIG[tool];
+  if (!cfg) return;
+
+  /* Mémoriser l'outil actif */
+  window._customObjTool = tool;
+
+  /* Configurer l'en-tête */
+  document.getElementById('custom-obj-tool-label').textContent = cfg.label;
+  document.getElementById('custom-obj-header').style.background = cfg.color;
+
+  /* Vider le champ */
+  document.getElementById('custom-obj-input').value = '';
+
+  /* Afficher la liste des objectifs actuels */
+  refreshCustomObjExistingList(tool);
+
+  document.getElementById('custom-obj-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('custom-obj-input').focus(), 80);
+}
+
+/* Rafraîchit la liste des objectifs affichés dans le modal */
+function refreshCustomObjExistingList(tool) {
+  const allItems = getEffectiveItems(tool);
+  const customItems = JSON.parse(localStorage.getItem(customObjKey(tool)) || '[]');
+  const customSet = new Set(customItems);
+  const cfg = CUSTOM_OBJ_CONFIG[tool];
+
+  const html = allItems.map((item, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:7px;background:var(--bg);margin-bottom:4px;direction:rtl">
+      <span style="font-size:11px;font-weight:800;color:${cfg.color};background:${cfg.color}18;padding:2px 7px;border-radius:5px;flex-shrink:0">${i + 1}</span>
+      <span style="font-size:12px;flex:1;color:var(--text)">${item}</span>
+      ${customSet.has(item)
+        ? `<button onclick="deleteCustomObj('${tool}','${item.replace(/'/g, "\\'")}')" title="حذف هذا الهدف المخصص" style="background:#fee2e2;color:#dc2626;border:none;border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;flex-shrink:0">🗑</button>`
+        : '<span style="font-size:10px;color:var(--muted);flex-shrink:0">ثابت</span>'}
+    </div>`).join('');
+
+  document.getElementById('custom-obj-existing').innerHTML = html || '<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">لا توجد أهداف</div>';
+}
+
+/* Sauvegarder un nouvel objectif personnalisé */
+function saveCustomObj() {
+  const tool = window._customObjTool;
+  if (!tool) return;
+  const val = document.getElementById('custom-obj-input')?.value?.trim();
+  if (!val) {
+    showToast('⚠️ أدخل نص الهدف أولاً', '#d97706');
+    document.getElementById('custom-obj-input').focus();
+    return;
+  }
+
+  const key = customObjKey(tool);
+  const customItems = JSON.parse(localStorage.getItem(key) || '[]');
+
+  /* Vérifier les doublons (dans les items fixes ET custom) */
+  const allItems = getEffectiveItems(tool);
+  if (allItems.includes(val)) {
+    showToast('⚠️ هذا الهدف موجود بالفعل', '#d97706');
+    return;
+  }
+
+  customItems.push(val);
+  localStorage.setItem(key, JSON.stringify(customItems));
+
+  /* Vider le champ */
+  document.getElementById('custom-obj-input').value = '';
+
+  /* Rafraîchir la liste affichée */
+  refreshCustomObjExistingList(tool);
+
+  showToast(`✅ تم إضافة الهدف: ${val}`, '#059669');
+
+  /* Re-render le tableau concerné pour que le nouvel item apparaisse immédiatement */
+  if (tool === 'jt') renderJadwalTalabat();
+  else if (tool === 'rd') renderJadwalRi3aya();
+  else if (tool === 'tn') renderTan9it();
+}
+
+/* Supprimer un objectif personnalisé */
+function deleteCustomObj(tool, item) {
+  const key = customObjKey(tool);
+  let customItems = JSON.parse(localStorage.getItem(key) || '[]');
+  customItems = customItems.filter(x => x !== item);
+  localStorage.setItem(key, JSON.stringify(customItems));
+  refreshCustomObjExistingList(tool);
+  showToast('🗑️ تم حذف الهدف المخصص', '#dc2626');
+  /* Re-render */
+  if (tool === 'jt') renderJadwalTalabat();
+  else if (tool === 'rd') renderJadwalRi3aya();
+  else if (tool === 'tn') renderTan9it();
+}
+
+/* Fermer le modal objectif */
+function closeCustomObjModal() {
+  document.getElementById('custom-obj-modal').style.display = 'none';
 }
 
 // ════════════════════════════════════════════════════════
@@ -32348,6 +32709,76 @@ function openLaihaDetail(idx) {
 
 <!-- ── Bouton retour en haut ── -->
 <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Retour en haut" aria-label="Retour en haut">↑</button>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — RECOPIE INCRÉMENTÉE
+     نسخ بيانات جدول/حضور إلى مستفيدين آخرين
+     ════════════════════════════════════════════════════════ -->
+<div id="recopie-modal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,0.52);backdrop-filter:blur(4px)">
+  <div class="card" style="max-width:460px;width:92%;padding:0;border-radius:16px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.28);animation:fadeInUp .2s ease">
+    <!-- En-tête -->
+    <div style="background:var(--primary);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:22px">📋</span>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:15px">نسخ البيانات إلى مستفيدين آخرين</div>
+        <div id="recopie-source-name" style="font-size:11px;opacity:0.82;margin-top:2px;font-weight:600"></div>
+      </div>
+      <button onclick="closeRecopieModal()" style="background:rgba(255,255,255,0.18);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
+    </div>
+    <!-- Corps -->
+    <div style="padding:16px 20px">
+      <div id="recopie-note" style="font-size:12px;color:var(--muted);margin-bottom:12px;background:var(--bg);padding:8px 12px;border-radius:8px;border-right:3px solid var(--primary)">سيتم نسخ بيانات هذا الشهر بالكامل إلى المستفيدين المختارين</div>
+      <!-- Sélection rapide -->
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button onclick="recopieSelectAll(true)" style="background:#eff6ff;color:var(--primary);border:1px solid #bfdbfe;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">✅ تحديد الكل</button>
+        <button onclick="recopieSelectAll(false)" style="background:#f8fafc;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">☐ إلغاء الكل</button>
+      </div>
+      <!-- Liste bénéficiaires avec cases à cocher -->
+      <div id="recopie-benef-checkboxes" style="max-height:260px;overflow-y:auto;direction:rtl;padding-right:2px"></div>
+    </div>
+    <!-- Pied -->
+    <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--bg)">
+      <button onclick="closeRecopieModal()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer">إلغاء</button>
+      <button onclick="executeRecopie()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer">📋 نسخ الآن</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — OBJECTIF PERSONNALISÉ
+     إضافة هدف مخصص جديد
+     ════════════════════════════════════════════════════════ -->
+<div id="custom-obj-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,0.52);backdrop-filter:blur(4px)">
+  <div class="card" style="max-width:440px;width:92%;padding:0;border-radius:16px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.28);animation:fadeInUp .2s ease">
+    <!-- En-tête -->
+    <div id="custom-obj-header" style="background:#059669;color:#fff;padding:16px 20px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">➕</span>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:15px">إضافة هدف جديد</div>
+        <div id="custom-obj-tool-label" style="font-size:11px;opacity:0.82;margin-top:2px"></div>
+      </div>
+      <button onclick="closeCustomObjModal()" style="background:rgba(255,255,255,0.18);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
+    </div>
+    <!-- Corps -->
+    <div style="padding:20px">
+      <!-- Champ de saisie -->
+      <div class="form-group" style="margin-bottom:16px">
+        <label class="form-label" style="direction:rtl">اسم الهدف الجديد</label>
+        <input type="text" id="custom-obj-input" class="form-control" placeholder="اكتب الهدف الجديد بالعربية..." style="direction:rtl" onkeydown="if(event.key==='Enter') saveCustomObj()">
+      </div>
+      <!-- Liste des objectifs existants (fixes + custom) -->
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">الأهداف الحالية</div>
+        <div id="custom-obj-existing" style="max-height:200px;overflow-y:auto;direction:rtl;font-size:12px"></div>
+      </div>
+    </div>
+    <!-- Pied -->
+    <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--bg)">
+      <button onclick="closeCustomObjModal()" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer">إلغاء</button>
+      <button onclick="saveCustomObj()" style="background:#059669;color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700;cursor:pointer">➕ إضافة الهدف</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
