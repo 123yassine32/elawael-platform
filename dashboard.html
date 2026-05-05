@@ -233,6 +233,73 @@ body.rtl-mode .logo-row {
 body.rtl-mode .main-tabs {
   direction: rtl;
 }
+
+/* ── Zone de contenu principale ── */
+body.rtl-mode .content { direction: rtl; }
+body.rtl-mode .content .card-header,
+body.rtl-mode .content .card-title { text-align: right; }
+
+/* ── Panneau admin — direction + layout ── */
+body.rtl-mode .admin-main { direction: rtl; }
+body.rtl-mode .admin-filter-bar { direction: rtl; flex-direction: row-reverse; }
+body.rtl-mode .admin-banner { flex-direction: row-reverse; }
+body.rtl-mode .admin-class-card-head { flex-direction: row-reverse; }
+body.rtl-mode .admin-stat-row { flex-direction: row-reverse; }
+body.rtl-mode .admin-search-input { text-align: right; direction: rtl; }
+
+/* ── Badges navigation sidebar ── */
+body.rtl-mode .nav-badge,
+body.rtl-mode .nav-badge-g { margin-left: 0 !important; margin-right: auto; }
+
+/* ── Badge admin ── */
+body.rtl-mode .badge-admin { margin-left: 0 !important; margin-right: auto; }
+
+/* ── Tags bienvenue (wb-tag) ── */
+body.rtl-mode .wb { flex-direction: row-reverse; }
+body.rtl-mode .wb-tag { margin-left: 0 !important; margin-right: 6px; }
+
+/* ── KPIs profil bénéficiaire ── */
+body.rtl-mode .ben-kpis { margin-left: 0 !important; margin-right: auto; }
+body.rtl-mode .ben-profile-card { flex-direction: row-reverse; }
+
+/* ── Entrée quotidienne — flip border left → right ── */
+body.rtl-mode .de {
+  border-left: none !important;
+  border-right: 3px solid var(--border);
+  border-radius: 10px 0 0 10px;
+  padding-left: 12px;
+  padding-right: 14px;
+}
+body.rtl-mode .de.ok  { border-right-color: var(--success) !important; }
+body.rtl-mode .de.w   { border-right-color: var(--warning) !important; }
+body.rtl-mode .de.bad { border-right-color: var(--danger)  !important; }
+
+/* ── Lignes de score (score-split) ── */
+body.rtl-mode .sc-row { flex-direction: row-reverse; }
+body.rtl-mode .sc-rv  { text-align: left; }
+body.rtl-mode .sc-rlab { text-align: right; }
+
+/* ── Bouton retour ── */
+body.rtl-mode .btn-back { flex-direction: row-reverse; }
+
+/* ── Indicateur de statut (dot) ── */
+body.rtl-mode .act-dot { margin-right: 0 !important; margin-left: 5px; }
+
+/* ── Detail bénéficiaire — onglets ── */
+body.rtl-mode .dtabs { direction: rtl; }
+body.rtl-mode .ben-tags { flex-direction: row-reverse; justify-content: flex-end; }
+
+/* ── Barre de filtre admin : tri label inline ── */
+body.rtl-mode .admin-filter-bar > span { direction: rtl; }
+
+/* ── Tables admin ── */
+body.rtl-mode .admin-benef-section table,
+body.rtl-mode .admin-main table { direction: rtl; }
+body.rtl-mode .admin-main th,
+body.rtl-mode .admin-main td { text-align: right; }
+body.rtl-mode .admin-main th:first-child,
+body.rtl-mode .admin-main td:first-child { text-align: center; }
+
 /* Smooth language transitions */
 [data-i18n], .form-label, .card-title, .nav-item span, .stab, .main-tab {
   transition: opacity .15s;
@@ -1561,13 +1628,13 @@ body.is-consultant .sensitive-data::after {
           <div id="adm-filter-btns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
           <span style="font-size:12px;font-weight:700;color:var(--muted)"><span data-i18n="adm_filtre_niveau">Niveau :</span></span>
           <button class="admin-filter-btn" onclick="adminFilterNiv('all',this)" data-i18n="btn_tous"><span data-i18n="btn_tous">Tous</span></button>
-          <button class="admin-filter-btn" onclick="adminFilterNiv('1',this)">مبتدئ</button>
-          <button class="admin-filter-btn" onclick="adminFilterNiv('2',this)">متوسط</button>
-          <button class="admin-filter-btn" onclick="adminFilterNiv('3',this)">جيد</button>
-          <button class="admin-filter-btn" onclick="adminFilterNiv('4',this)">ممتاز</button>
+          <button class="admin-filter-btn" onclick="adminFilterNiv('1',this)" data-i18n="niv_1_label">Débutant</button>
+          <button class="admin-filter-btn" onclick="adminFilterNiv('2',this)" data-i18n="niv_2_label">Intermédiaire</button>
+          <button class="admin-filter-btn" onclick="adminFilterNiv('3',this)" data-i18n="niv_3_label">Bien</button>
+          <button class="admin-filter-btn" onclick="adminFilterNiv('4',this)" data-i18n="niv_4_label">Excellent</button>
           <!-- Tri par risque — accès rapide aux urgences -->
-          <span style="font-size:12px;font-weight:700;color:var(--muted);margin-left:6px">Tri :</span>
-          <button id="adm-sort-risque-btn" class="admin-filter-btn" onclick="adminToggleSortRisque(this)" title="Trier par score de risque décroissant — urgents en premier">⚠️ Risque ↓</button>
+          <span id="adm-tri-label" style="font-size:12px;font-weight:700;color:var(--muted);margin-left:6px" data-i18n="adm_tri_label">Tri :</span>
+          <button id="adm-sort-risque-btn" class="admin-filter-btn" onclick="adminToggleSortRisque(this)" title="Trier par score de risque décroissant — urgents en premier" data-i18n="adm_sort_risque">⚠️ Risque ↓</button>
         </div>
         <!-- Bande de résumé statistique — mise à jour par renderAdminBenef() -->
         <div id="adm-benef-summary" style="display:flex;gap:10px;flex-wrap:wrap;padding:10px 0;margin-bottom:10px"></div>
@@ -1575,10 +1642,8 @@ body.is-consultant .sensitive-data::after {
       </div>
       <div id="adm-benef-detail" style="display:none;margin-top:20px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-          <div class="btn-back" style="margin-bottom:0" onclick="document.getElementById('adm-benef-detail').style.display='none';document.querySelector('.admin-benef-section').style.display='block'">← Retour à la liste</div>
-          <button onclick="exportFicheBenefPDF()" class="btn btn-p" style="font-size:12px;padding:6px 14px;margin-left:auto">
-            📄 Exporter fiche PDF
-          </button>
+          <div class="btn-back" id="adm-benef-back-btn" style="margin-bottom:0" onclick="document.getElementById('adm-benef-detail').style.display='none';document.querySelector('.admin-benef-section').style.display='block'" data-i18n="btn_retour_liste">← Retour à la liste</div>
+          <button onclick="exportFicheBenefPDF()" class="btn btn-p" style="font-size:12px;padding:6px 14px;margin-left:auto" data-i18n="btn_export_fiche_pdf">📄 Exporter fiche PDF</button>
         </div>
         <div id="adm-benef-detail-content"></div>
       </div>
@@ -1643,7 +1708,7 @@ body.is-consultant .sensitive-data::after {
       <!-- Barre d'export — mise à jour dynamiquement selon l'onglet actif -->
       <div id="listes-export-bar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;
         padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:700;color:var(--muted)">Exporter :</span>
+        <span style="font-size:11px;font-weight:700;color:var(--muted)" data-i18n="lbl_exporter">Exporter :</span>
         <button onclick="exportListeExcel()" class="btn btn-p" style="font-size:11px;padding:5px 12px;background:#059669;border-color:#059669">
           📊 Excel
         </button>
@@ -1682,16 +1747,16 @@ body.is-consultant .sensitive-data::after {
   <!-- Filtres + Recherche -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <input type="text" class="form-control" id="cl-search" placeholder="🔍 بحث بالاسم، المدينة، التخصص..." style="flex:1;min-width:200px" oninput="filterCadresListe()">
+      <input type="text" class="form-control" id="cl-search" data-i18n-ph="ph_rechercher_cadre" placeholder="🔍 Rechercher nom, ville, spécialité..." style="flex:1;min-width:200px" oninput="filterCadresListe()">
       <select class="form-control" id="cl-filter-safa" style="width:200px" onchange="filterCadresListe()">
-        <option value="">كل التخصصات</option>
+        <option value="" data-i18n="opt_toutes_specialites">Toutes les spécialités</option>
       </select>
       <select class="form-control" id="cl-filter-ville" style="width:160px" onchange="filterCadresListe()">
-        <option value="">كل المدن</option>
+        <option value="" data-i18n="opt_toutes_villes">Toutes les villes</option>
         <option>مرتيل</option><option>تطوان</option><option>أزلا</option>
         <option>ازلا</option><option>المضيق</option><option>الملاليين</option>
       </select>
-      <button class="btn-sec" onclick="filterCadresListe('reset')" style="font-size:12px">↺ إعادة ضبط</button>
+      <button class="btn-sec" onclick="filterCadresListe('reset')" style="font-size:12px" data-i18n="btn_reset_filtres">↺ Réinitialiser</button>
       <span id="cl-count" style="font-size:12px;color:var(--muted);margin-left:6px"></span>
     </div>
   </div>
@@ -4947,6 +5012,25 @@ var I18N = {
     btn_toutes:         'Toutes',
     btn_tous:           'Tous',
 
+    // ── Admin filtres niveaux ──
+    niv_1_label:        'Débutant',
+    niv_2_label:        'Intermédiaire',
+    niv_3_label:        'Bien',
+    niv_4_label:        'Excellent',
+
+    // ── Admin filtres autres ──
+    adm_tri_label:          'Tri :',
+    adm_sort_risque:        '⚠️ Risque ↓',
+    opt_toutes_specialites: 'Toutes les spécialités',
+    opt_toutes_villes:      'Toutes les villes',
+    btn_reset_filtres:      '↺ Réinitialiser',
+    ph_rechercher_cadre:    '🔍 Rechercher nom, ville, spécialité...',
+    lbl_exporter:           'Exporter :',
+
+    // ── Boutons action admin ──
+    btn_retour_liste:       '← Retour à la liste',
+    btn_export_fiche_pdf:   '📄 Exporter fiche PDF',
+
     // ── Messages ──
     msg_aucune_note:     'Aucune note enregistrée',
     msg_aucune_presence: 'Aucune donnée de présence disponible',
@@ -5958,6 +6042,25 @@ var I18N = {
     btn_retour:         'رجوع ←',
     btn_toutes:         'الكل',
     btn_tous:           'الكل',
+
+    // ── Admin filtres niveaux ──
+    niv_1_label:        'مبتدئ',
+    niv_2_label:        'متوسط',
+    niv_3_label:        'جيد',
+    niv_4_label:        'ممتاز',
+
+    // ── Admin filtres autres ──
+    adm_tri_label:          'ترتيب :',
+    adm_sort_risque:        '⚠️ خطر ↓',
+    opt_toutes_specialites: 'كل التخصصات',
+    opt_toutes_villes:      'كل المدن',
+    btn_reset_filtres:      '↺ إعادة ضبط',
+    ph_rechercher_cadre:    '🔍 بحث بالاسم، المدينة، التخصص...',
+    lbl_exporter:           'تصدير :',
+
+    // ── Boutons action admin ──
+    btn_retour_liste:       'رجوع ← إلى القائمة',
+    btn_export_fiche_pdf:   '📄 تصدير ملف PDF',
 
     // ── Messages ──
     msg_aucune_note:     'لا توجد ملاحظات مسجلة',
@@ -7053,16 +7156,21 @@ function translatePage() {
   const loginBtn = document.querySelector('.login-btn') || document.getElementById('login-submit');
   if (loginBtn) loginBtn.textContent = isAR ? 'تسجيل الدخول 🔐' : '🔐 Se connecter';
 
-  /* 19 ── Direction formulaires saisie */
-  if (isAR) {
-    document.querySelectorAll('.form-group, .form-label, .card-title, .card-header').forEach(el => {
-      if (!el.style.direction) el.style.direction = 'rtl';
-    });
-  } else {
-    document.querySelectorAll('.form-group, .form-label, .card-title, .card-header').forEach(el => {
-      el.style.direction = '';
-    });
-  }
+  /* 19 ── Direction zones de contenu (workspace + admin) */
+  /* Appliquer via CSS class body.rtl-mode — les règles CSS s'occupent du reste */
+  /* Inputs/Textareas : forcer direction en mode AR */
+  document.querySelectorAll('input[type=text], input[type=search], input[type=email], input[type=tel], textarea, select').forEach(el => {
+    if (isAR) {
+      if (!el.hasAttribute('data-dir-fixed')) el.style.direction = 'rtl';
+    } else {
+      if (!el.hasAttribute('data-dir-fixed')) el.style.direction = '';
+    }
+  });
+
+  /* Placeholders: forcer direction via attribut dir sur input */
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+    el.dir = isAR ? 'rtl' : 'ltr';
+  });
 
   /* 20 ── Alertes view title */
   const alertView = document.querySelector('#view-alertes h2, #view-alertes .view-title');
@@ -7095,6 +7203,39 @@ function translatePage() {
         : `${len} ${t('chars_remaining')}`;
     }
   });
+
+  /* 24 ── Éléments de la zone admin non couverts par data-i18n ── */
+
+  /* Filtre "Tri :" — span inline (géré maintenant par data-i18n mais on force aussi) */
+  const triLabel = document.getElementById('adm-tri-label');
+  if (triLabel) triLabel.textContent = t('adm_tri_label');
+
+  /* Admin benef detail — retour + export */
+  const admBackBtn = document.getElementById('adm-benef-back-btn');
+  if (admBackBtn) admBackBtn.textContent = t('btn_retour_liste');
+
+  /* Placeholders des champs de recherche dans les listes admin */
+  const clSearch = document.getElementById('cl-search');
+  if (clSearch) clSearch.placeholder = t('ph_rechercher_cadre');
+
+  /* Selects filtres cadres — option défaut */
+  const clSafa = document.getElementById('cl-filter-safa');
+  if (clSafa && clSafa.options[0]) clSafa.options[0].textContent = t('opt_toutes_specialites');
+  const clVille = document.getElementById('cl-filter-ville');
+  if (clVille && clVille.options[0]) clVille.options[0].textContent = t('opt_toutes_villes');
+
+  /* Bouton reset filtres cadres */
+  document.querySelectorAll('[data-i18n="btn_reset_filtres"]').forEach(el => {
+    el.textContent = t('btn_reset_filtres');
+  });
+
+  /* 25 ── Direction admin-main et content selon la langue ── */
+  /* (Géré via CSS class body.rtl-mode — aucune inline style nécessaire) */
+
+  /* 26 ── data-i18n sur les onglets bénéficiaire (dynamiques) ──
+     Ces onglets sont rendus par showBenefDetail() en JS — translatePage()
+     est appelé après le rendu via setTimeout → les data-i18n sont traités
+     par le bloc 1 ci-dessus (data-i18n → innerHTML). Rien à faire ici. */
 }
 
 /* ── Helpers ── */
@@ -7209,8 +7350,13 @@ document.addEventListener('DOMContentLoaded', initDarkMode);
 function toggleLang() {
   CURRENT_LANG = CURRENT_LANG === 'fr' ? 'ar' : 'fr';
   localStorage.setItem('ea_lang', CURRENT_LANG);
+  const isAR = CURRENT_LANG === 'ar';
 
-  // 1. Re-render all dynamic sections with new language (t() is already updated)
+  /* 1 ── Appliquer RTL/LTR immédiatement (avant le re-render) */
+  document.documentElement.setAttribute('lang', isAR ? 'ar' : 'fr');
+  document.body.classList.toggle('rtl-mode', isAR);
+
+  /* 2 ── Re-render sections dynamiques avec la nouvelle langue */
   if (typeof renderTable === 'function') renderTable();
   if (typeof renderAlertes === 'function') renderAlertes();
   if (CURRENT_USER && typeof buildInfoAccueil === 'function') {
@@ -7222,17 +7368,20 @@ function toggleLang() {
     buildInfoProfile(CURRENT_USER, myBenef);
   }
 
-  // 2. Apply data-i18n translations on all static + newly rendered elements
+  /* 3 ── Re-render admin si le panneau est ouvert */
+  const adminOverlay = document.getElementById('admin-overlay');
+  if (adminOverlay && adminOverlay.style.display !== 'none') {
+    if (typeof renderAdminBenef === 'function') renderAdminBenef();
+    if (typeof renderCadresListe === 'function') renderCadresListe();
+  }
+
+  /* 4 ── Appliquer toutes les traductions statiques */
   translatePage();
 
-  // 3. RTL/LTR direction for whole page
-  const isAR = CURRENT_LANG === 'ar';
-  document.documentElement.setAttribute('lang', isAR ? 'ar' : 'fr');
-  document.body.classList.toggle('rtl-mode', isAR);
-
+  /* 5 ── Animation du bouton + toast confirmation */
   const btn = document.getElementById('lang-toggle-btn');
-  if (btn) { btn.style.transform='scale(0.92)'; setTimeout(()=>btn.style.transform='', 150); }
-  showToast(CURRENT_LANG === 'ar' ? '🇲🇦 تم التبديل إلى العربية' : '🇫🇷 Langue changée en Français', '#1b3a6b');
+  if (btn) { btn.style.transform = 'scale(0.92)'; setTimeout(() => btn.style.transform = '', 150); }
+  showToast(isAR ? '🇲🇦 تم التبديل إلى العربية' : '🇫🇷 Langue changée en Français', '#1b3a6b');
 }
 
 /* ── Initialisation des IDs de formulaire ── */
