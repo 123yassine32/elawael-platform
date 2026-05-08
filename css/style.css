@@ -1,0 +1,150 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FEUILLE DE STYLES — ElAwail Digital Platform
+   Fichier  : css/style.css
+   Rôle     : Variables CSS globales + classes utilitaires partagées
+   Standard : CLAUDE.md §2 Règles absolues — Variables CSS protégées
+
+   UTILISATION :
+   <link rel="stylesheet" href="css/style.css">
+
+   NOTE : Le CSS complet est inline dans dashboard.html pour des raisons
+          de performance et de compatibilité GitHub Pages.
+          Ce fichier documente les variables et classes partagées.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Variables CSS protégées — NE JAMAIS MODIFIER ────────────────── */
+:root {
+  /* Palette principale */
+  --primary:       #1b3a6b;      /* Bleu institutionnel ElAwail */
+  --primary-light: #e8eef7;      /* Bleu clair (hover, backgrounds) */
+  --secondary:     #2563eb;      /* Bleu action */
+
+  /* Sémantique */
+  --success:       #059669;      /* Vert succès */
+  --danger:        #dc2626;      /* Rouge erreur / urgent */
+  --warning:       #d97706;      /* Orange avertissement */
+  --info:          #0891b2;      /* Bleu information */
+  --purple:        #7c3aed;      /* Violet simulation / PEI */
+  --teal:          #0d9488;      /* Teal secondaire */
+
+  /* Interface */
+  --bg:            #f8fafc;      /* Fond de page */
+  --card:          #ffffff;      /* Fond des cartes */
+  --border:        #e2e8f0;      /* Bordures */
+  --text:          #1e293b;      /* Texte principal */
+  --muted:         #64748b;      /* Texte secondaire */
+
+  /* Typographie */
+  --font-primary:  'Plus Jakarta Sans', 'Sora', sans-serif;
+  --font-arabic:   'Cairo', 'Tajawal', sans-serif;
+
+  /* Rayons */
+  --radius-sm:     6px;
+  --radius-md:     12px;
+  --radius-lg:     18px;
+
+  /* Ombres */
+  --shadow-sm:     0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:     0 4px 12px rgba(0,0,0,.10);
+  --shadow-lg:     0 8px 24px rgba(0,0,0,.14);
+}
+
+/* ── Classes protégées — NE JAMAIS RECRÉER ───────────────────────── */
+/*
+  .btn          — Bouton standard (padding, border-radius, cursor)
+  .btn-p        — Bouton primaire (background: var(--primary))
+  .card         — Carte (background: var(--card), shadow, radius)
+  .card-header  — En-tête de carte (flex, border-bottom)
+  .card-title   — Titre de carte (font-weight: 700)
+  .tag          — Étiquette / badge inline
+  .kpi          — Conteneur KPI (text-align: center)
+  .kpi-val      — Valeur KPI (grande taille, font-weight: 800)
+  .kpi-lbl      — Label KPI
+  .kpi-sub      — Sous-label KPI (muted)
+  .perf-kpi     — KPI performance (avec barre de progression)
+  .kpi-big      — Grand KPI (version extra-large)
+  .nav-item     — Élément de navigation sidebar
+  .toast        — Notification toast (position fixed, animations)
+  .chart-card   — Carte graphique Chart.js
+*/
+
+/* ── Support RTL — Mode Arabe ─────────────────────────────────────── */
+body.rtl-mode {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--font-arabic);
+}
+
+body.rtl-mode .sidebar {
+  right: 0;
+  left: auto;
+}
+
+body.rtl-mode .main-content {
+  margin-right: 240px;
+  margin-left: 0;
+}
+
+/* ── Responsive — Mobile first ───────────────────────────────────── */
+@media (max-width: 768px) {
+  body.rtl-mode .main-content,
+  .main-content {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform .3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  body.rtl-mode .sidebar {
+    transform: translateX(100%);
+  }
+
+  body.rtl-mode .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* ── Animations globales ─────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .6; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ── Utilitaires ─────────────────────────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-print { /* Masqué lors de l'impression */ }
+
+@media print {
+  .no-print   { display: none !important; }
+  .print-only { display: block !important; }
+}

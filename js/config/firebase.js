@@ -19,8 +19,14 @@ firebase.initializeApp(firebaseConfig);
 const db   = firebase.firestore();
 const auth = firebase.auth();
 
-/* ── Session : SESSION (compatible file:// et localhost) ── */
-auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
-  .catch(() => { /* Silencieux — fallback navigateur */ });
+/* ── Session : LOCAL = rester connecté après fermeture du navigateur ──
+   LOCAL  → persistance IndexedDB — survit à la fermeture du navigateur ✅
+   SESSION → persistance sessionStorage — disparaît à la fermeture ❌
+   NONE   → aucune persistance — déconnecté après refresh ❌             */
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .catch(() => {
+    /* Fallback silencieux — fichier local (file://) ou navigateur privé */
+    console.warn('[Firebase] Persistance LOCAL non disponible — mode dégradé');
+  });
 
 console.log('[Firebase] Initialisé ✓ — projet : elawael-platform-df2e3');

@@ -27,6 +27,14 @@ node_modules/
 *.key
 secrets/
 
+# Données confidentielles ElAwail — comptes, mots de passe, exports internes
+comptes-elawail.csv
+*.csv
+reset-passwords.html
+setup-accounts.html
+generer-excel.html
+diagnostic.html
+
 # Builds temporaires
 dist/
 build/

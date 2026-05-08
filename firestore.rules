@@ -3,12 +3,17 @@ rules_version = '2';
 // RÈGLES FIRESTORE — ElAwail Digital Platform
 // CLAUDE.md §4 Critique 1 — Sécurité maximale
 //
-// À copier dans : Firebase Console → Firestore Database → Règles
+// DÉPLOIEMENT :
+//   Firebase Console → Firestore Database → Règles → Coller → Publier
+//   OU : firebase deploy --only firestore:rules
+//
+// VERSION : 2.0 — Corrigé casse des rôles (ADMIN/GESTIONNAIRE)
 // ═══════════════════════════════════════════════════════════════════
 service cloud.firestore {
   match /databases/{database}/documents {
 
     // ── Helpers ──────────────────────────────────────────────────
+
     // Vérifie que l'utilisateur est authentifié
     function isAuth() {
       return request.auth != null;
@@ -19,23 +24,24 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == uid;
     }
 
-    // Récupère le rôle de l'utilisateur connecté depuis Firestore
+    // Récupère le rôle depuis Firestore — fallback 'EDUCATEUR' si absent
     function myRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      let doc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return doc.data.get('role', 'EDUCATEUR');
     }
 
-    // Vérifie si l'utilisateur est admin
+    // Vérifie si l'utilisateur est admin (ADMIN en majuscules)
     function isAdmin() {
-      return isAuth() && myRole() == 'admin';
+      return isAuth() && myRole() == 'ADMIN';
     }
 
     // Vérifie si l'utilisateur est admin ou gestionnaire
     function isAdminOrGestionnaire() {
-      return isAuth() && (myRole() == 'admin' || myRole() == 'gestionnaire');
+      return isAuth() && (myRole() == 'ADMIN' || myRole() == 'GESTIONNAIRE');
     }
 
     // ── Profils utilisateurs ──────────────────────────────────────
-    // Lecture : tout utilisateur authentifié (nécessaire pour le panneau admin)
+    // Lecture : tout utilisateur authentifié
     // Écriture : chacun sur son propre doc OU admin sur tous les docs
     match /users/{uid} {
       allow read:  if isAuth();
@@ -50,15 +56,18 @@ service cloud.firestore {
     }
 
     // ── Journal d'audit ───────────────────────────────────────────
-    // Lecture : admin + gestionnaire (pour consultation)
-    // Écriture : tout utilisateur authentifié (pour enregistrer les actions)
+    // Lecture : ADMIN + GESTIONNAIRE uniquement
+    // Écriture : tout utilisateur authentifié (auto-enregistrement des actions)
+    // Suppression : ADMIN uniquement
     match /audit_logs/{doc} {
-      allow read:  if isAdminOrGestionnaire();
-      allow write: if isAuth();
+      allow read:   if isAdminOrGestionnaire();
+      allow create: if isAuth();
+      allow update: if false;           // Journal immuable — jamais modifiable
+      allow delete: if isAdmin();
     }
 
     // ── Demandes RH ───────────────────────────────────────────────
-    // Lecture : admin + gestionnaire
+    // Lecture : ADMIN + GESTIONNAIRE
     // Écriture : tout utilisateur authentifié (soumettre une demande)
     match /rh_demandes/{doc} {
       allow read:  if isAdminOrGestionnaire();
@@ -66,16 +75,15 @@ service cloud.firestore {
     }
 
     // ── Recommandations pédagogiques ─────────────────────────────
-    // Lecture : tout utilisateur authentifié
-    // Écriture : tout utilisateur authentifié
+    // Lecture + Écriture : tout utilisateur authentifié
     match /recommandations/{doc} {
       allow read, write: if isAuth();
     }
 
-    // ── Ping Firebase (détecteur hors-ligne) ──────────────────────
-    // Lecture uniquement pour vérifier la connectivité
+    // ── Ping Firebase (vérification connectivité) ─────────────────
+    // Lecture uniquement pour détecter le statut en ligne/hors-ligne
     match /_ping/{doc} {
-      allow read: if isAuth();
+      allow read:  if isAuth();
       allow write: if false;
     }
 
