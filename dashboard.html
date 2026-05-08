@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -1270,7 +1270,7 @@ body.is-consultant .sensitive-data::after {
 
         <!-- K3 — Réalisation PEI (détail ✅🔄🆕) -->
         <div class="card" id="adm-card-k3" style="border-top:4px solid var(--purple)"><div class="kpi">
-          <div class="kpi-label">🎯 Réalisation PEI</div>
+          <div class="kpi-label" data-i18n="adm_kpi_realisation_pei">🎯 Réalisation PEI</div>
           <div style="display:flex;align-items:flex-end;gap:4px">
             <div class="kpi-val" id="adm-k3" style="color:var(--purple);font-size:36px">—</div>
             <div style="font-size:16px;color:var(--muted);margin-bottom:10px;font-weight:700">%</div>
@@ -1281,7 +1281,7 @@ body.is-consultant .sensitive-data::after {
 
         <!-- K4 — Ratio cadre/bénéf. -->
         <div class="card" id="adm-card-k4"><div class="kpi">
-          <div class="kpi-label">⚖️ Ratio cadre / bénéf.</div>
+          <div class="kpi-label" data-i18n="adm_kpi_ratio_cadre">⚖️ Ratio cadre / bénéf.</div>
           <div class="kpi-val" id="adm-k4" style="color:var(--teal)">—</div>
           <div class="kpi-sub" id="adm-k4-sub">bénéf. / cadre</div>
           <span id="adm-k4-badge" style="display:inline-block;margin-top:5px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--bg);color:var(--muted)">—</span>
@@ -1290,7 +1290,7 @@ body.is-consultant .sensitive-data::after {
 
         <!-- KA — Bénéficiaires à risque élevé (nouveau — non présent dans feux tricolores) -->
         <div class="card" id="adm-card-risque-eleve" style="border-top:4px solid var(--danger);cursor:pointer" onclick="adminShowSection('heatmap')" title="Voir la heatmap des risques"><div class="kpi">
-          <div class="kpi-label">🚨 Bénéf. à risque élevé</div>
+          <div class="kpi-label" data-i18n="adm_kpi_risque_eleve">🚨 Bénéf. à risque élevé</div>
           <div style="display:flex;align-items:flex-end;gap:6px">
             <div class="kpi-val" id="adm-k-risque-eleve" style="color:var(--success)">—</div>
             <div id="adm-k-risque-eleve-denom" style="font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:700">/ —</div>
@@ -1302,7 +1302,7 @@ body.is-consultant .sensitive-data::after {
 
         <!-- KB — Objectifs PEI non démarrés (nouveau — signal de pipeline actionnable) -->
         <div class="card" id="adm-card-non-demarres" style="border-top:4px solid var(--orange);cursor:pointer" onclick="adminShowSection('pei')" title="Voir les objectifs PEI"><div class="kpi">
-          <div class="kpi-label">🆕 Objectifs non démarrés</div>
+          <div class="kpi-label" data-i18n="adm_kpi_non_demarres">🆕 Objectifs non démarrés</div>
           <div style="display:flex;align-items:flex-end;gap:4px">
             <div class="kpi-val" id="adm-k-non-demarres" style="color:var(--orange)">—</div>
             <div style="font-size:14px;color:var(--muted);margin-bottom:9px;font-weight:700">%</div>
@@ -1319,7 +1319,7 @@ body.is-consultant .sensitive-data::after {
 
         <div class="card" id="adm-card-cadres-actifs" style="border-top:3px solid var(--teal)">
           <div class="kpi">
-            <div class="kpi-label">👨‍🏫 Cadres actifs ce mois</div>
+            <div class="kpi-label" data-i18n="adm_kpi_cadres_actifs_lb">👨‍🏫 Cadres actifs ce mois</div>
             <div style="display:flex;align-items:flex-end;gap:6px">
               <div class="kpi-val" id="adm-k-cadres-actifs" style="color:var(--teal)">—</div>
               <div id="adm-k-cadres-actifs-denom" style="font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:700">/ —</div>
@@ -1331,7 +1331,7 @@ body.is-consultant .sensitive-data::after {
 
         <div class="card" id="adm-card-alertes-ouvertes" style="border-top:3px solid var(--danger)">
           <div class="kpi">
-            <div class="kpi-label">🔔 Alertes non résolues</div>
+            <div class="kpi-label" data-i18n="adm_kpi_alertes_nonres">🔔 Alertes non résolues</div>
             <div class="kpi-val" id="adm-k-alertes-ouvertes" style="color:var(--success)">—</div>
             <div class="kpi-sub" id="adm-k-alertes-ouvertes-sub">alertes manuelles</div>
             <div class="kbar" style="margin-top:6px"><div class="kfill" id="adm-k-alertes-ouvertes-bar" style="background:var(--danger)"></div></div>
@@ -1341,7 +1341,7 @@ body.is-consultant .sensitive-data::after {
         <!-- Sans séance ce mois — plus actionnable que "niveau avancé" (descriptif) -->
         <div class="card" id="adm-card-sans-seance" style="border-top:3px solid var(--danger);cursor:pointer" onclick="adminShowSection('alertes')" title="Voir les alertes de présence">
           <div class="kpi">
-            <div class="kpi-label">📵 Sans séance ce mois</div>
+            <div class="kpi-label" data-i18n="adm_kpi_sans_seance">📵 Sans séance ce mois</div>
             <div style="display:flex;align-items:flex-end;gap:6px">
               <div class="kpi-val" id="adm-k-sans-seance" style="color:var(--success)">—</div>
               <div id="adm-k-sans-seance-denom" style="font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:700">/ —</div>
@@ -1354,7 +1354,7 @@ body.is-consultant .sensitive-data::after {
 
         <div class="card" style="border-top:3px solid var(--sky)">
           <div class="kpi">
-            <div class="kpi-label">📋 Objectifs / bénéf. PEI</div>
+            <div class="kpi-label" data-i18n="adm_kpi_obj_benef_pei">📋 Objectifs / bénéf. PEI</div>
             <div style="display:flex;align-items:flex-end;gap:6px">
               <div class="kpi-val" id="adm-avg-obj" style="color:var(--sky)">—</div>
               <div style="font-size:13px;color:var(--muted);margin-bottom:6px">moy.</div>
@@ -1371,7 +1371,7 @@ body.is-consultant .sensitive-data::after {
       <div id="adm-actions-panel" style="margin-bottom:16px;display:none">
         <div class="card" style="border-top:4px solid var(--danger);background:linear-gradient(135deg,#fff5f5,#fff)">
           <div class="card-header">
-            <div class="card-title" style="color:var(--danger)">🚨 Actions requises maintenant</div>
+            <div class="card-title" style="color:var(--danger)" data-i18n="adm_actions_requises">🚨 Actions requises maintenant</div>
             <span id="adm-actions-count" style="font-size:11px;font-weight:800;padding:3px 12px;border-radius:100px;background:#fee2e2;color:#dc2626">0</span>
           </div>
           <div id="adm-actions-list" style="padding:4px 16px 16px;display:flex;flex-direction:column;gap:8px"></div>
@@ -1384,7 +1384,7 @@ body.is-consultant .sensitive-data::after {
         <!-- Jauge Score -->
         <div class="card" id="adm-score-global-card" style="border-top:4px solid var(--primary)">
           <div class="card-header">
-            <div class="card-title">🏆 Score Global</div>
+            <div class="card-title" data-i18n="adm_score_global_card">🏆 Score Global</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:center;padding:4px 16px 12px">
             <div style="position:relative;width:130px;height:130px">
@@ -1406,19 +1406,19 @@ body.is-consultant .sensitive-data::after {
         <!-- Tableau classes enrichi -->
         <div class="card" style="border-top:4px solid var(--primary)">
           <div class="card-header">
-            <div class="card-title">🏫 Tableau de bord par classe</div>
-            <button onclick="adminShowSection('classes')" class="btn" style="font-size:11px;padding:4px 12px">Détail →</button>
+            <div class="card-title" data-i18n="adm_classe_detail_btn">🏫 Tableau de bord par classe</div>
+            <button onclick="adminShowSection('classes')" class="btn" style="font-size:11px;padding:4px 12px" data-i18n="adm_detail_btn">Détail →</button>
           </div>
           <div style="padding:0;overflow-x:auto">
             <table style="width:100%;border-collapse:collapse">
               <thead>
                 <tr style="background:var(--bg)">
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:left">Classe</th>
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center">Bénéf.</th>
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center">Dossiers</th>
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center">Présence</th>
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center">PEI %</th>
-                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center">Risque</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:left" data-i18n="adm_col_classe">Classe</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center" data-i18n="adm_col_benef_s">Bénéf.</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center" data-i18n="adm_col_dossiers_s">Dossiers</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center" data-i18n="adm_col_presence_s">Présence</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center" data-i18n="adm_col_pei_pct">PEI %</th>
+                  <th style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-align:center" data-i18n="adm_col_risque_s">Risque</th>
                 </tr>
               </thead>
               <tbody id="adm-resume-table"></tbody>
@@ -1438,8 +1438,8 @@ body.is-consultant .sensitive-data::after {
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:38px;height:38px;border-radius:10px;background:#f5f3ff;border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0">🔮</div>
             <div>
-              <div class="card-title" style="margin:0">Projection fin de semestre — Juin 2026</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:1px">📐 Calcul prédictif basé sur la tendance actuelle</div>
+              <div class="card-title" style="margin:0" data-i18n="adm_proj_titre">Projection fin de semestre — Juin 2026</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px" data-i18n="adm_proj_calc">📐 Calcul prédictif basé sur la tendance actuelle</div>
             </div>
           </div>
           <span id="adm-proj-statut-global" style="font-size:11px;font-weight:800;padding:4px 14px;border-radius:100px;background:var(--bg);color:var(--muted);border:1px solid var(--border)">—</span>
@@ -1460,7 +1460,7 @@ body.is-consultant .sensitive-data::after {
       <!-- ══ Évolution 6 mois ══ -->
       <div class="card" style="margin-bottom:16px;border-top:4px solid var(--teal)">
         <div class="card-header" style="flex-wrap:wrap;gap:8px">
-          <div class="card-title">📈 Évolution sur 6 mois — Tendances décisionnelles</div>
+          <div class="card-title" data-i18n="adm_evol_titre">📈 Évolution sur 6 mois — Tendances décisionnelles</div>
           <div style="display:flex;gap:14px;font-size:11px;font-weight:700;align-items:center;flex-wrap:wrap">
             <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:3px;background:#0d9488;border-radius:2px;display:inline-block"></span> Score organisationnel</span>
             <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:3px;background:#2563eb;border-radius:2px;display:inline-block"></span> Présence</span>
@@ -2421,7 +2421,7 @@ body.is-consultant .sensitive-data::after {
           📥 Exporter scénario PDF
         </button>
       </div>
-      <div style="font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.6">
+      <div style="font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.6" data-i18n="sim_intro_text">
         Modifiez les 3 leviers ci-dessous et observez en temps réel l'impact sur le Score Organisationnel.
         Le score actuel (à gauche) est fixe — seul le score simulé (à droite) évolue.
       </div>
@@ -2432,7 +2432,7 @@ body.is-consultant .sensitive-data::after {
         <!-- ── Score ACTUEL (fixe) ── -->
         <div class="card" style="border-top:4px solid var(--primary);text-align:center">
           <div class="card-header" style="justify-content:center">
-            <div class="card-title" style="font-size:12px">📊 Score actuel</div>
+            <div class="card-title" style="font-size:12px" data-i18n="sim_score_actuel">📊 Score actuel</div>
           </div>
           <div style="padding:16px">
             <div style="position:relative;width:110px;height:110px;margin:0 auto 10px">
@@ -2450,16 +2450,16 @@ body.is-consultant .sensitive-data::after {
         <!-- ── Sliders ── -->
         <div class="card" style="border-top:4px solid var(--teal)">
           <div class="card-header">
-            <div class="card-title">🎚️ Leviers d'action</div>
-            <button onclick="simReset()" class="btn" style="font-size:11px;padding:4px 14px">↺ Réinitialiser</button>
+            <div class="card-title" data-i18n="sim_leviers_titre">🎚️ Leviers d'action</div>
+            <button onclick="simReset()" class="btn" style="font-size:11px;padding:4px 14px" data-i18n="sim_reinitialiser">↺ Réinitialiser</button>
           </div>
           <!-- Scénarios prédéfinis -->
           <div style="padding:10px 20px 0;display:flex;gap:8px;flex-wrap:wrap">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);align-self:center;white-space:nowrap">Scénarios :</div>
-            <button onclick="simLoadScenario('equilibre')" class="btn" style="font-size:11px;padding:4px 12px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc">⚖️ Effort équilibré</button>
-            <button onclick="simLoadScenario('urgence')"   class="btn" style="font-size:11px;padding:4px 12px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5">🚨 Plan urgence</button>
-            <button onclick="simLoadScenario('excellent')" class="btn" style="font-size:11px;padding:4px 12px;background:#dcfce7;color:#059669;border:1px solid #86efac">🏆 Viser Excellent</button>
-            <button onclick="simLoadScenario('fin_annee')" class="btn" style="font-size:11px;padding:4px 12px;background:#ede9fe;color:#7c3aed;border:1px solid #c4b5fd">📅 Fin d'année</button>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);align-self:center;white-space:nowrap" data-i18n="sim_scenarios">Scénarios :</div>
+            <button onclick="simLoadScenario('equilibre')" class="btn" style="font-size:11px;padding:4px 12px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc" data-i18n="sim_equilibre">⚖️ Effort équilibré</button>
+            <button onclick="simLoadScenario('urgence')"   class="btn" style="font-size:11px;padding:4px 12px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" data-i18n="sim_urgence_sc">🚨 Plan urgence</button>
+            <button onclick="simLoadScenario('excellent')" class="btn" style="font-size:11px;padding:4px 12px;background:#dcfce7;color:#059669;border:1px solid #86efac" data-i18n="sim_excellent_sc">🏆 Viser Excellent</button>
+            <button onclick="simLoadScenario('fin_annee')" class="btn" style="font-size:11px;padding:4px 12px;background:#ede9fe;color:#7c3aed;border:1px solid #c4b5fd" data-i18n="sim_fin_annee">📅 Fin d'année</button>
           </div>
           <div style="padding:16px 20px;display:flex;flex-direction:column;gap:24px">
 
@@ -2467,8 +2467,8 @@ body.is-consultant .sensitive-data::after {
             <div>
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                 <div>
-                  <div style="font-size:13px;font-weight:700;color:var(--text)">👥 Amélioration de la présence</div>
-                  <div style="font-size:11px;color:var(--muted)">Impact : 30% du score global</div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)" data-i18n="sim_lv_pres">👥 Amélioration de la présence</div>
+                  <div style="font-size:11px;color:var(--muted)" data-i18n="sim_lv_pres_impact">Impact : 30% du score global</div>
                 </div>
                 <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#2563eb" id="sim-lbl-pres">+0%</div>
               </div>
@@ -2484,8 +2484,8 @@ body.is-consultant .sensitive-data::after {
             <div>
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                 <div>
-                  <div style="font-size:13px;font-weight:700;color:var(--text)">🎯 Amélioration réalisation PEI</div>
-                  <div style="font-size:11px;color:var(--muted)">Impact : 40% du score global</div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)" data-i18n="sim_lv_pei">🎯 Amélioration réalisation PEI</div>
+                  <div style="font-size:11px;color:var(--muted)" data-i18n="sim_lv_pei_impact">Impact : 40% du score global</div>
                 </div>
                 <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#7c3aed" id="sim-lbl-pei">+0%</div>
               </div>
@@ -2501,8 +2501,8 @@ body.is-consultant .sensitive-data::after {
             <div>
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                 <div>
-                  <div style="font-size:13px;font-weight:700;color:var(--text)">🌱 Amélioration de l'autonomie</div>
-                  <div style="font-size:11px;color:var(--muted)">Impact : 20% du score global</div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text)" data-i18n="sim_lv_indep">🌱 Amélioration de l'autonomie</div>
+                  <div style="font-size:11px;color:var(--muted)" data-i18n="sim_lv_indep_impact">Impact : 20% du score global</div>
                 </div>
                 <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#059669" id="sim-lbl-indep">+0%</div>
               </div>
@@ -2520,7 +2520,7 @@ body.is-consultant .sensitive-data::after {
         <!-- ── Score SIMULÉ (dynamique) ── -->
         <div class="card" id="sim-card-simule" style="border-top:4px solid var(--teal);text-align:center">
           <div class="card-header" style="justify-content:center">
-            <div class="card-title" style="font-size:12px">🚀 Score simulé</div>
+            <div class="card-title" style="font-size:12px" data-i18n="sim_score_simule">🚀 Score simulé</div>
           </div>
           <div style="padding:16px">
             <div style="position:relative;width:110px;height:110px;margin:0 auto 10px">
@@ -2533,7 +2533,7 @@ body.is-consultant .sensitive-data::after {
             <div id="sim-badge-simule" style="font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;background:var(--bg);color:var(--muted);display:inline-block">—</div>
             <!-- Delta variation -->
             <div id="sim-delta" style="margin-top:12px;font-size:22px;font-weight:800;color:var(--muted)">= 0 pts</div>
-            <div id="sim-delta-sub" style="font-size:11px;color:var(--muted)">Déplacez les sliders</div>
+            <div id="sim-delta-sub" style="font-size:11px;color:var(--muted)" data-i18n="sim_deplacer">Déplacez les sliders</div>
             <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px" id="sim-breakdown-simule"></div>
           </div>
         </div>
@@ -2543,10 +2543,10 @@ body.is-consultant .sensitive-data::after {
       <!-- Zone d'interprétation contextuelle -->
       <div class="card" style="border-top:4px solid var(--warning);margin-bottom:20px">
         <div class="card-header">
-          <div class="card-title">💡 Interprétation & recommandations</div>
+          <div class="card-title" data-i18n="sim_interp_titre">💡 Interprétation & recommandations</div>
         </div>
         <div id="sim-interpretation" style="padding:16px 20px;font-size:13px;color:var(--text);line-height:1.7">
-          <span style="color:var(--muted)">Ajustez les leviers pour voir les recommandations apparaître ici.</span>
+          <span style="color:var(--muted)" data-i18n="sim_interp_hint">Ajustez les leviers pour voir les recommandations apparaître ici.</span>
         </div>
       </div>
 
@@ -2556,10 +2556,10 @@ body.is-consultant .sensitive-data::after {
         <!-- Graphique Radar -->
         <div class="card" style="border-top:4px solid var(--primary)">
           <div class="card-header">
-            <div class="card-title">🕸️ Radar — Avant / Après</div>
+            <div class="card-title" data-i18n="sim_radar_titre">🕸️ Radar — Avant / Après</div>
             <div style="display:flex;gap:12px;font-size:11px;font-weight:700">
-              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:2px;background:#dc2626;display:inline-block;border-radius:2px"></span>Actuel</span>
-              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:2px;background:#059669;display:inline-block;border-radius:2px"></span>Simulé</span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:2px;background:#dc2626;display:inline-block;border-radius:2px"></span><span data-i18n="sim_radar_actuel">Actuel</span></span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:2px;background:#059669;display:inline-block;border-radius:2px"></span><span data-i18n="sim_radar_simule_lb">Simulé</span></span>
             </div>
           </div>
           <div style="padding:12px 16px 16px;display:flex;justify-content:center">
@@ -2570,51 +2570,51 @@ body.is-consultant .sensitive-data::after {
         <!-- Impact sur les alertes bénéficiaires -->
         <div class="card" style="border-top:4px solid var(--danger)">
           <div class="card-header">
-            <div class="card-title">🔔 Impact sur les bénéficiaires</div>
-            <div style="font-size:11px;color:var(--muted)">Changements de niveau de risque</div>
+            <div class="card-title" data-i18n="sim_impact_titre">🔔 Impact sur les bénéficiaires</div>
+            <div style="font-size:11px;color:var(--muted)" data-i18n="sim_impact_sous">Changements de niveau de risque</div>
           </div>
           <div style="padding:16px 20px">
             <!-- Avant -->
             <div style="margin-bottom:16px">
-              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Situation actuelle</div>
+              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px" data-i18n="sim_situ_actuelle">Situation actuelle</div>
               <div style="display:flex;gap:10px">
                 <div style="flex:1;text-align:center;padding:10px;background:#fee2e2;border-radius:10px;border:1px solid #fca5a5">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#dc2626" id="sim-al-act-urg">—</div>
-                  <div style="font-size:10px;color:#dc2626;font-weight:700">🔴 Urgents</div>
+                  <div style="font-size:10px;color:#dc2626;font-weight:700" data-i18n="sim_urgents">🔴 Urgents</div>
                 </div>
                 <div style="flex:1;text-align:center;padding:10px;background:#fef3c7;border-radius:10px;border:1px solid #fde68a">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#d97706" id="sim-al-act-sur">—</div>
-                  <div style="font-size:10px;color:#d97706;font-weight:700">🟡 Surveiller</div>
+                  <div style="font-size:10px;color:#d97706;font-weight:700" data-i18n="sim_surveiller_lb">🟡 Surveiller</div>
                 </div>
                 <div style="flex:1;text-align:center;padding:10px;background:#dcfce7;border-radius:10px;border:1px solid #86efac">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#059669" id="sim-al-act-stb">—</div>
-                  <div style="font-size:10px;color:#059669;font-weight:700">🟢 Stables</div>
+                  <div style="font-size:10px;color:#059669;font-weight:700" data-i18n="sim_stables">🟢 Stables</div>
                 </div>
               </div>
             </div>
             <!-- Flèche transition -->
-            <div style="text-align:center;font-size:20px;margin-bottom:12px;color:var(--muted)">↓ simulation</div>
+            <div style="text-align:center;font-size:20px;margin-bottom:12px;color:var(--muted)" data-i18n="sim_fleche">↓ simulation</div>
             <!-- Après -->
             <div style="margin-bottom:16px">
-              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Situation simulée</div>
+              <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px" data-i18n="sim_situ_simulee">Situation simulée</div>
               <div style="display:flex;gap:10px">
                 <div style="flex:1;text-align:center;padding:10px;background:#fee2e2;border-radius:10px;border:1px solid #fca5a5">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#dc2626" id="sim-al-sim-urg">—</div>
-                  <div style="font-size:10px;color:#dc2626;font-weight:700">🔴 Urgents</div>
+                  <div style="font-size:10px;color:#dc2626;font-weight:700" data-i18n="sim_urgents">🔴 Urgents</div>
                 </div>
                 <div style="flex:1;text-align:center;padding:10px;background:#fef3c7;border-radius:10px;border:1px solid #fde68a">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#d97706" id="sim-al-sim-sur">—</div>
-                  <div style="font-size:10px;color:#d97706;font-weight:700">🟡 Surveiller</div>
+                  <div style="font-size:10px;color:#d97706;font-weight:700" data-i18n="sim_surveiller_lb">🟡 Surveiller</div>
                 </div>
                 <div style="flex:1;text-align:center;padding:10px;background:#dcfce7;border-radius:10px;border:1px solid #86efac">
                   <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#059669" id="sim-al-sim-stb">—</div>
-                  <div style="font-size:10px;color:#059669;font-weight:700">🟢 Stables</div>
+                  <div style="font-size:10px;color:#059669;font-weight:700" data-i18n="sim_stables">🟢 Stables</div>
                 </div>
               </div>
             </div>
             <!-- Message delta bénéficiaires -->
             <div id="sim-al-delta-msg" style="font-size:12px;font-weight:700;text-align:center;padding:8px 12px;border-radius:8px;background:var(--bg);color:var(--muted)">
-              Déplacez les sliders pour voir l'impact
+              <span data-i18n="sim_deplacer_impact">Déplacez les sliders pour voir l'impact</span>
             </div>
           </div>
         </div>
@@ -2627,17 +2627,17 @@ body.is-consultant .sensitive-data::after {
         <!-- Impact par classe -->
         <div class="card" style="border-top:4px solid var(--teal)">
           <div class="card-header">
-            <div class="card-title">🏫 Impact par classe</div>
-            <div style="font-size:11px;color:var(--muted)">Score moyen avant → après</div>
+            <div class="card-title" data-i18n="sim_impact_classe">🏫 Impact par classe</div>
+            <div style="font-size:11px;color:var(--muted)" data-i18n="sim_avant_apres">Score moyen avant → après</div>
           </div>
           <div style="padding:0;overflow-x:auto">
             <table>
               <thead>
                 <tr>
-                  <th>Classe</th>
-                  <th style="text-align:center">Actuel</th>
-                  <th style="text-align:center">Simulé</th>
-                  <th style="text-align:center">Gain</th>
+                  <th data-i18n="sim_col_classe">Classe</th>
+                  <th style="text-align:center" data-i18n="sim_col_actuel">Actuel</th>
+                  <th style="text-align:center" data-i18n="sim_col_simule">Simulé</th>
+                  <th style="text-align:center" data-i18n="sim_col_gain">Gain</th>
                 </tr>
               </thead>
               <tbody id="sim-classe-table"></tbody>
@@ -2648,10 +2648,10 @@ body.is-consultant .sensitive-data::after {
         <!-- Projection temporelle -->
         <div class="card" style="border-top:4px solid var(--purple)">
           <div class="card-header">
-            <div class="card-title">📅 Projection temporelle</div>
+            <div class="card-title" data-i18n="sim_projection_titre">📅 Projection temporelle</div>
           </div>
           <div style="padding:10px 16px 6px;display:flex;align-items:center;gap:12px">
-            <div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap">Durée du plan :</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap" data-i18n="sim_duree_plan">Durée du plan :</div>
             <input type="range" id="sim-slider-duree" min="1" max="12" step="1" value="6"
               style="flex:1;accent-color:var(--purple);height:6px;cursor:pointer"
               oninput="simUpdate()">
@@ -2681,7 +2681,7 @@ body.is-consultant .sensitive-data::after {
           <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:rgba(255,255,255,0.03);border-radius:50%"></div>
           <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
             <div>
-              <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:4px">Rapport institutionnel — Usage officiel</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:4px" data-i18n="rapp_titre_officiel">Rapport institutionnel — Usage officiel</div>
               <div style="font-family:Sora,sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:6px">Association El Awael</div>
               <div style="color:rgba(255,255,255,0.8);font-size:13px">الجمعية الأوائل لرعاية ذوي الإعاقة — المحمدية</div>
               <div style="margin-top:10px;color:rgba(255,255,255,0.6);font-size:11px" id="rapp-date-header">Généré le —</div>
@@ -2703,7 +2703,7 @@ body.is-consultant .sensitive-data::after {
               <div style="font-size:28px;margin-bottom:6px">🏆</div>
               <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--primary)" id="rapp-k-score">—</div>
               <div style="font-size:10px;color:var(--muted);margin-top:2px">/100</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px">Score global</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_score">Score global</div>
               <div id="rapp-k-score-badge" style="font-size:10px;margin-top:4px;padding:2px 8px;border-radius:100px;display:inline-block;background:var(--bg);color:var(--muted)">—</div>
             </div>
           </div>
@@ -2712,8 +2712,8 @@ body.is-consultant .sensitive-data::after {
             <div style="padding:16px 12px">
               <div style="font-size:28px;margin-bottom:6px">👥</div>
               <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--teal)" id="rapp-k-benef">—</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:2px">personnes</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px">Bénéficiaires suivis</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px" data-i18n="rapp_kpi_personnes">personnes</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_benef_s">Bénéficiaires suivis</div>
               <div id="rapp-k-benef-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div>
             </div>
           </div>
@@ -2723,8 +2723,8 @@ body.is-consultant .sensitive-data::after {
               <div style="font-size:28px;margin-bottom:6px">📅</div>
               <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--success)" id="rapp-k-presence">—</div>
               <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px">Taux de présence</div>
-              <div id="rapp-k-presence-sub" style="font-size:10px;color:var(--muted);margin-top:4px">Moyenne annuelle</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_presence_s">Taux de présence</div>
+              <div id="rapp-k-presence-sub" style="font-size:10px;color:var(--muted);margin-top:4px" data-i18n="rapp_kpi_pres_moy">Moyenne annuelle</div>
             </div>
           </div>
 
@@ -2733,7 +2733,7 @@ body.is-consultant .sensitive-data::after {
               <div style="font-size:28px;margin-bottom:6px">🎯</div>
               <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--purple)" id="rapp-k-pei">—</div>
               <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px">Objectifs réalisés</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_pei_s">Objectifs réalisés</div>
               <div id="rapp-k-pei-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div>
             </div>
           </div>
@@ -2743,7 +2743,7 @@ body.is-consultant .sensitive-data::after {
               <div style="font-size:28px;margin-bottom:6px">📁</div>
               <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--warning)" id="rapp-k-dossiers">—</div>
               <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div>
-              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px">Conformité dossiers</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_dossiers_s">Conformité dossiers</div>
               <div id="rapp-k-dossiers-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div>
             </div>
           </div>
@@ -2756,7 +2756,7 @@ body.is-consultant .sensitive-data::after {
           <!-- Évolution 6 mois -->
           <div class="card" style="border-top:3px solid var(--primary)">
             <div class="card-header">
-              <div class="card-title">📈 Évolution des indicateurs clés — 6 derniers mois</div>
+              <div class="card-title" data-i18n="rapp_chart_evol_titre">📈 Évolution des indicateurs clés — 6 derniers mois</div>
             </div>
             <div style="padding:12px 16px 16px">
               <canvas id="rapp-chart-evolution" height="100"></canvas>
@@ -2766,7 +2766,7 @@ body.is-consultant .sensitive-data::after {
           <!-- Répartition des bénéficiaires -->
           <div class="card" style="border-top:3px solid var(--teal)">
             <div class="card-header">
-              <div class="card-title">🏫 Répartition par classe</div>
+              <div class="card-title" data-i18n="rapp_chart_classes_titre">🏫 Répartition par classe</div>
             </div>
             <div style="padding:12px 16px 16px;display:flex;align-items:center;gap:12px">
               <canvas id="rapp-chart-classes" width="130" height="130" style="flex-shrink:0"></canvas>
@@ -2779,18 +2779,18 @@ body.is-consultant .sensitive-data::after {
         <!-- Tableau synthèse par classe -->
         <div class="card" style="margin-bottom:24px;border-top:3px solid var(--teal)">
           <div class="card-header">
-            <div class="card-title">📋 Synthèse par filière — Année scolaire 2025-2026</div>
+            <div class="card-title" data-i18n="rapp_synthese_filiere">📋 Synthèse par filière — Année scolaire 2025-2026</div>
           </div>
           <div style="overflow-x:auto">
             <table>
               <thead>
                 <tr>
-                  <th>Filière</th>
-                  <th style="text-align:center">Bénéficiaires</th>
-                  <th style="text-align:center">Dossiers complets</th>
-                  <th style="text-align:center">Réalisation PEI</th>
-                  <th style="text-align:center">Cadres encadrants</th>
-                  <th style="text-align:center">Niveau de risque</th>
+                  <th data-i18n="rapp_col_filiere">Filière</th>
+                  <th style="text-align:center" data-i18n="rapp_col_benef_rapp">Bénéficiaires</th>
+                  <th style="text-align:center" data-i18n="rapp_col_dossiers_rapp">Dossiers complets</th>
+                  <th style="text-align:center" data-i18n="rapp_col_pei_rapp">Réalisation PEI</th>
+                  <th style="text-align:center" data-i18n="rapp_col_cadres_rapp">Cadres encadrants</th>
+                  <th style="text-align:center" data-i18n="rapp_col_risque_rapp">Niveau de risque</th>
                 </tr>
               </thead>
               <tbody id="rapp-table-classes"></tbody>
@@ -2801,7 +2801,7 @@ body.is-consultant .sensitive-data::after {
         <!-- Synthèse textuelle -->
         <div class="card" style="border-top:3px solid var(--success)">
           <div class="card-header">
-            <div class="card-title">📝 Synthèse narrative — Destinée aux partenaires & financeurs</div>
+            <div class="card-title" data-i18n="rapp_narrative_titre">📝 Synthèse narrative — Destinée aux partenaires & financeurs</div>
           </div>
           <div id="rapp-synthese" style="padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text)">
             Chargement…
@@ -2816,62 +2816,62 @@ body.is-consultant .sensitive-data::after {
     <div id="adm-section-audit" style="display:none">
 
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-        <div class="adm-section-title" style="margin-bottom:0">🔍 Journal d'audit — Traçabilité complète</div>
+        <div class="adm-section-title" style="margin-bottom:0" data-i18n="audit_titre">🔍 Journal d'audit — Traçabilité complète</div>
         <button onclick="auditExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px">📥 Exporter PDF</button>
       </div>
 
       <!-- KPIs du journal -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
         <div class="card" style="border-top:3px solid var(--primary)">
-          <div class="kpi"><div class="kpi-label">📋 Total actions</div>
+          <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_total">📋 Total actions</div>
           <div class="kpi-val" id="audit-k-total" style="color:var(--primary)">—</div>
-          <div class="kpi-sub">Toutes opérations</div></div>
+          <div class="kpi-sub" data-i18n="audit_kpi_total_sub">Toutes opérations</div></div>
         </div>
         <div class="card" style="border-top:3px solid var(--success)">
-          <div class="kpi"><div class="kpi-label">🟢 Aujourd'hui</div>
+          <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_today">🟢 Aujourd'hui</div>
           <div class="kpi-val" id="audit-k-today" style="color:var(--success)">—</div>
-          <div class="kpi-sub">Actions ce jour</div></div>
+          <div class="kpi-sub" data-i18n="audit_kpi_today_sub">Actions ce jour</div></div>
         </div>
         <div class="card" style="border-top:3px solid var(--warning)">
-          <div class="kpi"><div class="kpi-label">👤 Utilisateurs actifs</div>
+          <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_users">👤 Utilisateurs actifs</div>
           <div class="kpi-val" id="audit-k-users" style="color:var(--warning)">—</div>
-          <div class="kpi-sub">Ce mois-ci</div></div>
+          <div class="kpi-sub" data-i18n="audit_kpi_users_sub">Ce mois-ci</div></div>
         </div>
         <div class="card" style="border-top:3px solid var(--danger)">
-          <div class="kpi"><div class="kpi-label">🗑️ Suppressions</div>
+          <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_delete">🗑️ Suppressions</div>
           <div class="kpi-val" id="audit-k-delete" style="color:var(--danger)">—</div>
-          <div class="kpi-sub">Actions sensibles</div></div>
+          <div class="kpi-sub" data-i18n="audit_kpi_delete_sub">Actions sensibles</div></div>
         </div>
       </div>
 
       <!-- Filtres -->
       <div class="card" style="margin-bottom:16px">
         <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <span style="font-size:12px;font-weight:700;color:var(--muted)">Filtrer :</span>
+          <span style="font-size:12px;font-weight:700;color:var(--muted)" data-i18n="audit_filtrer">Filtrer :</span>
 
           <select id="audit-filter-type" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer">
-            <option value="all">📋 Tous les types</option>
-            <option value="connexion">🔐 Connexion / Déconnexion</option>
-            <option value="beneficiaire">👤 Bénéficiaires</option>
-            <option value="document">📎 Documents</option>
-            <option value="export">📥 Exports</option>
-            <option value="pei">🎯 PEI</option>
-            <option value="presence">📅 Présences</option>
-            <option value="rapport">📝 Rapports</option>
-            <option value="suppression">🗑️ Suppressions</option>
+            <option value="all" data-i18n="audit_tous_types">📋 Tous les types</option>
+            <option value="connexion" data-i18n="audit_connexion_type">🔐 Connexion / Déconnexion</option>
+            <option value="beneficiaire" data-i18n="audit_benef_type">👤 Bénéficiaires</option>
+            <option value="document" data-i18n="audit_docs_type">📎 Documents</option>
+            <option value="export" data-i18n="audit_exports_type">📥 Exports</option>
+            <option value="pei" data-i18n="audit_pei_type">🎯 PEI</option>
+            <option value="presence" data-i18n="audit_pres_type">📅 Présences</option>
+            <option value="rapport" data-i18n="audit_rapp_type">📝 Rapports</option>
+            <option value="suppression" data-i18n="audit_suppr_type">🗑️ Suppressions</option>
           </select>
 
           <select id="audit-filter-user" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer">
-            <option value="all">👤 Tous les utilisateurs</option>
+            <option value="all" data-i18n="audit_tous_users">👤 Tous les utilisateurs</option>
           </select>
 
           <!-- Préréglages rapides de période -->
           <div style="display:flex;gap:5px;flex-wrap:wrap">
-            <button onclick="auditSetPreset('today')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Aujourd'hui</button>
-            <button onclick="auditSetPreset('week')"  class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Cette semaine</button>
-            <button onclick="auditSetPreset('month')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700">📅 Ce mois</button>
+            <button onclick="auditSetPreset('today')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_auj_btn">📅 Aujourd'hui</button>
+            <button onclick="auditSetPreset('week')"  class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_semaine_btn">📅 Cette semaine</button>
+            <button onclick="auditSetPreset('month')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_mois_btn">📅 Ce mois</button>
           </div>
 
           <input type="date" id="audit-filter-date-from"
@@ -2882,14 +2882,14 @@ body.is-consultant .sensitive-data::after {
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)"
             onchange="auditRender()">
 
-          <button onclick="auditClearFilters()" class="btn" style="font-size:11px;padding:5px 12px;margin-left:auto">↺ Réinitialiser</button>
+          <button onclick="auditClearFilters()" class="btn" style="font-size:11px;padding:5px 12px;margin-left:auto" data-i18n="sim_reinitialiser">↺ Réinitialiser</button>
         </div>
       </div>
 
       <!-- Liste des entrées -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">📋 Entrées du journal</div>
+          <div class="card-title" data-i18n="audit_entries_titre">📋 Entrées du journal</div>
           <span id="audit-count-label" style="font-size:11px;color:var(--muted)">— entrées</span>
         </div>
         <div id="audit-list" style="max-height:600px;overflow-y:auto;padding:0 16px 12px">
@@ -2904,45 +2904,45 @@ body.is-consultant .sensitive-data::after {
 
       <!-- En-tête -->
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-        <div class="adm-section-title" style="margin-bottom:0">🗺️ Heatmap des risques — Vue par classe</div>
+        <div class="adm-section-title" style="margin-bottom:0" data-i18n="hm_titre">🗺️ Heatmap des risques — Vue par classe</div>
         <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:16px">
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dcfce7;border:1px solid #059669;display:inline-block"></span> Stable (≤30)</span>
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fef3c7;border:1px solid #d97706;display:inline-block"></span> Surveiller (31–60)</span>
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fee2e2;border:1px solid #dc2626;display:inline-block"></span> Urgent (≥61)</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dcfce7;border:1px solid #059669;display:inline-block"></span><span data-i18n="hm_legend_stable">Stable (≤30)</span></span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fef3c7;border:1px solid #d97706;display:inline-block"></span><span data-i18n="hm_legend_surveiller">Surveiller (31–60)</span></span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fee2e2;border:1px solid #dc2626;display:inline-block"></span><span data-i18n="hm_legend_urgent">Urgent (≥61)</span></span>
         </div>
       </div>
 
       <!-- Résumé compact intégré dans l'en-tête — sans doublons avec Alertes -->
       <div id="hm-kpi-row" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
-        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid var(--primary);color:var(--primary);background:var(--primary-light)">🏫 <span id="hm-k-classes">—</span> classes</span>
-        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #dc2626;color:#dc2626;background:#fee2e2">🔴 <span id="hm-k-urgentes">—</span> urgentes</span>
-        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #d97706;color:#d97706;background:#fef3c7">🟡 <span id="hm-k-surveiller">—</span> surveiller</span>
-        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #059669;color:#059669;background:#dcfce7">🟢 <span id="hm-k-stables">—</span> stables</span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid var(--primary);color:var(--primary);background:var(--primary-light)">🏫 <span id="hm-k-classes">—</span> <span data-i18n="hm_kpi_classes">classes</span></span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #dc2626;color:#dc2626;background:#fee2e2">🔴 <span id="hm-k-urgentes">—</span> <span data-i18n="hm_kpi_urgentes">urgentes</span></span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #d97706;color:#d97706;background:#fef3c7">🟡 <span id="hm-k-surveiller">—</span> <span data-i18n="hm_kpi_surveiller_lbl">surveiller</span></span>
+        <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #059669;color:#059669;background:#dcfce7">🟢 <span id="hm-k-stables">—</span> <span data-i18n="hm_kpi_stables">stables</span></span>
       </div>
 
       <!-- Grille heatmap -->
       <div id="hm-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px">
-        <div style="color:var(--muted);font-size:13px;padding:20px">Chargement…</div>
+        <div style="color:var(--muted);font-size:13px;padding:20px" data-i18n="hm_chargement">Chargement…</div>
       </div>
 
       <!-- Tableau récapitulatif détaillé -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">📋 Tableau récapitulatif par classe</div>
-          <span style="font-size:11px;color:var(--muted)">Trié par risque décroissant — cliquer pour filtrer</span>
+          <div class="card-title" data-i18n="hm_table_titre">📋 Tableau récapitulatif par classe</div>
+          <span style="font-size:11px;color:var(--muted)" data-i18n="hm_table_sous">Trié par risque décroissant — cliquer pour filtrer</span>
         </div>
         <div class="card-body" style="padding:0;overflow-x:auto">
           <table>
             <thead>
               <tr>
-                <th>Classe</th>
-                <th>Cadre(s)</th>
-                <th>Bénéf.</th>
-                <th>Score moyen</th>
-                <th>🔴 Urgents</th>
-                <th>🟡 Surveiller</th>
-                <th>🟢 Stables</th>
-                <th>Action</th>
+                <th data-i18n="hm_col_classe">Classe</th>
+                <th data-i18n="hm_col_cadres">Cadre(s)</th>
+                <th data-i18n="hm_col_benef">Bénéf.</th>
+                <th data-i18n="hm_col_score">Score moyen</th>
+                <th data-i18n="hm_urgent_lbl">🔴 Urgents</th>
+                <th data-i18n="hm_surveiller_lbl">🟡 Surveiller</th>
+                <th data-i18n="hm_stable_lbl">🟢 Stables</th>
+                <th data-i18n="hm_col_action">Action</th>
               </tr>
             </thead>
             <tbody id="hm-table-body"></tbody>
@@ -5700,6 +5700,46 @@ var I18N = {
     adm_banner_classes_lbl:    'Classes',
     adm_banner_cadres_lbl:     'Cadres',
 
+    // ── Alertes directeur ──
+    alr_cadres_ok:       '✅ Tous les cadres sont actifs',
+    alr_benef_short:     'bénéf.',
+    alr_aucune_seance:   'Aucune séance →',
+    alr_n_autres:        'autres',
+    alr_abandons_ok:     '✅ Aucun abandon détecté',
+    alr_derniere_seance: 'Dernière séance :',
+    alr_pei_ok:          '✅ Tous les PEI sont actifs',
+    alr_obj_definis:     'obj. définis — 0 commencé',
+    alr_demarrer:        'À démarrer →',
+    alr_marquer_traite:  '✓ Marquer traité',
+    alr_rouvrir:         '↩ Réouvrir',
+    alr_score_risque:    'Score de risque',
+    alr_filiere_lbl:     'Filière :',
+
+    // ── Heatmap des risques ──
+    hm_titre:              '🗺️ Heatmap des risques — Vue par classe',
+    hm_legend_stable:      'Stable (≤30)',
+    hm_legend_surveiller:  'Surveiller (31–60)',
+    hm_legend_urgent:      'Urgent (≥61)',
+    hm_kpi_classes:        'classes',
+    hm_kpi_urgentes:       'urgentes',
+    hm_kpi_surveiller_lbl: 'surveiller',
+    hm_kpi_stables:        'stables',
+    hm_chargement:         'Chargement…',
+    hm_table_titre:        '📋 Tableau récapitulatif par classe',
+    hm_table_sous:         'Trié par risque décroissant — cliquer pour filtrer',
+    hm_col_classe:         'Classe',
+    hm_col_cadres:         'Cadre(s)',
+    hm_col_benef:          'Bénéf.',
+    hm_col_score:          'Score moyen',
+    hm_col_action:         'Action',
+    hm_no_data:            'Aucune donnée disponible — les bénéficiaires doivent avoir un cadre assigné.',
+    hm_no_data_table:      'Aucune donnée',
+    hm_urgent_lbl:         '🔴 Urgent',
+    hm_surveiller_lbl:     '🟡 Surveiller',
+    hm_stable_lbl:         '🟢 Stable',
+    hm_benef_short:        'bénéf.',
+    hm_voir_benef:         'Voir les bénéficiaires →',
+
     // ── Santé globale (4 feux) ──
     sante_presence:     'Présence',
     sante_pei:          'PEI réalisé',
@@ -5971,6 +6011,271 @@ var I18N = {
     chart_rapports_6m:    '📋 Rapports soumis — 6 derniers mois',
     chart_evol_mensuelle: 'Évolution mensuelle',
     chart_par_mois:       'Par mois',
+
+    // ── Module Simulation décisionnelle ──
+    sim_intro_text:      'Modifiez les 3 leviers et observez en temps réel l\'impact sur le Score Organisationnel.',
+    sim_score_actuel:    '📊 Score actuel',
+    sim_leviers_titre:   '🎚️ Leviers d\'action',
+    sim_reinitialiser:   '↺ Réinitialiser',
+    sim_scenarios:       'Scénarios :',
+    sim_equilibre:       '⚖️ Effort équilibré',
+    sim_urgence_sc:      '🚨 Plan urgence',
+    sim_excellent_sc:    '🏆 Viser Excellent',
+    sim_fin_annee:       '📅 Fin d\'année',
+    sim_lv_pres:         '👥 Amélioration de la présence',
+    sim_lv_pres_impact:  'Impact : 30% du score global',
+    sim_lv_pei:          '🎯 Amélioration réalisation PEI',
+    sim_lv_pei_impact:   'Impact : 40% du score global',
+    sim_lv_indep:        '🌱 Amélioration de l\'autonomie',
+    sim_lv_indep_impact: 'Impact : 20% du score global',
+    sim_score_simule:    '🚀 Score simulé',
+    sim_deplacer:        'Déplacez les sliders',
+    sim_interp_titre:    '💡 Interprétation & recommandations',
+    sim_interp_hint:     'Ajustez les leviers pour voir les recommandations apparaître ici.',
+    sim_radar_titre:     '🕸️ Radar — Avant / Après',
+    sim_radar_actuel:    'Actuel',
+    sim_radar_simule_lb: 'Simulé',
+    sim_impact_titre:    '🔔 Impact sur les bénéficiaires',
+    sim_impact_sous:     'Changements de niveau de risque',
+    sim_situ_actuelle:   'Situation actuelle',
+    sim_situ_simulee:    'Situation simulée',
+    sim_urgents:         '🔴 Urgents',
+    sim_surveiller_lb:   '🟡 Surveiller',
+    sim_stables:         '🟢 Stables',
+    sim_fleche:          '↓ simulation',
+    sim_deplacer_impact: 'Déplacez les sliders pour voir l\'impact',
+    sim_impact_classe:   '🏫 Impact par classe',
+    sim_avant_apres:     'Score moyen avant → après',
+    sim_projection_titre:'📅 Projection temporelle',
+    sim_duree_plan:      'Durée du plan :',
+    sim_duree_detail:    'Si l\'amélioration est progressive et linéaire sur cette durée',
+    sim_col_classe:      'Classe',
+    sim_col_actuel:      'Actuel',
+    sim_col_simule:      'Simulé',
+    sim_col_gain:        'Gain',
+    sim_export_pdf:      '📥 Exporter scénario PDF',
+
+    // ── Simulation — badges et dynamique JS ──
+    sim_badge_excellent:       '✅ Excellent',
+    sim_badge_bien:            '⚡ Bien',
+    sim_badge_ameliorer:       '⚠️ À améliorer',
+    sim_aucun_chg:             'Aucun changement',
+    sim_progression_de:        'Progression de',
+    sim_regression_de:         'Régression de',
+    sim_bar_pei:               '🎯 PEI',
+    sim_bar_pres:              '👥 Présence',
+    sim_bar_indep:             '🌱 Autonomie',
+    sim_bar_doss:              '📁 Dossiers',
+    sim_interp_zero:           'Ajustez les leviers pour voir les recommandations apparaître ici.',
+    sim_progr_attendue:        '📈 Progression attendue',
+    sim_regr_simulee:          '📉 Régression simulée',
+    sim_score_passerait:       'Le score passerait de',
+    sim_score_a:               'à',
+    sim_levier_prio_lbl:       'Levier prioritaire :',
+    sim_une_amelioration:      'Une amélioration de',
+    sim_contrib:               'sur ce levier contribue à hauteur de',
+    sim_pts_score:             'pts au score final.',
+    sim_actions_reco:          '📌 Actions recommandées :',
+    sim_reco_presence:         'Renforcer le suivi des absences — contacter les familles dès 2 absences consécutives',
+    sim_reco_pei:              'Organiser des séances de révision PEI avec chaque cadre — prioriser les objectifs "En cours"',
+    sim_reco_indep:            "Intensifier les activités d'autonomie (AVJ) — augmenter la fréquence des séances ABLLS",
+    sim_niveau_excellent_txt:  '🏆 Ces actions permettraient d\'atteindre le niveau Excellent (≥ 70)',
+    sim_niveau_bien_txt:       '⚡ Ces actions permettraient de passer au niveau Bien (≥ 40)',
+    sim_benef_sorti_urgent:    'sortiraient du niveau Urgent',
+    sim_benef_vers_urgent:     'passeraient en niveau Urgent',
+    sim_aucun_chg_risque:      'Aucun changement de niveau de risque',
+    sim_impact_pei_lbl:        'la réalisation des objectifs PEI',
+    sim_impact_pres_lbl:       'le taux de présence',
+    sim_impact_indep_lbl:      "le niveau d'autonomie (ABLLS)",
+    sim_toast_reset:           '↺ Simulation réinitialisée',
+    sim_toast_scenario:        'Scénario chargé : ',
+    sim_proj_score_lbl:        'Score projeté',
+    sim_duree_mois:            'mois',
+
+    // ── KPI labels Admin Overview ──
+    adm_kpi_realisation_pei:  '🎯 Réalisation PEI',
+    adm_kpi_ratio_cadre:      '⚖️ Ratio cadre / bénéf.',
+    adm_kpi_risque_eleve:     '🚨 Bénéf. à risque élevé',
+    adm_kpi_non_demarres:     '🆕 Objectifs non démarrés',
+    adm_kpi_cadres_actifs_lb: '👨‍🏫 Cadres actifs ce mois',
+    adm_kpi_alertes_nonres:   '🔔 Alertes non résolues',
+    adm_kpi_sans_seance:      '📵 Sans séance ce mois',
+    adm_kpi_obj_benef_pei:    '📋 Objectifs / bénéf. PEI',
+    adm_actions_requises:     '🚨 Actions requises maintenant',
+    adm_score_global_card:    '🏆 Score Global',
+    adm_classe_detail_btn:    '🏫 Tableau de bord par classe',
+    adm_detail_btn:           'Détail →',
+    adm_col_classe:           'Classe',
+    adm_col_benef_s:          'Bénéf.',
+    adm_col_dossiers_s:       'Dossiers',
+    adm_col_presence_s:       'Présence',
+    adm_col_pei_pct:          'PEI %',
+    adm_col_risque_s:         'Risque',
+    adm_proj_titre:           'Projection fin de semestre — Juin 2026',
+    adm_proj_calc:            '📐 Calcul prédictif basé sur la tendance actuelle',
+    adm_evol_titre:           '📈 Évolution sur 6 mois — Tendances décisionnelles',
+    adm_evol_score:           'Score organisationnel',
+    adm_evol_note:            '* Données simulées — S2 en cours',
+    adm_points_critiques:     '⚡ Points critiques',
+    adm_actions_prio:         '⚡ Actions prioritaires du jour',
+
+    // ── Admin bannière dynamique ──
+    adm_sem_restantes:        'sem. restantes',
+    adm_sem_termine:          'Semestre terminé',
+    adm_benef_urgence:        'bénéficiaire(s) en urgence',
+    adm_cadre_sans_seance:    'cadre(s) sans séance',
+    adm_pei_non_demarre:      'objectif(s) PEI non démarré(s)',
+    adm_dossier_incomplet:    'dossier(s) incomplet(s)',
+    adm_accelerer_pei:        'Accélérer la mise en œuvre',
+    adm_maj_fiches:           'Mettre à jour les fiches',
+    adm_tout_ok:              '✅ Tout est en ordre — Aucune action urgente',
+    adm_seances_ce_mois:      'séance(s) ce mois',
+    adm_aucune_seance_saisie: 'Aucune séance saisie',
+    adm_objectifs_pei:        'objectifs PEI',
+    adm_aucun_objectif_pei:   'Aucun objectif PEI',
+    adm_complets:             'complets',
+
+    // ── Admin synthèse exécutive ──
+    adm_genere_le:            '⚙️ Généré le',
+    adm_a_heure:              'à',
+    adm_badge_favorable:      '🟢 Situation favorable',
+    adm_badge_vigilance:      '🟡 Vigilance requise',
+    adm_badge_critique:       '🔴 Intervention urgente',
+    adm_proj_fin_sem:         'Semestre 2 terminé — préparer le bilan et le rapport institutionnel.',
+    adm_semaines:             'semaine(s) restante(s)',
+    adm_fin_semestre:         'fin de semestre',
+
+    // ── Sous-libellés KPI Admin ──
+    adm_tous_stables:         '✅ Tous stables',
+    adm_a_surveiller_stables: 'à surveiller · stables',
+    adm_aucun_cas_urgent:     '🟢 Aucun cas urgent',
+    adm_pct_zone_critique:    '% en zone critique',
+    adm_obj_en_attente:       'obj. en attente',
+    adm_vol_eleve:            '🔴 Volume élevé',
+    adm_a_planifier:          '🟡 À planifier',
+    adm_sous_controle:        '🟢 Sous contrôle',
+    adm_pct_saisi_mois:       '% ont saisi ce mois',
+    adm_cadres_lbl:           'cadres',
+    adm_tout_resolu:          '✅ Tout résolu',
+    adm_non_resolu:           'non résolu(e)(s)',
+    adm_tous_vus:             '✅ Tous vus ce mois',
+    adm_pct_non_vus:          '% non vus ce mois',
+    adm_presence_complete:    '🟢 Présence complète',
+    adm_quelques_absents:     '🟡 Quelques absents',
+    adm_absences_critiques:   '🔴 Absences critiques',
+    adm_absent_lbl:           'absent(s)',
+    adm_non_suivis:           'non suivis',
+    adm_optimal:              '🟢 Optimal',
+    adm_surcharge:            '🔴 Surchargé',
+    adm_rh_attente:           'demande(s) RH en attente',
+    adm_recom_non_lues:       'recommandation(s) non lue(s)',
+    adm_alertes_urgentes:     'alerte(s) urgente(s) non résolue(s)',
+    adm_suffisant:            '🟢 Suffisant',
+    adm_insuffisant:          '🟡 Insuffisant',
+
+    // ── Projection fin de semestre ──
+    adm_proj_actuel:          'Actuel',
+    adm_proj_projete_juin:    'Projeté juin',
+    adm_proj_cible:           'cible',
+    adm_proj_aucune_donnee:   '⬜ Aucune donnée',
+    adm_proj_atteignable:     '✅ Objectif atteignable',
+    adm_proj_effort_pts:      '⚡ Effort :',
+    adm_proj_pts_sem:         'pts/sem.',
+    adm_proj_effort_requis:   '⚡ Effort requis :',
+    adm_proj_par_sem:         '/sem.',
+    adm_proj_compromis:       '🔴 Objectif compromis',
+    adm_proj_lin_note:        'Projection linéaire sur les semaines écoulées',
+    adm_proj_pres_note:       'Taux mensuel — tendance maintenue',
+    adm_proj_score_note:      'Calculé avec les composantes projetées',
+    adm_traj_favorable:       '🟢 Trajectoire favorable',
+    adm_traj_corriger:        '🔴 Trajectoire à corriger',
+    adm_traj_surveiller:      '🟡 Trajectoire à surveiller',
+    adm_aucune_alerte:        '✅ Aucune alerte active',
+    adm_voir_toutes:          'cliquer "Voir toutes →"',
+
+    // ── Score organisationnel — détail composantes ──
+    adm_sc_excellent:         '🏆 Excellent',
+    adm_sc_bien:              '🥈 Bien',
+    adm_sc_ameliorer:         '🟡 À améliorer',
+    adm_sc_critique:          '🔴 Critique',
+    adm_comp_pei:             'Réalisation PEI',
+    adm_comp_pres:            'Taux de présence',
+    adm_comp_indep:           'Indépendance ABLLS',
+    adm_comp_doss:            'Dossiers ✓',
+    adm_comp_pei_nodata:      '⚠️ Valeur neutre — aucun objectif PEI saisi',
+    adm_comp_pres_nodata:     '⚠️ Aucune donnée S2 — valeur neutre utilisée',
+    adm_comp_termines:        'terminés',
+    adm_comp_en_cours:        'en cours',
+    adm_comp_seances_s2:      'séance(s) S2',
+    adm_comp_ghiyab:          'Feuilles de ghiyab S2',
+    adm_comp_ablls_nodata:    '⚠️ ABLLS non saisi — niveau moyen utilisé',
+    adm_comp_s2_found:        'séance(s) de présence trouvée(s) en S2',
+    adm_comp_voir_seances:    '👁️ Voir les séances',
+    adm_comp_suppr_seances:   '🗑️ Supprimer toutes les séances S2',
+    adm_comp_alimentent:      'Ces séances alimentent le taux de présence de',
+    adm_comp_incorrectes:     'Si ces données sont incorrectes, vous pouvez les supprimer.',
+    adm_comp_action_pei:      'Revoir le rythme des séances PEI et augmenter les objectifs validés.',
+    adm_comp_action_pres:     'Contacter les familles absentes et renforcer le suivi des présences.',
+    adm_comp_action_indep:    'Intensifier les activités d\'autonomie et réévaluer les niveaux ABLLS.',
+    adm_comp_action_doss:     'Compléter les dossiers incomplets — risque de non-conformité.',
+
+    // ── Rapport institutionnel ──
+    rapp_titre_officiel:      'Rapport institutionnel — Usage officiel',
+    rapp_kpi_score:           'Score global',
+    rapp_kpi_benef_s:         'Bénéficiaires suivis',
+    rapp_kpi_presence_s:      'Taux de présence',
+    rapp_kpi_pei_s:           'Objectifs réalisés',
+    rapp_kpi_dossiers_s:      'Conformité dossiers',
+    rapp_kpi_pres_moy:        'Moyenne annuelle',
+    rapp_kpi_personnes:       'personnes',
+    rapp_chart_evol_titre:    '📈 Évolution des indicateurs clés — 6 derniers mois',
+    rapp_chart_classes_titre: '🏫 Répartition par classe',
+    rapp_synthese_filiere:    '📋 Synthèse par filière — Année scolaire 2025-2026',
+    rapp_col_filiere:         'Filière',
+    rapp_col_benef_rapp:      'Bénéficiaires',
+    rapp_col_dossiers_rapp:   'Dossiers complets',
+    rapp_col_pei_rapp:        'Réalisation PEI',
+    rapp_col_cadres_rapp:     'Cadres encadrants',
+    rapp_col_risque_rapp:     'Niveau de risque',
+    rapp_narrative_titre:     '📝 Synthèse narrative — Destinée aux partenaires & financeurs',
+    rapp_genere_le:           'Généré le',
+    rapp_urgent:              '🔴 Urgent',
+    rapp_surveiller_lb:       '🟡 Surveiller',
+    rapp_stable:              '🟢 Stable',
+
+    // ── Journal d'audit ──
+    audit_titre:              '🔍 Journal d\'audit — Traçabilité complète',
+    audit_kpi_total:          '📋 Total actions',
+    audit_kpi_total_sub:      'Toutes opérations',
+    audit_kpi_today:          '🟢 Aujourd\'hui',
+    audit_kpi_today_sub:      'Actions ce jour',
+    audit_kpi_users:          '👤 Utilisateurs actifs',
+    audit_kpi_users_sub:      'Ce mois-ci',
+    audit_kpi_delete:         '🗑️ Suppressions',
+    audit_kpi_delete_sub:     'Actions sensibles',
+    audit_filtrer:            'Filtrer :',
+    audit_tous_types:         '📋 Tous les types',
+    audit_connexion_type:     '🔐 Connexion / Déconnexion',
+    audit_benef_type:         '👤 Bénéficiaires',
+    audit_docs_type:          '📎 Documents',
+    audit_exports_type:       '📥 Exports',
+    audit_pei_type:           '🎯 PEI',
+    audit_pres_type:          '📅 Présences',
+    audit_rapp_type:          '📝 Rapports',
+    audit_suppr_type:         '🗑️ Suppressions',
+    audit_tous_users:         '👤 Tous les utilisateurs',
+    audit_auj_btn:            '📅 Aujourd\'hui',
+    audit_semaine_btn:        '📅 Cette semaine',
+    audit_mois_btn:           '📅 Ce mois',
+    audit_entries_titre:      '📋 Entrées du journal',
+    audit_chargement:         'Chargement…',
+    audit_auj_label:          'Aujourd\'hui',
+    audit_hier_label:         'Hier',
+    audit_aucune_entree:      'Aucune entrée trouvée pour ces filtres.',
+    audit_action_s:           'action',
+    audit_actions_pl:         'actions',
+    audit_entree_s:           'entrée',
+    audit_entrees_pl:         'entrées',
   },
 
   ar: {
@@ -6783,6 +7088,46 @@ var I18N = {
     adm_banner_classes_lbl:    'الأقسام',
     adm_banner_cadres_lbl:     'الأطر',
 
+    // ── تنبيهات المدير ──
+    alr_cadres_ok:       '✅ جميع الأطر نشيطون',
+    alr_benef_short:     'مستفيد',
+    alr_aucune_seance:   'بدون حصة →',
+    alr_n_autres:        'آخرون',
+    alr_abandons_ok:     '✅ لا يوجد تخلٍّ محتمل',
+    alr_derniere_seance: 'آخر حصة :',
+    alr_pei_ok:          '✅ جميع البرامج الفردية نشيطة',
+    alr_obj_definis:     'هدف مُعرَّف — 0 بدأ',
+    alr_demarrer:        'للبدء →',
+    alr_marquer_traite:  '✓ تحديد كمُعالَج',
+    alr_rouvrir:         '↩ إعادة فتح',
+    alr_score_risque:    'نقطة المخاطر',
+    alr_filiere_lbl:     'الفصل :',
+
+    // ── خريطة المخاطر (Heatmap) ──
+    hm_titre:              '🗺️ خريطة المخاطر — عرض حسب الفصل',
+    hm_legend_stable:      'مستقر (≤30)',
+    hm_legend_surveiller:  'للمراقبة (31–60)',
+    hm_legend_urgent:      'عاجل (≥61)',
+    hm_kpi_classes:        'أقسام',
+    hm_kpi_urgentes:       'عاجلة',
+    hm_kpi_surveiller_lbl: 'للمراقبة',
+    hm_kpi_stables:        'مستقرة',
+    hm_chargement:         'جارٍ التحميل…',
+    hm_table_titre:        '📋 جدول ملخص حسب الفصل',
+    hm_table_sous:         'مرتب تنازلياً حسب المخاطر — انقر للتصفية',
+    hm_col_classe:         'الفصل',
+    hm_col_cadres:         'المؤطر(ون)',
+    hm_col_benef:          'مستفيد.',
+    hm_col_score:          'متوسط النقطة',
+    hm_col_action:         'الإجراء',
+    hm_no_data:            'لا توجد بيانات — يجب تعيين مؤطر لكل مستفيد.',
+    hm_no_data_table:      'لا توجد بيانات',
+    hm_urgent_lbl:         '🔴 عاجل',
+    hm_surveiller_lbl:     '🟡 للمراقبة',
+    hm_stable_lbl:         '🟢 مستقر',
+    hm_benef_short:        'مستفيد',
+    hm_voir_benef:         'عرض المستفيدين →',
+
     // ── بطاقات الصحة الأربع ──
     sante_presence:     'الحضور',
     sante_pei:          'PEI المحقق',
@@ -7054,6 +7399,271 @@ var I18N = {
     chart_rapports_6m:    '📋 التقارير المرسلة — آخر 6 أشهر',
     chart_evol_mensuelle: 'التطور الشهري',
     chart_par_mois:       'شهرياً',
+
+    // ── وحدة المحاكاة القرارية ──
+    sim_intro_text:      'عدّل الرافعات الثلاث وراقب التأثير الفوري على النقطة التنظيمية.',
+    sim_score_actuel:    '📊 النقطة الحالية',
+    sim_leviers_titre:   '🎚️ رافعات العمل',
+    sim_reinitialiser:   '↺ إعادة ضبط',
+    sim_scenarios:       'سيناريوهات :',
+    sim_equilibre:       '⚖️ جهد متوازن',
+    sim_urgence_sc:      '🚨 خطة طوارئ',
+    sim_excellent_sc:    '🏆 الوصول للممتاز',
+    sim_fin_annee:       '📅 نهاية السنة',
+    sim_lv_pres:         '👥 تحسين الحضور',
+    sim_lv_pres_impact:  'التأثير : 30% من النقطة الإجمالية',
+    sim_lv_pei:          '🎯 تحسين تحقيق PEI',
+    sim_lv_pei_impact:   'التأثير : 40% من النقطة الإجمالية',
+    sim_lv_indep:        '🌱 تحسين الاستقلالية',
+    sim_lv_indep_impact: 'التأثير : 20% من النقطة الإجمالية',
+    sim_score_simule:    '🚀 النقطة المحاكاة',
+    sim_deplacer:        'حرّك الشرائح',
+    sim_interp_titre:    '💡 التفسير والتوصيات',
+    sim_interp_hint:     'عدّل الرافعات لرؤية التوصيات هنا.',
+    sim_radar_titre:     '🕸️ رادار — قبل / بعد',
+    sim_radar_actuel:    'الحالي',
+    sim_radar_simule_lb: 'المحاكى',
+    sim_impact_titre:    '🔔 التأثير على المستفيدين',
+    sim_impact_sous:     'تغييرات في مستوى الخطر',
+    sim_situ_actuelle:   'الوضع الحالي',
+    sim_situ_simulee:    'الوضع المحاكى',
+    sim_urgents:         '🔴 عاجل',
+    sim_surveiller_lb:   '🟡 للمراقبة',
+    sim_stables:         '🟢 مستقر',
+    sim_fleche:          '↓ محاكاة',
+    sim_deplacer_impact: 'حرّك الشرائح لرؤية التأثير',
+    sim_impact_classe:   '🏫 التأثير حسب الفصل',
+    sim_avant_apres:     'متوسط النقطة قبل ← بعد',
+    sim_projection_titre:'📅 الإسقاط الزمني',
+    sim_duree_plan:      'مدة الخطة :',
+    sim_duree_detail:    'إذا كان التحسن تدريجياً وخطياً على هذه المدة',
+    sim_col_classe:      'الفصل',
+    sim_col_actuel:      'الحالي',
+    sim_col_simule:      'المحاكى',
+    sim_col_gain:        'الكسب',
+    sim_export_pdf:      '📥 تصدير السيناريو PDF',
+
+    // ── محاكاة — الشارات والنصوص الديناميكية ──
+    sim_badge_excellent:       '✅ ممتاز',
+    sim_badge_bien:            '⚡ جيد',
+    sim_badge_ameliorer:       '⚠️ يحتاج تحسين',
+    sim_aucun_chg:             'لا تغيير',
+    sim_progression_de:        'تقدم من',
+    sim_regression_de:         'تراجع من',
+    sim_bar_pei:               '🎯 البرنامج الفردي',
+    sim_bar_pres:              '👥 الحضور',
+    sim_bar_indep:             '🌱 الاستقلالية',
+    sim_bar_doss:              '📁 الملفات',
+    sim_interp_zero:           'عدّل الرافعات لرؤية التوصيات هنا.',
+    sim_progr_attendue:        '📈 تقدم متوقع',
+    sim_regr_simulee:          '📉 تراجع محاكى',
+    sim_score_passerait:       'ستنتقل النقطة من',
+    sim_score_a:               'إلى',
+    sim_levier_prio_lbl:       'الرافعة الأولوية :',
+    sim_une_amelioration:      'تحسين بنسبة',
+    sim_contrib:               'على هذه الرافعة يُساهم بـ',
+    sim_pts_score:             'نقطة في النقطة النهائية.',
+    sim_actions_reco:          '📌 الإجراءات الموصى بها :',
+    sim_reco_presence:         'تعزيز متابعة الغيابات — التواصل مع الأسر عند غيابين متتاليين',
+    sim_reco_pei:              'تنظيم جلسات مراجعة البرنامج الفردي مع كل مؤطر — إعطاء الأولوية للأهداف قيد التنفيذ',
+    sim_reco_indep:            'تكثيف أنشطة الاستقلالية (AVJ) — زيادة تكرار جلسات ABLLS',
+    sim_niveau_excellent_txt:  '🏆 هذه الإجراءات ستُمكّن من الوصول لمستوى ممتاز (≥ 70)',
+    sim_niveau_bien_txt:       '⚡ هذه الإجراءات ستُمكّن من الوصول لمستوى جيد (≥ 40)',
+    sim_benef_sorti_urgent:    'مستفيد(ون) سيخرجون من المستوى العاجل',
+    sim_benef_vers_urgent:     'مستفيد(ون) سيصلون للمستوى العاجل',
+    sim_aucun_chg_risque:      'لا تغيير في مستوى الخطر',
+    sim_impact_pei_lbl:        'تحقيق أهداف البرنامج الفردي',
+    sim_impact_pres_lbl:       'معدل الحضور',
+    sim_impact_indep_lbl:      'مستوى الاستقلالية (ABLLS)',
+    sim_toast_reset:           '↺ تمت إعادة ضبط المحاكاة',
+    sim_toast_scenario:        'السيناريو المحمّل : ',
+    sim_proj_score_lbl:        'النقطة المتوقعة',
+    sim_duree_mois:            'أشهر',
+
+    // ── بطاقات KPI — لوحة المدير ──
+    adm_kpi_realisation_pei:  '🎯 تحقيق PEI',
+    adm_kpi_ratio_cadre:      '⚖️ نسبة المؤطر / المستفيد',
+    adm_kpi_risque_eleve:     '🚨 مستفيدون في خطر',
+    adm_kpi_non_demarres:     '🆕 أهداف لم تبدأ',
+    adm_kpi_cadres_actifs_lb: '👨‍🏫 مؤطرون فعالون هذا الشهر',
+    adm_kpi_alertes_nonres:   '🔔 تنبيهات غير محلولة',
+    adm_kpi_sans_seance:      '📵 بدون حصة هذا الشهر',
+    adm_kpi_obj_benef_pei:    '📋 أهداف / مستفيد PEI',
+    adm_actions_requises:     '🚨 إجراءات مطلوبة الآن',
+    adm_score_global_card:    '🏆 النقطة الإجمالية',
+    adm_classe_detail_btn:    '🏫 لوحة التحكم حسب الفصل',
+    adm_detail_btn:           'تفاصيل →',
+    adm_col_classe:           'الفصل',
+    adm_col_benef_s:          'مستفيد',
+    adm_col_dossiers_s:       'الملفات',
+    adm_col_presence_s:       'الحضور',
+    adm_col_pei_pct:          '% PEI',
+    adm_col_risque_s:         'الخطر',
+    adm_proj_titre:           'الإسقاط لنهاية الفصل — يونيو 2026',
+    adm_proj_calc:            '📐 حساب تنبؤي بناء على الاتجاه الحالي',
+    adm_evol_titre:           '📈 التطور على 6 أشهر — الاتجاهات القرارية',
+    adm_evol_score:           'النقطة التنظيمية',
+    adm_evol_note:            '* بيانات محاكاة — الفصل 2 جارٍ',
+    adm_points_critiques:     '⚡ نقاط حرجة',
+    adm_actions_prio:         '⚡ الإجراءات ذات الأولوية اليوم',
+
+    // ── لافتة المدير الديناميكية ──
+    adm_sem_restantes:        'أسبوع(أسابيع) متبقية',
+    adm_sem_termine:          'الفصل منتهٍ',
+    adm_benef_urgence:        'مستفيد(ين) في حالة طوارئ',
+    adm_cadre_sans_seance:    'مؤطر(ين) بدون حصة',
+    adm_pei_non_demarre:      'هدف(أهداف) PEI لم تبدأ',
+    adm_dossier_incomplet:    'ملف(ات) غير مكتمل(ة)',
+    adm_accelerer_pei:        'الإسراع في التنفيذ',
+    adm_maj_fiches:           'تحديث الملفات',
+    adm_tout_ok:              '✅ كل شيء على ما يرام — لا إجراءات عاجلة',
+    adm_seances_ce_mois:      'حصة(حصص) هذا الشهر',
+    adm_aucune_seance_saisie: 'لا توجد حصة مسجلة',
+    adm_objectifs_pei:        'أهداف PEI',
+    adm_aucun_objectif_pei:   'لا توجد أهداف PEI',
+    adm_complets:             'مكتملة',
+
+    // ── الملخص التنفيذي للمدير ──
+    adm_genere_le:            '⚙️ تم التوليد في',
+    adm_a_heure:              'الساعة',
+    adm_badge_favorable:      '🟢 وضع مريح',
+    adm_badge_vigilance:      '🟡 مطلوب يقظة',
+    adm_badge_critique:       '🔴 تدخل عاجل',
+    adm_proj_fin_sem:         'انتهى الفصل الدراسي — الرجاء تحضير التقرير المؤسسي.',
+    adm_semaines:             'أسبوع(أسابيع) متبقية',
+    adm_fin_semestre:         'نهاية الفصل',
+
+    // ── تسميات KPI الفرعية ──
+    adm_tous_stables:         '✅ الجميع مستقرون',
+    adm_a_surveiller_stables: 'للمراقبة · مستقر',
+    adm_aucun_cas_urgent:     '🟢 لا حالات عاجلة',
+    adm_pct_zone_critique:    '% في المنطقة الحرجة',
+    adm_obj_en_attente:       'هدف(أهداف) في الانتظار',
+    adm_vol_eleve:            '🔴 حجم مرتفع',
+    adm_a_planifier:          '🟡 يجب تخطيطه',
+    adm_sous_controle:        '🟢 تحت السيطرة',
+    adm_pct_saisi_mois:       '% أدخلوا هذا الشهر',
+    adm_cadres_lbl:           'مؤطر(ون)',
+    adm_tout_resolu:          '✅ تم الحل الكامل',
+    adm_non_resolu:           'غير محلول(ة)',
+    adm_tous_vus:             '✅ تمت رؤية الجميع هذا الشهر',
+    adm_pct_non_vus:          '% لم يُرَوا هذا الشهر',
+    adm_presence_complete:    '🟢 حضور كامل',
+    adm_quelques_absents:     '🟡 بعض الغيابات',
+    adm_absences_critiques:   '🔴 غيابات حرجة',
+    adm_absent_lbl:           'غائب(غائبون)',
+    adm_non_suivis:           'غير متابَعون',
+    adm_optimal:              '🟢 مثالي',
+    adm_surcharge:            '🔴 محمَّل',
+    adm_rh_attente:           'طلب(طلبات) إدارية معلقة',
+    adm_recom_non_lues:       'توصية(توصيات) غير مقروءة',
+    adm_alertes_urgentes:     'تنبيه(تنبيهات) عاجلة غير محلولة',
+    adm_suffisant:            '🟢 كافٍ',
+    adm_insuffisant:          '🟡 غير كافٍ',
+
+    // ── الإسقاط لنهاية الفصل ──
+    adm_proj_actuel:          'الحالي',
+    adm_proj_projete_juin:    'المتوقع في يونيو',
+    adm_proj_cible:           'هدف',
+    adm_proj_aucune_donnee:   '⬜ لا توجد بيانات',
+    adm_proj_atteignable:     '✅ الهدف قابل للتحقيق',
+    adm_proj_effort_pts:      '⚡ الجهد :',
+    adm_proj_pts_sem:         'نقطة/أسبوع',
+    adm_proj_effort_requis:   '⚡ الجهد المطلوب :',
+    adm_proj_par_sem:         '/أسبوع',
+    adm_proj_compromis:       '🔴 الهدف في خطر',
+    adm_proj_lin_note:        'إسقاط خطي على الأسابيع المنقضية',
+    adm_proj_pres_note:       'معدل شهري — يُفترض ثبات الاتجاه',
+    adm_proj_score_note:      'محسوب بناءً على المكونات المتوقعة',
+    adm_traj_favorable:       '🟢 مسار مريح',
+    adm_traj_corriger:        '🔴 مسار يحتاج تصحيحاً',
+    adm_traj_surveiller:      '🟡 مسار يستوجب المراقبة',
+    adm_aucune_alerte:        '✅ لا توجد تنبيهات نشطة',
+    adm_voir_toutes:          'انقر "عرض الكل →"',
+
+    // ── النقطة التنظيمية — تفاصيل المكونات ──
+    adm_sc_excellent:         '🏆 ممتاز',
+    adm_sc_bien:              '🥈 جيد',
+    adm_sc_ameliorer:         '🟡 يحتاج تحسيناً',
+    adm_sc_critique:          '🔴 حرج',
+    adm_comp_pei:             'تحقيق PEI',
+    adm_comp_pres:            'معدل الحضور',
+    adm_comp_indep:           'الاستقلالية ABLLS',
+    adm_comp_doss:            'الملفات ✓',
+    adm_comp_pei_nodata:      '⚠️ قيمة محايدة — لا توجد أهداف PEI مدخلة',
+    adm_comp_pres_nodata:     '⚠️ لا توجد بيانات الفصل 2 — قيمة محايدة',
+    adm_comp_termines:        'منجزة',
+    adm_comp_en_cours:        'جارية',
+    adm_comp_seances_s2:      'حصة(حصص) في الفصل 2',
+    adm_comp_ghiyab:          'جداول الغياب الفصل 2',
+    adm_comp_ablls_nodata:    '⚠️ ABLLS غير مدخل — يستخدم المعدل العام',
+    adm_comp_s2_found:        'حصة(حصص) حضور موجودة في الفصل 2',
+    adm_comp_voir_seances:    '👁️ عرض الحصص',
+    adm_comp_suppr_seances:   '🗑️ حذف جميع حصص الفصل 2',
+    adm_comp_alimentent:      'هذه الحصص تغذي معدل الحضور بـ',
+    adm_comp_incorrectes:     'إذا كانت هذه البيانات خاطئة، يمكنك حذفها.',
+    adm_comp_action_pei:      'مراجعة إيقاع الحصص وزيادة الأهداف المحققة لكل مستفيد.',
+    adm_comp_action_pres:     'التواصل مع عائلات الغائبين وتعزيز متابعة الحضور الشهرية.',
+    adm_comp_action_indep:    'تكثيف أنشطة الاستقلالية وإعادة تقييم مستويات ABLLS الراكدة.',
+    adm_comp_action_doss:     'إتمام الملفات الناقصة — خطر عدم المطابقة الإدارية.',
+
+    // ── التقرير المؤسسي ──
+    rapp_titre_officiel:      'تقرير مؤسسي — استخدام رسمي',
+    rapp_kpi_score:           'النقطة الإجمالية',
+    rapp_kpi_benef_s:         'المستفيدون المتابَعون',
+    rapp_kpi_presence_s:      'معدل الحضور',
+    rapp_kpi_pei_s:           'الأهداف المحققة',
+    rapp_kpi_dossiers_s:      'مطابقة الملفات',
+    rapp_kpi_pres_moy:        'المعدل السنوي',
+    rapp_kpi_personnes:       'شخص',
+    rapp_chart_evol_titre:    '📈 تطور المؤشرات الرئيسية — آخر 6 أشهر',
+    rapp_chart_classes_titre: '🏫 التوزيع حسب الفصل',
+    rapp_synthese_filiere:    '📋 ملخص حسب الشعبة — السنة الدراسية 2025-2026',
+    rapp_col_filiere:         'الشعبة',
+    rapp_col_benef_rapp:      'المستفيدون',
+    rapp_col_dossiers_rapp:   'ملفات مكتملة',
+    rapp_col_pei_rapp:        'تحقيق PEI',
+    rapp_col_cadres_rapp:     'المؤطرون',
+    rapp_col_risque_rapp:     'مستوى الخطر',
+    rapp_narrative_titre:     '📝 الملخص السردي — موجَّه للشركاء والممولين',
+    rapp_genere_le:           'تم التوليد في',
+    rapp_urgent:              '🔴 عاجل',
+    rapp_surveiller_lb:       '🟡 للمراقبة',
+    rapp_stable:              '🟢 مستقر',
+
+    // ── سجل المراجعة ──
+    audit_titre:              '🔍 سجل المراجعة — التتبع الكامل',
+    audit_kpi_total:          '📋 مجموع الإجراءات',
+    audit_kpi_total_sub:      'جميع العمليات',
+    audit_kpi_today:          '🟢 اليوم',
+    audit_kpi_today_sub:      'إجراءات اليوم',
+    audit_kpi_users:          '👤 المستخدمون الفعالون',
+    audit_kpi_users_sub:      'هذا الشهر',
+    audit_kpi_delete:         '🗑️ عمليات الحذف',
+    audit_kpi_delete_sub:     'إجراءات حساسة',
+    audit_filtrer:            'تصفية :',
+    audit_tous_types:         '📋 جميع الأنواع',
+    audit_connexion_type:     '🔐 الدخول / الخروج',
+    audit_benef_type:         '👤 المستفيدون',
+    audit_docs_type:          '📎 الوثائق',
+    audit_exports_type:       '📥 التصديرات',
+    audit_pei_type:           '🎯 PEI',
+    audit_pres_type:          '📅 الحضور',
+    audit_rapp_type:          '📝 التقارير',
+    audit_suppr_type:         '🗑️ الحذف',
+    audit_tous_users:         '👤 جميع المستخدمين',
+    audit_auj_btn:            '📅 اليوم',
+    audit_semaine_btn:        '📅 هذا الأسبوع',
+    audit_mois_btn:           '📅 هذا الشهر',
+    audit_entries_titre:      '📋 إدخالات السجل',
+    audit_chargement:         'جارٍ التحميل…',
+    audit_auj_label:          'اليوم',
+    audit_hier_label:         'أمس',
+    audit_aucune_entree:      'لا توجد إدخالات لهذه الفلاتر.',
+    audit_action_s:           'إجراء',
+    audit_actions_pl:         'إجراءات',
+    audit_entree_s:           'إدخال',
+    audit_entrees_pl:         'إدخالات',
   }
 };
 
@@ -7477,8 +8087,14 @@ function toggleLang() {
   /* 3 ── Re-render admin si le panneau est ouvert */
   const adminOverlay = document.getElementById('admin-overlay');
   if (adminOverlay && adminOverlay.style.display !== 'none') {
-    if (typeof renderAdminBenef === 'function') renderAdminBenef();
-    if (typeof renderCadresListe === 'function') renderCadresListe();
+    if (typeof renderAdminBenef    === 'function') renderAdminBenef();
+    if (typeof renderCadresListe   === 'function') renderCadresListe();
+    if (typeof renderAdminOverview === 'function') renderAdminOverview();
+    if (typeof renderRapportInstitutionnel === 'function') renderRapportInstitutionnel();
+    if (typeof auditRender         === 'function') auditRender();
+    if (typeof initSimulation      === 'function') initSimulation();
+    if (typeof renderAdminHeatmap  === 'function') renderAdminHeatmap();
+    if (typeof renderAdminAlertes  === 'function') renderAdminAlertes();
   }
 
   /* 4 ── Appliquer toutes les traductions statiques */
@@ -24415,9 +25031,9 @@ function renderAdminOverview(){
   // ══════════════════════════════════════════════════
   // BANNER — Date dynamique + semaines restantes
   // ══════════════════════════════════════════════════
-  const _jours  = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const _moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  const _dateStr = `${_jours[_now.getDay()]} ${_now.getDate()} ${_moisFr[_now.getMonth()]} ${_now.getFullYear()}`;
+  /* Date bilingue selon la langue active */
+  const _admLocale = CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR';
+  const _dateStr = _now.toLocaleDateString(_admLocale, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   setT('adm-banner-date', `📅 ${_dateStr}`);
 
   /* Semaines restantes dans le semestre 2 (fin estimée : 30 juin 2026) */
@@ -24426,7 +25042,7 @@ function renderAdminOverview(){
   const _semRest = Math.max(0, Math.ceil(_msRest / (7 * 24 * 3600 * 1000)));
   const _semEl   = document.getElementById('adm-banner-sem-rest');
   if (_semEl) {
-    _semEl.textContent = _semRest > 0 ? `${_semRest} sem. restantes` : 'Semestre terminé';
+    _semEl.textContent = _semRest > 0 ? `${_semRest} ${t('adm_sem_restantes')}` : t('adm_sem_termine');
     _semEl.style.background = _semRest <= 4 ? 'rgba(220,38,38,0.25)' : 'rgba(255,255,255,0.15)';
   }
 
@@ -24447,7 +25063,7 @@ function renderAdminOverview(){
         icon: '🚨',
         color: '#fca5a5',
         bg:   'rgba(220,38,38,0.2)',
-        text: `${risquesBanner.length} bénéficiaire${risquesBanner.length > 1 ? 's' : ''} en urgence`,
+        text: `${risquesBanner.length} ${t('adm_benef_urgence')}`,
         sub:  risquesBanner.slice(0,2).map(r => r.b.nom).join(', '),
         onclick: "adminShowSection('alertes')"
       });
@@ -24464,7 +25080,7 @@ function renderAdminOverview(){
         icon: '👨‍🏫',
         color: '#fde68a',
         bg:   'rgba(217,119,6,0.2)',
-        text: `${cadresSansActivite.length} cadre${cadresSansActivite.length > 1 ? 's' : ''} sans séance`,
+        text: `${cadresSansActivite.length} ${t('adm_cadre_sans_seance')}`,
         sub:  cadresSansActivite.slice(0,2).map(u => u.name.split(' ')[0]).join(', '),
         onclick: "adminShowSection('cadres')"
       });
@@ -24479,8 +25095,8 @@ function renderAdminOverview(){
         icon: '📋',
         color: '#c4b5fd',
         bg:   'rgba(124,58,237,0.2)',
-        text: `${peiTotalNew} objectif${peiTotalNew > 1 ? 's' : ''} PEI non démarré${peiTotalNew > 1 ? 's' : ''}`,
-        sub:  'Accélérer la mise en œuvre',
+        text: `${peiTotalNew} ${t('adm_pei_non_demarre')}`,
+        sub:  t('adm_accelerer_pei'),
         onclick: "adminShowSection('pei')"
       });
     }
@@ -24492,8 +25108,8 @@ function renderAdminOverview(){
         icon: '📂',
         color: '#fde68a',
         bg:   'rgba(217,119,6,0.2)',
-        text: `${dossIncomp} dossier${dossIncomp > 1 ? 's' : ''} incomplet${dossIncomp > 1 ? 's' : ''}`,
-        sub:  'Mettre à jour les fiches',
+        text: `${dossIncomp} ${t('adm_dossier_incomplet')}`,
+        sub:  t('adm_maj_fiches'),
         onclick: "adminShowSection('benef')"
       });
     }
@@ -24504,7 +25120,7 @@ function renderAdminOverview(){
     if (!top3.length) {
       bannerAct.innerHTML = `<div style="font-size:12px;color:rgba(255,255,255,0.7);padding:5px 12px;
         border-radius:8px;background:rgba(16,185,129,0.25);border:1px solid rgba(16,185,129,0.35)">
-        ✅ Tout est en ordre — Aucune action urgente</div>`;
+        ${t('adm_tout_ok')}</div>`;
       return;
     }
 
@@ -24542,7 +25158,7 @@ function renderAdminOverview(){
   const _sc1 = _santeColor(_presVal, 80, 60);
   setT('sante-ic-presence',  _sc1.ic);
   setT('sante-val-presence', _presVal !== null ? _presVal + '%' : '—');
-  setT('sante-lbl-presence', _sObs > 0 ? `${seancesMois.length} séance${seancesMois.length>1?'s':''} ce mois` : 'Aucune séance saisie');
+  setT('sante-lbl-presence', _sObs > 0 ? `${seancesMois.length} ${t('adm_seances_ce_mois')}` : t('adm_aucune_seance_saisie'));
   const _sc1Card = document.getElementById('sante-card-presence');
   if (_sc1Card) _sc1Card.style.borderColor = _sc1.border;
 
@@ -24551,7 +25167,7 @@ function renderAdminOverview(){
   const _sc2 = _santeColor(_peiPct, 70, 40);
   setT('sante-ic-pei',  _sc2.ic);
   setT('sante-val-pei', _peiPct !== null ? _peiPct + '%' : '—');
-  setT('sante-lbl-pei', d.peiTotal ? `${d.peiDone} / ${d.peiTotal} objectifs` : 'Aucun objectif PEI');
+  setT('sante-lbl-pei', d.peiTotal ? `${d.peiDone} / ${d.peiTotal} ${t('adm_objectifs_pei')}` : t('adm_aucun_objectif_pei'));
   const _sc2Card = document.getElementById('sante-card-pei');
   if (_sc2Card) _sc2Card.style.borderColor = _sc2.border;
 
@@ -24559,7 +25175,7 @@ function renderAdminOverview(){
   const _sc3 = _santeColor(pctD, 95, 80);
   setT('sante-ic-dossiers',  _sc3.ic);
   setT('sante-val-dossiers', pctD + '%');
-  setT('sante-lbl-dossiers', `${d.totalDossiers} / ${d.totalBenef} complets`);
+  setT('sante-lbl-dossiers', `${d.totalDossiers} / ${d.totalBenef} ${t('adm_complets')}`);
   const _sc3Card = document.getElementById('sante-card-dossiers');
   if (_sc3Card) _sc3Card.style.borderColor = _sc3.border;
 
@@ -24603,7 +25219,7 @@ function renderAdminOverview(){
     : { ic:'🔴', border:'#dc2626', color:'#dc2626' };
   setT('sante-ic-risque',  _sc4.ic);
   setT('sante-val-risque', _risqueMoyen);
-  setT('sante-lbl-risque', _risqueMoyen <= 30 ? '🟢 Stable' : _risqueMoyen <= 60 ? '🟡 À surveiller' : '🔴 Urgent');
+  setT('sante-lbl-risque', _risqueMoyen <= 30 ? t('rapp_stable') : _risqueMoyen <= 60 ? t('rapp_surveiller_lb') : t('rapp_urgent'));
   const _sc4Card = document.getElementById('sante-card-risque');
   if (_sc4Card) _sc4Card.style.borderColor = _sc4.border;
 
@@ -24618,7 +25234,7 @@ function renderAdminOverview(){
     const _score = _sc.score;
 
     /* Heure de génération */
-    const _h = _now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const _h = _now.toLocaleTimeString(CURRENT_LANG==='ar'?'ar-MA':'fr-FR', { hour: '2-digit', minute: '2-digit' });
 
     /* ── Action recommandée par indicateur ─────────────── */
     function _action(nom) {
@@ -24669,7 +25285,7 @@ function renderAdminOverview(){
 
     /* ── Projection fin de semestre ────────────────────── */
     const _projTxt = (() => {
-      if (_semRest <= 0) return 'Semestre 2 terminé — préparer le bilan et le rapport institutionnel.';
+      if (_semRest <= 0) return t('adm_proj_fin_sem');
       if (_peiPct !== null && _peiPct < 70) {
         const _ecart     = 70 - _peiPct;
         const _parSem    = (_ecart / _semRest).toFixed(1);
@@ -24690,13 +25306,13 @@ function renderAdminOverview(){
     /* ── Générer le message selon le niveau de score ───── */
     let _msg = '', _ic = '📊', _badge = '', _border = 'var(--primary)', _bg = '';
     const _semTxt = _semRest > 0
-      ? `${_semRest} semaine${_semRest > 1 ? 's' : ''} restante${_semRest > 1 ? 's' : ''}`
-      : 'fin de semestre';
+      ? `${_semRest} ${t('adm_semaines')}`
+      : t('adm_fin_semestre');
 
     if (_score >= 70) {
       /* ── SITUATION FAVORABLE ── */
       _ic     = '✅';
-      _badge  = '🟢 Situation favorable';
+      _badge  = t('adm_badge_favorable');
       _border = '#059669';
       _bg     = 'linear-gradient(135deg,rgba(240,253,244,.9) 0%,var(--card) 55%)';
 
@@ -24717,7 +25333,7 @@ function renderAdminOverview(){
     } else if (_score >= 40) {
       /* ── VIGILANCE ── */
       _ic     = '⚡';
-      _badge  = '🟡 Vigilance requise';
+      _badge  = t('adm_badge_vigilance');
       _border = '#d97706';
       _bg     = 'linear-gradient(135deg,rgba(255,251,235,.9) 0%,var(--card) 55%)';
 
@@ -24738,7 +25354,7 @@ function renderAdminOverview(){
     } else {
       /* ── CRITIQUE ── */
       _ic     = '🚨';
-      _badge  = '🔴 Intervention urgente';
+      _badge  = t('adm_badge_critique');
       _border = '#dc2626';
       _bg     = 'linear-gradient(135deg,rgba(255,245,245,.9) 0%,var(--card) 55%)';
 
@@ -24778,7 +25394,7 @@ function renderAdminOverview(){
     const _projEl = document.getElementById('adm-synthese-proj');
     if (_projEl) _projEl.style.borderColor = _border + '40';
 
-    setT('adm-synthese-date',     `⚙️ Généré le ${_dateStr} à ${_h}`);
+    setT('adm-synthese-date',     `${t('adm_genere_le')} ${_dateStr} ${t('adm_a_heure')} ${_h}`);
     setT('adm-synthese-msg',      _msg);
     setT('adm-synthese-proj-txt', _projTxt);
 
@@ -24797,7 +25413,7 @@ function renderAdminOverview(){
       icon: '👔',
       color: '#7c3aed',
       bg:   '#f5f3ff',
-      texte: `${_rhPending.length} demande${_rhPending.length>1?'s':''} RH en attente d'approbation`,
+      texte: `${_rhPending.length} ${t('adm_rh_attente')}`,
       lien: () => adminShowSection('rh')
     });
   }
@@ -24810,7 +25426,7 @@ function renderAdminOverview(){
       icon: '📬',
       color: '#2563eb',
       bg:   '#eff6ff',
-      texte: `${_recomNonLues.length} recommandation${_recomNonLues.length>1?'s':''} non lue${_recomNonLues.length>1?'s':''}`,
+      texte: `${_recomNonLues.length} ${t('adm_recom_non_lues')}`,
       lien: () => adminShowSection('recommandations')
     });
   }
@@ -24822,7 +25438,7 @@ function renderAdminOverview(){
       icon: '🚨',
       color: '#dc2626',
       bg:   '#fff1f2',
-      texte: `${_alertesDanger.length} alerte${_alertesDanger.length>1?'s':''} urgente${_alertesDanger.length>1?'s':''} non résolue${_alertesDanger.length>1?'s':''}`,
+      texte: `${_alertesDanger.length} ${t('adm_alertes_urgentes')}`,
       lien: () => adminShowSection('alertes')
     });
   }
@@ -24857,10 +25473,10 @@ function renderAdminOverview(){
   const ratio   = d.totalItars ? (d.totalBenef / d.totalItars).toFixed(1) : '—';
   const ratioN  = parseFloat(ratio) || 0;
   const k4Color = ratioN <= 5 ? 'var(--success)' : ratioN <= 8 ? 'var(--warning)' : 'var(--danger)';
-  const k4Badge = ratioN <= 5 ? '🟢 Optimal' : ratioN <= 8 ? '🟡 À surveiller' : '🔴 Surchargé';
+  const k4Badge = ratioN <= 5 ? t('adm_optimal') : ratioN <= 8 ? t('rapp_surveiller_lb') : t('adm_surcharge');
   const k4El    = document.getElementById('adm-k4');
   if (k4El) { k4El.textContent = ratio; k4El.style.color = k4Color; }
-  setT('adm-k4-sub', `${d.totalItars} cadres`);
+  setT('adm-k4-sub', `${d.totalItars} ${t('adm_cadres_lbl')}`);
   const k4BadgeEl = document.getElementById('adm-k4-badge');
   if (k4BadgeEl) {
     k4BadgeEl.textContent = k4Badge;
@@ -24883,12 +25499,12 @@ function renderAdminOverview(){
   if (_kaEl) { _kaEl.textContent = _nbUrgent; _kaEl.style.color = _kaColor; }
   setT('adm-k-risque-eleve-denom', `/ ${d.totalBenef}`);
   setT('adm-k-risque-eleve-sub',
-    _nbUrgent === 0 ? '✅ Tous stables' : `${_nbSurveiller} à surveiller · ${_nbStable} stables`);
+    _nbUrgent === 0 ? t('adm_tous_stables') : `${_nbSurveiller} ${t('rapp_surveiller_lb').replace('🟡 ','')} · ${_nbStable} ${t('rapp_stable').replace('🟢 ','')}`);
   const _kaBadgeEl = document.getElementById('adm-k-risque-eleve-badge');
   if (_kaBadgeEl) {
     const _kaBadgeTxt = _nbUrgent === 0
-      ? '🟢 Aucun cas urgent'
-      : `🔴 ${_pctUrgent}% en zone critique`;
+      ? t('adm_aucun_cas_urgent')
+      : `🔴 ${_pctUrgent}${t('adm_pct_zone_critique')}`;
     _kaBadgeEl.textContent = _kaBadgeTxt;
     _kaBadgeEl.style.background = _kaColor + '20';
     _kaBadgeEl.style.color      = _kaColor;
@@ -24905,11 +25521,11 @@ function renderAdminOverview(){
     : _pctNonDem > 20 ? 'var(--warning)' : 'var(--success)';
   const _kbEl = document.getElementById('adm-k-non-demarres');
   if (_kbEl) { _kbEl.textContent = _pctNonDem; _kbEl.style.color = _kbColor; }
-  setT('adm-k-non-demarres-sub', `${_peiNonDem} obj. en attente`);
+  setT('adm-k-non-demarres-sub', `${_peiNonDem} ${t('adm_obj_en_attente')}`);
   const _kbBadgeEl = document.getElementById('adm-k-non-demarres-badge');
   if (_kbBadgeEl) {
-    const _kbBadgeTxt = _pctNonDem > 40 ? '🔴 Volume élevé'
-      : _pctNonDem > 20 ? '🟡 À planifier' : '🟢 Sous contrôle';
+    const _kbBadgeTxt = _pctNonDem > 40 ? t('adm_vol_eleve')
+      : _pctNonDem > 20 ? t('adm_a_planifier') : t('adm_sous_controle');
     _kbBadgeEl.textContent = _kbBadgeTxt;
     _kbBadgeEl.style.background = _kbColor + '20';
     _kbBadgeEl.style.color      = _kbColor;
@@ -24931,7 +25547,7 @@ function renderAdminOverview(){
   const cEl = document.getElementById('adm-k-cadres-actifs');
   if (cEl) { cEl.textContent = nbActifs; cEl.style.color = cColor; }
   setT('adm-k-cadres-actifs-denom', `/ ${nbTotal}`);
-  setT('adm-k-cadres-actifs-sub', `${pctCadres}% ont saisi ce mois`);
+  setT('adm-k-cadres-actifs-sub', `${pctCadres}${t('adm_pct_saisi_mois')}`);
   const cBar = document.getElementById('adm-k-cadres-actifs-bar');
   if (cBar) { cBar.style.width = pctCadres + '%'; cBar.style.background = cColor; }
   const cCard = document.getElementById('adm-card-cadres-actifs');
@@ -24942,7 +25558,7 @@ function renderAdminOverview(){
   const aColor = alertesOuvertes === 0 ? 'var(--success)' : alertesOuvertes <= 3 ? 'var(--warning)' : 'var(--danger)';
   const aEl = document.getElementById('adm-k-alertes-ouvertes');
   if (aEl) { aEl.textContent = alertesOuvertes; aEl.style.color = aColor; }
-  setT('adm-k-alertes-ouvertes-sub', alertesOuvertes === 0 ? '✅ Tout résolu' : `${alertesOuvertes} non résolu${alertesOuvertes > 1 ? 'es' : 'e'}`);
+  setT('adm-k-alertes-ouvertes-sub', alertesOuvertes === 0 ? t('adm_tout_resolu') : `${alertesOuvertes} ${t('adm_non_resolu')}`);
   const aBar = document.getElementById('adm-k-alertes-ouvertes-bar');
   if (aBar) { aBar.style.width = Math.min(100, alertesOuvertes * 20) + '%'; aBar.style.background = aColor; }
   const aCard = document.getElementById('adm-card-alertes-ouvertes');
@@ -24963,13 +25579,13 @@ function renderAdminOverview(){
   setT('adm-k-sans-seance-denom', `/ ${d.totalBenef}`);
   setT('adm-k-sans-seance-sub',
     _nbSansSeance === 0
-      ? '✅ Tous vus ce mois'
-      : `${_pctSansSeance}% non vus ce mois`);
+      ? t('adm_tous_vus')
+      : `${_pctSansSeance}${t('adm_pct_non_vus')}`);
   const _ssBadgeEl = document.getElementById('adm-k-sans-seance-badge');
   if (_ssBadgeEl) {
-    const _ssBadgeTxt = _nbSansSeance === 0 ? '🟢 Présence complète'
-      : _nbSansSeance <= 5              ? `🟡 ${_nbSansSeance} absent${_nbSansSeance>1?'s':''}`
-      : `🔴 ${_nbSansSeance} non suivis`;
+    const _ssBadgeTxt = _nbSansSeance === 0 ? t('adm_presence_complete')
+      : _nbSansSeance <= 5              ? `🟡 ${_nbSansSeance} ${t('adm_absent_lbl')}`
+      : `🔴 ${_nbSansSeance} ${t('adm_non_suivis')}`;
     _ssBadgeEl.textContent        = _ssBadgeTxt;
     _ssBadgeEl.style.background   = _ssColor + '20';
     _ssBadgeEl.style.color        = _ssColor;
@@ -24984,10 +25600,10 @@ function renderAdminOverview(){
   const avgColor = avgObj >= 8 ? 'var(--success)' : avgObj >= 6 ? 'var(--warning)' : 'var(--danger)';
   const avgEl = document.getElementById('adm-avg-obj');
   if (avgEl) { avgEl.textContent = avgObj; avgEl.style.color = avgColor; }
-  setT('adm-avg-obj-sub', `sur ${peiB.length} bénéf. PEI`);
+  setT('adm-avg-obj-sub', `/ ${peiB.length} PEI`);
   const avgBadgeEl = document.getElementById('adm-avg-obj-badge');
   if (avgBadgeEl) {
-    const avgBadgeTxt = avgObj >= 8 ? '🟢 Suffisant' : avgObj >= 6 ? '🟡 Insuffisant' : '🔴 Critique (<6)';
+    const avgBadgeTxt = avgObj >= 8 ? t('adm_suffisant') : avgObj >= 6 ? t('adm_insuffisant') : `🔴 ${t('sc_critique')} (<6)`;
     avgBadgeEl.textContent = avgBadgeTxt;
     avgBadgeEl.style.background = avgColor + '20';
     avgBadgeEl.style.color      = avgColor;
@@ -25038,7 +25654,7 @@ function renderAdminOverview(){
       });
       const risqueMoyClasse = risquesClasse.length ? Math.round(risquesClasse.reduce((s,v)=>s+v,0)/risquesClasse.length) : 0;
       const risqueColor = risqueMoyClasse<=30?'#059669':risqueMoyClasse<=60?'#d97706':'#dc2626';
-      const risqueLbl   = risqueMoyClasse<=30?'Stable':risqueMoyClasse<=60?'Surveiller':'Urgent';
+      const risqueLbl   = risqueMoyClasse<=30?t('rapp_stable').replace('🟢 ',''):risqueMoyClasse<=60?t('rapp_surveiller_lb').replace('🟡 ',''):t('rapp_urgent').replace('🔴 ','');
 
       return `<tr style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''" onclick="adminShowSection('classes')">
         <td style="padding:9px 12px">
@@ -25089,7 +25705,7 @@ function renderAdminOverview(){
     });
     const _top3 = _sorted.slice(0, 3);
     if(!_top3.length){
-      alContainer.innerHTML=`<div style="padding:14px;text-align:center;color:var(--muted);font-size:13px">✅ Aucune alerte active</div>`;
+      alContainer.innerHTML=`<div style="padding:14px;text-align:center;color:var(--muted);font-size:13px">${t('adm_aucune_alerte')}</div>`;
     } else {
       const cc = {danger:'var(--danger)',warn:'var(--warning)',ok:'var(--success)',info:'var(--sky)'};
       const ic = {danger:'🚨',warn:'⚠️',ok:'✅',info:'ℹ️'};
@@ -25104,7 +25720,7 @@ function renderAdminOverview(){
     }
     /* Badge "Voir toutes" avec le total si > 3 */
     if(autoAl.length > 3){
-      alContainer.innerHTML += `<div style="padding:6px 0 2px;font-size:10px;color:var(--muted);text-align:center">+ ${autoAl.length - 3} autre${autoAl.length-3>1?'s':''} — cliquer "Voir toutes →"</div>`;
+      alContainer.innerHTML += `<div style="padding:6px 0 2px;font-size:10px;color:var(--muted);text-align:center">+ ${autoAl.length - 3} — ${t('adm_voir_toutes')}</div>`;
     }
   }
 
@@ -25163,10 +25779,10 @@ function renderAdminOverview(){
       /* Badge statut */
       let badgeBg, badgeColor, badgeTxt;
       if (isNull) {
-        badgeBg = 'var(--bg)'; badgeColor = 'var(--muted)'; badgeTxt = '⬜ Aucune donnée';
+        badgeBg = 'var(--bg)'; badgeColor = 'var(--muted)'; badgeTxt = t('adm_proj_aucune_donnee');
       } else if (proj >= tgt) {
         badgeBg = '#f0fdf4'; badgeColor = '#059669';
-        badgeTxt = `✅ Objectif ${tgt}${unit} atteignable`;
+        badgeTxt = `${t('adm_proj_atteignable')} (${tgt}${unit})`;
       } else {
         const _gap     = tgt - proj;
         const _gapPct  = Math.round(_gap / tgt * 100);
@@ -25176,11 +25792,11 @@ function renderAdminOverview(){
         if (_gapPct <= 20) {
           badgeBg = '#fffbeb'; badgeColor = '#d97706';
           badgeTxt = unit === '/100'
-            ? `⚡ Effort : +${_effortSem} pts/sem.`
-            : `⚡ Effort requis : +${_effortSem}${unit}/sem.`;
+            ? `${t('adm_proj_effort_pts')} +${_effortSem} ${t('adm_proj_pts_sem')}`
+            : `${t('adm_proj_effort_requis')} +${_effortSem}${unit}${t('adm_proj_par_sem')}`;
         } else {
           badgeBg = '#fff5f5'; badgeColor = '#dc2626';
-          badgeTxt = `🔴 Objectif compromis (${proj}${unit} vs ${tgt}${unit})`;
+          badgeTxt = `${t('adm_proj_compromis')} (${proj}${unit} vs ${tgt}${unit})`;
         }
       }
 
@@ -25198,15 +25814,15 @@ function renderAdminOverview(){
           <!-- Valeurs actuel → projeté -->
           <div style="display:flex;align-items:flex-end;gap:6px">
             <div>
-              <div style="font-size:9px;color:var(--muted);margin-bottom:1px">Actuel</div>
+              <div style="font-size:9px;color:var(--muted);margin-bottom:1px">${t('adm_proj_actuel')}</div>
               <div style="font-family:Sora,sans-serif;font-size:26px;font-weight:900;color:${color};line-height:1">${isNull ? '—' : cur}</div>
               <div style="font-size:11px;color:var(--muted);font-weight:700;margin-top:1px">${unit}</div>
             </div>
             <div style="font-size:16px;color:var(--muted);margin-bottom:10px;flex:1;text-align:center">→</div>
             <div style="text-align:right">
-              <div style="font-size:9px;color:var(--muted);margin-bottom:1px">Projeté juin</div>
+              <div style="font-size:9px;color:var(--muted);margin-bottom:1px">${t('adm_proj_projete_juin')}</div>
               <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;color:${projColor};line-height:1">${isNull ? '—' : proj}</div>
-              <div style="font-size:10px;font-weight:700;color:var(--muted);margin-top:1px">cible ${tgt}${unit}</div>
+              <div style="font-size:10px;font-weight:700;color:var(--muted);margin-top:1px">${t('adm_proj_cible')} ${tgt}${unit}</div>
             </div>
           </div>
 
@@ -25237,34 +25853,34 @@ function renderAdminOverview(){
     if (_grid) {
       _grid.innerHTML =
         _buildCard({
-          label    : 'Réalisation PEI',
+          label    : t('rapp_kpi_pei_s'),
           icon     : '🎯',
           current  : _peiPct,
           projected: _projPEI,
           target   : 70,
           unit     : '%',
           color    : '#7c3aed',
-          note     : 'Projection linéaire sur les semaines écoulées'
+          note     : t('adm_proj_lin_note')
         }) +
         _buildCard({
-          label    : 'Taux de présence',
+          label    : t('rapp_kpi_presence_s'),
           icon     : '📅',
           current  : _presVal,
           projected: _projPres,
           target   : 80,
           unit     : '%',
           color    : '#2563eb',
-          note     : 'Taux mensuel — tendance maintenue'
+          note     : t('adm_proj_pres_note')
         }) +
         _buildCard({
-          label    : 'Score organisationnel',
+          label    : t('rapp_kpi_score'),
           icon     : '🏆',
           current  : _orgSc.score,
           projected: _projScore,
           target   : 70,
           unit     : '/100',
           color    : '#0d9488',
-          note     : 'Calculé avec les composantes projetées'
+          note     : t('adm_proj_score_note')
         });
     }
 
@@ -25274,13 +25890,13 @@ function renderAdminOverview(){
       const _allOk    = _projPEI !== null && _projPEI >= 70 && (_projPres === null || _projPres >= 80) && _projScore >= 70;
       const _anyCrit  = (_projPEI !== null && _projPEI < 60) || (_projPres !== null && _projPres < 60) || _projScore < 45;
       if (_allOk) {
-        _statEl.textContent = '🟢 Trajectoire favorable';
+        _statEl.textContent = t('adm_traj_favorable');
         _statEl.style.background = '#f0fdf4'; _statEl.style.color = '#059669'; _statEl.style.borderColor = '#86efac';
       } else if (_anyCrit) {
-        _statEl.textContent = '🔴 Trajectoire à corriger';
+        _statEl.textContent = t('adm_traj_corriger');
         _statEl.style.background = '#fff5f5'; _statEl.style.color = '#dc2626'; _statEl.style.borderColor = '#fca5a5';
       } else {
-        _statEl.textContent = '🟡 Trajectoire à surveiller';
+        _statEl.textContent = t('adm_traj_surveiller');
         _statEl.style.background = '#fffbeb'; _statEl.style.color = '#d97706'; _statEl.style.borderColor = '#fcd34d';
       }
     }
@@ -25290,10 +25906,10 @@ function renderAdminOverview(){
     const _projTxtEl = document.getElementById('adm-synthese-proj-txt');
     if (_projTxtEl && _projPEI !== null) {
       if (_projPEI >= 70) {
-        _projTxtEl.textContent = `✅ Trajectoire PEI favorable : projection à ${_projPEI}% en juin (cible 70%). ${_semRest > 0 ? 'Maintenir le rythme.' : ''}`;
+        _projTxtEl.textContent = `${t('adm_traj_favorable')} PEI → ${_projPEI}% (${t('adm_proj_cible')} 70%). ${_semRest > 0 ? t('adm_proj_lin_note') : ''}`;
       } else {
         const _effortPEI = _semRest > 0 ? +((70 - _peiPct) / _semRest).toFixed(1) : '—';
-        _projTxtEl.textContent = `Pour atteindre l'objectif PEI (70%), un effort de +${_effortPEI}%/semaine est nécessaire sur les ${_semRest} semaines restantes. Projection actuelle : ${_projPEI}%.`;
+        _projTxtEl.textContent = `${t('adm_proj_effort_requis')} +${_effortPEI}%${t('adm_proj_par_sem')} (${_semRest} ${t('adm_semaines')}) → PEI ${_projPEI}%`;
       }
     }
 
@@ -25350,16 +25966,16 @@ function renderAdminOverview(){
     container.innerHTML = _classRisques.map(c => {
       /* Couleur selon niveau */
       const _col  = c.avgRisk > 60 ? '#dc2626' : c.avgRisk > 30 ? '#d97706' : '#059669';
-      const _lbl  = c.avgRisk > 60 ? 'Urgent'   : c.avgRisk > 30 ? 'Surveiller' : 'Stable';
+      const _lbl  = c.avgRisk > 60 ? t('rapp_urgent').replace('🔴 ','') : c.avgRisk > 30 ? t('rapp_surveiller_lb').replace('🟡 ','') : t('rapp_stable').replace('🟢 ','');
       const _bg   = c.avgRisk > 60 ? '#fff5f5'  : c.avgRisk > 30 ? '#fffbeb' : '#f0fdf4';
       /* Largeur barre proportionnelle au max */
       const _w    = Math.round(c.avgRisk / _maxRisk * 100);
       /* Sous-détail : nb urgents / nb surveiller */
       const _detail = c.nbUrg > 0
-        ? `${c.nbUrg} urgent${c.nbUrg>1?'s':''} · ${c.nbSurv} à surveiller`
+        ? `${c.nbUrg} ${t('rapp_urgent').replace('🔴 ','')} · ${c.nbSurv} ${t('rapp_surveiller_lb').replace('🟡 ','')}`
         : c.nbSurv > 0
-        ? `${c.nbSurv} à surveiller`
-        : '✅ Tous stables';
+        ? `${c.nbSurv} ${t('rapp_surveiller_lb').replace('🟡 ','')}`
+        : t('adm_tous_stables');
 
       return `
         <div style="cursor:pointer" onclick="adminShowSection('heatmap')"
@@ -25387,7 +26003,7 @@ function renderAdminOverview(){
     }).join('<div style="height:1px;background:var(--border);margin:2px 0"></div>');
 
     if (!_classRisques.length) {
-      container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Aucune classe configurée</div>`;
+      container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">${t('adm_aucune_alerte')}</div>`;
     }
   })(); /* fin IIFE risque par classe */
 
@@ -25755,10 +26371,10 @@ function renderOrgScore(d, presences) {
     : '#dc2626';
 
   /* Mention qualitative */
-  const mention = score >= 85 ? '🏆 Excellent'
-    : score >= 70 ? '🥈 Bien'
-    : score >= 40 ? '🟡 À améliorer'
-    : '🔴 Critique';
+  const mention = score >= 85 ? t('adm_sc_excellent')
+    : score >= 70 ? t('adm_sc_bien')
+    : score >= 40 ? t('adm_sc_ameliorer')
+    : t('adm_sc_critique');
 
   /* ── Mise à jour DOM — jauge mid-page ───────────── */
   const valEl = document.getElementById('adm-score-val');
@@ -25809,8 +26425,10 @@ function renderOrgScore(d, presences) {
   const _nbSeancesS2   = _presS2ref.length;
   /* Dates des séances : regrouper par mois pour affichage lisible */
   const _moisSaisis    = [...new Set(_presS2ref.map(p => p.date ? p.date.substring(0,7) : ''))].filter(Boolean);
-  const _moisLabels    = { '2026-02':'Fév','2026-03':'Mar','2026-04':'Avr','2026-05':'Mai','2026-06':'Jun' };
-  const _moisStr       = _moisSaisis.map(m => _moisLabels[m] || m).join(', ');
+  const _moisStr       = _moisSaisis.map(m => {
+    const dt = new Date(m + '-01');
+    return dt.toLocaleDateString(CURRENT_LANG==='ar'?'ar-MA':'fr-FR', { month: 'short' });
+  }).join(', ');
 
   const breakdown = document.getElementById('adm-score-breakdown');
   if (breakdown) {
@@ -25818,40 +26436,40 @@ function renderOrgScore(d, presences) {
 
     /* PEI : montrer la décomposition done + en-cours */
     const _peiSub = _peiDonnees
-      ? `✅ ${_peiDoneVal} terminés · 🔄 ${_peiProgVal} en cours (×50%)`
+      ? `✅ ${_peiDoneVal} ${t('adm_comp_termines')} · 🔄 ${_peiProgVal} ${t('adm_comp_en_cours')} (×50%)`
       : null;
 
     /* Présence : indiquer la source utilisée */
     const _presSub = _presenceDonnees
       ? (_presSource === 'seances'
-          ? `📋 ${_presNbSeances} séance${_presNbSeances>1?'s':''} S2`
-          : `📅 Feuilles de ghiyab S2 (fallback)`)
+          ? `📋 ${_presNbSeances} ${t('adm_comp_seances_s2')}`
+          : `📅 ${t('adm_comp_ghiyab')}`)
       : null;
 
     /* Indépendance : ABLLS ou niveau selon disponibilité */
     const _indSub = _ablDonnees
-      ? `🧩 ABLLS : ${_moustaqilItems||0} items مستقل / ${_totalItems||0} total`
-      : `⚠️ ABLLS non saisi — niveau moyen utilisé (${_tauxNiveau}%)`;
+      ? `🧩 ABLLS : ${_moustaqilItems||0} / ${_totalItems||0}`
+      : `${t('adm_comp_ablls_nodata')} (${_tauxNiveau}%)`;
 
     const composantes = [
       {
-        label : 'Réalisation PEI',
+        label : t('adm_comp_pei'),
         val   : tauxRealisation,
         poids : '35%',
         color : '#7c3aed',
-        note  : !_peiDonnees ? '⚠️ Valeur neutre — aucun objectif PEI saisi' : null,
+        note  : !_peiDonnees ? t('adm_comp_pei_nodata') : null,
         sub   : _peiSub
       },
       {
-        label : 'Taux de présence',
+        label : t('adm_comp_pres'),
         val   : tauxPresence,
         poids : '25%',
         color : '#2563eb',
-        note  : !_presenceDonnees ? '⚠️ Aucune donnée S2 — valeur neutre utilisée' : null,
+        note  : !_presenceDonnees ? t('adm_comp_pres_nodata') : null,
         sub   : _presSub
       },
       {
-        label : 'Indépendance ABLLS',
+        label : t('adm_comp_indep'),
         val   : tauxIndependance,
         poids : '30%',
         color : '#0d9488',
@@ -25859,7 +26477,7 @@ function renderOrgScore(d, presences) {
         sub   : _indSub
       },
       {
-        label : 'Dossiers ✓',
+        label : t('adm_comp_doss'),
         val   : tauxDossiers,
         poids : '10%',
         color : '#059669',
@@ -25891,17 +26509,17 @@ function renderOrgScore(d, presences) {
       breakdown.innerHTML += `
         <div style="margin-top:8px;padding:10px 12px;background:#fef3c7;border-radius:10px;border:1px solid #fde68a">
           <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:6px">
-            📋 ${_nbSeancesS2} séance${_nbSeancesS2>1?'s':''} de présence trouvée${_nbSeancesS2>1?'s':''} en S2
+            📋 ${_nbSeancesS2} ${t('adm_comp_s2_found')}
           </div>
           <div style="font-size:10px;color:#78350f;margin-bottom:8px;line-height:1.5">
-            Ces séances alimentent le taux de présence de <strong>${tauxPresence}%</strong>.
-            Si ces données sont incorrectes ou accidentelles, vous pouvez les supprimer.
+            ${t('adm_comp_alimentent')} <strong>${tauxPresence}%</strong>.
+            ${t('adm_comp_incorrectes')}
           </div>
           <button onclick="_admVoirSeancesPresence()" class="btn" style="font-size:11px;padding:5px 12px;background:#d97706;color:#fff;border:none;border-radius:7px;cursor:pointer;margin-right:6px">
-            👁️ Voir les séances
+            ${t('adm_comp_voir_seances')}
           </button>
           <button onclick="_admSupprimerSeancesPresence()" class="btn" style="font-size:11px;padding:5px 12px;background:#dc2626;color:#fff;border:none;border-radius:7px;cursor:pointer">
-            🗑️ Supprimer toutes les séances S2
+            ${t('adm_comp_suppr_seances')}
           </button>
         </div>`;
     }
@@ -25909,10 +26527,10 @@ function renderOrgScore(d, presences) {
 
   /* ── 2 composantes les plus faibles → recommandations stratégiques ── */
   const _composantesArr = [
-    { label: 'Réalisation PEI',  val: tauxRealisation,  action: 'Revoir le rythme des séances PEI et augmenter les objectifs validés par bénéficiaire.' },
-    { label: 'Taux de présence', val: tauxPresence,      action: 'Contacter les familles absentes et renforcer le suivi mensuel des présences.' },
-    { label: 'Indépendance',     val: tauxIndependance,  action: 'Intensifier les activités d\'autonomie et réévaluer les niveaux ABLLS stagnants.' },
-    { label: 'Dossiers',         val: tauxDossiers,      action: 'Compléter les dossiers incomplets en priorité — risque de non-conformité.' }
+    { label: t('adm_comp_pei'),   val: tauxRealisation,  action: t('adm_comp_action_pei') },
+    { label: t('adm_comp_pres'),  val: tauxPresence,     action: t('adm_comp_action_pres') },
+    { label: t('adm_comp_indep'), val: tauxIndependance, action: t('adm_comp_action_indep') },
+    { label: t('adm_comp_doss'),  val: tauxDossiers,     action: t('adm_comp_action_doss') }
   ];
   /* Trier par valeur croissante → prendre les 2 plus faibles */
   const _trieFaibles = [..._composantesArr].sort((a,b) => a.val - b.val).slice(0, 2);
@@ -25987,7 +26605,7 @@ function renderAdminTendances(d, presences) {
     const m  = String(dt.getMonth() + 1).padStart(2, '0');
     moisKeys.push(`${y}-${m}`);
     /* Label court : Jan 25, Fév 25, ... */
-    moisLabels.push(dt.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }));
+    moisLabels.push(dt.toLocaleDateString(CURRENT_LANG==='ar'?'ar-MA':'fr-FR', { month: 'short', year: '2-digit' }));
   }
 
   /* ── Indicateurs fixes (PEI + indépendance + dossiers) — liste dédupliquée ── */
@@ -26055,7 +26673,7 @@ function renderAdminTendances(d, presences) {
       datasets: [
         {
           ...baseDataset,
-          label:            'Score organisationnel',
+          label:            t('adm_evol_score'),
           data:             dataScore,
           borderColor:      '#0d9488',
           backgroundColor:  'rgba(13,148,136,.12)',
@@ -26065,7 +26683,7 @@ function renderAdminTendances(d, presences) {
         },
         {
           ...baseDataset,
-          label:            'Taux de présence',
+          label:            t('rapp_kpi_presence_s'),
           data:             dataPresence,
           borderColor:      '#2563eb',
           backgroundColor:  'rgba(37,99,235,.08)',
@@ -26075,7 +26693,7 @@ function renderAdminTendances(d, presences) {
         },
         {
           ...baseDataset,
-          label:            'Réalisation PEI',
+          label:            t('rapp_kpi_pei_s'),
           data:             dataPEI,
           borderColor:      '#7c3aed',
           backgroundColor:  'rgba(124,58,237,.07)',
@@ -27642,7 +28260,7 @@ function renderAlertesDirecteur() {
   setBadge('adm-dir-cadres-badge', cadresInactifs.length);
   if (listCadres) {
     if (!cadresInactifs.length) {
-      listCadres.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Tous les cadres sont actifs</div>`;
+      listCadres.innerHTML = `<div style="color:var(--success);font-weight:600">${t('alr_cadres_ok')}</div>`;
     } else {
       listCadres.innerHTML = cadresInactifs.slice(0, 5).map(u => `
         <div onclick="adminShowSection('cadres')" style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='transparent'">
@@ -27653,12 +28271,12 @@ function renderAlertesDirecteur() {
           </div>
           <div style="flex:1;min-width:0">
             <div style="font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name.split(' ')[0]}</div>
-            <div style="font-size:10px;color:var(--muted)">${BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId).length} bénéf.</div>
+            <div style="font-size:10px;color:var(--muted)">${BENEFICIAIRES.filter(b=>b.teacherId===u.teacherId).length} ${t('alr_benef_short')}</div>
           </div>
-          <span style="font-size:10px;color:#d97706;font-weight:700">Aucune séance →</span>
+          <span style="font-size:10px;color:#d97706;font-weight:700">${t('alr_aucune_seance')}</span>
         </div>`
       ).join('') +
-      (cadresInactifs.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${cadresInactifs.length - 5} autres</div>` : '');
+      (cadresInactifs.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${cadresInactifs.length - 5} ${t('alr_n_autres')}</div>` : '');
     }
   }
 
@@ -27686,7 +28304,7 @@ function renderAlertesDirecteur() {
   setBadge('adm-dir-abandons-badge', abandons.length);
   if (listAbandons) {
     if (!abandons.length) {
-      listAbandons.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Aucun abandon détecté</div>`;
+      listAbandons.innerHTML = `<div style="color:var(--success);font-weight:600">${t('alr_abandons_ok')}</div>`;
     } else {
       listAbandons.innerHTML = abandons.slice(0, 5).map(({ b, jours, dernier }) => {
         const idx = BENEFICIAIRES.findIndex(x => x.teacherId === b.teacherId && _normNom(x.nom) === _normNom(b.nom));
@@ -27695,12 +28313,12 @@ function renderAlertesDirecteur() {
           <span style="font-size:18px">⚠️</span>
           <div style="flex:1;min-width:0">
             <div style="font-weight:700;font-size:12px;direction:rtl">${b.nom}</div>
-            <div style="font-size:10px;color:var(--muted)">Dernière séance : ${dernier}</div>
+            <div style="font-size:10px;color:var(--muted)">${t('alr_derniere_seance')} ${dernier}</div>
           </div>
           <span style="font-size:11px;font-weight:800;color:#dc2626;white-space:nowrap">${jours}j →</span>
         </div>`;
       }).join('') +
-      (abandons.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${abandons.length - 5} autres</div>` : '');
+      (abandons.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${abandons.length - 5} ${t('alr_n_autres')}</div>` : '');
     }
   }
 
@@ -27718,7 +28336,7 @@ function renderAlertesDirecteur() {
   setBadge('adm-dir-pei-badge', peiNonDemarres.length);
   if (listPEI) {
     if (!peiNonDemarres.length) {
-      listPEI.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Tous les PEI sont actifs</div>`;
+      listPEI.innerHTML = `<div style="color:var(--success);font-weight:600">${t('alr_pei_ok')}</div>`;
     } else {
       listPEI.innerHTML = peiNonDemarres.slice(0, 5).map(b => {
         const total = (b.pei_domaines || []).reduce((s, d) => s + (d.objectifs || []).length, 0);
@@ -27729,12 +28347,12 @@ function renderAlertesDirecteur() {
             <span style="font-size:18px">📋</span>
             <div style="flex:1;min-width:0">
               <div style="font-weight:700;font-size:12px;direction:rtl">${b.nom}</div>
-              <div style="font-size:10px;color:var(--muted)">${total} obj. définis — 0 commencé · ${cadre ? cadre.name.split(' ')[0] : '—'}</div>
+              <div style="font-size:10px;color:var(--muted)">${total} ${t('alr_obj_definis')} · ${cadre ? cadre.name.split(' ')[0] : '—'}</div>
             </div>
-            <span style="font-size:10px;font-weight:800;color:#7c3aed">À démarrer →</span>
+            <span style="font-size:10px;font-weight:800;color:#7c3aed">${t('alr_demarrer')}</span>
           </div>`;
       }).join('') +
-      (peiNonDemarres.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${peiNonDemarres.length - 5} autres</div>` : '');
+      (peiNonDemarres.length > 5 ? `<div style="font-size:10px;color:var(--muted);padding-top:6px">+ ${peiNonDemarres.length - 5} ${t('alr_n_autres')}</div>` : '');
     }
   }
 }
@@ -27929,13 +28547,13 @@ function renderAdminRisques() {
               style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1.5px solid #059669;
                      background:transparent;color:#059669;cursor:pointer;white-space:nowrap"
               onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='transparent'">
-              ✓ Marquer traité
+              ${t('alr_marquer_traite')}
             </button>`
           : `<button onclick="marqueNonTrait('${b.nom.replace(/'/g,"\\'")}'); event.stopPropagation();"
               style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;border:1.5px solid #d97706;
                      background:transparent;color:#d97706;cursor:pointer;white-space:nowrap"
               onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'">
-              ↩ Réouvrir
+              ${t('alr_rouvrir')}
             </button>`
         }
       </div>
@@ -27955,7 +28573,7 @@ function marqueTrait(nom) {
   }
   /* Recalcul du compteur dans le badge sidebar */
   renderAdminRisques();
-  showToast('✅ Marqué comme traité — ' + nom, 'success');
+  showToast('✅ ' + t('alr_marquer_traite') + ' — ' + nom, 'success');
 }
 
 /**
@@ -27965,7 +28583,7 @@ function marqueNonTrait(nom) {
   const traites = (loadData('ea_risques_traites') || []).filter(n => n !== nom);
   saveData('ea_risques_traites', traites);
   renderAdminRisques();
-  showToast('↩ Alerte réouverte — ' + nom, 'info');
+  showToast('↩ ' + t('alr_rouvrir') + ' — ' + nom, 'info');
 }
 
 function renderAdminAlertes(){
@@ -28106,7 +28724,7 @@ function initSimulation() {
 
   /* Afficher le score actuel (colonne gauche) */
   const scoreColor = _simScoreActuel >= 70 ? '#059669' : _simScoreActuel >= 40 ? '#d97706' : '#dc2626';
-  const scoreBadge = _simScoreActuel >= 70 ? '✅ Excellent' : _simScoreActuel >= 40 ? '⚡ Bien' : '⚠️ À améliorer';
+  const scoreBadge = _simScoreActuel >= 70 ? t('sim_badge_excellent') : _simScoreActuel >= 40 ? t('sim_badge_bien') : t('sim_badge_ameliorer');
 
   const valEl = document.getElementById('sim-score-actuel-val');
   if (valEl) valEl.style.color = scoreColor;
@@ -28123,10 +28741,10 @@ function initSimulation() {
   /* Poids M4.0 : 35/25/30/10 — alignés sur calcOrgScore() */
   if (bdA) {
     bdA.innerHTML =
-      _simBar('🎯 PEI',       _simBaseValues.tauxPEI,      _simBaseValues.tauxPEI,      '#7c3aed', 0.35) +
-      _simBar('👥 Présence',  _simBaseValues.tauxPresence, _simBaseValues.tauxPresence, '#2563eb', 0.25) +
-      _simBar('🌱 Autonomie', _simBaseValues.tauxIndep,    _simBaseValues.tauxIndep,    '#059669', 0.30) +
-      _simBar('📁 Dossiers',  _simBaseValues.tauxDossiers, _simBaseValues.tauxDossiers, '#d97706', 0.10);
+      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      _simBaseValues.tauxPEI,      '#7c3aed', 0.35) +
+      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, _simBaseValues.tauxPresence, '#2563eb', 0.25) +
+      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    _simBaseValues.tauxIndep,    '#059669', 0.30) +
+      _simBar(t('sim_bar_doss'),  _simBaseValues.tauxDossiers, _simBaseValues.tauxDossiers, '#d97706', 0.10);
   }
 
   /* Premier rendu du score simulé à 0 delta */
@@ -28163,7 +28781,7 @@ function simUpdate() {
 
   /* Couleur du score simulé */
   const simColor = scoreSimule >= 70 ? '#059669' : scoreSimule >= 40 ? '#d97706' : '#dc2626';
-  const simBadge = scoreSimule >= 70 ? '✅ Excellent' : scoreSimule >= 40 ? '⚡ Bien' : '⚠️ À améliorer';
+  const simBadge = scoreSimule >= 70 ? t('sim_badge_excellent') : scoreSimule >= 40 ? t('sim_badge_bien') : t('sim_badge_ameliorer');
 
   /* Mettre à jour la jauge simulée */
   _simGaugeS = _simDrawGauge('sim-gauge-simule', scoreSimule, simColor, _simGaugeS);
@@ -28182,10 +28800,10 @@ function simUpdate() {
   if (dEl)  { dEl.textContent  = sign + delta + ' pts'; dEl.style.color = deltaCol; }
   if (dSubEl) {
     dSubEl.textContent = delta === 0
-      ? 'Aucun changement'
+      ? t('sim_aucun_chg')
       : delta > 0
-        ? `Progression de ${_simScoreActuel} → ${scoreSimule}`
-        : `Régression de ${_simScoreActuel} → ${scoreSimule}`;
+        ? `${t('sim_progression_de')} ${_simScoreActuel} → ${scoreSimule}`
+        : `${t('sim_regression_de')} ${_simScoreActuel} → ${scoreSimule}`;
     dSubEl.style.color = deltaCol;
   }
 
@@ -28193,10 +28811,10 @@ function simUpdate() {
   const bdS = document.getElementById('sim-breakdown-simule');
   if (bdS) {
     bdS.innerHTML =
-      _simBar('🎯 PEI',       _simBaseValues.tauxPEI,      simPEI,    '#7c3aed', 0.35) +
-      _simBar('👥 Présence',  _simBaseValues.tauxPresence, simPres,   '#2563eb', 0.25) +
-      _simBar('🌱 Autonomie', _simBaseValues.tauxIndep,    simIndep,  '#059669', 0.30) +
-      _simBar('📁 Dossiers',  simDoss,                     simDoss,   '#d97706', 0.10);
+      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      simPEI,    '#7c3aed', 0.35) +
+      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, simPres,   '#2563eb', 0.25) +
+      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    simIndep,  '#059669', 0.30) +
+      _simBar(t('sim_bar_doss'),  simDoss,                     simDoss,   '#d97706', 0.10);
   }
 
   /* ── Zone d'interprétation contextuelle ── */
@@ -28214,16 +28832,16 @@ function _simRenderInterpretation(delta, deltaPEI, deltaPres, deltaIndep, scoreS
   if (!box) return;
 
   if (delta === 0) {
-    box.innerHTML = `<span style="color:var(--muted)">Ajustez les leviers pour voir les recommandations apparaître ici.</span>`;
+    box.innerHTML = `<span style="color:var(--muted)">${t('sim_interp_zero')}</span>`;
     return;
   }
 
   /* Trouver le levier le plus impactant */
   /* Poids M4.0 : 35/25/30/10 — alignés sur calcOrgScore() */
   const impacts = [
-    { label: 'la réalisation des objectifs PEI', delta: deltaPEI,   poids: 0.35, color: '#7c3aed', icon: '🎯' },
-    { label: 'le taux de présence',              delta: deltaPres,  poids: 0.25, color: '#2563eb', icon: '👥' },
-    { label: "le niveau d'autonomie (ABLLS)",    delta: deltaIndep, poids: 0.30, color: '#059669', icon: '🌱' }
+    { label: t('sim_impact_pei_lbl'),   delta: deltaPEI,   poids: 0.35, color: '#7c3aed', icon: '🎯' },
+    { label: t('sim_impact_pres_lbl'),  delta: deltaPres,  poids: 0.25, color: '#2563eb', icon: '👥' },
+    { label: t('sim_impact_indep_lbl'), delta: deltaIndep, poids: 0.30, color: '#059669', icon: '🌱' }
   ].filter(i => i.delta > 0).sort((a, b) => (b.delta * b.poids) - (a.delta * a.poids));
 
   const best = impacts[0];
@@ -28235,34 +28853,34 @@ function _simRenderInterpretation(delta, deltaPEI, deltaPres, deltaIndep, scoreS
   const dCol = delta > 0 ? '#059669' : '#dc2626';
   html += `<div style="padding:12px 16px;background:${dCol}15;border-radius:10px;border-left:3px solid ${dCol}">
     <span style="font-weight:800;color:${dCol}">
-      ${delta > 0 ? '📈 Progression attendue' : '📉 Régression simulée'} : ${delta > 0 ? '+' : ''}${delta} pts
+      ${delta > 0 ? t('sim_progr_attendue') : t('sim_regr_simulee')} : ${delta > 0 ? '+' : ''}${delta} pts
     </span>
-    — Le score passerait de <strong>${_simScoreActuel}/100</strong> à <strong>${scoreSimule}/100</strong>.
+    — ${t('sim_score_passerait')} <strong>${_simScoreActuel}/100</strong> ${t('sim_score_a')} <strong>${scoreSimule}/100</strong>.
   </div>`;
 
   /* Levier le plus impactant */
   if (best) {
     html += `<div style="padding:10px 14px;background:${best.color}10;border-radius:8px">
       <span style="font-size:16px">${best.icon}</span>
-      <strong style="color:${best.color}"> Levier prioritaire : ${best.label}</strong>
-      — Une amélioration de <strong>+${best.delta}%</strong> sur ce levier contribue à hauteur de
-      <strong>${Math.round(best.delta * best.poids * 10) / 10} pts</strong> au score final.
+      <strong style="color:${best.color}"> ${t('sim_levier_prio_lbl')} ${best.label}</strong>
+      — ${t('sim_une_amelioration')} <strong>+${best.delta}%</strong> ${t('sim_contrib')}
+      <strong>${Math.round(best.delta * best.poids * 10) / 10} pts</strong> ${t('sim_pts_score')}
     </div>`;
   }
 
   /* Recommandations contextuelles */
-  html += `<div style="color:var(--muted);font-size:12px;padding:4px 0">📌 <strong>Actions recommandées :</strong></div>
+  html += `<div style="color:var(--muted);font-size:12px;padding:4px 0"><strong>${t('sim_actions_reco')}</strong></div>
   <ul style="margin:0;padding-left:18px;font-size:12px;color:var(--text);display:flex;flex-direction:column;gap:5px">`;
 
-  if (deltaPres > 0) html += `<li>Renforcer le suivi des absences — contacter les familles dès <strong>2 absences consécutives</strong></li>`;
-  if (deltaPEI  > 0) html += `<li>Organiser des <strong>séances de révision PEI</strong> avec chaque cadre — prioriser les objectifs "En cours"</li>`;
-  if (deltaIndep > 0) html += `<li>Intensifier les activités d'autonomie (AVJ) — augmenter la fréquence des séances ABLLS</li>`;
+  if (deltaPres  > 0) html += `<li>${t('sim_reco_presence')}</li>`;
+  if (deltaPEI   > 0) html += `<li>${t('sim_reco_pei')}</li>`;
+  if (deltaIndep > 0) html += `<li>${t('sim_reco_indep')}</li>`;
 
   /* Niveau cible atteint ? */
   if (scoreSimule >= 70 && _simScoreActuel < 70) {
-    html += `<li style="color:#059669;font-weight:700">🏆 Ces actions permettraient d'atteindre le niveau <strong>Excellent</strong> (≥ 70)</li>`;
+    html += `<li style="color:#059669;font-weight:700">${t('sim_niveau_excellent_txt')}</li>`;
   } else if (scoreSimule >= 40 && _simScoreActuel < 40) {
-    html += `<li style="color:#d97706;font-weight:700">⚡ Ces actions permettraient de passer au niveau <strong>Bien</strong> (≥ 40)</li>`;
+    html += `<li style="color:#d97706;font-weight:700">${t('sim_niveau_bien_txt')}</li>`;
   }
 
   html += `</ul></div>`;
@@ -28278,7 +28896,7 @@ function simReset() {
     if (sl) sl.value = 0;
   });
   simUpdate();
-  showToast('↺ Simulation réinitialisée', 'var(--primary)');
+  showToast(t('sim_toast_reset'), 'var(--primary)');
 }
 
 /**
@@ -28299,7 +28917,7 @@ function simExportPDF() {
   const dPEI         = _get('sim-lbl-pei');
   const dIndep       = _get('sim-lbl-indep');
   const duree        = _get('sim-lbl-duree');
-  const _now         = new Date().toLocaleString('fr-FR');
+  const _now         = new Date().toLocaleString(CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR');
 
   /* Impact alertes avant/après */
   const urgAct = _get('sim-al-act-urg'), surAct = _get('sim-al-act-sur'), stbAct = _get('sim-al-act-stb');
@@ -28427,7 +29045,7 @@ function simLoadScenario(key) {
   setSl('pei',   sc.pei);
   setSl('indep', sc.indep);
   simUpdate();
-  showToast('Scénario chargé : ' + sc.label, 'var(--teal)');
+  showToast(t('sim_toast_scenario') + sc.label, 'var(--teal)');
 }
 
 /* ── Singletons Chart.js additionnels ─────────────────── */
@@ -28511,15 +29129,15 @@ function simUpdateExtras(deltaPres, deltaPEI, deltaIndep, simPres, simPEI, simIn
   if (msgEl) {
     const sauves = cntAct.urg - cntSim.urg;
     if (sauves > 0) {
-      msgEl.innerHTML = `✅ <strong style="color:#059669">${sauves} bénéficiaire${sauves > 1 ? 's' : ''}</strong> sortiraient du niveau Urgent`;
+      msgEl.innerHTML = `✅ <strong style="color:#059669">${sauves}</strong> ${t('sim_benef_sorti_urgent')}`;
       msgEl.style.background = '#dcfce7'; msgEl.style.color = '#059669';
     } else if (sauves < 0) {
-      msgEl.innerHTML = `⚠️ <strong style="color:#dc2626">${Math.abs(sauves)} bénéficiaire${Math.abs(sauves) > 1 ? 's' : ''}</strong> passeraient en niveau Urgent`;
+      msgEl.innerHTML = `⚠️ <strong style="color:#dc2626">${Math.abs(sauves)}</strong> ${t('sim_benef_vers_urgent')}`;
       msgEl.style.background = '#fee2e2'; msgEl.style.color = '#dc2626';
     } else {
       msgEl.innerHTML = deltaPres + deltaPEI + deltaIndep === 0
-        ? 'Déplacez les sliders pour voir l\'impact'
-        : '= Aucun changement de niveau de risque';
+        ? t('sim_deplacer_impact')
+        : `= ${t('sim_aucun_chg_risque')}`;
       msgEl.style.background = 'var(--bg)'; msgEl.style.color = 'var(--muted)';
     }
   }
@@ -28583,10 +29201,10 @@ function _simUpdateRadar(simPres, simPEI, simIndep, simDoss) {
   _simRadarChart = new Chart(canvas, {
     type: 'radar',
     data: {
-      labels: ['🎯 PEI', '👥 Présence', '🌱 Autonomie', '📁 Dossiers'],
+      labels: [t('sim_bar_pei'), t('sim_bar_pres'), t('sim_bar_indep'), t('sim_bar_doss')],
       datasets: [
         {
-          label:           'Actuel',
+          label:           t('sim_radar_actuel'),
           data:            dataAct,
           borderColor:     '#dc2626',
           backgroundColor: 'rgba(220,38,38,.10)',
@@ -28595,7 +29213,7 @@ function _simUpdateRadar(simPres, simPEI, simIndep, simDoss) {
           pointRadius:     4
         },
         {
-          label:           'Simulé',
+          label:           t('sim_radar_simule_lb'),
           data:            dataSim,
           borderColor:     '#059669',
           backgroundColor: 'rgba(5,150,105,.12)',
@@ -28631,7 +29249,7 @@ function _simUpdateProjection(scoreSimule) {
   const dureeEl = document.getElementById('sim-slider-duree');
   const duree   = dureeEl ? parseInt(dureeEl.value) : 6;
   const lblEl   = document.getElementById('sim-lbl-duree');
-  if (lblEl) lblEl.textContent = duree + (duree === 1 ? ' mois' : ' mois');
+  if (lblEl) lblEl.textContent = duree + ' ' + t('sim_duree_mois');
 
   /* Progression linéaire : chaque mois = (scoreSimule - scoreActuel) / duree points */
   const delta = scoreSimule - _simScoreActuel;
@@ -28641,7 +29259,7 @@ function _simUpdateProjection(scoreSimule) {
   const now = new Date();
   for (let i = 0; i <= duree; i++) {
     const dt = new Date(now.getFullYear(), now.getMonth() + i, 1);
-    labels.push(dt.toLocaleDateString('fr-FR', { month: 'short' }));
+    labels.push(dt.toLocaleDateString(CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR', { month: 'short' }));
     const val = Math.round(_simScoreActuel + (delta * i / duree));
     data.push(Math.min(100, Math.max(0, val)));
   }
@@ -28656,7 +29274,7 @@ function _simUpdateProjection(scoreSimule) {
     data: {
       labels,
       datasets: [{
-        label:           'Score projeté',
+        label:           t('sim_proj_score_lbl'),
         data,
         borderColor:     targetColor,
         backgroundColor: targetColor + '18',
@@ -28701,8 +29319,8 @@ function _simUpdateProjection(scoreSimule) {
           callbacks: {
             label: ctx => {
               const v = ctx.parsed.y;
-              const niv = v >= 70 ? '✅ Excellent' : v >= 40 ? '⚡ Bien' : '⚠️ À améliorer';
-              return `Score : ${v}/100 — ${niv}`;
+              const niv = v >= 70 ? t('sim_badge_excellent') : v >= 40 ? t('sim_badge_bien') : t('sim_badge_ameliorer');
+              return `${t('sim_proj_score_lbl')} : ${v}/100 — ${niv}`;
             }
           }
         }
@@ -28730,15 +29348,16 @@ function renderRapportInstitutionnel() {
 
   /* ── Date et période ── */
   const now      = new Date();
-  const dateStr  = now.toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
-  setT('rapp-date-header', 'Généré le ' + dateStr);
+  const _rappLocale = CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR';
+  const dateStr  = now.toLocaleDateString(_rappLocale, { day:'2-digit', month:'long', year:'numeric' });
+  setT('rapp-date-header', t('rapp_genere_le') + ' ' + dateStr);
 
   /* ── Calcul des indicateurs ── */
   const { score, tauxRealisation, tauxPresence, tauxIndependance, tauxDossiers } = calcOrgScore(d, presences);
 
   /* KPI 1 — Score global */
   setT('rapp-k-score', score);
-  const scoreBadge = score >= 70 ? '✅ Excellent' : score >= 40 ? '⚡ Bien' : '⚠️ À améliorer';
+  const scoreBadge = score >= 70 ? t('sc_excellent') : score >= 40 ? t('sc_bien') : t('sc_a_ameliorer');
   const scoreColor = score >= 70 ? '#059669'     : score >= 40 ? '#d97706' : '#dc2626';
   const badgeEl = document.getElementById('rapp-k-score-badge');
   if (badgeEl) { badgeEl.textContent = scoreBadge; badgeEl.style.background = scoreColor + '20'; badgeEl.style.color = scoreColor; }
@@ -28758,9 +29377,9 @@ function renderRapportInstitutionnel() {
   const _presCard  = document.getElementById('rapp-card-presence');
   if (_presCard) _presCard.style.borderTopColor = _presColor;
   setT('rapp-k-presence-sub',
-    tauxPresence >= 80 ? '✅ Excellent taux de présence'
-    : tauxPresence >= 60 ? '⚡ Taux acceptable — à améliorer'
-    : '🔴 Taux insuffisant — action requise');
+    tauxPresence >= 80 ? t('sc_excellent')
+    : tauxPresence >= 60 ? t('sc_bien')
+    : t('sc_a_ameliorer'));
 
   /* KPI 4 — Objectifs PEI (couleur dynamique) */
   const _peiColor2 = tauxRealisation >= 70 ? '#059669' : tauxRealisation >= 40 ? '#7c3aed' : '#dc2626';
@@ -28768,7 +29387,7 @@ function renderRapportInstitutionnel() {
   if (_peiEl2) { _peiEl2.textContent = tauxRealisation; _peiEl2.style.color = _peiColor2; }
   const _peiCard2  = document.getElementById('rapp-card-pei');
   if (_peiCard2) _peiCard2.style.borderTopColor = _peiColor2;
-  setT('rapp-k-pei-sub', `${d.peiDone}/${d.peiTotal} objectifs`);
+  setT('rapp-k-pei-sub', `${d.peiDone}/${d.peiTotal} ${t('kpi_objectifs_lbl')}`);
 
   /* KPI 5 — Conformité dossiers (couleur dynamique) */
   const _dosColor = tauxDossiers >= 95 ? '#059669' : tauxDossiers >= 80 ? '#d97706' : '#dc2626';
@@ -28801,7 +29420,7 @@ function _rappRenderEvolution(d, presences) {
   for (let i = 5; i >= 0; i--) {
     const dt = new Date(now.getFullYear(), now.getMonth() - i, 1);
     moisKeys.push(`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`);
-    moisLabels.push(dt.toLocaleDateString('fr-FR', { month:'short', year:'2-digit' }));
+    moisLabels.push(dt.toLocaleDateString(CURRENT_LANG==='ar'?'ar-MA':'fr-FR', { month:'short', year:'2-digit' }));
   }
 
   const tauxPEI_fixe = d.peiTotal > 0 ? Math.round(d.peiDone/d.peiTotal*100) : 0;
@@ -28828,8 +29447,8 @@ function _rappRenderEvolution(d, presences) {
     data: {
       labels: moisLabels,
       datasets: [
-        { label:'Score organisationnel', data:dataScore,    borderColor:'#1b3a6b', backgroundColor:'rgba(27,58,107,.10)', fill:true,  tension:.4, pointRadius:4, borderWidth:2.5, spanGaps:true },
-        { label:'Taux de présence',      data:dataPresence, borderColor:'#059669', backgroundColor:'rgba(5,150,105,.07)',  fill:false, tension:.4, pointRadius:4, borderWidth:2,   spanGaps:true, borderDash:[5,3] }
+        { label:t('rapp_kpi_score'),    data:dataScore,    borderColor:'#1b3a6b', backgroundColor:'rgba(27,58,107,.10)', fill:true,  tension:.4, pointRadius:4, borderWidth:2.5, spanGaps:true },
+        { label:t('rapp_kpi_presence_s'), data:dataPresence, borderColor:'#059669', backgroundColor:'rgba(5,150,105,.07)',  fill:false, tension:.4, pointRadius:4, borderWidth:2,   spanGaps:true, borderDash:[5,3] }
       ]
     },
     options: {
@@ -28889,9 +29508,9 @@ function _rappRenderTableClasses(d, presences) {
     /* Risque moyen de la classe */
     const risques = g.benef.map(b => calcRisqueBenef(b, presences).score);
     const avgRisk = risques.length ? Math.round(risques.reduce((s,n)=>s+n,0)/risques.length) : 0;
-    const riskLabel = avgRisk >= 61 ? '<span style="color:#dc2626;font-weight:800">🔴 Urgent</span>'
-                    : avgRisk >= 31 ? '<span style="color:#d97706;font-weight:800">🟡 Surveiller</span>'
-                    : '<span style="color:#059669;font-weight:800">🟢 Stable</span>';
+    const riskLabel = avgRisk >= 61 ? `<span style="color:#dc2626;font-weight:800">${t('rapp_urgent')}</span>`
+                    : avgRisk >= 31 ? `<span style="color:#d97706;font-weight:800">${t('rapp_surveiller_lb')}</span>`
+                    : `<span style="color:#059669;font-weight:800">${t('rapp_stable')}</span>`;
     const pctDos = Math.round(dos/g.benef.length*100);
     return `<tr>
       <td>
@@ -28924,8 +29543,9 @@ function _rappRenderSynthese(d, score, tauxPresence, tauxRealisation, tauxDossie
   if (!box) return;
 
   const now         = new Date();
-  const moisActuel  = now.toLocaleDateString('fr-FR', { month:'long', year:'numeric' });
-  const scoreBadge  = score >= 70 ? 'excellent' : score >= 40 ? 'satisfaisant' : 'qui nécessite une attention particulière';
+  const _synthLocale = CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR';
+  const moisActuel  = now.toLocaleDateString(_synthLocale, { month:'long', year:'numeric' });
+  const scoreBadge  = score >= 70 ? t('sc_excellent') : score >= 40 ? t('sc_bien') : t('sc_a_ameliorer');
   const scoreColor  = score >= 70 ? '#059669'   : score >= 40 ? '#d97706'      : '#dc2626';
 
   /* Nombre de classes en urgence — liste dédupliquée */
@@ -28979,7 +29599,7 @@ function _rappRenderSynthese(d, score, tauxPresence, tauxRealisation, tauxDossie
     pour les Personnes en Situation de Handicap.</p>
 
     <p style="margin-top:14px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--muted)">
-      Ce rapport a été généré automatiquement par la plateforme ElAwail Digital Platform le ${now.toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})} à ${now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}.
+      ${t('rapp_genere_le')} ${now.toLocaleDateString(_synthLocale,{weekday:'long',day:'2-digit',month:'long',year:'numeric'})} ${now.toLocaleTimeString(_synthLocale,{hour:'2-digit',minute:'2-digit'})}.
     </p>`;
 }
 
@@ -29132,14 +29752,17 @@ function auditRender() {
   });
 
   const countLbl = document.getElementById('audit-count-label');
-  if (countLbl) countLbl.textContent = `${filtered.length} entrée${filtered.length > 1 ? 's' : ''}`;
+  if (countLbl) {
+    const lbl = filtered.length > 1 ? t('audit_entrees_pl') : t('audit_entree_s');
+    countLbl.textContent = `${filtered.length} ${lbl}`;
+  }
 
   const list = document.getElementById('audit-list');
   if (!list) return;
 
   if (!filtered.length) {
     list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px">
-      Aucune entrée trouvée pour ces filtres.</div>`;
+      ${t('audit_aucune_entree')}</div>`;
     return;
   }
 
@@ -29156,27 +29779,29 @@ function auditRender() {
     const dayLabel = (() => {
       const today = new Date().toISOString().slice(0,10);
       const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-      if (day === today)     return "Aujourd'hui";
-      if (day === yesterday) return 'Hier';
-      return new Date(day).toLocaleDateString('fr-FR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+      if (day === today)     return t('audit_auj_label');
+      if (day === yesterday) return t('audit_hier_label');
+      const locale = CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR';
+      return new Date(day).toLocaleDateString(locale, { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
     })();
 
     const rows = entries.map(l => {
-      const t    = AUDIT_TYPES[l.type] || AUDIT_TYPES.systeme;
-      const time = l.ts ? new Date(l.ts).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', second:'2-digit' }) : '—';
+      const atype = AUDIT_TYPES[l.type] || AUDIT_TYPES.systeme;
+      const tLocale = CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR';
+      const time = l.ts ? new Date(l.ts).toLocaleTimeString(tLocale, { hour:'2-digit', minute:'2-digit', second:'2-digit' }) : '—';
       const roleColor = l.role === 'ADMIN' ? '#dc2626' : l.role === 'GESTIONNAIRE' ? '#d97706' : '#2563eb';
       return `
         <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
           <!-- Icône type -->
-          <div style="width:34px;height:34px;border-radius:10px;background:${t.color}18;
+          <div style="width:34px;height:34px;border-radius:10px;background:${atype.color}18;
                       display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px">
-            ${t.icon}
+            ${atype.icon}
           </div>
           <!-- Contenu -->
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
               <span style="font-weight:700;font-size:13px;color:var(--text)">${l.action}</span>
-              <span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:100px;background:${t.color}18;color:${t.color}">${t.label}</span>
+              <span style="font-size:10px;font-weight:800;padding:1px 7px;border-radius:100px;background:${atype.color}18;color:${atype.color}">${atype.label}</span>
             </div>
             ${l.detail ? `<div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.detail}</div>` : ''}
             <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
@@ -29189,11 +29814,12 @@ function auditRender() {
         </div>`;
     }).join('');
 
+    const actLbl = entries.length > 1 ? t('audit_actions_pl') : t('audit_action_s');
     return `
       <div style="margin-top:14px;margin-bottom:4px">
         <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;
                     letter-spacing:.6px;padding:6px 0;border-bottom:2px solid var(--border);margin-bottom:2px">
-          📅 ${dayLabel} <span style="font-weight:400;color:var(--muted)">(${entries.length} action${entries.length>1?'s':''})</span>
+          📅 ${dayLabel} <span style="font-weight:400;color:var(--muted)">(${entries.length} ${actLbl})</span>
         </div>
         ${rows}
       </div>`;
@@ -30086,17 +30712,16 @@ function renderAdminHeatmap() {
   if (!grid) return;
 
   if (!classes.length) {
-    grid.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:20px">
-      Aucune donnée disponible — les bénéficiaires doivent avoir un cadre assigné.</div>`;
+    grid.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:20px">${t('hm_no_data')}</div>`;
   } else {
     grid.innerHTML = classes.map(cl => {
       /* Couleurs selon le score moyen */
       const color   = cl.avgScore >= 61 ? '#dc2626' : cl.avgScore >= 31 ? '#d97706' : '#059669';
       const bg      = cl.avgScore >= 61 ? '#fee2e2' : cl.avgScore >= 31 ? '#fef3c7' : '#dcfce7';
       const bgLight = cl.avgScore >= 61 ? '#fff5f5' : cl.avgScore >= 31 ? '#fffbeb' : '#f0fdf4';
-      const niveau  = cl.avgScore >= 61 ? '🔴 Urgent'
-                    : cl.avgScore >= 31  ? '🟡 Surveiller'
-                    : '🟢 Stable';
+      const niveau  = cl.avgScore >= 61 ? t('hm_urgent_lbl')
+                    : cl.avgScore >= 31  ? t('hm_surveiller_lbl')
+                    : t('hm_stable_lbl');
 
       /* Noms des cadres (max 2 affichés) */
       const cadreNames = cl.cadres.slice(0, 2).map(c => c.name.split(' ')[0]).join(', ')
@@ -30142,7 +30767,7 @@ function renderAdminHeatmap() {
             </div>
             <div style="font-size:12px;color:var(--muted);margin-bottom:6px">/100</div>
             <div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)">
-              ${cl.benefs.length} bénéf.
+              ${cl.benefs.length} ${t('hm_benef_short')}
             </div>
           </div>
 
@@ -30162,7 +30787,7 @@ function renderAdminHeatmap() {
 
           <!-- Indicateur cliquable -->
           <div style="margin-top:10px;font-size:10px;color:${color};font-weight:700;text-align:right">
-            Voir les bénéficiaires →
+            ${t('hm_voir_benef')}
           </div>
 
         </div>`;
@@ -30174,14 +30799,14 @@ function renderAdminHeatmap() {
   if (!tbody) return;
 
   if (!classes.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted)">Aucune donnée</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted)">${t('hm_no_data_table')}</td></tr>`;
     return;
   }
 
   tbody.innerHTML = classes.map(cl => {
     const color  = cl.avgScore >= 61 ? '#dc2626' : cl.avgScore >= 31 ? '#d97706' : '#059669';
     const bg     = cl.avgScore >= 61 ? '#fee2e2' : cl.avgScore >= 31 ? '#fef3c7' : '#dcfce7';
-    const niveau = cl.avgScore >= 61 ? '🔴 Urgent' : cl.avgScore >= 31 ? '🟡 Surveiller' : '🟢 Stable';
+    const niveau = cl.avgScore >= 61 ? t('hm_urgent_lbl') : cl.avgScore >= 31 ? t('hm_surveiller_lbl') : t('hm_stable_lbl');
     const cadreNames = cl.cadres.map(c => c.name.split(' ')[0]).join(', ');
     return `
       <tr onclick="heatmapGoToClasse('${cl.label.replace(/'/g,"\\'")}');" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''">
@@ -33042,3 +33667,6 @@ function openLaihaDetail(idx) {
 
 </body>
 </html>
+
+
+
