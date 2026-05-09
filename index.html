@@ -653,7 +653,21 @@ document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged(user => {
       clearTimeout(fallbackTimer);
       if (user) {
-        /* Session active → aller directement au dashboard */
+        /* Session Firebase active.
+           Vérifier que sessionStorage a le profil (nécessaire pour dashboard.html).
+           Si absent (redémarrage navigateur), le reconstruire depuis l'email
+           pour éviter la boucle index → dashboard → index. */
+        const profilExistant = sessionStorage.getItem('ea_user_profil');
+        if (!profilExistant) {
+          /* Reconstruire le profil depuis l'email — même logique que login.js */
+          const profil = typeof creerProfilDepuisEmail === 'function'
+            ? creerProfilDepuisEmail(user.email, user.uid)
+            : { uid: user.uid, email: user.email, role: 'EDUCATEUR',
+                nom: user.email.split('@')[0], teacherId: user.email.split('@')[0],
+                classeColor: '#1b3a6b', classeIcon: '', classe: '',
+                matiere: '', stats: { niveaux: 2, modules: 4 } };
+          sessionStorage.setItem('ea_user_profil', JSON.stringify(profil));
+        }
         window.location.href = 'dashboard.html';
       } else {
         /* Pas de session → afficher le formulaire */
