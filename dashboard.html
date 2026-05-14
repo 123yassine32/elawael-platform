@@ -20221,9 +20221,9 @@ function renderAdminOverview(){
       const pR  = _projPEI  !== null ? _projPEI  : _orgSc.tauxRealisation;
       const pP  = _projPres !== null ? _projPres : _orgSc.tauxPresence;
       return Math.round(
-        (pR                       * 0.35) +
-        (pP                       * 0.25) +
-        (_orgSc.tauxIndependance  * 0.30) +
+        (pR                       * 0.40) +
+        (pP                       * 0.30) +
+        (_orgSc.tauxIndependance  * 0.20) +
         (_orgSc.tauxDossiers      * 0.10)
       );
     })();
@@ -20433,11 +20433,11 @@ function renderAdminOverview(){
 /**
  * Calcule les 4 composantes + le score global.
  * ─────────────────────────────────────────────────────────────────
- * PONDÉRATION AJUSTÉE (Management 4.0 — association handicap) :
- *   PEI progressif   35%  (était 40% — enrichi avec en-cours)
- *   Présence fusionnée 25%  (était 30% — indicateur d'entrée)
- *   Indépendance ABLLS 30%  (était 20% — objectif final de l'asso)
- *   Dossiers          10%  (inchangé — conformité administrative)
+ * PONDÉRATION M4.0 (Management 4.0 — association handicap) :
+ *   Réalisation PEI    40%  (objectif pédagogique principal)
+ *   Présence fusionnée 30%  (régularité de la prise en charge)
+ *   Indépendance ABLLS 20%  (autonomie fonctionnelle)
+ *   Dossiers           10%  (conformité administrative)
  *
  * P1 — PEI progressif  : terminé=100pts · en-cours=50pts
  * P2 — Indépendance    : données ABLLS réelles (ea_ta9_*) — fallback niveau
@@ -20583,7 +20583,7 @@ function calcOrgScore(d, presences) {
 
   /* ════════════════════════════════════════════════════════════════
      SCORE GLOBAL PONDÉRÉ — Management 4.0 Handicap
-     PEI 35% · Présence 25% · Indépendance 30% · Dossiers 10%
+     PEI 40% · Présence 30% · Indépendance 20% · Dossiers 10%
      Valeur neutre 50 pour les composantes sans données (no penalty)
   ════════════════════════════════════════════════════════════════ */
   const _peiScore  = _peiDonnees      ? tauxRealisation : 50;
@@ -20593,9 +20593,9 @@ function calcOrgScore(d, presences) {
     : 50;
 
   const score = Math.round(
-    (_peiScore   * 0.35) +
-    (_presScore  * 0.25) +
-    (_indScore   * 0.30) +
+    (_peiScore   * 0.40) +
+    (_presScore  * 0.30) +
+    (_indScore   * 0.20) +
     (tauxDossiers * 0.10)
   );
 
@@ -20608,7 +20608,7 @@ function calcOrgScore(d, presences) {
     _peiDoneVal,      _peiProgVal,
     _moustaqilItems,  _totalItems,       /* compteurs ABLLS bruts pour affichage */
     /* pondérations utilisées — utiles pour la simulation */
-    _poids: { pei: 0.35, presence: 0.25, independance: 0.30, dossiers: 0.10 }
+    _poids: { pei: 0.40, presence: 0.30, independance: 0.20, dossiers: 0.10 }
   };
 }
 
@@ -20818,7 +20818,7 @@ function renderOrgScore(d, presences) {
       {
         label : t('adm_comp_pei'),
         val   : tauxRealisation,
-        poids : '35%',
+        poids : '40%',
         color : '#7c3aed',
         note  : !_peiDonnees ? t('adm_comp_pei_nodata') : null,
         sub   : _peiSub
@@ -20826,7 +20826,7 @@ function renderOrgScore(d, presences) {
       {
         label : t('adm_comp_pres'),
         val   : tauxPresence,
-        poids : '25%',
+        poids : '30%',
         color : '#2563eb',
         note  : !_presenceDonnees ? t('adm_comp_pres_nodata') : null,
         sub   : _presSub
@@ -20834,7 +20834,7 @@ function renderOrgScore(d, presences) {
       {
         label : t('adm_comp_indep'),
         val   : tauxIndependance,
-        poids : '30%',
+        poids : '20%',
         color : '#0d9488',
         note  : null,
         sub   : _indSub
@@ -20984,7 +20984,7 @@ function renderAdminTendances(d, presences) {
     /* Score organisationnel approximé pour ce mois */
     const presVal = tauxPres !== null ? tauxPres : 0;
     const scoreM  = tauxPres !== null
-      ? Math.round((tauxPEI_fixe * 0.35) + (presVal * 0.25) + (tauxIndep * 0.30) + (tauxDossiers * 0.10))
+      ? Math.round((tauxPEI_fixe * 0.40) + (presVal * 0.30) + (tauxIndep * 0.20) + (tauxDossiers * 0.10))
       : null;
     dataScore.push(scoreM);
 
@@ -22560,12 +22560,12 @@ function initSimulation() {
 
   /* Barres composantes — colonne gauche (valeurs actuelles) */
   const bdA = document.getElementById('sim-breakdown-actuel');
-  /* Poids M4.0 : 35/25/30/10 — alignés sur calcOrgScore() */
+  /* Poids M4.0 : 40/30/20/10 — alignés sur calcOrgScore() */
   if (bdA) {
     bdA.innerHTML =
-      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      _simBaseValues.tauxPEI,      '#7c3aed', 0.35) +
-      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, _simBaseValues.tauxPresence, '#2563eb', 0.25) +
-      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    _simBaseValues.tauxIndep,    '#059669', 0.30) +
+      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      _simBaseValues.tauxPEI,      '#7c3aed', 0.40) +
+      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, _simBaseValues.tauxPresence, '#2563eb', 0.30) +
+      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    _simBaseValues.tauxIndep,    '#059669', 0.20) +
       _simBar(t('sim_bar_doss'),  _simBaseValues.tauxDossiers, _simBaseValues.tauxDossiers, '#d97706', 0.10);
   }
 
@@ -22595,9 +22595,9 @@ function simUpdate() {
 
   /* Score simulé — pondération M4.0 alignée sur calcOrgScore() */
   const scoreSimule = Math.round(
-    (simPEI   * 0.35) +
-    (simPres  * 0.25) +
-    (simIndep * 0.30) +
+    (simPEI   * 0.40) +
+    (simPres  * 0.30) +
+    (simIndep * 0.20) +
     (simDoss  * 0.10)
   );
 
@@ -22629,13 +22629,13 @@ function simUpdate() {
     dSubEl.style.color = deltaCol;
   }
 
-  /* Barres composantes — colonne droite (valeurs simulées) — poids M4.0 */
+  /* Barres composantes — colonne droite (valeurs simulées) — poids M4.0 : 40/30/20/10 */
   const bdS = document.getElementById('sim-breakdown-simule');
   if (bdS) {
     bdS.innerHTML =
-      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      simPEI,    '#7c3aed', 0.35) +
-      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, simPres,   '#2563eb', 0.25) +
-      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    simIndep,  '#059669', 0.30) +
+      _simBar(t('sim_bar_pei'),   _simBaseValues.tauxPEI,      simPEI,    '#7c3aed', 0.40) +
+      _simBar(t('sim_bar_pres'),  _simBaseValues.tauxPresence, simPres,   '#2563eb', 0.30) +
+      _simBar(t('sim_bar_indep'), _simBaseValues.tauxIndep,    simIndep,  '#059669', 0.20) +
       _simBar(t('sim_bar_doss'),  simDoss,                     simDoss,   '#d97706', 0.10);
   }
 
@@ -22659,11 +22659,11 @@ function _simRenderInterpretation(delta, deltaPEI, deltaPres, deltaIndep, scoreS
   }
 
   /* Trouver le levier le plus impactant */
-  /* Poids M4.0 : 35/25/30/10 — alignés sur calcOrgScore() */
+  /* Poids M4.0 : 40/30/20/10 — alignés sur calcOrgScore() */
   const impacts = [
-    { label: t('sim_impact_pei_lbl'),   delta: deltaPEI,   poids: 0.35, color: '#7c3aed', icon: '' },
-    { label: t('sim_impact_pres_lbl'),  delta: deltaPres,  poids: 0.25, color: '#2563eb', icon: '' },
-    { label: t('sim_impact_indep_lbl'), delta: deltaIndep, poids: 0.30, color: '#059669', icon: '' }
+    { label: t('sim_impact_pei_lbl'),   delta: deltaPEI,   poids: 0.40, color: '#7c3aed', icon: '' },
+    { label: t('sim_impact_pres_lbl'),  delta: deltaPres,  poids: 0.30, color: '#2563eb', icon: '' },
+    { label: t('sim_impact_indep_lbl'), delta: deltaIndep, poids: 0.20, color: '#059669', icon: '' }
   ].filter(i =>i.delta >0).sort((a, b) => (b.delta * b.poids) - (a.delta * a.poids));
 
   const best = impacts[0];
@@ -23175,8 +23175,8 @@ function _rappRenderEvolution(d, presences) {
     seances.forEach(p => { (p.presences||[]).forEach(x => { totalObs++; if(x.statut==='P') totalPres++; }); });
     const tP = totalObs >0 ? Math.round(totalPres/totalObs*100) : null;
     dataPresence.push(tP);
-    /* Pondération M4.0 : 35/25/30/10 — alignée sur calcOrgScore() */
-    dataScore.push(tP !== null ? Math.round((tauxPEI_fixe*0.35)+(tP*0.25)+(tauxIndep*0.30)+(tauxDoss*0.10)) : null);
+    /* Pondération M4.0 : 40/30/20/10 — alignée sur calcOrgScore() */
+    dataScore.push(tP !== null ? Math.round((tauxPEI_fixe*0.40)+(tP*0.30)+(tauxIndep*0.20)+(tauxDoss*0.10)) : null);
   });
 
   if (_rappEvolutionChart) { _rappEvolutionChart.destroy(); _rappEvolutionChart = null; }
