@@ -5272,6 +5272,10 @@ window.onload = () => {
       await initSync(firebaseUser.uid);
     }
 
+    /* [Problème 2] Vérification silencieuse du rôle côté Firestore en arrière-plan.
+       Si sessionStorage a été manipulé via DevTools, le rôle réel est restauré. */
+    _verifyRoleFirestore(firebaseUser.uid).catch(() => {});
+
     /* Recharger les données dynamiques depuis localStorage (déjà synchronisé par initSync) */
     resetPortalState();
     PRESENCES = loadData('ea_presences');
@@ -5307,6 +5311,9 @@ window.onload = () => {
       renderTable();
       showTab('accueil');
     }
+
+    /* [Problème 3] Démarrer le refresh automatique des données toutes les 10 minutes. */
+    _startPeriodicSync(firebaseUser.uid);
 
     /* Appliquer la langue sauvegardée et mettre à jour les badges */
     setTimeout(() => {
@@ -6102,6 +6109,9 @@ async function doLogout() {
   } catch (e) {
     console.warn('[Audit] Erreur journalisation déconnexion :', e);
   }
+
+  /* Arrêter le refresh périodique des données */
+  if (typeof _stopPeriodicSync === 'function') _stopPeriodicSync();
 
   /* Vider la session et déconnecter Firebase */
   sessionStorage.removeItem('ea_user_profil');
@@ -17010,6 +17020,9 @@ async function initSync(uid) {
       setTimeout(() =>showToast(msg, '#0d9488'), 1500);
     }
 
+    /* [Problème 3] Horodater la sync pour detecter les donnees perimees */
+    localStorage.setItem('ea_sync_ts', Date.now().toString());
+
     /* Déclencher l'événement ea:firebase-ready pour l'indicateur offline */
     document.dispatchEvent(new CustomEvent('ea:firebase-ready'));
 
@@ -17022,6 +17035,94 @@ async function initSync(uid) {
     }
     /* Toujours dispatcher firebase-ready pour que l'indicateur offline reste caché */
     document.dispatchEvent(new CustomEvent('ea:firebase-ready'));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SÉCURITÉ & FRAÎCHEUR DES DONNÉES (Problèmes 2 & 3)
+   _verifyRoleFirestore — contre la manipulation du sessionStorage
+   _startPeriodicSync   — refresh automatique toutes les 10 minutes
+═══════════════════════════════════════════════════════════════ */
+
+const _SYNC_MAX_AGE_MS = 10 * 60 * 1000; /* 10 minutes */
+let   _syncIntervalId  = null;
+
+/**
+ * [Problème 2] Re-vérifie le rôle depuis Firestore pour détecter
+ * toute manipulation du sessionStorage via DevTools.
+ * Si le rôle cloud diffère du rôle local, corrige CURRENT_USER
+ * et ré-applique les restrictions d'interface.
+ */
+async function _verifyRoleFirestore(uid) {
+  if (typeof db === 'undefined' || !uid) return;
+  try {
+    const snap = await db.collection('users').doc(uid).get();
+    if (!snap.exists) return;
+
+    const roleCloud = ((snap.data().role) || '').toLowerCase();
+    if (!roleCloud) return;
+
+    const roleLocal = (CURRENT_USER?.role || '').toLowerCase();
+    if (roleCloud === roleLocal) return; /* Tout est cohérent */
+
+    /* Correction silencieuse : le rôle cloud fait autorité */
+    console.warn(`[Sécurité] Rôle corrigé : ${roleLocal} → ${roleCloud}`);
+    CURRENT_USER.role = roleCloud;
+
+    /* Mettre à jour sessionStorage pour cohérence */
+    try {
+      const profil = JSON.parse(sessionStorage.getItem('ea_user_profil') || '{}');
+      profil.role  = roleCloud.toUpperCase();
+      sessionStorage.setItem('ea_user_profil', JSON.stringify(profil));
+    } catch(e) { /* ignore */ }
+
+    /* Ré-appliquer les restrictions CSS d'interface */
+    if (typeof appliquerRestrictionsAdmin === 'function') appliquerRestrictionsAdmin();
+
+    showToast('⚠ Rôle mis à jour depuis le serveur', '#d97706');
+
+  } catch(e) {
+    /* permission-denied = Firestore non configuré — silencieux */
+  }
+}
+
+/**
+ * [Problème 3] Lance un refresh automatique des données toutes les
+ * _SYNC_MAX_AGE_MS (10 min). Si les données sont périmées, re-tire
+ * depuis Firestore et recharge les globaux PRESENCES/NOTES/ALERTES.
+ * Un seul interval par session (nettoyé à la déconnexion).
+ */
+function _startPeriodicSync(uid) {
+  if (_syncIntervalId || !uid) return;
+
+  _syncIntervalId = setInterval(async () => {
+    const tsStr = localStorage.getItem('ea_sync_ts');
+    const age   = tsStr ? (Date.now() - parseInt(tsStr, 10)) : Infinity;
+
+    if (age < _SYNC_MAX_AGE_MS) return; /* Encore frais — ne pas re-syncer */
+
+    try {
+      if (typeof initSync === 'function') {
+        await initSync(uid);
+        /* Recharger les globaux pour que les calculs KPI soient à jour */
+        PRESENCES = loadData('ea_presences');
+        NOTES     = loadData('ea_notes');
+        ALERTES   = loadData('ea_alertes');
+        if (typeof updateAlertesBadge === 'function') updateAlertesBadge();
+        showToast('🔄 Données actualisées depuis le serveur', '#0d9488');
+      }
+    } catch(e) { /* Silencieux si hors-ligne */ }
+
+  }, _SYNC_MAX_AGE_MS);
+}
+
+/**
+ * Arrête l'interval de sync périodique (appelé au logout).
+ */
+function _stopPeriodicSync() {
+  if (_syncIntervalId) {
+    clearInterval(_syncIntervalId);
+    _syncIntervalId = null;
   }
 }
 

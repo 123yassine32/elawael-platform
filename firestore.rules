@@ -1,96 +1,90 @@
 rules_version = '2';
-// ═══════════════════════════════════════════════════════════════════
-// RÈGLES FIRESTORE — ElAwail Digital Platform
-// CLAUDE.md §4 Critique 1 — Sécurité maximale
+
+// ===================================================================
+// Regles de securite Firestore — ElAwail Platform
+// Deployer via : firebase deploy --only firestore:rules
 //
-// DÉPLOIEMENT :
-//   Firebase Console → Firestore Database → Règles → Coller → Publier
-//   OU : firebase deploy --only firestore:rules
+// Architecture des roles (CLAUDE.md §6) :
+//   ADMIN        -> lecture + ecriture + suppression + gestion utilisateurs
+//   GESTIONNAIRE -> lecture + ecriture (pas de suppression)
+//   CONSULTANT   -> lecture seule (donnees sensibles masquees cote client)
 //
-// VERSION : 2.0 — Corrigé casse des rôles (ADMIN/GESTIONNAIRE)
-// ═══════════════════════════════════════════════════════════════════
+// PRINCIPE : le role est stocke dans /users/{uid}.role
+// Toute action est refusee par defaut (deny-by-default).
+// ===================================================================
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helpers ──────────────────────────────────────────────────
+    // Regle par defaut : tout refuser
+    match /{document=**} {
+      allow read, write: if false;
+    }
 
-    // Vérifie que l'utilisateur est authentifié
+    // --- Fonctions utilitaires ---
+
     function isAuth() {
       return request.auth != null;
     }
 
-    // Vérifie que l'utilisateur accède à ses propres données
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isAuth() && getRole() == 'ADMIN';
+    }
+
+    function isAdminOrGestionnaire() {
+      return isAuth() && getRole() in ['ADMIN', 'GESTIONNAIRE'];
+    }
+
     function isOwner(uid) {
       return isAuth() && request.auth.uid == uid;
     }
 
-    // Récupère le rôle depuis Firestore — fallback 'EDUCATEUR' si absent
-    function myRole() {
-      let doc = get(/databases/$(database)/documents/users/$(request.auth.uid));
-      return doc.data.get('role', 'EDUCATEUR');
+    // --- Profils utilisateurs /users/{userId} ---
+    // Chaque utilisateur lit son propre profil.
+    // Seul un admin peut creer/modifier des profils ou changer le role.
+    // Un utilisateur peut mettre a jour lastLogin sans toucher au role.
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow update: if isAdmin()
+                    || (isOwner(userId)
+                        && !request.resource.data.diff(resource.data)
+                              .affectedKeys().hasAny(['role']));
+
+      allow create, delete: if isAdmin();
     }
 
-    // Vérifie si l'utilisateur est admin (ADMIN en majuscules)
-    function isAdmin() {
-      return isAuth() && myRole() == 'ADMIN';
+    // --- Donnees utilisateur /userData/{userId}/keys/{key} ---
+    // Chaque educateur lit/ecrit uniquement ses propres donnees.
+    // Admin et gestionnaire peuvent lire toutes les donnees.
+    match /userData/{userId}/keys/{key} {
+      allow read:   if isOwner(userId) || isAdminOrGestionnaire();
+      allow write:  if isOwner(userId) || isAdminOrGestionnaire();
+      allow delete: if isOwner(userId) || isAdmin();
     }
 
-    // Vérifie si l'utilisateur est admin ou gestionnaire
-    function isAdminOrGestionnaire() {
-      return isAuth() && (myRole() == 'ADMIN' || myRole() == 'GESTIONNAIRE');
+    // --- Journal d'audit /audit_logs/{logId} ---
+    // Lecture : tout utilisateur authentifie.
+    // Creation : uniquement ses propres entrees (uid = auth.uid).
+    // Modification et suppression INTERDITES — journal immuable.
+    match /audit_logs/{logId} {
+      allow read:   if isAuth();
+      allow create: if isAuth()
+                    && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
     }
 
-    // ── Profils utilisateurs ──────────────────────────────────────
-    // Lecture : tout utilisateur authentifié
-    // Écriture : chacun sur son propre doc OU admin sur tous les docs
-    match /users/{uid} {
-      allow read:  if isAuth();
-      allow write: if isOwner(uid) || isAdmin();
-    }
-
-    // ── Synchronisation localStorage ↔ Firestore ─────────────────
-    // Structure : userData/{uid}/keys/{clé}
-    // Chaque utilisateur accède UNIQUEMENT à ses propres données
-    match /userData/{uid}/keys/{key} {
-      allow read, write: if isOwner(uid);
-    }
-
-    // ── Journal d'audit ───────────────────────────────────────────
-    // Lecture : ADMIN + GESTIONNAIRE uniquement
-    // Écriture : tout utilisateur authentifié (auto-enregistrement des actions)
-    // Suppression : ADMIN uniquement
-    match /audit_logs/{doc} {
-      allow read:   if isAdminOrGestionnaire();
-      allow create: if isAuth();
-      allow update: if false;           // Journal immuable — jamais modifiable
+    // --- Donnees globales partagees /shared/{doc} ---
+    // Alertes, vacances, config — lecture par tous, ecriture admin/gestionnaire.
+    match /shared/{doc} {
+      allow read:   if isAuth();
+      allow write:  if isAdminOrGestionnaire();
       allow delete: if isAdmin();
     }
 
-    // ── Demandes RH ───────────────────────────────────────────────
-    // Lecture : ADMIN + GESTIONNAIRE
-    // Écriture : tout utilisateur authentifié (soumettre une demande)
-    match /rh_demandes/{doc} {
-      allow read:  if isAdminOrGestionnaire();
-      allow write: if isAuth();
-    }
-
-    // ── Recommandations pédagogiques ─────────────────────────────
-    // Lecture + Écriture : tout utilisateur authentifié
-    match /recommandations/{doc} {
-      allow read, write: if isAuth();
-    }
-
-    // ── Ping Firebase (vérification connectivité) ─────────────────
-    // Lecture uniquement pour détecter le statut en ligne/hors-ligne
-    match /_ping/{doc} {
-      allow read:  if isAuth();
-      allow write: if false;
-    }
-
-    // ── Refuser TOUT le reste ─────────────────────────────────────
-    // Sécurité par défaut : accès zéro aux collections non déclarées
-    match /{document=**} {
-      allow read, write: if false;
-    }
   }
 }
