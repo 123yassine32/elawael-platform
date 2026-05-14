@@ -19601,11 +19601,11 @@ function renderAdminOverview(){
       });
     }
 
-    /* 2. Cadres sans activité ce mois */
+    /* 2. Cadres sans activité ce mois
+       Réutilise seancesMois (déjà calculé + plafonné à ANNEE_SCOLAIRE.s2Fin)
+       pour éviter deux calculs indépendants qui pourraient diverger */
     const itarsB = USERS.filter(u => !u.role);
-    const _ymB   = _now.getFullYear() + '-' + String(_now.getMonth()+1).padStart(2,'0');
-    const sessMoisB = presences.filter(p =>p.date && p.date.startsWith(_ymB));
-    const cadresActifsB = new Set(sessMoisB.map(p =>p.teacherId).filter(Boolean));
+    const cadresActifsB = new Set(seancesMois.map(p =>p.teacherId).filter(Boolean));
     const cadresSansActivite = itarsB.filter(u => !cadresActifsB.has(u.teacherId));
     if (cadresSansActivite.length >0) {
       actions.push({
@@ -20082,26 +20082,47 @@ function renderAdminOverview(){
   const aCard = document.getElementById('adm-card-alertes-ouvertes');
   if (aCard) aCard.style.borderTopColor = aColor;
 
-  /* Card 3 — Bénéficiaires sans séance ce mois (remplace "Niveau avancé" — descriptif)
-     Signal direct et actionnable : qui n'a pas été vu ce mois ? */
+  /* Card 3 — Bénéficiaires sans séance ce mois
+     Distingue deux profils différents :
+     - Décrocheurs  : avaient des séances avant, absent CE mois → signal d'alerte
+     - Jamais suivis : aucune séance enregistrée sur toute la période S2 → intégration manquante */
   const _benefAvecSeance = new Set();
   seancesMois.forEach(p => (p.presences||[]).forEach(x => { if(x.nom) _benefAvecSeance.add(x.nom); }));
-  /* Utiliser la liste dédupliquée pour éviter de compter les doublons formateur */
-  const _nbSansSeance  = benefAdmin.filter(b => !_benefAvecSeance.has(b.nom)).length;
-  const _pctSansSeance = d.totalBenef ? Math.round(_nbSansSeance / d.totalBenef * 100) : 0;
+
+  /* Bénéficiaires ayant eu au moins 1 séance dans l'historique S2 complet */
+  const _benefAvecSeanceS2 = new Set();
+  presences.forEach(p => (p.presences||[]).forEach(x => { if(x.nom) _benefAvecSeanceS2.add(x.nom); }));
+
+  const _sansSanceListe  = benefAdmin.filter(b => !_benefAvecSeance.has(b.nom));
+  const _nbSansSeance    = _sansSanceListe.length;
+  const _nbDecrocheurs   = _sansSanceListe.filter(b =>  _benefAvecSeanceS2.has(b.nom)).length;
+  const _nbJamaisSuivi   = _sansSanceListe.filter(b => !_benefAvecSeanceS2.has(b.nom)).length;
+  const _pctSansSeance   = d.totalBenef ? Math.round(_nbSansSeance / d.totalBenef * 100) : 0;
+
   const _ssColor = _nbSansSeance === 0 ? 'var(--success)'
     : _nbSansSeance <= 5               ? 'var(--warning)'
     : 'var(--danger)';
   const _ssEl = document.getElementById('adm-k-sans-seance');
   if (_ssEl) { _ssEl.textContent = _nbSansSeance; _ssEl.style.color = _ssColor; }
   setT('adm-k-sans-seance-denom', `/ ${d.totalBenef}`);
-  setT('adm-k-sans-seance-sub',
-    _nbSansSeance === 0
-      ? t('adm_tous_vus')
-      : `${_pctSansSeance}${t('adm_pct_non_vus')}`);
+
+  /* Sous-label enrichi : montre la distinction décrocheurs / jamais suivis */
+  let _ssSub = '';
+  if (_nbSansSeance === 0) {
+    _ssSub = t('adm_tous_vus');
+  } else if (_nbJamaisSuivi > 0 && _nbDecrocheurs > 0) {
+    _ssSub = `${_nbDecrocheurs} décrocheurs · ${_nbJamaisSuivi} jamais suivis`;
+  } else if (_nbJamaisSuivi > 0) {
+    _ssSub = `${_nbJamaisSuivi} jamais enregistrés`;
+  } else {
+    _ssSub = `${_pctSansSeance}${t('adm_pct_non_vus')}`;
+  }
+  setT('adm-k-sans-seance-sub', _ssSub);
+
   const _ssBadgeEl = document.getElementById('adm-k-sans-seance-badge');
   if (_ssBadgeEl) {
     const _ssBadgeTxt = _nbSansSeance === 0 ? t('adm_presence_complete')
+      : _nbDecrocheurs > 0              ? `⚠️ ${_nbDecrocheurs} décroch.`
       : _nbSansSeance <= 5              ? `🟡 ${_nbSansSeance} ${t('adm_absent_lbl')}`
       : `🔴 ${_nbSansSeance} ${t('adm_non_suivis')}`;
     _ssBadgeEl.textContent        = _ssBadgeTxt;
