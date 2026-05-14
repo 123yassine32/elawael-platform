@@ -22661,6 +22661,13 @@ function _simBar(label, val, valSim, color, weight) {
  * Appelé une seule fois à l'ouverture de la section.
  */
 function initSimulation() {
+  /* Avertir si les données locales ont plus de 30 min sans synchronisation Firestore */
+  const _ts  = localStorage.getItem('ea_sync_ts');
+  const _age = _ts ? Date.now() - parseInt(_ts, 10) : Infinity;
+  if (_age > 30 * 60 * 1000) {
+    showToast('⚠ Données potentiellement périmées — synchronisez avant de simuler', '#d97706');
+  }
+
   const d         = getAdminData();
   const presences = loadData('ea_presences') || [];
 
@@ -22854,59 +22861,106 @@ function simReset() {
  * Exporte le scénario de simulation en cours au format PDF via window.print().
  * Capture : scores actuel/simulé, leviers, interprétation, impact alertes.
  */
-function simExportPDF() {
+async function simExportPDF() {
+  if (typeof html2canvas === 'undefined' || typeof jspdf === 'undefined') {
+    showToast('⚠ Bibliothèques PDF non chargées', '#dc2626'); return;
+  }
+
   /* Collecter les valeurs affichées */
   const _get = id => (document.getElementById(id)||{}).textContent || '—';
-  const scoreActuel  = _get('sim-score-actuel-val');
-  const scoreSimule  = _get('sim-score-simule-val');
-  const badgeActuel  = _get('sim-badge-actuel');
-  const badgeSimule  = _get('sim-badge-simule');
-  const delta        = _get('sim-delta');
-  const deltaSub     = _get('sim-delta-sub');
-  const interp       = document.getElementById('sim-interpretation')?.innerHTML || '—';
-  const dPres        = _get('sim-lbl-pres');
-  const dPEI         = _get('sim-lbl-pei');
-  const dIndep       = _get('sim-lbl-indep');
-  const duree        = _get('sim-lbl-duree');
-  const _now         = new Date().toLocaleString(CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR');
+  const scoreActuel = _get('sim-score-actuel-val');
+  const scoreSimule = _get('sim-score-simule-val');
+  const badgeActuel = _get('sim-badge-actuel');
+  const badgeSimule = _get('sim-badge-simule');
+  const delta       = _get('sim-delta');
+  const deltaSub    = _get('sim-delta-sub');
+  const interp      = document.getElementById('sim-interpretation')?.innerHTML || '—';
+  const dPres       = _get('sim-lbl-pres');
+  const dPEI        = _get('sim-lbl-pei');
+  const dIndep      = _get('sim-lbl-indep');
+  const duree       = _get('sim-lbl-duree');
+  const _now        = new Date().toLocaleString(CURRENT_LANG === 'ar' ? 'ar-MA' : 'fr-FR');
 
   /* Impact alertes avant/après */
   const urgAct = _get('sim-al-act-urg'), surAct = _get('sim-al-act-sur'), stbAct = _get('sim-al-act-stb');
   const urgSim = _get('sim-al-sim-urg'), surSim = _get('sim-al-sim-sur'), stbSim = _get('sim-al-sim-stb');
 
-  const win = window.open('', '_blank', 'width=800,height=900');
-  if (!win) { showToast('⚠ Autorisez les popups pour exporter', '#d97706'); return; }
+  /* Créer un conteneur hors-écran pour html2canvas (évite les popups bloqués) */
+  const tpl = document.createElement('div');
+  tpl.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;' +
+    'padding:32px 40px;font-family:Segoe UI,Arial,sans-serif;color:#1a1a2e;box-sizing:border-box;z-index:-1';
+  tpl.innerHTML = `
+    <div style="background:linear-gradient(135deg,#4c1d95,#7c3aed);border-radius:14px;padding:22px 28px;margin-bottom:24px;color:#fff">
+      <div style="font-size:20px;font-weight:800">Scénario de Simulation Stratégique</div>
+      <div style="font-size:12px;opacity:.7;margin-top:4px">Association El Awael — Généré le ${_now} · Durée plan : ${duree}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+      <div style="border-radius:12px;padding:16px 20px;text-align:center;border:2px solid #1b3a6b">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.6">Score actuel</div>
+        <div style="font-size:42px;font-weight:800;line-height:1;margin:8px 0;color:#1b3a6b">${scoreActuel}</div>
+        <div style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:100px;background:#f0f0f0;display:inline-block">${badgeActuel}</div>
+      </div>
+      <div style="border-radius:12px;padding:16px 20px;text-align:center;border:2px solid #7c3aed">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.6">Variation</div>
+        <div style="font-size:30px;font-weight:800;line-height:1;margin:8px 0;color:#7c3aed">${delta}</div>
+        <div style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:100px;background:#f0f0f0;display:inline-block">${deltaSub}</div>
+      </div>
+      <div style="border-radius:12px;padding:16px 20px;text-align:center;border:2px solid #059669">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.6">Score simulé</div>
+        <div style="font-size:42px;font-weight:800;line-height:1;margin:8px 0;color:#059669">${scoreSimule}</div>
+        <div style="font-size:12px;font-weight:700;padding:3px 12px;border-radius:100px;background:#f0f0f0;display:inline-block">${badgeSimule}</div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:800;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em;color:#666">Leviers d'action appliqués</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#2563eb">${dPres}</div>
+        <div style="font-size:11px;color:#666;margin-top:3px">Amélioration présence<br>(impact 30%)</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#7c3aed">${dPEI}</div>
+        <div style="font-size:11px;color:#666;margin-top:3px">Amélioration PEI<br>(impact 40%)</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#059669">${dIndep}</div>
+        <div style="font-size:11px;color:#666;margin-top:3px">Amélioration autonomie<br>(impact 20%)</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px">
+      <div style="border-radius:10px;padding:12px;border:1px solid #e5e7eb">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Situation actuelle</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgAct}</div><div style="font-size:10px;color:#dc2626">Urgents</div></div>
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surAct}</div><div style="font-size:10px;color:#d97706">Surveiller</div></div>
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbAct}</div><div style="font-size:10px;color:#059669">Stables</div></div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:24px;color:#666">→</div>
+      <div style="border-radius:10px;padding:12px;border:1px solid #e5e7eb">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Situation simulée</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgSim}</div><div style="font-size:10px;color:#dc2626">Urgents</div></div>
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surSim}</div><div style="font-size:10px;color:#d97706">Surveiller</div></div>
+          <div style="text-align:center;border-radius:8px;padding:8px;background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbSim}</div><div style="font-size:10px;color:#059669">Stables</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em;color:#666">Interprétation & recommandations</div>
+    <div style="background:#faf5ff;border-radius:10px;padding:14px 18px;border:1px solid #e9d5ff;margin-bottom:20px;font-size:12px;line-height:1.6">${interp}</div>
+    <div style="font-size:10px;color:#999;text-align:center;border-top:1px solid #eee;padding-top:12px">
+      ElAwail Digital Platform · Rapport confidentiel — usage interne · ${_now}
+    </div>`;
+  document.body.appendChild(tpl);
 
-  win.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"> <title>Scénario Simulation — El Awael</title> <style> * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; color:#1a1a2e; padding:32px 40px; }
-    .page-header { background:linear-gradient(135deg,#4c1d95,#7c3aed); border-radius:14px;
-      padding:22px 28px; margin-bottom:24px; color:#fff; }
-    .page-header h1 { font-size:20px; font-weight:800; }
-    .page-header p  { font-size:12px; opacity:.7; margin-top:4px; }
-    .scores-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:20px; }
-    .score-box  { border-radius:12px; padding:16px 20px; text-align:center; border:2px solid #e5e7eb; }
-    .score-box.actuel { border-color:#1b3a6b; }
-    .score-box.simule { border-color:#059669; }
-    .score-box.delta  { border-color:#7c3aed; }
-    .score-val  { font-size:42px; font-weight:800; line-height:1; margin:8px 0; }
-    .score-lbl  { font-size:11px; text-transform:uppercase; letter-spacing:.1em; opacity:.6; }
-    .score-badge{ font-size:12px; font-weight:700; padding:3px 12px; border-radius:100px;
-      background:#f0f0f0; display:inline-block; margin-top:4px; }
-    .leviers    { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
-    .levier-box { background:#f8f9fa; border-radius:10px; padding:12px 16px; text-align:center; }
-    .levier-val { font-size:22px; font-weight:800; }
-    .levier-lbl { font-size:11px; color:#666; margin-top:3px; }
-    .impact-row { display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; margin-bottom:20px; }
-    .impact-col { border-radius:10px; padding:12px; border:1px solid #e5e7eb; }
-    .impact-col h3 { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
-    .alerte-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-    .al-cell { text-align:center; border-radius:8px; padding:8px; }
-    .interp { background:#faf5ff; border-radius:10px; padding:14px 18px; border:1px solid #e9d5ff; margin-bottom:20px; font-size:12px; line-height:1.6; }
-    .footer { font-size:10px; color:#999; text-align:center; margin-top:24px; border-top:1px solid #eee; padding-top:12px; }
-    @media print { body { padding:20px; } }
-  </style></head><body> <div class="page-header"> <h1>Scénario de Simulation Stratégique</h1> <p>Association El Awael — Généré le ${_now} · Durée plan : ${duree}</p> </div> <div class="scores-row"> <div class="score-box actuel"> <div class="score-lbl">Score actuel</div> <div class="score-val" style="color:#1b3a6b">${scoreActuel}</div> <div class="score-badge">${badgeActuel}</div> </div> <div class="score-box delta"> <div class="score-lbl">Variation</div> <div class="score-val" style="color:#7c3aed;font-size:30px">${delta}</div> <div class="score-badge">${deltaSub}</div> </div> <div class="score-box simule"> <div class="score-lbl">Score simulé</div> <div class="score-val" style="color:#059669">${scoreSimule}</div> <div class="score-badge">${badgeSimule}</div> </div> </div> <h3 style="font-size:13px;font-weight:800;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em;color:#666">Leviers d'action appliqués</h3> <div class="leviers"> <div class="levier-box"> <div class="levier-val" style="color:#2563eb">${dPres}</div> <div class="levier-lbl">Amélioration présence<br>(impact 30%)</div> </div> <div class="levier-box"> <div class="levier-val" style="color:#7c3aed">${dPEI}</div> <div class="levier-lbl">Amélioration PEI<br>(impact 40%)</div> </div> <div class="levier-box"> <div class="levier-val" style="color:#059669">${dIndep}</div> <div class="levier-lbl">Amélioration autonomie<br>(impact 20%)</div> </div> </div> <div class="impact-row"> <div class="impact-col"> <h3>Situation actuelle</h3> <div class="alerte-grid"> <div class="al-cell" style="background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgAct}</div><div style="font-size:10px;color:#dc2626">🔴 Urgents</div></div> <div class="al-cell" style="background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surAct}</div><div style="font-size:10px;color:#d97706">🟡 Surveiller</div></div> <div class="al-cell" style="background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbAct}</div><div style="font-size:10px;color:#059669">🟢 Stables</div></div> </div> </div> <div style="text-align:center;font-size:24px;color:#666">→</div> <div class="impact-col"> <h3>Situation simulée</h3> <div class="alerte-grid"> <div class="al-cell" style="background:#fee2e2"><div style="font-size:20px;font-weight:800;color:#dc2626">${urgSim}</div><div style="font-size:10px;color:#dc2626">🔴 Urgents</div></div> <div class="al-cell" style="background:#fef3c7"><div style="font-size:20px;font-weight:800;color:#d97706">${surSim}</div><div style="font-size:10px;color:#d97706">🟡 Surveiller</div></div> <div class="al-cell" style="background:#dcfce7"><div style="font-size:20px;font-weight:800;color:#059669">${stbSim}</div><div style="font-size:10px;color:#059669">🟢 Stables</div></div> </div> </div> </div> <h3 style="font-size:13px;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em;color:#666">Interprétation & recommandations</h3> <div class="interp">${interp}</div> <div class="footer">ElAwail Digital Platform · Rapport confidentiel — usage interne · ${_now}</div> <script>window.onload = function() { window.print(); };<\/script> </body></html>`);
-  win.document.close();
-  auditLog('export', 'Export PDF scénario simulation', `Score: ${scoreActuel} → ${scoreSimule}`);
+  showToast('⏳ Génération du PDF en cours…', '#7c3aed');
+  try {
+    const ok = await _htmlToPDF(tpl, `Simulation_ElAwael_${_exportDate()}.pdf`, { orientation: 'portrait' });
+    if (ok) {
+      auditLog('export', 'Export PDF scénario simulation', `Score: ${scoreActuel} → ${scoreSimule}`);
+    }
+  } finally {
+    document.body.removeChild(tpl);
+  }
 }
 
 /* ── Scénarios prédéfinis ─────────────────────────────────
@@ -22943,26 +22997,29 @@ function _simRisqueBenef(b, presences, deltaPres, deltaPEI) {
   let score = 0;
 
   /* Séances du bénéficiaire */
-  const mySeances = (presences || []).filter(p => (p.presences || []).some(x =>x.nom === b.nom)
-  );
+  const mySeances = (presences || []).filter(p => (p.presences || []).some(x => x.nom === b.nom));
 
-  /* 1. Présence simulée */
+  /* 1. Présence simulée — aligne avec calcRisqueBenef() :
+        si aucune donnée de présence → risque max +40 pts (non simulable car pas de base) */
   let totalObs = 0, totalPres = 0;
   mySeances.forEach(p => {
-    const x = (p.presences || []).find(x =>x.nom === b.nom);
+    const x = (p.presences || []).find(x => x.nom === b.nom);
     if (x) { totalObs++; if (x.statut === 'P') totalPres++; }
   });
-  if (totalObs >0) {
+  if (totalObs > 0) {
     const taux = Math.min(100, Math.round(totalPres / totalObs * 100) + deltaPres);
     if      (taux < 50) score += 40;
     else if (taux < 70) score += 25;
+  } else {
+    /* Aucun suivi de présence — même comportement que calcRisqueBenef */
+    score += 40;
   }
 
   /* 2. PEI simulé */
   if (b.type === 'pei' && (b.pei_domaines || []).length) {
-    const total = b.pei_domaines.reduce((s, d) =>s + (d.objectifs || []).length, 0);
-    const done  = b.pei_domaines.reduce((s, d) =>s + (d.objectifs || []).filter(o =>o.statut === 'done').length, 0);
-    if (total >0) {
+    const total = b.pei_domaines.reduce((s, d) => s + (d.objectifs || []).length, 0);
+    const done  = b.pei_domaines.reduce((s, d) => s + (d.objectifs || []).filter(o => o.statut === 'done').length, 0);
+    if (total > 0) {
       const pct = Math.min(100, Math.round(done / total * 100) + deltaPEI);
       if      (pct < 30) score += 35;
       else if (pct < 50) score += 20;
@@ -22972,10 +23029,11 @@ function _simRisqueBenef(b, presences, deltaPres, deltaPEI) {
   /* 3. Dossier incomplet (non simulable) */
   if (!b.dossier) score += 15;
 
-  /* 4. Inactivité ce mois (non simulable) */
+  /* 4. Inactivité ce mois — aligne avec calcRisqueBenef() :
+        s'applique même si aucune séance n'a jamais été enregistrée */
   const now = new Date();
   const ym  = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-  if (mySeances.length >0 && !mySeances.some(p =>p.date && p.date.startsWith(ym))) {
+  if (!mySeances.some(p => p.date && p.date.startsWith(ym))) {
     score += 10;
   }
 
