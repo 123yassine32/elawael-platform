@@ -19690,12 +19690,12 @@ function renderAdminOverview(){
     seancesMois.forEach(p => (p.presences||[]).forEach(x => {
       if (x.nom === b.nom) { bObs++; if(x.statut==='P') bPres++; }
     }));
-    if (bObs >0) {
+    if (bObs > 0) {
       const bPct = Math.round(bPres / bObs * 100);
       if (bPct < 50)       pts += 40;
       else if (bPct < 70)  pts += 25;
     } else {
-      pts += 10; /* Aucune séance ce mois */
+      pts += 40; /* Aucune donnée de présence → risque équivalent à présence < 50% */
     }
     /* Réalisation PEI bénéficiaire */
     if (b.type === 'pei') {
@@ -22272,10 +22272,14 @@ function calcRisqueBenef(b, presences) {
     const x = (p.presences || []).find(x =>x.nom === b.nom);
     if (x) { totalObs++; if (x.statut === 'P') totalPres++; }
   });
-  if (totalObs >0) {
+  if (totalObs > 0) {
     const taux = Math.round(totalPres / totalObs * 100);
     if      (taux < 50) { score += 40; raisons.push({ label: `Présence ${taux}%`, pts: 40 }); }
     else if (taux < 70) { score += 25; raisons.push({ label: `Présence ${taux}%`, pts: 25 }); }
+  } else {
+    /* Aucune donnée de présence enregistrée → risque équivalent à présence < 50% */
+    score += 40;
+    raisons.push({ label: 'Suivi présence absent', pts: 40 });
   }
 
   /* 2. Réalisation PEI (bénéficiaires type pei uniquement) */
@@ -22292,12 +22296,16 @@ function calcRisqueBenef(b, presences) {
   /* 3. Dossier incomplet */
   if (!b.dossier) { score += 15; raisons.push({ label: 'Dossier incomplet', pts: 15 }); }
 
-  /* 4. Aucune séance ce mois-ci */
+  /* 4. Aucune séance ce mois-ci
+     S'applique à tous les bénéficiaires sans séance ce mois,
+     y compris ceux qui n'ont jamais eu de séance enregistrée.
+     (Si aucune donnée du tout, ce +10 s'ajoute aux +40 ci-dessus) */
   const now = new Date();
   const ym  = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-  if (mySeances.length >0 && !mySeances.some(p =>p.date && p.date.startsWith(ym))) {
+  const aSeanceCeMois = mySeances.some(p => p.date && p.date.startsWith(ym));
+  if (!aSeanceCeMois) {
     score += 10;
-    raisons.push({ label: 'Inactif ce mois', pts: 10 });
+    raisons.push({ label: 'Aucune séance ce mois', pts: 10 });
   }
 
   const result = { score: Math.min(100, score), raisons };
