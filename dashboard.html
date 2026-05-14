@@ -4301,7 +4301,7 @@ if (typeof applyUserToPortal !== 'undefined') {
         /* Compter sans ouvrir le panneau */
         const _tc = CURRENT_USER?.teacherId || '';
         const _mn = new Set(BENEFICIAIRES.filter(b=>b.teacherId===_tc).map(b=>b.nom));
-        let _nc = (loadData('ea_alertes')||[]).filter(a=>!a.traite&&a.type==='urgent').length;
+        let _nc = (loadData('ea_alertes')||[]).filter(a=>!a.resolved&&a.type==='urgent').length;
         _nc += (loadData('ea_rapports')||[]).filter(r=>_mn.has(r.benef)&&r.statut==='brouillon').length >0 ? 1 : 0;
         _nc += (loadData('ea_messages')||[]).filter(m=>!m.lu&&m.fromId!==_tc).length;
         if(typeof updateNotifBell==='function') updateNotifBell(_nc);
@@ -15591,7 +15591,7 @@ function buildInfoAccueil(user, myBenef) {
 
   /* ── Alertes urgentes non traitées ── */
   const alertesUrgentes = (loadData('ea_alertes')||[])
-    .filter(a=>a.type==='urgent'&&!a.traite)
+    .filter(a=>a.type==='urgent'&&!a.resolved)
     .slice(0,3);
 
   /* Construire les lignes de séances */
@@ -17173,6 +17173,20 @@ function initCharCounters() {
 }
 document.addEventListener('DOMContentLoaded', initCharCounters);
 
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURATION ANNÉE SCOLAIRE — à mettre à jour chaque rentrée
+   ═══════════════════════════════════════════════════════════════ */
+const ANNEE_SCOLAIRE = {
+  label  : '2025-2026',
+  s2Debut: '2026-02',        /* Premier mois du semestre 2 (YYYY-MM) */
+  s2Fin  : '2026-06',        /* Dernier mois du semestre 2 (YYYY-MM) */
+  s2DebutDate : '2026-02-01',/* Date complète de début S2 */
+  moisS2 : {                 /* Labels des mois du semestre */
+    '2026-02': 'Février', '2026-03': 'Mars', '2026-04': 'Avril',
+    '2026-05': 'Mai',     '2026-06': 'Juin'
+  }
+};
+
 let PRESENCES = loadData('ea_presences');
 let NOTES     = loadData('ea_notes');
 let SUIVIS    = loadData('ea_suivis');
@@ -18652,7 +18666,7 @@ function renderNotifCenter() {
 
   /* ── 1. Alertes urgentes non traitées ── */
   const alertes = (loadData('ea_alertes') || [])
-    .filter(a => !a.traite && a.type === 'urgent')
+    .filter(a => !a.resolved && a.type === 'urgent')
     .slice(0, 5);
   alertes.forEach(a =>items.push({
     icon: '🔴', color: '#dc2626', bg: '#fef2f2', border: '#fecaca',
@@ -19536,9 +19550,14 @@ function renderAdminOverview(){
   const peiB       = benefAdmin.filter(b =>b.type === 'pei');
   const pctD       = d.totalBenef ? Math.round(d.totalDossiers / d.totalBenef * 100) : 0;
 
-  // ── Mois courant (format YYYY-MM pour filtrage) ──
+  // ── Mois courant plafonné à la fin de l'année scolaire ──
   const _now  = new Date();
-  const _ym   = _now.getFullYear() + '-' + String(_now.getMonth() + 1).padStart(2, '0');
+  const _ymRaw = _now.getFullYear() + '-' + String(_now.getMonth() + 1).padStart(2, '0');
+  /* Si on dépasse la fin du semestre (ex: juillet après le bac), on reste sur le
+     dernier mois de l'année scolaire pour que les KPIs restent significatifs */
+  const _ym   = _ymRaw > ANNEE_SCOLAIRE.s2Fin ? ANNEE_SCOLAIRE.s2Fin
+              : _ymRaw < ANNEE_SCOLAIRE.s2Debut ? ANNEE_SCOLAIRE.s2Debut
+              : _ymRaw;
   const seancesMois = presences.filter(p =>p.date && p.date.startsWith(_ym));
 
   // ══════════════════════════════════════════════════
@@ -20197,7 +20216,7 @@ function renderAdminOverview(){
   (function _renderProjection() {
 
     /* ── Calcul de la temporalité du semestre 2 ─────── */
-    const _debutS2     = new Date('2026-02-01');
+    const _debutS2     = new Date(ANNEE_SCOLAIRE.s2DebutDate);
     /* _finSem2 et _semRest sont définis dans la section Banner ci-dessus */
     const _totalSemS2  = Math.max(1, Math.ceil((_finSem2 - _debutS2) / (7*24*3600*1000)));
     const _semsEcoul   = Math.max(1, _totalSemS2 - _semRest);
@@ -20479,7 +20498,7 @@ function calcOrgScore(d, presences) {
      Source 2 : feuilles de ghiyab ea_gh_* par bénéficiaire (S2)
      Logique   : Source 1 prioritaire → Source 2 si Source 1 vide
   ════════════════════════════════════════════════════════════════ */
-  const _debutS2       = '2026-02';
+  const _debutS2       = ANNEE_SCOLAIRE.s2Debut;
   const _presS2        = presences.filter(p =>p.date && p.date >= _debutS2);
   let tauxPresence     = 0;
   let _presenceDonnees = false;
@@ -20625,7 +20644,7 @@ let _admScoreChart = null;
  * Permet à l'admin de voir exactement quelles séances alimentent le taux.
  */
 function _admVoirSeancesPresence() {
-  const _debutS2 = '2026-02';
+  const _debutS2 = ANNEE_SCOLAIRE.s2Debut;
   const _toutes  = (loadData('ea_presences') || []).filter(p =>p.date && p.date >= _debutS2);
 
   if (_toutes.length === 0) {
@@ -20634,7 +20653,7 @@ function _admVoirSeancesPresence() {
   }
 
   /* Construire le contenu du modal */
-  const _moisMap = {'2026-02':'Février','2026-03':'Mars','2026-04':'Avril','2026-05':'Mai','2026-06':'Juin'};
+  const _moisMap = ANNEE_SCOLAIRE.moisS2;
   const _lignes = _toutes.map((s, i) => {
     const _mois = s.date ? s.date.substring(0,7) : '?';
     const _tot  = (s.presences||[]).length;
@@ -20682,7 +20701,7 @@ function _admSupprimerUneSeance(seanceId) {
  * Appelé depuis le bouton dans le breakdown du score.
  */
 function _admSupprimerSeancesPresence() {
-  const _debutS2 = '2026-02';
+  const _debutS2 = ANNEE_SCOLAIRE.s2Debut;
   const _toutes  = loadData('ea_presences') || [];
   const _s2      = _toutes.filter(p =>p.date && p.date >= _debutS2);
   const _hors_s2 = _toutes.filter(p => !p.date || p.date < _debutS2);
@@ -20702,7 +20721,7 @@ function _admSupprimerSeancesPresence() {
   _modal.innerHTML = `
     <div style="background:var(--card);border-radius:14px;padding:28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3)"> <div style="font-size:36px;text-align:center;margin-bottom:14px">⚠</div> <div style="font-size:16px;font-weight:800;text-align:center;color:var(--danger);margin-bottom:8px">Supprimer toutes les séances S2 ?</div> <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.6"> <strong>${_s2.length} séance${_s2.length>1?'s':''}</strong>de présence (depuis février 2026) seront définitivement supprimées.<br>Le taux de présence repassera à <strong>—</strong> (données insuffisantes).
       </div> <div style="display:flex;gap:10px;justify-content:center"> <button onclick="document.getElementById('adm-modal-confirm-pres').remove()" class="btn btn-o" style="font-size:13px;flex:1">Annuler</button> <button onclick="(function(){
-          const h=loadData('ea_presences').filter(p=>!p.date||p.date<'2026-02');
+          const h=loadData('ea_presences').filter(p=>!p.date||p.date<ANNEE_SCOLAIRE.s2Debut);
           PRESENCES=h; saveData('ea_presences',h);
           auditLog('presence','Suppression en masse S2','${_s2.length} séances supprimées par admin');
           showToast('✅ ${_s2.length} séance${_s2.length>1?'s':''} supprimée${_s2.length>1?'s':''}','#059669');
@@ -20783,7 +20802,7 @@ function renderOrgScore(d, presences) {
   /* ── Barres de décomposition — avec notes contextuelles et sous-labels ── */
 
   /* Analyser les séances S2 pour afficher la source de la présence */
-  const _debutS2ref    = '2026-02';
+  const _debutS2ref    = ANNEE_SCOLAIRE.s2Debut;
   const _presS2ref     = (loadData('ea_presences')||[]).filter(p =>p.date && p.date >= _debutS2ref);
   const _nbSeancesS2   = _presS2ref.length;
   /* Dates des séances : regrouper par mois pour affichage lisible */
@@ -21733,7 +21752,10 @@ function renderAdminClasses(){
   /* Calcul du taux de présence par bénéficiaire */
   const _allPres = loadData('ea_presences') || [];
   const _now = new Date();
-  const _ym  = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const _ymRaw = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const _ym  = _ymRaw > ANNEE_SCOLAIRE.s2Fin ? ANNEE_SCOLAIRE.s2Fin
+             : _ymRaw < ANNEE_SCOLAIRE.s2Debut ? ANNEE_SCOLAIRE.s2Debut
+             : _ymRaw;
 
   container.innerHTML=Object.values(classesMap).map((g,idx)=>{
     const color=g.classeColor||COLORS[idx%COLORS.length];
@@ -21788,7 +21810,10 @@ function renderAdminCadres(){
   /* Données communes — presences + mois courant */
   const allPres = loadData('ea_presences') || [];
   const _now    = new Date();
-  const _ym     = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const _ymRaw  = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+  const _ym     = _ymRaw > ANNEE_SCOLAIRE.s2Fin ? ANNEE_SCOLAIRE.s2Fin
+                : _ymRaw < ANNEE_SCOLAIRE.s2Debut ? ANNEE_SCOLAIRE.s2Debut
+                : _ymRaw;
   const _seancesMois = allPres.filter(p =>p.date && p.date.startsWith(_ym));
 
   container.innerHTML = itarUsers.map((u,i)=>{
