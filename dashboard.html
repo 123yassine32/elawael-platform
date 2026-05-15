@@ -447,7 +447,8 @@ canvas{max-height:200px;}
 }
 
 /* ── ADMIN OVERLAY ── */
-#admin-overlay{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;overflow:hidden;}
+/* z-index:1200 > sidebar desktop(100) et sidebar mobile(999!important) */
+#admin-overlay{position:fixed;inset:0;background:var(--bg);z-index:1200;display:flex;overflow:hidden;}
 #admin-overlay.hidden{display:none;}
 .admin-sidebar{width:260px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;overflow-y:auto;flex-shrink:0;box-shadow:3px 0 16px rgba(0,0,0,0.15);}
 .admin-main{flex:1;overflow-y:auto;padding:28px;}
@@ -19563,6 +19564,9 @@ function showAdminDashboard(){
     _admOverlay.classList.remove('hidden');
     _admOverlay.style.display = 'flex'; /* sécurité : forcer display même si classe .hidden a été forcée */
   }
+
+  /* Masquer la sidebar enseignant sur mobile pour éviter qu'elle couvre l'overlay */
+  if (typeof mobCloseSidebar === 'function') mobCloseSidebar();
 
   /* Masquer explicitement les vues du portail enseignant sous l'overlay admin */
   ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile'].forEach(t => {
