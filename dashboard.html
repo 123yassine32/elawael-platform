@@ -5326,10 +5326,6 @@ window.onload = () => {
     /* Recharger les statuts PEI (synchronisés depuis Firestore si disponible) */
     if (typeof loadPEIStatuses === 'function') loadPEIStatuses();
 
-    /* Masquer l'écran de chargement */
-    if (loading) loading.classList.add('hidden');
-
-    /* Charger le bon portail selon le rôle */
     /* ── Journal d'audit : connexion ── */
     setTimeout(() => {
       auditLog('connexion', 'Connexion au tableau de bord',
@@ -5342,13 +5338,33 @@ window.onload = () => {
         .catch(e =>console.warn('[LastLogin]', e));
     }
 
-    /* Routing selon le rôle (CLAUDE.md §6) */
-    if (['admin', 'gestionnaire', 'consultant'].includes(CURRENT_USER.role)) {
-      showAdminDashboard();
-    } else {
-      applyUserToPortal(CURRENT_USER);
-      renderTable();
-      showTab('accueil');
+    /* ── Routing selon le rôle (CLAUDE.md §6) ──
+       NB : l'écran de chargement est masqué APRÈS le routing pour éviter
+       que l'utilisateur ne voie brièvement le portail statique (Marzouk HTML). */
+    try {
+      const _role = (CURRENT_USER && CURRENT_USER.role) ? CURRENT_USER.role.toLowerCase() : '';
+      console.log('[Auth] Routing → rôle :', _role, '| teacherId :', CURRENT_USER && CURRENT_USER.teacherId);
+      if (['admin', 'gestionnaire', 'consultant'].includes(_role)) {
+        showAdminDashboard();
+      } else {
+        applyUserToPortal(CURRENT_USER);
+        renderTable();
+        showTab('accueil');
+      }
+    } catch(routingErr) {
+      console.error('[Auth] Erreur routing :', routingErr);
+      /* Fallback : afficher le panneau admin si possible */
+      try {
+        const overlay = document.getElementById('admin-overlay');
+        if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
+      } catch(e2) { /* ignore */ }
+    }
+
+    /* Masquer l'écran de chargement APRÈS que le bon portail est affiché */
+    if (loading) {
+      loading.style.opacity = '0';
+      loading.style.pointerEvents = 'none';
+      setTimeout(() => { if (loading) loading.style.display = 'none'; }, 400);
     }
 
     /* [Problème 3] Démarrer le refresh automatique des données toutes les 10 minutes. */
@@ -5806,7 +5822,12 @@ let USERS = [
     username: 'admin',
     name: 'Administration — El Awael',
     matiere: 'Administrateur',
-    role: 'admin'
+    role: 'admin',
+    teacherId: 'admin',
+    classe: '',
+    classeColor: '#7c3aed',
+    classeIcon: '🛡️',
+    stats: { niveaux: 0, modules: 0 }
   }
 ];
 
@@ -5833,8 +5854,9 @@ function applyUserToPortal(user) {
   const myBenef = BENEFICIAIRES.filter(b =>b.teacherId === user.teacherId);
   const total = myBenef.length;
   const dossiers = myBenef.filter(b =>b.dossier).length;
-  const niveaux = user.stats.niveaux;
-  const modules = user.stats.modules;
+  const _stats = user.stats || { niveaux: 2, modules: 4 };
+  const niveaux = _stats.niveaux;
+  const modules = _stats.modules;
 
   // Update sidebar mini stats
   const tsmVals = document.querySelectorAll('.tsm-v');
@@ -19272,7 +19294,8 @@ function handleBenefBack() {
 
 function backToAdmin() {
   adminMode = false;
-  CURRENT_USER = null;
+  /* NE PAS mettre CURRENT_USER à null — il est toujours nécessaire pour le panneau admin */
+  /* CURRENT_USER = null; */
 
   // Hide all portal views
   ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile',
@@ -19535,7 +19558,16 @@ function showAdminDashboard(){
   const topbarTag = document.querySelector('.topbar-tag');
   if (topbarTag) topbarTag.textContent = _roleLabels[CURRENT_USER.role] || ' Admin';
   document.title = 'ElAwail Digital — ' + (CURRENT_USER.role || 'Admin');
-  document.getElementById('admin-overlay').classList.remove('hidden');
+  const _admOverlay = document.getElementById('admin-overlay');
+  if (_admOverlay) {
+    _admOverlay.classList.remove('hidden');
+    _admOverlay.style.display = 'flex'; /* sécurité : forcer display même si classe .hidden a été forcée */
+  }
+
+  /* Masquer explicitement les vues du portail enseignant sous l'overlay admin */
+  ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile'].forEach(t => {
+    const el = document.getElementById('view-' + t); if (el) el.style.display = 'none';
+  });
 
   /* Appliquer les restrictions visuelles selon le rôle */
   appliquerRestrictionsAdmin();
