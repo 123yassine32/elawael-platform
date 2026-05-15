@@ -6150,7 +6150,13 @@ async function doLogout() {
 
   /* Masquer le panneau admin si ouvert */
   const adminDash = document.getElementById('admin-overlay');
-  if (adminDash) adminDash.classList.add('hidden');
+  if (adminDash) { adminDash.classList.add('hidden'); adminDash.style.display = 'none'; }
+
+  /* Restaurer le portail enseignant (masqué par showAdminDashboard) */
+  const _lts = document.querySelector('aside.sidebar');
+  const _ltm = document.querySelector('main.main');
+  if (_lts) _lts.style.display = '';
+  if (_ltm) _ltm.style.display = '';
 
   /* Réinitialiser l'état du portail */
   resetPortalState();
@@ -19315,8 +19321,16 @@ function backToAdmin() {
   const topbarTag = document.querySelector('.topbar-tag');
   if(topbarTag) topbarTag.textContent = ' Admin — Accès complet';
 
+  // Re-masquer le portail enseignant (sidebar + main)
+  const _bts = document.querySelector('aside.sidebar');
+  const _btm = document.querySelector('main.main');
+  if (_bts) _bts.style.display = 'none';
+  if (_btm) _btm.style.display = 'none';
+
   // Show admin overlay and go to benef section
-  document.getElementById('admin-overlay').classList.remove('hidden');
+  const _bOverlay = document.getElementById('admin-overlay');
+  _bOverlay.classList.remove('hidden');
+  _bOverlay.style.display = 'flex';
   adminShowSection('benef');
 }
 
@@ -19562,14 +19576,21 @@ function showAdminDashboard(){
   const _admOverlay = document.getElementById('admin-overlay');
   if (_admOverlay) {
     _admOverlay.classList.remove('hidden');
-    _admOverlay.style.display = 'flex'; /* sécurité : forcer display même si classe .hidden a été forcée */
+    _admOverlay.style.display = 'flex';
   }
 
-  /* Masquer la sidebar enseignant sur mobile pour éviter qu'elle couvre l'overlay */
-  if (typeof mobCloseSidebar === 'function') mobCloseSidebar();
+  /* ── Masquer COMPLÈTEMENT le portail enseignant (sidebar + main + toutes les vues) ──
+     La sidebar enseignant est position:fixed — en mode RTL elle est à right:0, ce qui
+     peut la rendre visible à côté du panneau admin. On la masque explicitement. */
+  const _teacherSidebar = document.querySelector('aside.sidebar');
+  const _teacherMain    = document.querySelector('main.main');
+  if (_teacherSidebar) _teacherSidebar.style.display = 'none';
+  if (_teacherMain)    _teacherMain.style.display    = 'none';
 
-  /* Masquer explicitement les vues du portail enseignant sous l'overlay admin */
-  ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile'].forEach(t => {
+  /* Masquer aussi toutes les vues contenu enseignant */
+  ['accueil','beneficiaires','beneficiaire-detail','alertes','saisie','profile',
+   'jadwal-talabat','jadwal-ri3aya','tan9it','ta9yim-asasi','ghiyab','kpi-classe',
+   'rh','recommandations','planning','objectifs','messages','bilan','calendrier'].forEach(t => {
     const el = document.getElementById('view-' + t); if (el) el.style.display = 'none';
   });
 
@@ -21936,6 +21957,13 @@ function adminOpenBenef(idx){
 
   // Hide admin overlay — show the main portal canvas
   document.getElementById('admin-overlay').classList.add('hidden');
+  document.getElementById('admin-overlay').style.display = 'none';
+
+  // Restaurer le portail enseignant (sidebar + main) masqué par showAdminDashboard
+  const _ts = document.querySelector('aside.sidebar');
+  const _tm = document.querySelector('main.main');
+  if (_ts) _ts.style.display = '';
+  if (_tm) _tm.style.display = '';
 
   // Show main tabs bar (needed by openBeneficiaire)
   const tabsBar = document.getElementById('main-tabs-bar');
