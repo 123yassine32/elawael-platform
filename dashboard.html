@@ -987,13 +987,13 @@ body.is-consultant .sensitive-data::after {
 ═══════════════════════════════════════════════ -->
 <div id="adm-section-damj" class="adm-section" style="display:none"> <!-- KPIs --> <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px"> <div class="card" style="border-top:3px solid #059669;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#059669" id="dj-kpi-total">45</div><div class="kpi-label">مجموع المدمجين</div></div> </div> <div class="card" style="border-top:3px solid #e11d48;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#e11d48" id="dj-kpi-autisme">0</div><div class="kpi-label">التوحد</div></div> </div> <div class="card" style="border-top:3px solid #7c3aed;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#7c3aed" id="dj-kpi-dhnia">0</div><div class="kpi-label">ذهنية / حركية</div></div> </div> <div class="card" style="border-top:3px solid #2563eb;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#2563eb" id="dj-kpi-ecoles">0</div><div class="kpi-label">مدارس دامجة</div></div> </div> <div class="card" style="border-top:3px solid #d97706;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#d97706" id="dj-kpi-tawt">0</div><div class="kpi-label">تطوان / مرتيل</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <input type="text" class="form-control" id="dj-search" placeholder=" بحث بالاسم، المدرسة، الإعاقة، رقم مسار..." style="flex:1;min-width:220px" oninput="filterDamj()"> <select class="form-control" id="dj-filter-ecole" style="width:210px" onchange="filterDamj()"> <option value="">كل المدارس</option> </select> <select class="form-control" id="dj-filter-handicap" style="width:175px" onchange="filterDamj()"> <option value="">كل الإعاقات</option> <option>التوحد</option> <option>ذهنية</option> <option>ذهنية / حركية</option> <option>ذهنية حركية عميقة</option> <option>حركية</option> <option>ثلاثي الصبغي 21</option> <option>سمعية</option> <option>صعوبة التعلم</option> </select> <select class="form-control" id="dj-filter-ville" style="width:120px" onchange="filterDamj()"> <option value="">كل المدن</option> <option>مرتيل</option> <option>تطوان</option> </select> <button class="btn-sec" onclick="filterDamj('reset')" style="font-size:12px">↺ إعادة</button> <span id="dj-count" style="font-size:12px;color:var(--muted)"></span> </div> </div> <!-- Tableau --> <div class="card"> <div class="card-header"> <div class="card-title">لائحة المستفيدين المدمجين بالمدارس — 2026</div> <span style="font-size:11px;color:var(--muted)">جمعية الأوائل — فرع مرتيل</span> </div> <div class="card-body" style="padding:0;overflow-x:auto"> <table style="width:100%;border-collapse:collapse;direction:rtl" id="dj-table"> <thead> <tr style="background:var(--bg);border-bottom:2px solid var(--border)"> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">رت</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الاسم الكامل</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الجنس</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">ت. الازدياد</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">السن</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">نوعية الإعاقة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">المدرسة الدامجة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">المستوى</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">رقم مسار</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الخدمات</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">تفاصيل</th> </tr> </thead> <tbody id="dj-tbody"></tbody> </table> </div> </div> <div id="dj-detail" style="display:none;margin-top:20px"></div>
 </div> <div id="adm-section-taqsimat" class="adm-section" style="display:none"> <!-- KPIs --> <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px"> <div class="card" style="border-top:3px solid #d97706;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#d97706" id="tq-kpi-total">228</div><div class="kpi-label">مجموع المستفيدين</div></div> </div> <div class="card" style="border-top:3px solid #e11d48;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#e11d48" id="tq-kpi-autisme">0</div><div class="kpi-label">التوحد (A)</div></div> </div> <div class="card" style="border-top:3px solid #2563eb;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#2563eb" id="tq-kpi-trisomie">0</div><div class="kpi-label">ثلاثي الصبغي (T)</div></div> </div> <div class="card" style="border-top:3px solid #7c3aed;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#7c3aed" id="tq-kpi-handia">0</div><div class="kpi-label">ذهنية/حركية (H)</div></div> </div> <div class="card" style="border-top:3px solid #059669;text-align:center"> <div class="kpi"><div class="kpi-val" style="color:#059669" id="tq-kpi-infirm">0</div><div class="kpi-label">شلل دماغي (I)</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <input type="text" class="form-control" id="tq-search" placeholder=" بحث بالاسم أو الإعاقة أو الإطار..." style="flex:1;min-width:220px" oninput="filterTaqsimat()"> <select class="form-control" id="tq-filter-itar" style="width:200px" onchange="filterTaqsimat()"> <option value="">كل الإطارات</option> </select> <select class="form-control" id="tq-filter-code" style="width:160px" onchange="filterTaqsimat()"> <option value="">كل الإعاقات</option> <option value="A">التوحد (A)</option> <option value="T">ثلاثي الصبغي (T)</option> <option value="H">ذهنية/حركية (H)</option> <option value="I">شلل دماغي (I)</option> </select> <select class="form-control" id="tq-filter-sexe" style="width:120px" onchange="filterTaqsimat()"> <option value="">الجنسان</option> <option value="ذكر">ذكر</option> <option value="أنثى">أنثى</option> </select> <button class="btn-sec" onclick="filterTaqsimat('reset')" style="font-size:12px">↺ إعادة</button> <span id="tq-count" style="font-size:12px;color:var(--muted)"></span> </div> </div> <!-- Tableau --> <div class="card"> <div class="card-header"> <div class="card-title">تقسيمات اللوائح — مركز مرتيل 2026</div> <span style="font-size:11px;color:var(--muted)">228 مستفيد · 40 إطار</span> </div> <div class="card-body" style="padding:0;overflow-x:auto"> <table style="width:100%;border-collapse:collapse;direction:rtl" id="tq-table"> <thead> <tr style="background:var(--bg);border-bottom:2px solid var(--border)"> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">رت</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الاسم الكامل</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الجنس</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">ت. الازدياد</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">السن</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">نوعية الإعاقة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الإطار</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الهاتف</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">الخدمات</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center">تفاصيل</th> </tr> </thead> <tbody id="tq-tbody"></tbody> </table> </div> </div> <div id="tq-detail" style="display:none;margin-top:20px"></div>
-</div> <div id="adm-section-laiha" style="display:none"> <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"> <span>اللائحة الكلية — جمعية الأوائل فرع مرتيل</span> <span style="font-size:12px;font-weight:700;color:var(--teal);background:var(--teal-light);padding:4px 14px;border-radius:100px;border:1px solid rgba(13,148,136,0.2)">291 مستفيد/ة — الموسم 2025/2026</span> </div> <!-- KPIs --> <div class="g4" style="margin-bottom:20px" id="laiha-kpis"></div> <!-- Filtres --> <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:14px 18px;background:#fff;border-radius:12px;border:1px solid var(--border)"> <input type="text" id="laiha-search" class="admin-search-input" placeholder=" البحث بالاسم أو نوع الإعاقة..." oninput="filterLaiha()" style="min-width:220px;direction:rtl"> <select id="laiha-filter-handicap" class="admin-search-input" onchange="filterLaiha()" style="min-width:160px;direction:rtl"> <option value="">كل الإعاقات</option> </select> <select id="laiha-filter-sexe" class="admin-search-input" onchange="filterLaiha()" style="min-width:120px;direction:rtl"> <option value="">الجنس</option> <option value="ذكر">ذكر</option> <option value="أنثى">أنثى</option> </select> <select id="laiha-filter-service" class="admin-search-input" onchange="filterLaiha()" style="min-width:160px;direction:rtl"> <option value="">كل الخدمات</option> <option value="التربية الخاصة">التربية الخاصة</option> <option value="التأهيل المهني">التأهيل المهني</option> <option value="الدعم والمواكبة النفسية">الدعم النفسي</option> <option value="تقويم النطق">تقويم النطق</option> <option value="الترويض الطبي">الترويض الطبي</option> <option value="النفسي حركي">النفسي حركي</option> </select> <select id="laiha-filter-degre" class="admin-search-input" onchange="filterLaiha()" style="min-width:140px;direction:rtl"> <option value="">درجة الإعاقة</option> <option value="خفيفة">خفيفة</option> <option value="متوسطة">متوسطة</option> <option value="عميقة">عميقة</option> </select> <span id="laiha-count" style="font-size:12px;font-weight:800;color:var(--muted);margin-left:auto">291 نتيجة</span> <button onclick="resetLaihaFilters()" class="btn btn-o" style="font-size:12px">↺ إعادة تعيين</button> </div> <!-- Table --> <div class="card"> <div style="overflow-x:auto;max-height:70vh"> <table id="laiha-table" style="width:100%;border-collapse:collapse;direction:rtl;min-width:900px"> <thead> <tr style="background:var(--bg);position:sticky;top:0;z-index:2"> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">رت</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">الاسم الكامل</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الجنس</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">تاريخ الازدياد</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">السن</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">نوعية الإعاقة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الدرجة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">الخدمات</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">التغطية</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الهاتف</th> </tr> </thead> <tbody id="laiha-tbody"></tbody> </table> </div> </div> <!-- Detail modal --> <div id="laiha-detail" style="display:none;margin-top:18px"> <div class="btn-back" onclick="document.getElementById('laiha-detail').style.display='none'">← رجوع للقائمة</div> <div id="laiha-detail-content"></div> </div> </div><!-- /adm-section-laiha --> </div><!-- /adm-section-listes --> <!-- Classes --> <div id="adm-section-classes" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_classes">Détail des classes</span></div> <div class="admin-class-grid" id="adm-class-cards"></div> </div> <!-- Cadres --> <div id="adm-section-cadres" style="display:none"> <div id="adm-cadres-liste-view"> <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"> <span data-i18n="adm_title_cadres">👨‍🏫 Cadres encadrants</span> <button onclick="renderCadresClassement()" style="background:#7c3aed;color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">Classement des performances</button> </div> <div class="card"><div class="card-body" style="padding:0 20px"><div id="adm-cadres-list"></div></div></div> <!-- Classement inter-cadres — rendu dynamiquement --> <div id="adm-cadres-classement" style="display:none;margin-top:20px"></div> </div> <!-- Dossier cadre detail --> <div id="adm-cadre-detail-view" style="display:none"> <div class="btn-back" id="adm-cadre-back-btn" onclick="admCloseCadreDetail()"><span data-i18n="adm_retour_cadres">← Retour aux cadres</span></div> <div id="adm-cadre-detail-content"></div> </div> </div> <!-- Rapports --> <!-- Alertes --> <div id="adm-section-alertes" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_alertes"><span data-i18n="adm_title_alertes_center">🔔 Centre d'alertes</span></span></div> <!-- KPIs alertes — enrichis avec les niveaux de risque --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--danger)"><div class="kpi"><div class="kpi-label">🔴 Urgents</div><div class="kpi-val" id="adm-al-danger" style="color:var(--danger)">0</div><div class="kpi-sub">Score ≥ 61</div></div></div> <div class="card" style="border-top:3px solid var(--warning)"><div class="kpi"><div class="kpi-label">🟡 À surveiller</div><div class="kpi-val" id="adm-al-warn" style="color:var(--warning)">0</div><div class="kpi-sub">Score 31–60</div></div></div> <div class="card" style="border-top:3px solid var(--success)"><div class="kpi"><div class="kpi-label">🟢 Stables</div><div class="kpi-val" id="adm-al-ok" style="color:var(--success)">0</div><div class="kpi-sub">Score ≤ 30</div></div></div> <div class="card" id="adm-al-no-seance-card" style="border-top:3px solid var(--muted)"><div class="kpi"><div class="kpi-label">⚠ Sans séance ce mois</div><div class="kpi-val" id="adm-al-no-seance" style="color:var(--muted)">0</div><div class="kpi-sub" id="adm-al-no-seance-sub">Bénéficiaires inactifs</div></div></div> </div> <!-- ══ Alertes Directeur — 3 indicateurs managériaux ══ --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px"> <!-- Cadres sans activité ce mois --> <div class="card" style="border-top:3px solid var(--warning)"> <div class="card-header"> <div class="card-title">Cadres sans activité</div> <span id="adm-dir-cadres-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#fef3c7;color:#d97706">0</span> </div> <div id="adm-dir-cadres-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ 0 séance saisie ce mois</div> </div> <!-- Abandons potentiels — absent 30+ jours --> <div class="card" style="border-top:3px solid var(--danger)"> <div class="card-header"> <div class="card-title">Abandons potentiels</div> <span id="adm-dir-abandons-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#fee2e2;color:#dc2626">0</span> </div> <div id="adm-dir-abandons-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ Dernière séance &gt; 30 jours</div> </div> <!-- PEI non démarrés --> <div class="card" style="border-top:3px solid #7c3aed"> <div class="card-header"> <div class="card-title">PEI non démarrés</div> <span id="adm-dir-pei-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#ede9fe;color:#7c3aed">0</span> </div> <div id="adm-dir-pei-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ 0 objectif commencé</div> </div> </div> <!-- Score de Risque par Bénéficiaire — Critique 5 --> <div class="card" style="border-top:3px solid var(--danger);margin-bottom:16px"> <div class="card-header" style="flex-wrap:wrap;gap:8px"> <div class="card-title">Score de Risque par Bénéficiaire</div> <div style="display:flex;gap:6px;flex-wrap:wrap"> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#fee2e2;color:#dc2626;font-weight:700">🔴 Urgent 61–100</span> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#fef3c7;color:#d97706;font-weight:700">🟡 Surveiller 31–60</span> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#dcfce7;color:#059669;font-weight:700">🟢 Stable 0–30</span> </div> </div> <div id="adm-risque-container" style="padding:0 16px 12px;max-height:440px;overflow-y:auto"> <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Chargement…</div> </div> </div> <!-- Alertes manuelles existantes --> <div id="adm-alertes-container"></div> </div> <!-- Ajouter --> <div id="adm-section-ajouter" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_ajouter">➕ Ajouter un bénéficiaire ou un cadre</span></div> <div class="adm-tabs"> <div class="adm-tab active" id="adm-tab-benef" onclick="adminSwitchAjouterTab('benef')"><span data-i18n="adm_tab_new_benef">👤 Nouveau bénéficiaire</span></div> <div class="adm-tab" id="adm-tab-cadre" onclick="adminSwitchAjouterTab('cadre')"><span data-i18n="adm_tab_cadre">👨‍🏫 Nouveau cadre</span></div> </div> <div id="adm-form-benef"> <div class="adm-form-section"> <div class="adm-form-title"><span data-i18n="adm_form_title_benef">👤 معلومات المستفيد</span></div> <!-- Identité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px">الهوية</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_arabe">الاسم الكامل (عربي) *</span></label> <input class="adm-form-input" id="new-b-nom" placeholder="مثال: سيف الله أوشبي" style="direction:rtl"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_latin">Nom latin</span></label> <input class="adm-form-input" id="new-b-nomLatin" placeholder="Ex: Saif Allah Ouchbi"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_sexe">الجنس *</span></label> <select class="adm-form-select" id="new-b-sexe"> <option value="ذكر">ذكر</option> <option value="أنثى">أنثى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="lbl_date_nais">تاريخ الازدياد *</span></label> <input class="adm-form-input" type="date" id="new-b-ddn"> </div> </div> <!-- Handicap & Programme --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الإعاقة والبرنامج</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_handicap_diag">نوعية الإعاقة *</span></label> <select class="adm-form-select" id="new-b-handicap"> <option>التوحد (TSA)</option> <option>ثلاثي الصبغي 21</option> <option>إعاقة ذهنية</option> <option>إعاقة حركية</option> <option>شلل دماغي</option> <option>إعاقة ذهنية وحركية</option> <option>TED</option> <option>إعاقة سمعية وذهنية</option> <option>صعوبات التعلم</option> <option>متلازمة داون</option> <option>متأخر ذهني</option> <option>إعاقة مزدوجة</option> <option>أخرى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_degre">الدرجة</span></label> <select class="adm-form-select" id="new-b-degre"> <option value="">— اختر —</option> <option>خفيف</option> <option>متوسط</option> <option>ثقيل</option> <option>عميق</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_type_prog">نوع البرنامج</span></label> <select class="adm-form-select" id="new-b-type"> <option value="pei">PEI — التوحد</option> <option value="info">الإعلاميات</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_niveau">المستوى</span></label> <select class="adm-form-select" id="new-b-niveau"> <option value="1">1 — مبتدئ</option> <option value="2">2 — متوسط</option> <option value="3">3 — جيد</option> <option value="4">4 — ممتاز</option> </select> </div> </div> <!-- Services & Couverture --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الخدمات والتغطية</div> <div class="adm-form-grid"> <div class="adm-form-group" style="grid-column:1/-1"> <label class="adm-form-label"><span data-i18n="adm_lbl_services">الخدمات المستفاد منها</span></label> <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="new-b-services-wrap"> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="التربية الخاصة" style="accent-color:var(--primary)">التربية الخاصة
+</div> <div id="adm-section-laiha" style="display:none"> <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"> <span>اللائحة الكلية — جمعية الأوائل فرع مرتيل</span> <span style="font-size:12px;font-weight:700;color:var(--teal);background:var(--teal-light);padding:4px 14px;border-radius:100px;border:1px solid rgba(13,148,136,0.2)">291 مستفيد/ة — الموسم 2025/2026</span> </div> <!-- KPIs --> <div class="g4" style="margin-bottom:20px" id="laiha-kpis"></div> <!-- Filtres --> <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:14px 18px;background:#fff;border-radius:12px;border:1px solid var(--border)"> <input type="text" id="laiha-search" class="admin-search-input" placeholder=" البحث بالاسم أو نوع الإعاقة..." oninput="filterLaiha()" style="min-width:220px;direction:rtl"> <select id="laiha-filter-handicap" class="admin-search-input" onchange="filterLaiha()" style="min-width:160px;direction:rtl"> <option value="">كل الإعاقات</option> </select> <select id="laiha-filter-sexe" class="admin-search-input" onchange="filterLaiha()" style="min-width:120px;direction:rtl"> <option value="">الجنس</option> <option value="ذكر">ذكر</option> <option value="أنثى">أنثى</option> </select> <select id="laiha-filter-service" class="admin-search-input" onchange="filterLaiha()" style="min-width:160px;direction:rtl"> <option value="">كل الخدمات</option> <option value="التربية الخاصة">التربية الخاصة</option> <option value="التأهيل المهني">التأهيل المهني</option> <option value="الدعم والمواكبة النفسية">الدعم النفسي</option> <option value="تقويم النطق">تقويم النطق</option> <option value="الترويض الطبي">الترويض الطبي</option> <option value="النفسي حركي">النفسي حركي</option> </select> <select id="laiha-filter-degre" class="admin-search-input" onchange="filterLaiha()" style="min-width:140px;direction:rtl"> <option value="">درجة الإعاقة</option> <option value="خفيفة">خفيفة</option> <option value="متوسطة">متوسطة</option> <option value="عميقة">عميقة</option> </select> <span id="laiha-count" style="font-size:12px;font-weight:800;color:var(--muted);margin-left:auto">291 نتيجة</span> <button onclick="resetLaihaFilters()" class="btn btn-o" style="font-size:12px">↺ إعادة تعيين</button> </div> <!-- Table --> <div class="card"> <div style="overflow-x:auto;max-height:70vh"> <table id="laiha-table" style="width:100%;border-collapse:collapse;direction:rtl;min-width:900px"> <thead> <tr style="background:var(--bg);position:sticky;top:0;z-index:2"> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">رت</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">الاسم الكامل</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الجنس</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">تاريخ الازدياد</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">السن</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">نوعية الإعاقة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الدرجة</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:right;border-bottom:2px solid var(--border)">الخدمات</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">التغطية</th> <th style="padding:9px 12px;font-size:11px;font-weight:800;color:var(--muted);text-align:center;border-bottom:2px solid var(--border)">الهاتف</th> </tr> </thead> <tbody id="laiha-tbody"></tbody> </table> </div> </div> <!-- Detail modal --> <div id="laiha-detail" style="display:none;margin-top:18px"> <div class="btn-back" onclick="document.getElementById('laiha-detail').style.display='none'">← رجوع للقائمة</div> <div id="laiha-detail-content"></div> </div> </div><!-- /adm-section-laiha --> </div><!-- /adm-section-listes --> <!-- Classes --> <div id="adm-section-classes" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_classes">Détail des classes</span></div> <div class="admin-class-grid" id="adm-class-cards"></div> </div> <!-- Cadres --> <div id="adm-section-cadres" style="display:none"> <div id="adm-cadres-liste-view"> <div class="adm-section-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px"> <span data-i18n="adm_title_cadres">👨‍🏫 Cadres encadrants</span> <button onclick="renderCadresClassement()" style="background:#7c3aed;color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer">Classement des performances</button> </div> <div class="card"><div class="card-body" style="padding:0 20px"><div id="adm-cadres-list"></div></div></div> <!-- Classement inter-cadres — rendu dynamiquement --> <div id="adm-cadres-classement" style="display:none;margin-top:20px"></div> </div> <!-- Dossier cadre detail --> <div id="adm-cadre-detail-view" style="display:none"> <div class="btn-back" id="adm-cadre-back-btn" onclick="admCloseCadreDetail()"><span data-i18n="adm_retour_cadres">← Retour aux cadres</span></div> <div id="adm-cadre-detail-content"></div> </div> </div> <!-- Rapports --> <!-- Alertes --> <div id="adm-section-alertes" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_alertes"><span data-i18n="adm_title_alertes_center">🔔 Centre d'alertes</span></span></div> <!-- KPIs alertes — enrichis avec les niveaux de risque --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--danger)"><div class="kpi"><div class="kpi-label">🔴 Urgents</div><div class="kpi-val" id="adm-al-danger" style="color:var(--danger)">0</div><div class="kpi-sub">Score ≥ 61</div></div></div> <div class="card" style="border-top:3px solid var(--warning)"><div class="kpi"><div class="kpi-label">🟡 À surveiller</div><div class="kpi-val" id="adm-al-warn" style="color:var(--warning)">0</div><div class="kpi-sub">Score 31–60</div></div></div> <div class="card" style="border-top:3px solid var(--success)"><div class="kpi"><div class="kpi-label">🟢 Stables</div><div class="kpi-val" id="adm-al-ok" style="color:var(--success)">0</div><div class="kpi-sub">Score ≤ 30</div></div></div> <div class="card" id="adm-al-no-seance-card" style="border-top:3px solid var(--muted)"><div class="kpi"><div class="kpi-label">⚠ Sans séance ce mois</div><div class="kpi-val" id="adm-al-no-seance" style="color:var(--muted)">0</div><div class="kpi-sub" id="adm-al-no-seance-sub">Bénéficiaires inactifs</div></div></div> </div> <!-- ══ Alertes Directeur — 3 indicateurs managériaux ══ --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px"> <!-- Cadres sans activité ce mois --> <div class="card" style="border-top:3px solid var(--warning)"> <div class="card-header"> <div class="card-title">Cadres sans activité</div> <span id="adm-dir-cadres-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#fef3c7;color:#d97706">0</span> </div> <div id="adm-dir-cadres-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ 0 séance saisie ce mois</div> </div> <!-- Abandons potentiels — absent 30+ jours --> <div class="card" style="border-top:3px solid var(--danger)"> <div class="card-header"> <div class="card-title">Abandons potentiels</div> <span id="adm-dir-abandons-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#fee2e2;color:#dc2626">0</span> </div> <div id="adm-dir-abandons-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ Dernière séance &gt; 30 jours</div> </div> <!-- PEI non démarrés --> <div class="card" style="border-top:3px solid #7c3aed"> <div class="card-header"> <div class="card-title">PEI non démarrés</div> <span id="adm-dir-pei-badge" style="font-size:11px;font-weight:800;padding:2px 10px;border-radius:100px;background:#ede9fe;color:#7c3aed">0</span> </div> <div id="adm-dir-pei-list" style="padding:6px 16px 12px;font-size:12px;color:var(--text)"> <div style="color:var(--muted)">Chargement…</div> </div> <div style="padding:0 16px 10px;font-size:10px;color:var(--muted)">→ 0 objectif commencé</div> </div> </div> <!-- Score de Risque par Bénéficiaire — Critique 5 --> <div class="card" style="border-top:3px solid var(--danger);margin-bottom:16px"> <div class="card-header" style="flex-wrap:wrap;gap:8px"> <div class="card-title">Score de Risque par Bénéficiaire</div> <div style="display:flex;gap:6px;flex-wrap:wrap"> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#fee2e2;color:#dc2626;font-weight:700">🔴 Urgent 61–100</span> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#fef3c7;color:#d97706;font-weight:700">🟡 Surveiller 31–60</span> <span style="font-size:10px;padding:3px 10px;border-radius:100px;background:#dcfce7;color:#059669;font-weight:700">🟢 Stable 0–30</span> </div> </div> <div id="adm-risque-container" style="padding:0 16px 12px;max-height:440px;overflow-y:auto"> <div style="padding:16px;text-align:center;color:var(--muted);font-size:13px">Chargement…</div> </div> </div> <!-- Alertes manuelles existantes --> <div id="adm-alertes-container"></div> </div> <!-- Ajouter --> <div id="adm-section-ajouter" style="display:none"> <div class="adm-section-title"><span data-i18n="adm_title_ajouter">➕ Ajouter un bénéficiaire ou un cadre</span></div> <div class="adm-tabs"> <div class="adm-tab active" id="adm-tab-benef" onclick="adminSwitchAjouterTab('benef')"><span data-i18n="adm_tab_new_benef">👤 Nouveau bénéficiaire</span></div> <div class="adm-tab" id="adm-tab-cadre" onclick="adminSwitchAjouterTab('cadre')"><span data-i18n="adm_tab_cadre">👨‍🏫 Nouveau cadre</span></div> </div> <div id="adm-form-benef"> <div class="adm-form-section"> <div class="adm-form-title"><span data-i18n="adm_form_title_benef">👤 معلومات المستفيد</span></div> <!-- Identité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px">الهوية</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_arabe">الاسم الكامل (عربي) *</span></label> <input class="adm-form-input" id="new-b-nom" placeholder="مثال: سيف الله أوشبي" style="direction:rtl" required minlength="2"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_latin">Nom latin</span></label> <input class="adm-form-input" id="new-b-nomLatin" placeholder="Ex: Saif Allah Ouchbi"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_sexe">الجنس *</span></label> <select class="adm-form-select" id="new-b-sexe"> <option value="ذكر">ذكر</option> <option value="أنثى">أنثى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="lbl_date_nais">تاريخ الازدياد *</span></label> <input class="adm-form-input" type="date" id="new-b-ddn"> </div> </div> <!-- Handicap & Programme --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الإعاقة والبرنامج</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_handicap_diag">نوعية الإعاقة *</span></label> <select class="adm-form-select" id="new-b-handicap"> <option>التوحد (TSA)</option> <option>ثلاثي الصبغي 21</option> <option>إعاقة ذهنية</option> <option>إعاقة حركية</option> <option>شلل دماغي</option> <option>إعاقة ذهنية وحركية</option> <option>TED</option> <option>إعاقة سمعية وذهنية</option> <option>صعوبات التعلم</option> <option>متلازمة داون</option> <option>متأخر ذهني</option> <option>إعاقة مزدوجة</option> <option>أخرى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_degre">الدرجة</span></label> <select class="adm-form-select" id="new-b-degre"> <option value="">— اختر —</option> <option>خفيف</option> <option>متوسط</option> <option>ثقيل</option> <option>عميق</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_type_prog">نوع البرنامج</span></label> <select class="adm-form-select" id="new-b-type"> <option value="pei">PEI — التوحد</option> <option value="info">الإعلاميات</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_niveau">المستوى</span></label> <select class="adm-form-select" id="new-b-niveau"> <option value="1">1 — مبتدئ</option> <option value="2">2 — متوسط</option> <option value="3">3 — جيد</option> <option value="4">4 — ممتاز</option> </select> </div> </div> <!-- Services & Couverture --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الخدمات والتغطية</div> <div class="adm-form-grid"> <div class="adm-form-group" style="grid-column:1/-1"> <label class="adm-form-label"><span data-i18n="adm_lbl_services">الخدمات المستفاد منها</span></label> <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="new-b-services-wrap"> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="التربية الخاصة" style="accent-color:var(--primary)">التربية الخاصة
                 </label> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="التأهيل المهني" style="accent-color:var(--primary)">التأهيل المهني
                 </label> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="العلاج النفسي الحركي" style="accent-color:var(--primary)">العلاج النفسي الحركي
                 </label> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="تقويم النطق" style="accent-color:var(--primary)">تقويم النطق
                 </label> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="العلاج الوظيفي" style="accent-color:var(--primary)">العلاج الوظيفي
                 </label> <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px"> <input type="checkbox" value="الكينيزيتيرابي" style="accent-color:var(--primary)">الكينيزيتيرابي
-                </label> </div> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_couverture">التغطية الصحية</span></label> <select class="adm-form-select" id="new-b-couverture"> <option value="">— اختر —</option> <option>CNOPS</option> <option>CNSS</option> <option>AMO</option> <option>RAMED</option> <option>بدون تغطية</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_tel">الهاتف</span></label> <input class="adm-form-input" type="tel" id="new-b-tel" placeholder="0600000000"> </div> </div> <!-- Cadre & Dossier --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الإطار والملف</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_cadre_resp">الإطار المسؤول *</span></label> <select class="adm-form-select" id="new-b-teacher"><option value="">— اختر الإطار —</option></select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_dossier">الملف مكتمل؟</span></label> <select class="adm-form-select" id="new-b-dossier"> <option value="true">✅ نعم</option> <option value="false">❌ لا</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_date_inscription">تاريخ التسجيل</span></label> <input class="adm-form-input" type="date" id="new-b-date" value="2025-09-01"> </div> </div> <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"> <button class="adm-save-btn green" onclick="adminSaveNewBenef()"><span data-i18n="adm_btn_save_benef">✅ تسجيل المستفيد</span></button> </div> </div> </div> <div id="adm-form-cadre" style="display:none"> <div class="adm-form-section"> <div class="adm-form-title"><span data-i18n="adm_form_title_cadre">👨‍🏫 معلومات الإطار</span></div> <!-- Identité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px">الهوية</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_complet">الاسم الكامل (لاتيني) *</span></label> <input class="adm-form-input" id="new-c-name" placeholder="Ex: Fatima Benali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_arabe_cadre">الاسم بالعربية</span></label> <input class="adm-form-input" id="new-c-nameAr" placeholder="مثال: فاطمة بن علي" style="direction:rtl"> </div> </div> <!-- Poste & Spécialité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">المنصب والتخصص</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_safa">التخصص / الصفة *</span></label> <select class="adm-form-select" id="new-c-safa"> <option>التربية الخاصة</option> <option>التأهيل المهني</option> <option>نفسي حركي</option> <option>تقويم النطق</option> <option>اخصائي نفسي</option> <option>الترويض الطبي</option> <option>العلاج الوظيفي</option> <option>منسقة تربوية</option> <option>المديرة</option> <option>الحارس العام</option> <option>مرافق</option> <option>منظفة</option> <option>حارس</option> <option>سائق</option> <option>أخرى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_poste">عنوان المنصب</span></label> <input class="adm-form-input" id="new-c-matiere" placeholder="Ex:  Éducatrice Spécialisée — Classe Autisme 15"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_type_classe">نوع الفصل *</span></label> <select class="adm-form-select" id="new-c-classe"> <option value="Autisme">Autisme (PEI)</option> <option value="Informatique">Informatique</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="col_niveau">المستوى الدراسي</span></label> <select class="adm-form-select" id="new-c-niveau"> <option>BAC+5</option> <option>BAC+4</option> <option>BAC+3</option> <option>BAC+2</option> <option>BAC+1</option> <option>BAC</option> <option>NIVEAU BAC</option> <option>Collège</option> <option>Primaire</option> <option>Sans</option> </select> </div> </div> <!-- Contact & Localisation --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">التواصل والموقع</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_tel">الهاتف</span></label> <input class="adm-form-input" type="tel" id="new-c-tel" placeholder="0600000000"> </div> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_ville">المدينة</span></label> <select class="adm-form-select" id="new-c-ville"> <option>مرتيل</option> <option>تطوان</option> <option>أزلا</option> <option>المضيق</option> <option>الملاليين</option> <option>أخرى</option> </select> </div> </div> <!-- Situation familiale & Ancienneté --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الوضع المهني</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_situation">الوضع العائلي</span></label> <select class="adm-form-select" id="new-c-situation"> <option>عازب</option> <option>عازبة</option> <option>متزوج</option> <option>متزوجة</option> <option>مطلق</option> <option>مطلقة</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_anciennete">تاريخ الالتحاق</span></label> <input class="adm-form-input" type="date" id="new-c-date-lhq"> </div> </div> <!-- Accès système --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الوصول إلى المنصة</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_username">اسم المستخدم *</span></label> <input class="adm-form-input" id="new-c-username" placeholder="Ex: fbenali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_mdp">كلمة المرور *</span></label> <input class="adm-form-input" id="new-c-password" placeholder="Ex: Autisme2026x"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_teacher_id">teacherId *</span></label> <input class="adm-form-input" id="new-c-teacherId" placeholder="Ex: benali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_num_classe">N° de classe</span></label> <input class="adm-form-input" id="new-c-classeNum" placeholder="Ex: 15" type="number"> </div> </div> <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"> <button class="adm-save-btn" onclick="adminSaveNewCadre()"><span data-i18n="adm_btn_gen_cadre">✅ توليد كود الإطار</span></button> </div> </div> <div id="adm-cadre-code-output" style="display:none"> <div class="adm-form-section" style="border:2px solid var(--success)"> <div class="adm-form-title" style="color:var(--success)">✅ Code généré — Copier dans USERS[]</div> <pre id="adm-generated-code" style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:11px;overflow-x:auto;white-space:pre-wrap;line-height:1.7;color:var(--text)"></pre> <button class="adm-save-btn" onclick="navigator.clipboard.writeText(document.getElementById('adm-generated-code').textContent).then(()=>showToast(' Code copié !','#059669'))">Copier le code</button> </div> </div> </div> </div> <!-- ══ SECTION : Simulation stratégique ══ --> <div id="adm-section-simulation" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px"> <div class="adm-section-title" style="margin-bottom:0">Simulation stratégique — Aide à la décision</div> <button onclick="simExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#7c3aed;border-color:#7c3aed">Exporter scénario PDF
+                </label> </div> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_couverture">التغطية الصحية</span></label> <select class="adm-form-select" id="new-b-couverture"> <option value="">— اختر —</option> <option>CNOPS</option> <option>CNSS</option> <option>AMO</option> <option>RAMED</option> <option>بدون تغطية</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_tel">الهاتف</span></label> <input class="adm-form-input" type="tel" id="new-b-tel" placeholder="0600000000" pattern="[0-9+\s\-]{8,15}" </div> </div> <!-- Cadre & Dossier --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الإطار والملف</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_cadre_resp">الإطار المسؤول *</span></label> <select class="adm-form-select" id="new-b-teacher" required><option value="">— اختر الإطار —</option></select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_dossier">الملف مكتمل؟</span></label> <select class="adm-form-select" id="new-b-dossier"> <option value="true">✅ نعم</option> <option value="false">❌ لا</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_date_inscription">تاريخ التسجيل</span></label> <input class="adm-form-input" type="date" id="new-b-date" value="2025-09-01"> </div> </div> <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"> <button class="adm-save-btn green" onclick="adminSaveNewBenef()"><span data-i18n="adm_btn_save_benef">✅ تسجيل المستفيد</span></button> </div> </div> </div> <div id="adm-form-cadre" style="display:none"> <div class="adm-form-section"> <div class="adm-form-title"><span data-i18n="adm_form_title_cadre">👨‍🏫 معلومات الإطار</span></div> <!-- Identité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px">الهوية</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_complet">الاسم الكامل (لاتيني) *</span></label> <input class="adm-form-input" id="new-c-name" placeholder="Ex: Fatima Benali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_nom_arabe_cadre">الاسم بالعربية</span></label> <input class="adm-form-input" id="new-c-nameAr" placeholder="مثال: فاطمة بن علي" style="direction:rtl"> </div> </div> <!-- Poste & Spécialité --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">المنصب والتخصص</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_safa">التخصص / الصفة *</span></label> <select class="adm-form-select" id="new-c-safa"> <option>التربية الخاصة</option> <option>التأهيل المهني</option> <option>نفسي حركي</option> <option>تقويم النطق</option> <option>اخصائي نفسي</option> <option>الترويض الطبي</option> <option>العلاج الوظيفي</option> <option>منسقة تربوية</option> <option>المديرة</option> <option>الحارس العام</option> <option>مرافق</option> <option>منظفة</option> <option>حارس</option> <option>سائق</option> <option>أخرى</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_poste">عنوان المنصب</span></label> <input class="adm-form-input" id="new-c-matiere" placeholder="Ex:  Éducatrice Spécialisée — Classe Autisme 15"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_type_classe">نوع الفصل *</span></label> <select class="adm-form-select" id="new-c-classe"> <option value="Autisme">Autisme (PEI)</option> <option value="Informatique">Informatique</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="col_niveau">المستوى الدراسي</span></label> <select class="adm-form-select" id="new-c-niveau"> <option>BAC+5</option> <option>BAC+4</option> <option>BAC+3</option> <option>BAC+2</option> <option>BAC+1</option> <option>BAC</option> <option>NIVEAU BAC</option> <option>Collège</option> <option>Primaire</option> <option>Sans</option> </select> </div> </div> <!-- Contact & Localisation --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">التواصل والموقع</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_tel">الهاتف</span></label> <input class="adm-form-input" type="tel" id="new-c-tel" placeholder="0600000000"> </div> <div class="adm-form-group"> <label class="adm-form-label"> <span data-i18n="cl_col_ville">المدينة</span></label> <select class="adm-form-select" id="new-c-ville"> <option>مرتيل</option> <option>تطوان</option> <option>أزلا</option> <option>المضيق</option> <option>الملاليين</option> <option>أخرى</option> </select> </div> </div> <!-- Situation familiale & Ancienneté --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الوضع المهني</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_situation">الوضع العائلي</span></label> <select class="adm-form-select" id="new-c-situation"> <option>عازب</option> <option>عازبة</option> <option>متزوج</option> <option>متزوجة</option> <option>مطلق</option> <option>مطلقة</option> </select> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="cl_col_anciennete">تاريخ الالتحاق</span></label> <input class="adm-form-input" type="date" id="new-c-date-lhq"> </div> </div> <!-- Accès système --> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px">الوصول إلى المنصة</div> <div class="adm-form-grid"> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_username">اسم المستخدم *</span></label> <input class="adm-form-input" id="new-c-username" placeholder="Ex: fbenali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_mdp">كلمة المرور *</span></label> <input class="adm-form-input" id="new-c-password" placeholder="Ex: Autisme2026x"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_teacher_id">teacherId *</span></label> <input class="adm-form-input" id="new-c-teacherId" placeholder="Ex: benali"> </div> <div class="adm-form-group"> <label class="adm-form-label"><span data-i18n="adm_lbl_num_classe">N° de classe</span></label> <input class="adm-form-input" id="new-c-classeNum" placeholder="Ex: 15" type="number"> </div> </div> <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)"> <button class="adm-save-btn" onclick="adminSaveNewCadre()"><span data-i18n="adm_btn_gen_cadre">✅ توليد كود الإطار</span></button> </div> </div> <div id="adm-cadre-code-output" style="display:none"> <div class="adm-form-section" style="border:2px solid var(--success)"> <div class="adm-form-title" style="color:var(--success)">✅ Code généré — Copier dans USERS[]</div> <pre id="adm-generated-code" style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:11px;overflow-x:auto;white-space:pre-wrap;line-height:1.7;color:var(--text)"></pre> <button class="adm-save-btn" onclick="navigator.clipboard.writeText(document.getElementById('adm-generated-code').textContent).then(()=>showToast(' Code copié !','#059669'))">Copier le code</button> </div> </div> </div> </div> <!-- ══ SECTION : Simulation stratégique ══ --> <div id="adm-section-simulation" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px"> <div class="adm-section-title" style="margin-bottom:0">Simulation stratégique — Aide à la décision</div> <button onclick="simExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#7c3aed;border-color:#7c3aed">Exporter scénario PDF
         </button> </div> <div style="font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.6" data-i18n="sim_intro_text">         Modifiez les 3 leviers ci-dessous et observez en temps réel l'impact sur le Score Organisationnel.         Le score actuel (à gauche) est fixe — seul le score simulé (à droite) évolue.       </div> <!-- Grille principale : Score actuel | Sliders | Score simulé --> <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:20px;margin-bottom:24px;align-items:start"> <!-- ── Score ACTUEL (fixe) ── --> <div class="card" style="border-top:4px solid var(--primary);text-align:center"> <div class="card-header" style="justify-content:center"> <div class="card-title" style="font-size:12px" data-i18n="sim_score_actuel">📊 Score actuel</div> </div> <div style="padding:16px"> <div style="position:relative;width:110px;height:110px;margin:0 auto 10px"> <canvas id="sim-gauge-actuel" width="110" height="110"></canvas> <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none"> <div id="sim-score-actuel-val" style="font-family:Sora,sans-serif;font-size:26px;font-weight:800;color:var(--primary);line-height:1">—</div> <div style="font-size:10px;color:var(--muted)">/100</div> </div> </div> <div id="sim-badge-actuel" style="font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;background:var(--bg);color:var(--muted);display:inline-block">—</div> <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px" id="sim-breakdown-actuel"></div> </div> </div> <!-- ── Sliders ── --> <div class="card" style="border-top:4px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="sim_leviers_titre">🎚️ Leviers d'action</div> <button onclick="simReset()" class="btn" style="font-size:11px;padding:4px 14px" data-i18n="sim_reinitialiser">↺ Réinitialiser</button> </div> <!-- Scénarios prédéfinis --> <div style="padding:10px 20px 0;display:flex;gap:8px;flex-wrap:wrap"> <div style="font-size:11px;font-weight:700;color:var(--muted);align-self:center;white-space:nowrap" data-i18n="sim_scenarios">Scénarios :</div> <button onclick="simLoadScenario('equilibre')" class="btn" style="font-size:11px;padding:4px 12px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc" data-i18n="sim_equilibre">⚖️ Effort équilibré</button> <button onclick="simLoadScenario('urgence')"   class="btn" style="font-size:11px;padding:4px 12px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" data-i18n="sim_urgence_sc">🚨 Plan urgence</button> <button onclick="simLoadScenario('excellent')" class="btn" style="font-size:11px;padding:4px 12px;background:#dcfce7;color:#059669;border:1px solid #86efac" data-i18n="sim_excellent_sc">🏆 Viser Excellent</button> <button onclick="simLoadScenario('fin_annee')" class="btn" style="font-size:11px;padding:4px 12px;background:#ede9fe;color:#7c3aed;border:1px solid #c4b5fd" data-i18n="sim_fin_annee">📅 Fin d'année</button> </div> <div style="padding:16px 20px;display:flex;flex-direction:column;gap:24px"> <!-- Levier 1 : Présence --> <div> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"> <div> <div style="font-size:13px;font-weight:700;color:var(--text)" data-i18n="sim_lv_pres">👥 Amélioration de la présence</div> <div style="font-size:11px;color:var(--muted)" data-i18n="sim_lv_pres_impact">Impact : 30% du score global</div> </div> <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#2563eb" id="sim-lbl-pres">+0%</div> </div> <input type="range" id="sim-slider-pres" min="0" max="30" step="1" value="0"
                 style="width:100%;accent-color:#2563eb;height:6px;cursor:pointer"
                 oninput="_simUpdateDebounced()"> <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px"> <span>+0%</span><span>+10%</span><span>+20%</span><span>+30%</span> </div> </div> <!-- Levier 2 : PEI --> <div> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"> <div> <div style="font-size:13px;font-weight:700;color:var(--text)" data-i18n="sim_lv_pei">🎯 Amélioration réalisation PEI</div> <div style="font-size:11px;color:var(--muted)" data-i18n="sim_lv_pei_impact">Impact : 40% du score global</div> </div> <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#7c3aed" id="sim-lbl-pei">+0%</div> </div> <input type="range" id="sim-slider-pei" min="0" max="30" step="1" value="0"
@@ -1005,7 +1005,7 @@ body.is-consultant .sensitive-data::after {
               oninput="_simUpdateDebounced()"> <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:800;color:var(--purple);white-space:nowrap" id="sim-lbl-duree">6 mois</div> </div> <div style="padding:0 16px 12px;font-size:11px;color:var(--muted)">Si l'amélioration est progressive et linéaire sur cette durée
           </div> <div style="padding:0 16px 16px"> <canvas id="sim-chart-projection" height="130"></canvas> </div> </div> </div> </div> <!-- ══ SECTION : Rapport institutionnel ══ --> <div id="adm-section-rapport" style="display:none"> <!-- En-tête institutionnel imprimable --> <div id="rapport-printable"> <!-- Bannière officielle --> <div style="background:linear-gradient(135deg,#1b3a6b 0%,#2563eb 60%,#1b3a6b 100%);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden"> <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:rgba(255,255,255,0.04);border-radius:50%"></div> <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:rgba(255,255,255,0.03);border-radius:50%"></div> <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px"> <div> <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:4px" data-i18n="rapp_titre_officiel">Rapport institutionnel — Usage officiel</div> <div style="font-family:Sora,sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:6px">Association El Awael</div> <div style="color:rgba(255,255,255,0.8);font-size:13px">الجمعية الأوائل لرعاية ذوي الإعاقة — المحمدية</div> <div style="margin-top:10px;color:rgba(255,255,255,0.6);font-size:11px" id="rapp-date-header">Généré le —</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"> <button onclick="rapportExportPDF()" class="btn btn-p" style="font-size:12px;padding:8px 18px;background:#fff;color:#1b3a6b;font-weight:800;border:none">Exporter PDF
               </button> <div style="font-size:11px;color:rgba(255,255,255,0.5)" id="rapp-periode">Année scolaire 2025-2026</div> </div> </div> </div> <!-- 5 KPIs visuels institutionnels --> <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px"> <div class="card" style="border-top:4px solid var(--primary);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--primary)" id="rapp-k-score">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">/100</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_score">Score global</div> <div id="rapp-k-score-badge" style="font-size:10px;margin-top:4px;padding:2px 8px;border-radius:100px;display:inline-block;background:var(--bg);color:var(--muted)">—</div> </div> </div> <div class="card" style="border-top:4px solid var(--teal);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--teal)" id="rapp-k-benef">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px" data-i18n="rapp_kpi_personnes">personnes</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_benef_s">Bénéficiaires suivis</div> <div id="rapp-k-benef-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-presence" style="border-top:4px solid var(--success);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--success)" id="rapp-k-presence">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_presence_s">Taux de présence</div> <div id="rapp-k-presence-sub" style="font-size:10px;color:var(--muted);margin-top:4px" data-i18n="rapp_kpi_pres_moy">Moyenne annuelle</div> </div> </div> <div class="card" id="rapp-card-pei" style="border-top:4px solid var(--purple);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--purple)" id="rapp-k-pei">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_pei_s">Objectifs réalisés</div> <div id="rapp-k-pei-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-dossiers" style="border-top:4px solid var(--warning);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--warning)" id="rapp-k-dossiers">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_dossiers_s">Conformité dossiers</div> <div id="rapp-k-dossiers-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> </div> <!-- Graphiques institutionnels --> <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px"> <!-- Évolution 6 mois --> <div class="card" style="border-top:3px solid var(--primary)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_evol_titre">📈 Évolution des indicateurs clés — 6 derniers mois</div> </div> <div style="padding:12px 16px 16px"> <canvas id="rapp-chart-evolution" height="100"></canvas> </div> </div> <!-- Répartition des bénéficiaires --> <div class="card" style="border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_classes_titre">Répartition par classe</div> </div> <div style="padding:12px 16px 16px;display:flex;align-items:center;gap:12px"> <canvas id="rapp-chart-classes" width="130" height="130" style="flex-shrink:0"></canvas> <div id="rapp-classes-legend" style="flex:1;font-size:11px"></div> </div> </div> </div> <!-- Tableau synthèse par classe --> <div class="card" style="margin-bottom:24px;border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_synthese_filiere">📋 Synthèse par filière — Année scolaire 2025-2026</div> </div> <div style="overflow-x:auto"> <table> <thead> <tr> <th data-i18n="rapp_col_filiere">Filière</th> <th style="text-align:center" data-i18n="rapp_col_benef_rapp">Bénéficiaires</th> <th style="text-align:center" data-i18n="rapp_col_dossiers_rapp">Dossiers complets</th> <th style="text-align:center" data-i18n="rapp_col_pei_rapp">Réalisation PEI</th> <th style="text-align:center" data-i18n="rapp_col_cadres_rapp">Cadres encadrants</th> <th style="text-align:center" data-i18n="rapp_col_risque_rapp">Niveau de risque</th> </tr> </thead> <tbody id="rapp-table-classes"></tbody> </table> </div> </div> <!-- Synthèse textuelle --> <div class="card" style="border-top:3px solid var(--success)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_narrative_titre">📝 Synthèse narrative — Destinée aux partenaires & financeurs</div> </div> <div id="rapp-synthese" style="padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text)">Chargement…
-          </div> </div> </div><!-- fin rapport-printable --> </div> <!-- ══ SECTION : Journal d'audit ══ --> <div id="adm-section-audit" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px"> <div class="adm-section-title" style="margin-bottom:0" data-i18n="audit_titre">🔍 Journal d'audit — Traçabilité complète</div> <button onclick="auditExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px">Exporter PDF</button> </div> <!-- KPIs du journal --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--primary)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_total">📋 Total actions</div> <div class="kpi-val" id="audit-k-total" style="color:var(--primary)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_total_sub">Toutes opérations</div></div> </div> <div class="card" style="border-top:3px solid var(--success)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_today">🟢 Aujourd'hui</div> <div class="kpi-val" id="audit-k-today" style="color:var(--success)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_today_sub">Actions ce jour</div></div> </div> <div class="card" style="border-top:3px solid var(--warning)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_users">👤 Utilisateurs actifs</div> <div class="kpi-val" id="audit-k-users" style="color:var(--warning)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_users_sub">Ce mois-ci</div></div> </div> <div class="card" style="border-top:3px solid var(--danger)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_delete">🗑️ Suppressions</div> <div class="kpi-val" id="audit-k-delete" style="color:var(--danger)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_delete_sub">Actions sensibles</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <span style="font-size:12px;font-weight:700;color:var(--muted)" data-i18n="audit_filtrer">Filtrer :</span> <select id="audit-filter-type" onchange="auditRender()"
+          </div> </div> </div><!-- fin rapport-printable --> </div> <!-- ══ SECTION : Journal d'audit ══ --> <div id="adm-section-audit" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px"> <div class="adm-section-title" style="margin-bottom:0" data-i18n="audit_titre">🔍 Journal d'audit — Traçabilité complète</div> <div style="display:flex;gap:8px;flex-wrap:wrap"> <button onclick="auditExportExcel()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#059669;border-color:#059669">Excel</button> <button onclick="auditExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px">PDF</button> </div> </div> <!-- KPIs du journal --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--primary)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_total">📋 Total actions</div> <div class="kpi-val" id="audit-k-total" style="color:var(--primary)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_total_sub">Toutes opérations</div></div> </div> <div class="card" style="border-top:3px solid var(--success)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_today">🟢 Aujourd'hui</div> <div class="kpi-val" id="audit-k-today" style="color:var(--success)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_today_sub">Actions ce jour</div></div> </div> <div class="card" style="border-top:3px solid var(--warning)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_users">👤 Utilisateurs actifs</div> <div class="kpi-val" id="audit-k-users" style="color:var(--warning)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_users_sub">Ce mois-ci</div></div> </div> <div class="card" style="border-top:3px solid var(--danger)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_delete">🗑️ Suppressions</div> <div class="kpi-val" id="audit-k-delete" style="color:var(--danger)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_delete_sub">Actions sensibles</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <span style="font-size:12px;font-weight:700;color:var(--muted)" data-i18n="audit_filtrer">Filtrer :</span> <select id="audit-filter-type" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer"> <option value="all" data-i18n="audit_tous_types">📋 Tous les types</option> <option value="connexion" data-i18n="audit_connexion_type">🔐 Connexion / Déconnexion</option> <option value="beneficiaire" data-i18n="audit_benef_type">👤 Bénéficiaires</option> <option value="document" data-i18n="audit_docs_type">📎 Documents</option> <option value="export" data-i18n="audit_exports_type">📥 Exports</option> <option value="pei" data-i18n="audit_pei_type">🎯 PEI</option> <option value="presence" data-i18n="audit_pres_type">📅 Présences</option> <option value="rapport" data-i18n="audit_rapp_type">📝 Rapports</option> <option value="suppression" data-i18n="audit_suppr_type">🗑️ Suppressions</option> </select> <select id="audit-filter-user" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer"> <option value="all" data-i18n="audit_tous_users">👤 Tous les utilisateurs</option> </select> <!-- Préréglages rapides de période --> <div style="display:flex;gap:5px;flex-wrap:wrap"> <button onclick="auditSetPreset('today')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_auj_btn">📅 Aujourd'hui</button> <button onclick="auditSetPreset('week')"  class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_semaine_btn">📅 Cette semaine</button> <button onclick="auditSetPreset('month')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_mois_btn">📅 Ce mois</button> </div> <input type="date" id="audit-filter-date-from"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)"
@@ -1014,7 +1014,7 @@ body.is-consultant .sensitive-data::after {
             onchange="auditRender()"> <button onclick="auditClearFilters()" class="btn" style="font-size:11px;padding:5px 12px;margin-left:auto" data-i18n="sim_reinitialiser">↺ Réinitialiser</button> </div> </div> <!-- Liste des entrées --> <div class="card"> <div class="card-header"> <div class="card-title" data-i18n="audit_entries_titre">📋 Entrées du journal</div> <span id="audit-count-label" style="font-size:11px;color:var(--muted)">— entrées</span> </div> <div id="audit-list" style="max-height:600px;overflow-y:auto;padding:0 16px 12px"> <div style="color:var(--muted);font-size:13px;padding:20px;text-align:center">Chargement…</div> </div> </div> </div> <!-- ══ SECTION : Heatmap des risques par classe ══ --> <div id="adm-section-heatmap" style="display:none"> <!-- En-tête --> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px"> <div class="adm-section-title" style="margin-bottom:0" data-i18n="hm_titre">🗺️ Heatmap des risques — Vue par classe</div> <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:16px"> <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#dcfce7;border:1px solid #059669;display:inline-block"></span><span data-i18n="hm_legend_stable">Stable (≤30)</span></span> <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fef3c7;border:1px solid #d97706;display:inline-block"></span><span data-i18n="hm_legend_surveiller">Surveiller (31–60)</span></span> <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;border-radius:3px;background:#fee2e2;border:1px solid #dc2626;display:inline-block"></span><span data-i18n="hm_legend_urgent">Urgent (≥61)</span></span> </div> </div> <!-- Résumé compact intégré dans l'en-tête — sans doublons avec Alertes --> <div id="hm-kpi-row" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px"> <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid var(--primary);color:var(--primary);background:var(--primary-light)"> <span id="hm-k-classes">—</span> <span data-i18n="hm_kpi_classes">classes</span></span> <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #dc2626;color:#dc2626;background:#fee2e2">🔴 <span id="hm-k-urgentes">—</span> <span data-i18n="hm_kpi_urgentes">urgentes</span></span> <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #d97706;color:#d97706;background:#fef3c7">🟡 <span id="hm-k-surveiller">—</span> <span data-i18n="hm_kpi_surveiller_lbl">surveiller</span></span> <span style="font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;border:1.5px solid #059669;color:#059669;background:#dcfce7">🟢 <span id="hm-k-stables">—</span> <span data-i18n="hm_kpi_stables">stables</span></span> </div> <!-- Grille heatmap --> <div id="hm-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px"> <div style="color:var(--muted);font-size:13px;padding:20px" data-i18n="hm_chargement">Chargement…</div> </div> <!-- Tableau récapitulatif détaillé --> <div class="card"> <div class="card-header"> <div class="card-title" data-i18n="hm_table_titre">📋 Tableau récapitulatif par classe</div> <span style="font-size:11px;color:var(--muted)" data-i18n="hm_table_sous">Trié par risque décroissant — cliquer pour filtrer</span> </div> <div class="card-body" style="padding:0;overflow-x:auto"> <table> <thead> <tr> <th data-i18n="hm_col_classe">Classe</th> <th data-i18n="hm_col_cadres">Cadre(s)</th> <th data-i18n="hm_col_benef">Bénéf.</th> <th data-i18n="hm_col_score">Score moyen</th> <th data-i18n="hm_urgent_lbl">🔴 Urgents</th> <th data-i18n="hm_surveiller_lbl">🟡 Surveiller</th> <th data-i18n="hm_stable_lbl">🟢 Stables</th> <th data-i18n="hm_col_action">Action</th> </tr> </thead> <tbody id="hm-table-body"></tbody> </table> </div> </div> </div> <!-- ══ SECTION : Archives annuelles ══ --> <div id="adm-section-archives" style="display:none"> <div class="adm-section-title">Archives annuelles — Historique du portail</div> <!-- Archiver l'année courante --> <div style="background:linear-gradient(135deg,#4c1d95,#7c3aed 60%,#5b21b6);border-radius:18px;padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden"> <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,0.05);border-radius:50%"></div> <div style="position:relative;z-index:1"> <div style="color:rgba(255,255,255,0.8);font-size:13px;margin-bottom:6px">Année en cours</div> <div style="font-family:Sora,sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:12px" id="adm-arc-current-year">Année scolaire 2025-2026</div> <div style="display:flex;gap:10px;flex-wrap:wrap"> <!-- Actions destructives : ADMIN uniquement --> <button onclick="archiverAnnee()" class="adm-save-btn role-admin-only" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;backdrop-filter:blur(8px)">Archiver l'année 2025-2026
             </button> <button onclick="demarrerNouvelleAnnee()" class="adm-save-btn role-admin-only" style="background:rgba(16,185,129,0.3);border:1px solid rgba(16,185,129,0.4);color:#6ee7b7">Démarrer une nouvelle année
             </button> <button onclick="importArchive()" class="adm-save-btn role-admin-only" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.85)"> ⬆ Importer une archive JSON
-            </button> </div> </div> </div> <!-- KPI archives --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="adm_archives_sauvegardees">Archives sauvegardées</div><div class="kpi-val" id="adm-arc-count" style="color:var(--purple)">0</div><div class="kpi-sub"><span data-i18n="adm_annees_archivees">Années archivées</span></div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_donnees_memoire"><span data-i18n="adm_donnees_memoire">Données en mémoire</span></div><div class="kpi-val" id="adm-arc-size" style="color:var(--primary)">—</div><div class="kpi-sub">Taille localStorage</div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_derniere_archive"><span data-i18n="adm_derniere_archive">Dernière archive</span></div><div class="kpi-val" id="adm-arc-last" style="color:var(--teal);font-size:16px">—</div><div class="kpi-sub">Date d'archivage</div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_espace_utilise"><span data-i18n="adm_espace_utilise">Espace utilisé</span></div><div class="kpi-val" id="adm-arc-pct" style="color:var(--warning)">—</div><div class="kpi-sub">/ ~5 MB localStorage</div></div></div> </div> <!-- Liste des archives --> <div id="adm-archives-list"> <div class="empty-state" style="margin-top:20px"> <div class="es-icon"></div> <div class="es-text"><span data-i18n="adm_aucune_archive">Aucune archive</span></div> <div class="es-sub">Cliquez sur "Archiver l'année" pour créer votre première archive</div> </div> </div> <!-- Vue d'archive (lecture seule) --> <div id="adm-archive-detail" style="display:none"> <div class="btn-back" onclick="admCloseArchiveDetail()">← Retour aux archives</div> <div id="adm-archive-detail-content"></div> </div> </div> <!-- ══ SECTION : Ressources Humaines ══ --> <div id="adm-section-rh" style="display:none"> <div class="adm-section-title">Ressources Humaines</div> <!-- Onglets RH : Demandes | Contrats | Formations --> <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0"> <button id="rh-tab-btn-demandes"  onclick="rhSwitchTab('demandes')"
+            </button> </div> </div> </div> <!-- KPI archives --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="adm_archives_sauvegardees">Archives sauvegardées</div><div class="kpi-val" id="adm-arc-count" style="color:var(--purple)">0</div><div class="kpi-sub"><span data-i18n="adm_annees_archivees">Années archivées</span></div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_donnees_memoire"><span data-i18n="adm_donnees_memoire">Données en mémoire</span></div><div class="kpi-val" id="adm-arc-size" style="color:var(--primary)">—</div><div class="kpi-sub">Taille localStorage</div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_derniere_archive"><span data-i18n="adm_derniere_archive">Dernière archive</span></div><div class="kpi-val" id="adm-arc-last" style="color:var(--teal);font-size:16px">—</div><div class="kpi-sub">Date d'archivage</div></div></div> <div class="card"><div class="kpi"><div class="kpi-label" data-i18n="lbl_espace_utilise"><span data-i18n="adm_espace_utilise">Espace utilisé</span></div><div class="kpi-val" id="adm-arc-pct" style="color:var(--warning)">—</div><div class="kpi-sub" id="adm-arc-pct-sub">/ ~5 MB localStorage</div></div></div> </div> <!-- Liste des archives --> <div id="adm-archives-list"> <div class="empty-state" style="margin-top:20px"> <div class="es-icon"></div> <div class="es-text"><span data-i18n="adm_aucune_archive">Aucune archive</span></div> <div class="es-sub">Cliquez sur "Archiver l'année" pour créer votre première archive</div> </div> </div> <!-- Vue d'archive (lecture seule) --> <div id="adm-archive-detail" style="display:none"> <div class="btn-back" onclick="admCloseArchiveDetail()">← Retour aux archives</div> <div id="adm-archive-detail-content"></div> </div> </div> <!-- ══ SECTION : Ressources Humaines ══ --> <div id="adm-section-rh" style="display:none"> <div class="adm-section-title">Ressources Humaines</div> <!-- Onglets RH : Demandes | Contrats | Formations --> <div style="display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0"> <button id="rh-tab-btn-demandes"  onclick="rhSwitchTab('demandes')"
           style="padding:8px 18px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:800;
           color:var(--primary);border-bottom:3px solid var(--primary);margin-bottom:-2px">Demandes cadres</button> <button id="rh-tab-btn-contrats"  onclick="rhSwitchTab('contrats')"
           style="padding:8px 18px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:700;
@@ -4403,31 +4403,55 @@ function switchListeTab(tab) {
  * Collecte les lignes du tableau visible dans le sous-onglet actif.
  */
 function exportListeExcel() {
+  if (typeof XLSX === 'undefined') { showToast('⚠ SheetJS non chargé', '#d97706'); return; }
   const tab = _listesActiveTab || 'laiha';
-  const tableMap = {
-    laiha:          'laiha-table',
-    taqsimat:       'tq-table',
-    damj:           'dj-table',
-    'cadres-liste': 'cl-table'
-  };
-  const labelMap = {
-    laiha:          'LaichaKoliya',
-    taqsimat:       'Taqsimat',
-    damj:           'Damj',
-    'cadres-liste': 'Laiha_Itar'
-  };
-  const tableEl = document.getElementById(tableMap[tab]);
-  if (!tableEl || typeof XLSX === 'undefined') {
-    showToast('⚠ Tableau introuvable ou SheetJS non chargé', '#d97706'); return;
-  }
+  const labelMap = { laiha:'LaichaKoliya', taqsimat:'Taqsimat', damj:'Damj', 'cadres-liste':'Laiha_Itar' };
+
+  let rows = [];
   try {
+    if (tab === 'cadres-liste') {
+      /* Toujours toute la liste, pas seulement _clFiltered */
+      rows = (CADRES_GLOBAUX || []).map(c => ({
+        'Nom (AR)':    c.nom_ar   || '',
+        'Nom (FR)':    c.nom_fr   || '',
+        'Spécialité':  c.safa     || '',
+        'Ville':       c.ville    || '',
+        'CIN':         c.cin      || '',
+        'Ancienneté':  c.annees != null ? c.annees + ' ans' : '—',
+        'CNSS':        c.cnss ? '✓' : '✗',
+        'Email':       c.email    || '',
+        'Tél.':        c.tel      || '',
+      }));
+    } else {
+      /* Listes bénéficiaires — toujours données complètes, sans filtre */
+      rows = getBeneficiairesAdmin().map(b => {
+        const u = (USERS||[]).find(u=>u.teacherId===b.teacherId) || {};
+        return {
+          'Nom':          b.nom        || '',
+          'Nom Latin':    b.nomLatin   || '',
+          'Classe':       u.classe     || '',
+          'Cadre':        u.name       || '',
+          'Sexe':         b.sexe       || '',
+          'Date nais.':   b.ddn        || '',
+          'Âge':          b.age        || '',
+          'Handicap':     b.handicap   || '',
+          'Degré':        b.degre      || '',
+          'Niveau':       b.niveau     || '',
+          'Services':     (b.services||[]).join(', '),
+          'Couverture':   b.couverture || '',
+          'Dossier':      b.dossier ? 'Complet' : 'Incomplet',
+          'Tél.':         b.tel        || '',
+        };
+      });
+    }
+
+    if (!rows.length) { showToast('⚠ Aucune donnée à exporter', '#d97706'); return; }
+    const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.table_to_sheet(tableEl);
     XLSX.utils.book_append_sheet(wb, ws, labelMap[tab] || tab);
-    const date = new Date().toISOString().slice(0,10);
-    XLSX.writeFile(wb, `ElAwael_${labelMap[tab]}_${date}.xlsx`);
-    showToast(`✅ Excel exporté — ${labelMap[tab]}`, '#059669');
-    auditLog('export', `Export Excel Liste ${tab}`, `Onglet: ${tab}`);
+    XLSX.writeFile(wb, `ElAwael_${labelMap[tab]}_${_exportDate()}.xlsx`);
+    showToast(`✅ Excel complet — ${rows.length} lignes`, '#059669');
+    auditLog('export', `Export Excel Liste ${tab}`, `${rows.length} lignes`);
   } catch(e) {
     showToast('❌ Erreur export Excel : ' + e.message, '#dc2626');
   }
@@ -4454,9 +4478,23 @@ function exportListePDF() {
   const sectionEl = document.getElementById(sectionMap[tab]);
   if (!sectionEl) { showToast('⚠ Section introuvable', '#d97706'); return; }
 
-  /* Masquer les boutons le temps de la capture */
-  const btns = sectionEl.querySelectorAll('.btn, button');
+  /* Masquer les boutons et filtres le temps de la capture */
+  const btns = sectionEl.querySelectorAll('.btn, button, .admin-filter-bar, select, input');
   btns.forEach(b => b.style.setProperty('display', 'none', 'important'));
+
+  /* Injecter un en-tête professionnel */
+  const _titreMap = { laiha:'اللائحة الكاملة للمستفيدين', taqsimat:'التقسيمات', damj:'الدمج والتعاون', 'cadres-liste':'لائحة الإطارات' };
+  const _pdfHeader = document.createElement('div');
+  _pdfHeader.id = '_pdf-liste-header';
+  _pdfHeader.style.cssText = 'display:flex;align-items:center;gap:14px;padding:14px 0 10px;border-bottom:3px solid #1b3a6b;margin-bottom:14px';
+  _pdfHeader.innerHTML = `
+    <img src="assets/logo/logo_elawael.png" style="width:52px;height:52px;object-fit:contain;border-radius:10px;background:#f8fafc;padding:3px" onerror="this.style.display='none'">
+    <div>
+      <div style="font-family:Sora,sans-serif;font-size:17px;font-weight:800;color:#1b3a6b">Association El Awael — الجمعية الأوائل</div>
+      <div style="font-size:13px;font-weight:700;color:#374151;margin-top:2px">${_titreMap[tab]||labelMap[tab]}</div>
+      <div style="font-size:10px;color:#6b7280;margin-top:2px">Exporté le ${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+    </div>`;
+  sectionEl.insertBefore(_pdfHeader, sectionEl.firstChild);
 
   const filename = `ElAwael_${labelMap[tab]}_${_exportDate()}.pdf`;
   showToast('⏳ Génération du PDF en cours…', 'var(--primary)');
@@ -4464,6 +4502,7 @@ function exportListePDF() {
   _htmlToPDF(sectionEl, filename, { orientation: 'landscape', margin: 10 })
     .then(ok => {
       btns.forEach(b => b.style.removeProperty('display'));
+      _pdfHeader.remove();
       if (ok) {
         auditLog('export', `Export PDF Liste ${tab}`, filename);
         showToast(`✅ PDF téléchargé : ${filename}`, '#7c3aed');
@@ -19650,8 +19689,8 @@ function renderAdminOverview(){
   const _dateStr = _now.toLocaleDateString(_admLocale, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   setT('adm-banner-date', ` ${_dateStr}`);
 
-  /* Semaines restantes dans le semestre 2 (fin estimée : 30 juin 2026) */
-  const _finSem2 = new Date('2026-06-30');
+  /* Semaines restantes — date calculée depuis ANNEE_SCOLAIRE.s2Fin (pas hardcodée) */
+  const _finSem2 = new Date(ANNEE_SCOLAIRE.s2Fin + '-30');
   const _msRest  = _finSem2 - _now;
   const _semRest = Math.max(0, Math.ceil(_msRest / (7 * 24 * 3600 * 1000)));
   const _semEl   = document.getElementById('adm-banner-sem-rest');
@@ -19659,6 +19698,36 @@ function renderAdminOverview(){
     _semEl.textContent = _semRest >0 ? `${_semRest} ${t('adm_sem_restantes')}` : t('adm_sem_termine');
     _semEl.style.background = _semRest <= 4 ? 'rgba(220,38,38,0.25)' : 'rgba(255,255,255,0.15)';
   }
+
+  /* Badge synchronisation — affiche l'âge de la dernière sync Firestore */
+  (function _renderSyncBadge() {
+    let syncEl = document.getElementById('adm-banner-sync');
+    if (!syncEl) {
+      syncEl = document.createElement('span');
+      syncEl.id = 'adm-banner-sync';
+      syncEl.style.cssText = 'font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;color:#fff;margin-left:4px;cursor:default';
+      if (_semEl && _semEl.parentNode) _semEl.parentNode.appendChild(syncEl);
+    }
+    const _tsSync = localStorage.getItem('ea_sync_ts');
+    if (!_tsSync) {
+      syncEl.textContent = '⚠ hors-ligne';
+      syncEl.style.background = 'rgba(220,38,38,0.4)';
+      syncEl.title = 'Aucune synchronisation détectée pour cette session';
+      return;
+    }
+    const _ageMin = Math.round((Date.now() - parseInt(_tsSync, 10)) / 60000);
+    if (_ageMin < 2) {
+      syncEl.textContent = '🟢 sync récente';
+      syncEl.style.background = 'rgba(5,150,105,0.35)';
+    } else if (_ageMin < 11) {
+      syncEl.textContent = `🟡 sync il y a ${_ageMin} min`;
+      syncEl.style.background = 'rgba(217,119,6,0.35)';
+    } else {
+      syncEl.textContent = `🔴 sync il y a ${_ageMin} min`;
+      syncEl.style.background = 'rgba(220,38,38,0.45)';
+    }
+    syncEl.title = `Dernière synchronisation Firestore : il y a ${_ageMin} minute(s)`;
+  })();
 
   /* ── Actions du jour — 3 items les plus urgents pour le directeur ── */
   (function _renderActionsDuJour() {
@@ -21438,13 +21507,19 @@ function renderAdminPEI(){
     if (!domList.length) {
       domainesPanel.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">${t('pei_dom_vide')}</div>`;
     } else {
+      const _domHidden = Math.max(0, domList.length - 7);
+      const _hiddenNote = _domHidden > 0
+        ? `<div style="padding:6px 14px 12px;font-size:10px;color:var(--muted);font-style:italic">
+             + ${_domHidden} domaine${_domHidden > 1 ? 's' : ''} supplémentaire${_domHidden > 1 ? 's' : ''} non affiché${_domHidden > 1 ? 's' : ''} — appliquer un filtre de classe pour les voir
+           </div>`
+        : '';
       domainesPanel.innerHTML = `
         <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between"> <span style="font-size:12px;font-weight:800;color:#7c3aed">${t('pei_dom_titre')}</span> <span style="font-size:10px;color:var(--muted)">${t('pei_dom_ordre')}</span> </div> <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px"> ${domList.slice(0,7).map(d => {
             const c = d.pct >= 70 ? 'var(--success)' : d.pct >= 40 ? 'var(--warning)' : 'var(--danger)';
             const badge = d.pct < 40 ? '🔴' : d.pct < 70 ? '🟡' : '🟢';
             return `<div> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"> <span style="font-size:11px;font-weight:700">${badge} ${d.label}</span> <span style="font-size:11px;font-weight:900;color:${c}">${d.pct}%</span> </div> <div style="position:relative;background:var(--bg);border-radius:100px;height:7px;overflow:visible"> <div style="width:${d.pct}%;height:100%;background:${c};border-radius:100px;transition:width .4s"></div> <!-- Marqueur cible 70% --> <div style="position:absolute;left:70%;top:-3px;width:2px;height:13px;background:#7c3aed;border-radius:2px" title="${t('pei_cible_70')}"></div> </div> <div style="font-size:9px;color:var(--muted);margin-top:2px">✅${d.done} · 🔄${d.prog} · ${d.tot-d.done-d.prog} / ${d.tot}</div> </div>`;
           }).join('')}
-        </div>`;
+        </div>${_hiddenNote}`;
     }
   }
 
@@ -21477,7 +21552,7 @@ function renderAdminPEI(){
   /* ── 7. Calcul hebdomadaire (objectifs/semaine nécessaires) ── */
   const hebdoPanel = document.getElementById('pei-hebdo-panel');
   if (hebdoPanel) {
-    const finSem2       = new Date('2026-06-30');
+    const finSem2       = new Date(ANNEE_SCOLAIRE.s2Fin + '-30');
     const now           = new Date();
     const semRestantes  = Math.max(1, Math.ceil((finSem2 - now) / (7 * 24 * 3600 * 1000)));
     const cible70       = Math.ceil(tot * 0.70);              // objectif cible absolu
@@ -21505,7 +21580,7 @@ function renderAdminPEI(){
   /* ── 8. Objectifs bloqués / en retard ── */
   const stalePanel = document.getElementById('pei-stale-panel');
   if (stalePanel) {
-    const finSem2_s     = new Date('2026-06-30');
+    const finSem2_s     = new Date(ANNEE_SCOLAIRE.s2Fin + '-30');
     const now_s         = new Date();
     const semRestantes_s= Math.max(1, Math.ceil((finSem2_s - now_s) / (7 * 24 * 3600 * 1000)));
     // Seuil dynamique : si ≤4 semaines → 20%, sinon 40%
@@ -21720,7 +21795,7 @@ function renderAdminBenef(){
   /* ── Liste dédupliquée (chaque bénéficiaire = 1 entrée même s'il a 2 cadres) ── */
   let list = getBeneficiairesAdmin(_admBenefFilter);
   if(_admNivFilter!=='all')list=list.filter(b=>String(b.niveau)===_admNivFilter);
-  if(search.trim())list=list.filter(b=>(b.nom+(b.nomLatin||'')).toLowerCase().includes(search.toLowerCase()));
+  if(search.trim())list=list.filter(b=>_normNom(b.nom+(b.nomLatin||'')).includes(_normNom(search)));
   /* Tri par score de risque décroissant (urgents en premier) si activé */
   if(_admSortRisque) list=[...list].sort((a,b)=>calcRisqueBenef(b,_presences).score-calcRisqueBenef(a,_presences).score);
   const COLORS=['#1b3a6b','#e11d48','#7c3aed','#059669','#d97706','#0d9488','#2563eb','#dc2626'];
@@ -21783,7 +21858,7 @@ function renderAdminBenef(){
             ? `<span style="font-size:10px;color:var(--muted);font-weight:600"
                      title="${userFormateur.matiere||''}">+ ${userFormateur.name.split(' ').slice(0,2).join(' ')}</span>`
             : ''}
-        </div> </td> <td><span class="${['','lvl-a','lvl-b','lvl-c','lvl-d'][b.niveau]||'lvl-b'} lvl">N${b.niveau}</span></td> <td><span style="font-size:11px;color:var(--muted)">${b.handicap||'—'}</span></td> <td>${ptot>0?`<div style="display:flex;align-items:center;gap:5px"><div style="width:50px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px"></div></div><span style="font-size:11px;font-weight:800;color:${peiColor(pct)}">${pct}%</span></div>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td> <td>${b.dossier?'<span class="tag tag-green">✓</span>':'<span class="tag tag-red">✗</span>'}</td> <td><span title="${_r.raisons.map(r=>r.label+' (+'+r.pts+')').join(' | ')}" style="background:${_rBg};color:${_rCol};font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px;white-space:nowrap;cursor:help">${_rLbl}</span></td> <td><span style="font-size:11px;font-weight:700;color:${_lastActCol}">${_lastAct}</span></td> </tr>`;
+        </div> </td> <td><span class="${['','lvl-a','lvl-b','lvl-c','lvl-d'][b.niveau]||'lvl-b'} lvl">N${b.niveau}</span></td> <td><span style="font-size:11px;color:var(--muted)">${b.handicap||'—'}</span></td> <td>${ptot>0?`<div style="display:flex;align-items:center;gap:5px"><div style="width:50px;background:var(--bg);border-radius:100px;height:5px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${peiColor(pct)};border-radius:100px"></div></div><span style="font-size:11px;font-weight:800;color:${peiColor(pct)}">${pct}%</span></div>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td> <td>${b.dossier?'<span class="tag tag-green">✓</span>':'<span class="tag tag-red">✗</span>'}</td> <td><span title="${_r.raisons.map(r=>r.label+' (+'+r.pts+')').join(' | ')}" style="background:${_rBg};color:${_rCol};font-size:10px;font-weight:800;padding:3px 8px;border-radius:100px;white-space:nowrap;cursor:help">${_rLbl}</span></td> <td><span style="font-size:11px;font-weight:700;color:${_lastActCol}">${_lastAct}</span></td> <td><button onclick="event.stopPropagation();adminDeleteBenef(${gIdx})" class="role-admin-only" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:.55;padding:2px 6px;border-radius:6px;transition:opacity .15s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.55" title="Supprimer ce dossier">🗑</button></td> </tr>`;
   }).join('');
   if(!tbody.innerHTML)tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">${t('es_aucun_resultat')}</td></tr>`;
   setTimeout(()=>{ if(typeof translatePage==='function') translatePage(); }, 40);
@@ -21910,8 +21985,10 @@ function renderAdminCadres(){
   const container = document.getElementById('adm-cadres-list'); if(!container) return;
   const COLORS = ['#1b3a6b','#e11d48','#7c3aed','#059669','#d97706','#0d9488','#2563eb','#dc2626'];
 
-  /* Données communes — presences + mois courant */
-  const allPres = loadData('ea_presences') || [];
+  /* Données communes — chargées une seule fois avant la boucle */
+  const allPres     = loadData('ea_presences') || [];
+  const allRapports = loadData('ea_rapports')  || [];
+  const allSuivis   = loadData('ea_suivis')    || [];
   const _now    = new Date();
   const _ymRaw  = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
   const _ym     = _ymRaw > ANNEE_SCOLAIRE.s2Fin ? ANNEE_SCOLAIRE.s2Fin
@@ -21927,8 +22004,8 @@ function renderAdminCadres(){
     const ppct  = ptot?Math.round(pdn/ptot*100):0;
     const col   = u.classeColor||COLORS[i%COLORS.length];
     const ini   = (u.name||'').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    const rap   = (loadData('ea_rapports')||[]).filter(r=>benef.some(b=>b.nom===r.benef)).length;
-    const suiv  = (loadData('ea_suivis')||[]).filter(s=>benef.some(b=>b.nom===s.benef)).length;
+    const rap   = allRapports.filter(r=>benef.some(b=>b.nom===r.benef)).length;
+    const suiv  = allSuivis.filter(s=>benef.some(b=>b.nom===s.benef)).length;
 
     /* Séances de ce cadre ce mois */
     const _sessCadre = _seancesMois.filter(p =>p.teacherId === u.teacherId);
@@ -22444,6 +22521,8 @@ function calcRisqueBenef(b, presences) {
 /**
  * Rend la liste des bénéficiaires triée par score de risque décroissant.
  */
+let _alerteClasseFilter = 'all'; /* Filtre classe actif dans la vue risques */
+
 function renderAdminRisques() {
   const container = document.getElementById('adm-risque-container');
   if (!container) return;
@@ -22492,8 +22571,38 @@ function renderAdminRisques() {
     badge.style.display = n >0 ? 'inline-flex' : 'none';
   }
 
+  /* ── Filtre par classe — injecté dynamiquement au-dessus du container ── */
+  const classes = [...new Set(_benefAdminR.map(b => {
+    const u = (USERS||[]).find(u=>u.teacherId===b.teacherId);
+    return u ? u.classe : null;
+  }).filter(Boolean))].sort();
+
+  let filterBar = document.getElementById('adm-risque-filter-bar');
+  if (!filterBar) {
+    filterBar = document.createElement('div');
+    filterBar.id = 'adm-risque-filter-bar';
+    filterBar.style.cssText = 'padding:8px 16px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center';
+    container.parentNode.insertBefore(filterBar, container);
+  }
+  filterBar.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--muted)">Classe :</span>' +
+    ['all', ...classes].map(cl => {
+      const active = _alerteClasseFilter === cl;
+      const lbl    = cl === 'all' ? 'Toutes' : cl;
+      return `<button onclick="_alerteClasseFilter='${cl.replace(/'/g,"\\'")}';renderAdminRisques()"
+        class="admin-filter-btn ${active?'active':''}"
+        style="font-size:10px;padding:3px 10px">${lbl}</button>`;
+    }).join('');
+
   /* Filtrer uniquement ceux à risque >0 pour l'affichage */
-  const aRisque = risques.filter(r =>r.score >0);
+  let aRisque = risques.filter(r =>r.score >0);
+
+  /* Appliquer le filtre classe si actif */
+  if (_alerteClasseFilter !== 'all') {
+    aRisque = aRisque.filter(({ b }) => {
+      const u = (USERS||[]).find(u=>u.teacherId===b.teacherId);
+      return u && u.classe === _alerteClasseFilter;
+    });
+  }
   if (!aRisque.length) {
     container.innerHTML = `<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px"> ✅ Aucun bénéficiaire à risque détecté — Excellent !
     </div>`;
@@ -22691,10 +22800,12 @@ function initSimulation() {
   };
   _simScoreActuel = base.score;
 
-  /* Remettre les sliders à 0 */
+  /* Restaurer le scénario depuis sessionStorage (persistance entre navigations) */
+  const _simSaved = sessionStorage.getItem('ea_sim_scenario');
+  const _simSavedVals = _simSaved ? JSON.parse(_simSaved) : null;
   ['pres','pei','indep'].forEach(k => {
     const sl = document.getElementById('sim-slider-' + k);
-    if (sl) sl.value = 0;
+    if (sl) sl.value = (_simSavedVals && _simSavedVals[k] !== undefined) ? _simSavedVals[k] : 0;
   });
 
   /* Afficher le score actuel (colonne gauche) */
@@ -23301,6 +23412,15 @@ function _simUpdateProjection(scoreSimule) {
       }
     }
   });
+
+  /* Persister le scénario en sessionStorage (survit aux navigations entre sections) */
+  try {
+    sessionStorage.setItem('ea_sim_scenario', JSON.stringify({
+      pres:  deltaPres,
+      pei:   deltaPEI,
+      indep: deltaIndep
+    }));
+  } catch (_e) { /* sessionStorage plein — non bloquant */ }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -23415,14 +23535,35 @@ function _rappRenderEvolution(d, presences) {
     dataScore.push(tP !== null ? Math.round((tauxPEI_fixe*0.40)+(tP*0.30)+(tauxIndep*0.20)+(tauxDoss*0.10)) : null);
   });
 
+  /* Note mois courant incomplet (point creux = données non finalisées) */
+  let _rappNote = document.getElementById('rapp-evol-note');
+  if (!_rappNote) {
+    _rappNote = document.createElement('div');
+    _rappNote.id = 'rapp-evol-note';
+    _rappNote.style.cssText = 'font-size:10px;color:var(--muted);font-style:italic;text-align:right;margin-top:4px;padding:0 4px';
+    canvas.parentNode.appendChild(_rappNote);
+  }
+  const _moisCourantLbl = moisLabels[moisLabels.length - 1] || '';
+  _rappNote.textContent = `○ Point creux (${_moisCourantLbl}) = mois en cours — données incomplètes`;
+
   if (_rappEvolutionChart) { _rappEvolutionChart.destroy(); _rappEvolutionChart = null; }
   _rappEvolutionChart = new Chart(canvas, {
     type: 'line',
     data: {
       labels: moisLabels,
       datasets: [
-        { label:t('rapp_kpi_score'),    data:dataScore,    borderColor:'#1b3a6b', backgroundColor:'rgba(27,58,107,.10)', fill:true,  tension:.4, pointRadius:4, borderWidth:2.5, spanGaps:true },
-        { label:t('rapp_kpi_presence_s'), data:dataPresence, borderColor:'#059669', backgroundColor:'rgba(5,150,105,.07)',  fill:false, tension:.4, pointRadius:4, borderWidth:2,   spanGaps:true, borderDash:[5,3] }
+        { label:t('rapp_kpi_score'),    data:dataScore,
+          borderColor:'#1b3a6b', backgroundColor:'rgba(27,58,107,.10)', fill:true,  tension:.4, borderWidth:2.5, spanGaps:true,
+          pointRadius: dataScore.map((_,i)=>i===dataScore.length-1?6:4),
+          pointBackgroundColor: dataScore.map((_,i)=>i===dataScore.length-1?'#fff':'#1b3a6b'),
+          pointBorderColor:     dataScore.map((_,i)=>i===dataScore.length-1?'#1b3a6b':'#1b3a6b'),
+          pointBorderWidth:     dataScore.map((_,i)=>i===dataScore.length-1?2:1) },
+        { label:t('rapp_kpi_presence_s'), data:dataPresence,
+          borderColor:'#059669', backgroundColor:'rgba(5,150,105,.07)',  fill:false, tension:.4, borderWidth:2,   spanGaps:true, borderDash:[5,3],
+          pointRadius: dataPresence.map((_,i)=>i===dataPresence.length-1?6:4),
+          pointBackgroundColor: dataPresence.map((_,i)=>i===dataPresence.length-1?'#fff':'#059669'),
+          pointBorderColor:     dataPresence.map((_,i)=>'#059669'),
+          pointBorderWidth:     dataPresence.map((_,i)=>i===dataPresence.length-1?2:1) }
       ]
     },
     options: {
@@ -23550,6 +23691,17 @@ function rapportExportPDF() {
   const btns = printable.querySelectorAll('.btn, button');
   btns.forEach(b => b.style.setProperty('display', 'none', 'important'));
 
+  /* Injecter le logo dans la bannière pour le PDF */
+  let _logoInjected = null;
+  const _bannerFlex = printable.querySelector('[style*="display:flex"][style*="align-items:center"][style*="justify-content:space-between"]');
+  if (_bannerFlex) {
+    _logoInjected = document.createElement('img');
+    _logoInjected.src = 'assets/logo/logo_elawael.png';
+    _logoInjected.id  = '_pdf-logo-inject';
+    _logoInjected.style.cssText = 'width:62px;height:62px;object-fit:contain;border-radius:12px;flex-shrink:0;margin-right:14px;background:#fff;padding:4px';
+    _bannerFlex.insertBefore(_logoInjected, _bannerFlex.firstChild);
+  }
+
   const moisLbl = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
     .replace(' ', '_').replace(/\s/g, '_');
   const filename = `Rapport_ElAwael_${moisLbl}_${_exportDate()}.pdf`;
@@ -23559,6 +23711,7 @@ function rapportExportPDF() {
   _htmlToPDF(printable, filename, { orientation: 'portrait', margin: 12 })
     .then(ok => {
       btns.forEach(b => b.style.removeProperty('display'));
+      if (_logoInjected) _logoInjected.remove();
       if (ok) {
         auditLog('export', 'Export PDF — Rapport institutionnel', filename);
         showToast(`✅ Rapport PDF téléchargé : ${filename}`, '#7c3aed');
@@ -23669,6 +23822,9 @@ function renderAuditJournal() {
 /**
  * Filtre et affiche les entrées selon les contrôles actifs.
  */
+let _auditPage = 1;
+const _AUDIT_PAGE_SIZE = 100;
+
 function auditRender() {
   const logs       = JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
   const typeFilter = document.getElementById('audit-filter-type')?.value  || 'all';
@@ -23684,16 +23840,25 @@ function auditRender() {
     return true;
   });
 
+  const totalFiltered = filtered.length;
+  const totalPages    = Math.max(1, Math.ceil(totalFiltered / _AUDIT_PAGE_SIZE));
+  _auditPage = Math.min(_auditPage, totalPages);
+
   const countLbl = document.getElementById('audit-count-label');
   if (countLbl) {
-    const lbl = filtered.length >1 ? t('audit_entrees_pl') : t('audit_entree_s');
-    countLbl.textContent = `${filtered.length} ${lbl}`;
+    const lbl = totalFiltered >1 ? t('audit_entrees_pl') : t('audit_entree_s');
+    countLbl.textContent = totalPages > 1
+      ? `${totalFiltered} ${lbl} — page ${_auditPage}/${totalPages}`
+      : `${totalFiltered} ${lbl}`;
   }
+
+  /* Pagination : slice pour la page courante */
+  filtered = filtered.slice((_auditPage - 1) * _AUDIT_PAGE_SIZE, _auditPage * _AUDIT_PAGE_SIZE);
 
   const list = document.getElementById('audit-list');
   if (!list) return;
 
-  if (!filtered.length) {
+  if (!totalFiltered) {
     list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--muted);font-size:13px"> ${t('audit_aucune_entree')}</div>`;
     return;
   }
@@ -23705,6 +23870,20 @@ function auditRender() {
     if (!groups[day]) groups[day] = [];
     groups[day].push(l);
   });
+
+  /* Contrôles de pagination (insérés en bas après le contenu) */
+  const paginationHTML = totalPages > 1 ? `
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 0;border-top:1px solid var(--border);margin-top:8px">
+      <button onclick="_auditPage=Math.max(1,_auditPage-1);auditRender()"
+        ${_auditPage <= 1 ? 'disabled' : ''}
+        class="btn" style="font-size:12px;padding:5px 14px;font-weight:700">← Précédente</button>
+      <span style="font-size:12px;font-weight:700;color:var(--muted)">
+        Page ${_auditPage} / ${totalPages}
+      </span>
+      <button onclick="_auditPage=Math.min(${totalPages},_auditPage+1);auditRender()"
+        ${_auditPage >= totalPages ? 'disabled' : ''}
+        class="btn" style="font-size:12px;padding:5px 14px;font-weight:700">Suivante →</button>
+    </div>` : '';
 
   list.innerHTML = Object.entries(groups).map(([day, entries]) => {
     /* Label date lisible */
@@ -23734,7 +23913,7 @@ function auditRender() {
       <div style="margin-top:14px;margin-bottom:4px"> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;
                     letter-spacing:.6px;padding:6px 0;border-bottom:2px solid var(--border);margin-bottom:2px"> ${dayLabel} <span style="font-weight:400;color:var(--muted)">(${entries.length} ${actLbl})</span> </div> ${rows}
       </div>`;
-  }).join('');
+  }).join('') + paginationHTML;
 }
 
 /**
@@ -23795,6 +23974,47 @@ function auditExportPDF() {
   }
   showToast(' Impression du journal…', 'var(--primary)');
   setTimeout(() =>window.print(), 400);
+}
+
+/**
+ * Export Excel du journal d'audit (tous les logs filtrés, pas seulement la page).
+ */
+function auditExportExcel() {
+  if (typeof XLSX === 'undefined') {
+    showToast('⚠ Bibliothèque Excel non chargée', 'var(--danger)'); return;
+  }
+  const logs       = JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
+  const typeFilter = document.getElementById('audit-filter-type')?.value  || 'all';
+  const userFilter = document.getElementById('audit-filter-user')?.value  || 'all';
+  const dateFrom   = document.getElementById('audit-filter-date-from')?.value || '';
+  const dateTo     = document.getElementById('audit-filter-date-to')?.value   || '';
+
+  const filtered = logs.filter(l => {
+    if (typeFilter !== 'all' && l.type !== typeFilter) return false;
+    if (userFilter !== 'all' && l.user !== userFilter) return false;
+    if (dateFrom && l.ts && l.ts.slice(0,10) < dateFrom) return false;
+    if (dateTo   && l.ts && l.ts.slice(0,10) > dateTo)   return false;
+    return true;
+  });
+
+  if (!filtered.length) { showToast('Aucune entrée à exporter', 'var(--warning)'); return; }
+
+  const rows = filtered.map(l => ({
+    'Date & Heure' : l.ts ? new Date(l.ts).toLocaleString('fr-FR') : '—',
+    'Type'         : (AUDIT_TYPES[l.type] || AUDIT_TYPES.systeme).label,
+    'Action'       : l.action || '',
+    'Détail'       : l.detail || '',
+    'Utilisateur'  : l.user   || '',
+    'Rôle'         : l.role   || '',
+  }));
+
+  const ws  = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{ wch:22 }, { wch:18 }, { wch:40 }, { wch:50 }, { wch:30 }, { wch:14 }];
+  const wb  = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Journal audit');
+  XLSX.writeFile(wb, `Journal_Audit_ElAwael_${_exportDate()}.xlsx`);
+  auditLog('export', 'Export Excel — Journal d\'audit', `${filtered.length} entrées exportées`);
+  showToast(`✅ ${filtered.length} entrées exportées`, 'var(--success)');
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -24483,7 +24703,7 @@ function renderAdminHeatmap() {
       const classeEncoded = cl.label;
 
       return `
-        <div onclick="heatmapGoToClasse('${classeEncoded.replace(/'/g,"\\'")}')" style="background:${bgLight};border:2px solid ${color};border-radius:16px;padding:18px;cursor:pointer;transition:transform .18s, box-shadow .18s;position:relative;overflow:hidden"
+        <div data-hm-classe="${cl.label.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" onclick="heatmapGoToClasse(this.dataset.hmClasse)" style="background:${bgLight};border:2px solid ${color};border-radius:16px;padding:18px;cursor:pointer;transition:transform .18s, box-shadow .18s;position:relative;overflow:hidden"
         onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.12)'"
         onmouseout="this.style.transform='';this.style.boxShadow=''"> <!-- Badge niveau haut-droit --> <div style="position:absolute;top:12px;right:12px;font-size:10px;font-weight:800;
                       padding:3px 10px;border-radius:100px;background:${bg};color:${color}"> ${niveau}
@@ -24515,7 +24735,7 @@ function renderAdminHeatmap() {
     const niveau = cl.avgScore >= 61 ? t('hm_urgent_lbl') : cl.avgScore >= 31 ? t('hm_surveiller_lbl') : t('hm_stable_lbl');
     const cadreNames = cl.cadres.map(c =>c.name.split(' ')[0]).join(', ');
     return `
-      <tr onclick="heatmapGoToClasse('${cl.label.replace(/'/g,"\\'")}');" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''"> <td> <span style="font-size:15px">${cl.icon}</span> <span style="font-weight:700;margin-left:6px">${cl.label}</span> </td> <td style="font-size:12px;color:var(--muted)">${cadreNames}</td> <td style="font-weight:700;text-align:center">${cl.benefs.length}</td> <td style="text-align:center"> <span style="font-family:Sora,sans-serif;font-size:18px;font-weight:800;color:${color}">${cl.avgScore}</span> <div style="width:60px;height:4px;border-radius:100px;background:${bg};margin:4px auto 0"> <div style="width:${cl.avgScore}%;height:100%;background:${color};border-radius:100px"></div> </div> </td> <td style="text-align:center;font-weight:700;color:#dc2626">${cl.urgents}</td> <td style="text-align:center;font-weight:700;color:#d97706">${cl.surveiller}</td> <td style="text-align:center;font-weight:700;color:#059669">${cl.stables}</td> <td> <span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;
+      <tr data-hm-classe="${cl.label.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" onclick="heatmapGoToClasse(this.dataset.hmClasse)" style="cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background=''"> <td> <span style="font-size:15px">${cl.icon}</span> <span style="font-weight:700;margin-left:6px">${cl.label}</span> </td> <td style="font-size:12px;color:var(--muted)">${cadreNames}</td> <td style="font-weight:700;text-align:center">${cl.benefs.length}</td> <td style="text-align:center"> <span style="font-family:Sora,sans-serif;font-size:18px;font-weight:800;color:${color}">${cl.avgScore}</span> <div style="width:60px;height:4px;border-radius:100px;background:${bg};margin:4px auto 0"> <div style="width:${cl.avgScore}%;height:100%;background:${color};border-radius:100px"></div> </div> </td> <td style="text-align:center;font-weight:700;color:#dc2626">${cl.urgents}</td> <td style="text-align:center;font-weight:700;color:#d97706">${cl.surveiller}</td> <td style="text-align:center;font-weight:700;color:#059669">${cl.stables}</td> <td> <span style="font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;
                        background:${bg};color:${color}"> ${niveau}
           </span> </td> </tr>`;
   }).join('');
@@ -24585,17 +24805,27 @@ function adminSaveNewBenef(){
     niv_label: nivLabels[niveau]||'', dossier, handicap, degre,
     couverture, tel, services, pei_domaines: []
   };
+  /* Vérification doublon — même nom normalisé dans la même classe */
+  const _doublon = BENEFICIAIRES.find(x =>
+    x && x.teacherId === teacherId && _normNom(x.nom) === _normNom(nom)
+  );
+  if (_doublon) {
+    showToast(`⚠ Un bénéficiaire "${_doublon.nom}" existe déjà dans cette classe`, '#d97706');
+    return;
+  }
+
   BENEFICIAIRES.push(_newBenef);
   /* Sauvegarder en Firestore (CRITIQUE 2 — CLAUDE.md) */
   if (typeof syncSaveNewBenef === 'function') syncSaveNewBenef(_newBenef);
   auditLog('beneficiaire', 'Ajout d\'un nouveau bénéficiaire',
     `${nom} · Cadre : ${teacherId} · Type : ${type} · Handicap : ${handicap}`);
 
-  const code = `  {teacherId:'${teacherId}', nom:'${nom}', nomLatin:'${nomLatin}',\n`
-    + `   sexe:'${sexe}', ddn:'${ddn}', type:'${type}',\n`
-    + `   niveau:${niveau}, niv_label:'${nivLabels[niveau]||''}', dossier:${dossier},\n`
-    + `   handicap:'${handicap}', degre:'${degre}', couverture:'${couverture}',\n`
-    + `   tel:'${tel}', services:${JSON.stringify(services)},\n`
+  /* JSON.stringify pour chaque valeur — protège les apostrophes dans les noms */
+  const code = `  {teacherId:${JSON.stringify(teacherId)}, nom:${JSON.stringify(nom)}, nomLatin:${JSON.stringify(nomLatin)},\n`
+    + `   sexe:${JSON.stringify(sexe)}, ddn:${JSON.stringify(ddn)}, type:${JSON.stringify(type)},\n`
+    + `   niveau:${niveau}, niv_label:${JSON.stringify(nivLabels[niveau]||'')}, dossier:${dossier},\n`
+    + `   handicap:${JSON.stringify(handicap)}, degre:${JSON.stringify(degre)}, couverture:${JSON.stringify(couverture)},\n`
+    + `   tel:${JSON.stringify(tel)}, services:${JSON.stringify(services)},\n`
     + `   pei_domaines:[]},`;
 
   const form = document.getElementById('adm-form-benef');
@@ -24606,6 +24836,22 @@ function adminSaveNewBenef(){
   form.appendChild(div);
   showToast('✅ تمت إضافة المستفيد!', '#059669');
   renderAdminDashboard();
+}
+
+function adminDeleteBenef(idx) {
+  const b = BENEFICIAIRES[idx];
+  if (!b) return;
+  showConfirm(
+    `⚠ Supprimer le dossier de "${b.nom}" ?\n\nCette action supprime toutes ses données (PEI, présences liées). Elle est irréversible.`,
+    () => {
+      BENEFICIAIRES.splice(idx, 1);
+      auditLog('suppression', 'Suppression bénéficiaire', `${b.nom} · ${b.teacherId}`);
+      saveData('ea_beneficiaires', BENEFICIAIRES);
+      renderAdminBenef();
+      renderAdminDashboard();
+      showToast(`🗑 Dossier de ${b.nom} supprimé`, '#dc2626');
+    }
+  );
 }
 
 function adminSaveNewCadre(){
@@ -25962,7 +26208,7 @@ function renderAdminArchives(){
   const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
   setT('adm-arc-count', index.length);
 
-  // Compute total size
+  // Compute total localStorage size
   let totalSize = 0;
   for(let i=0; i<localStorage.length; i++){
     const k=localStorage.key(i); if(!k) continue;
@@ -25970,7 +26216,22 @@ function renderAdminArchives(){
   }
   const totalKB = Math.round(totalSize/1024);
   setT('adm-arc-size', totalKB + ' KB');
-  setT('adm-arc-pct', Math.round(totalKB/5120*100) + '%');
+
+  /* Taille réelle via navigator.storage.estimate() — async, non bloquant */
+  if (navigator.storage && navigator.storage.estimate) {
+    navigator.storage.estimate().then(est => {
+      const usedKB  = Math.round((est.usage  || 0) / 1024);
+      const quotaKB = Math.round((est.quota  || 0) / 1024);
+      const pct     = quotaKB > 0 ? Math.round(usedKB / quotaKB * 100) : 0;
+      setT('adm-arc-size', totalKB + ' KB (localStorage) · ' + Math.round(usedKB/1024*10)/10 + ' MB (origin)');
+      setT('adm-arc-pct',  pct + '%');
+      /* Mettre à jour le sous-titre du KPI avec le quota réel */
+      const subEl = document.getElementById('adm-arc-pct-sub');
+      if (subEl) subEl.textContent = '/ ' + Math.round(quotaKB/1024) + ' MB disponibles';
+    }).catch(() => setT('adm-arc-pct', Math.round(totalKB/5120*100) + '%'));
+  } else {
+    setT('adm-arc-pct', Math.round(totalKB/5120*100) + '%');
+  }
 
   if(index.length >0){
     setT('adm-arc-last', index[0].dateArchivage || '—');
