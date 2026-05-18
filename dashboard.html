@@ -5351,11 +5351,13 @@ window.onload = () => {
       auditLog('connexion', 'Connexion au tableau de bord',
         `Rôle : ${CURRENT_USER.role} · Classe : ${CURRENT_USER.classe || '—'}`);
     }, 500);
-    /* ── Enregistrer la date de dernière connexion dans Firestore ── */
+    /* ── Enregistrer la date de dernière connexion dans Firestore ──
+       set + merge:true crée le document s'il n'existe pas encore,
+       ou met à jour uniquement lastLogin s'il existe déjà. ── */
     if (typeof db !== 'undefined' && CURRENT_USER.uid) {
       db.collection('users').doc(CURRENT_USER.uid)
-        .update({ lastLogin: new Date().toISOString() })
-        .catch(e =>console.warn('[LastLogin]', e));
+        .set({ lastLogin: new Date().toISOString() }, { merge: true })
+        .catch(e => console.warn('[LastLogin]', e));
     }
 
     /* ── Routing selon le rôle (CLAUDE.md §6) ──
