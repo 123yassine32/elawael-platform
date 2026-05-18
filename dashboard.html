@@ -453,16 +453,14 @@ canvas{max-height:200px;}
 /* z-index:1200 > sidebar desktop(100) et sidebar mobile(999!important) */
 #admin-overlay{position:fixed;inset:0;background:var(--bg);z-index:1200;display:flex;overflow:hidden;}
 #admin-overlay.hidden{display:none;}
-/* ── MODE SWITCHING — body classes garantissent la visibilité via !important ──
-   Ces règles ont priorité absolue sur tout inline style (display:flex ou none).
-   ea-admin-mode  → masque le portail enseignant, montre admin-overlay
-   ea-teacher-mode → masque admin-overlay, montre le portail enseignant
-   Sans classe → état initial : tout masqué (authentification en cours)
+/* ── MODE SWITCHING — le portail enseignant (sidebar + main) est TOUJOURS visible
+   dans le HTML. C'est #firebase-loading (z-index:99999) qui le couvre pendant l'auth.
+   En mode admin : #admin-overlay (z-index:1200) couvre le portail enseignant.
+   Plus besoin de display:none / display:flex via JS ou body classes.
 ──────────────────────────────────────────────────────────────────────────── */
-body.ea-admin-mode aside.sidebar,
-body.ea-admin-mode main.main   { display:none  !important; }
-body.ea-teacher-mode aside.sidebar { display:flex  !important; }
-body.ea-teacher-mode main.main     { display:flex  !important; }
+/* Quand l'admin est actif, cacher la sidebar et le main enseignant derrière l'overlay */
+body.ea-admin-mode #ea-sidebar,
+body.ea-admin-mode #ea-main { display:none !important; }
 .admin-sidebar{width:260px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;overflow-y:auto;flex-shrink:0;box-shadow:3px 0 16px rgba(0,0,0,0.15);}
 .admin-main{flex:1;overflow-y:auto;padding:28px;}
 .admin-banner{background:linear-gradient(135deg,#1b3a6b,#7c3aed 70%,#2563eb);border-radius:18px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
@@ -1047,9 +1045,9 @@ body.is-consultant .sensitive-data::after {
 </div> <!-- ── LOGIN OVERLAY ── -->
 <div id="login-overlay"> <div class="login-box"> <div class="login-logo"> <div class="login-logo-icon" style="background:transparent;padding:0;overflow:hidden;border-radius:20px;"><img src="assets/logo/logo_elawael.png" style="width:72px;height:72px;object-fit:cover;border-radius:20px;"></div> <h1>ElAwail Digital</h1> <p>Plateforme de Gestion — Espace Enseignants</p> </div> <hr class="login-divider"> <div class="login-field"> <label class="login-label"><span data-i18n="login_username">Nom d'utilisateur</span></label> <input class="login-input" type="text" id="login-user" placeholder="Entrez votre identifiant" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"> </div> <div class="login-field" style="margin-bottom:8px"> <label class="login-label"><span data-i18n="login_mdp">Mot de passe</span></label> <input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"> <span class="pw-toggle" onclick="togglePw()" id="pw-eye"></span> </div> <button class="login-btn" onclick="doLogin()">Se connecter</button> <div class="login-error" id="login-error">❌ Identifiant ou mot de passe incorrect</div> <div class="login-footer"><span data-i18n="login_subtitle">Association El Awael — Système sécurisé</span></div> </div>
 </div> <!-- ── SIDEBAR ── -->
-<aside class="sidebar" style="display:none"> <div class="logo-row"> <div class="logo-icon" style="padding:0;overflow:hidden;background:transparent;border-radius:10px"><img src="assets/logo/logo_elawael.png" style="width:40px;height:40px;object-fit:contain;border-radius:10px"></div> <div> <div class="logo-text">ElAwail Digital</div> <div class="logo-sub" data-i18n="logo_sub"><span data-i18n="login_platform">Plateforme de Gestion</span></div> </div> </div> <div class="sidebar-teacher"> <div style="display:flex;align-items:center;gap:12px"> <div class="t-ava" style="padding:0;overflow:hidden;background:transparent;border-radius:50%"><img src="assets/logo/logo_elawael.png" style="width:46px;height:46px;object-fit:cover;border-radius:50%"></div> <div> <div style="color:#fff;font-size:13px;font-weight:700">Mohamed Yassine Marzouk</div> <div style="color:rgba(255,255,255,0.55);font-size:11px;margin-top:2px">Enseignant Informatique</div> </div> </div> <div class="t-stats-mini"> <div class="tsm"><span class="tsm-v">22</span><span class="tsm-l" data-i18n="kpi_beneficiaires">Bénéficiaires</span></div> <div class="tsm"><span class="tsm-v">4</span><span class="tsm-l" data-i18n="kpi_niveaux">Niveaux</span></div> <div class="tsm"><span class="tsm-v">8</span><span class="tsm-l" data-i18n="kpi_modules">Modules</span></div> <div class="tsm"><span class="tsm-v">22/22</span><span class="tsm-l" data-i18n="kpi_dossiers">Dossiers ✓</span></div> </div> </div> <div class="sidebar-section"> <div class="sidebar-label" data-i18n="section_mon_espace">Mon espace</div> <div class="nav-item active" id="snav-0" onclick="showTab('accueil')"><span class="nav-icon">🏠</span> <span data-i18n="nav_dashboard_short">Tableau de bord</span></div> <div class="nav-item" id="snav-1" onclick="showTab('beneficiaires')"><span class="nav-icon">👥</span> <span data-i18n="nav_beneficiaires_short">Bénéficiaires</span> <span class="nav-badge-g">22</span></div> <div class="nav-item" id="snav-3" onclick="showTab('alertes')"><span class="nav-icon">🔔</span> <span data-i18n="nav_alertes_short">Alertes</span> <span class="nav-badge" id="alertes-badge">0</span></div> <div class="nav-item" id="snav-profile" onclick="showTab('profile')"><span class="nav-icon">👤</span> <span data-i18n="nav_profil_short">Mon Profil</span></div> </div> <div class="sidebar-section" id="sidebar-saisie-section"> <div class="sidebar-label" data-i18n="section_saisie">Saisie</div> <div class="nav-item" id="snav-4" onclick="showTab('saisie');showSaisieTab('presences')"><span class="nav-icon">✅</span> <span data-i18n="nav_presences_short">Présences</span></div> <div class="nav-item" id="snav-5" onclick="showTab('saisie');showSaisieTab('notes')"><span class="nav-icon">🎯</span> <span data-i18n="nav_notes_short">Notes</span></div> <div class="nav-item" id="snav-6" onclick="showTab('saisie');showSaisieTab('suivi')"><span class="nav-icon">📝</span> <span data-i18n="nav_suivi_short">Suivi quotidien</span></div> <div class="nav-item" id="snav-7" onclick="showTab('saisie');showSaisieTab('rapports')"><span class="nav-icon">📊</span> <span data-i18n="nav_rapports_short">Rapports</span></div> </div> <div class="sidebar-section" id="sidebar-gestion-section"> <div class="sidebar-label">Gestion</div> <div class="nav-item" id="snav-planning" onclick="showTab('planning')"><span class="nav-icon">📅</span>Planning hebdomadaire</div> <div class="nav-item" id="snav-objectifs" onclick="showTab('objectifs')"><span class="nav-icon">🎯</span>Objectifs SMART</div> <div class="nav-item" id="snav-messages" onclick="showTab('messages')"><span class="nav-icon">💬</span>Messagerie interne <span id="msg-badge-nav" style="display:none;background:#dc2626;color:#fff;border-radius:100px;font-size:10px;font-weight:800;padding:1px 6px;margin-left:3px"></span></div> <div class="nav-item" id="snav-bilan" onclick="showTab('bilan')"><span class="nav-icon">📊</span>Mon Bilan mensuel</div> <div class="nav-item" id="snav-calendrier" onclick="showTab('calendrier')"><span class="nav-icon">🗓</span>Calendrier association</div> </div> <div class="sidebar-section" id="sidebar-pei-section" style="display:none"> <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div> <div class="nav-item pei-nav" id="snav-pei-pei" onclick="showTab('accueil')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_pei">برنامج PEI</span></div> <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📚</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div> <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> <span data-i18n="pei_nav_ghiyab">تتبع الحضور والغياب</span></div> <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣</span> <span data-i18n="pei_nav_talabat">جدول الطلبات</span></div> <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> <span data-i18n="pei_nav_ri3aya">جدول الرعاية الذاتية</span></div> <div class="nav-item pei-nav" id="snav-pei-tan9it" onclick="showTab('tan9it')"><span class="nav-icon">📈</span> <span data-i18n="pei_nav_tan9it">برنامج التنقيط</span></div> <div class="nav-item pei-nav" id="snav-pei-ta9yim" onclick="showTab('ta9yim-asasi')"><span class="nav-icon">📊</span> <span data-i18n="pei_nav_ta9yim">التقييم الأساسي (ABLLS)</span></div> <div class="nav-item pei-nav" id="snav-pei-kpi" onclick="showTab('kpi-classe')"><span class="nav-icon">🏆</span> <span data-i18n="pei_nav_kpi">إحصائيات الأداء</span></div> </div> <!-- Section Informatique S2 — supprimée (remplacée par l'accueil dynamique buildInfoAccueil) --> <div id="sidebar-info-section" style="display:none"></div> <div class="sidebar-bottom"> <div class="logout-btn" onclick="doLogout()"><span data-i18n="logout">← Se déconnecter</span></div> </div>
+<aside class="sidebar" id="ea-sidebar"> <div class="logo-row"> <div class="logo-icon" style="padding:0;overflow:hidden;background:transparent;border-radius:10px"><img src="assets/logo/logo_elawael.png" style="width:40px;height:40px;object-fit:contain;border-radius:10px"></div> <div> <div class="logo-text">ElAwail Digital</div> <div class="logo-sub" data-i18n="logo_sub"><span data-i18n="login_platform">Plateforme de Gestion</span></div> </div> </div> <div class="sidebar-teacher"> <div style="display:flex;align-items:center;gap:12px"> <div class="t-ava" style="padding:0;overflow:hidden;background:transparent;border-radius:50%"><img src="assets/logo/logo_elawael.png" style="width:46px;height:46px;object-fit:cover;border-radius:50%"></div> <div> <div style="color:#fff;font-size:13px;font-weight:700">Mohamed Yassine Marzouk</div> <div style="color:rgba(255,255,255,0.55);font-size:11px;margin-top:2px">Enseignant Informatique</div> </div> </div> <div class="t-stats-mini"> <div class="tsm"><span class="tsm-v">22</span><span class="tsm-l" data-i18n="kpi_beneficiaires">Bénéficiaires</span></div> <div class="tsm"><span class="tsm-v">4</span><span class="tsm-l" data-i18n="kpi_niveaux">Niveaux</span></div> <div class="tsm"><span class="tsm-v">8</span><span class="tsm-l" data-i18n="kpi_modules">Modules</span></div> <div class="tsm"><span class="tsm-v">22/22</span><span class="tsm-l" data-i18n="kpi_dossiers">Dossiers ✓</span></div> </div> </div> <div class="sidebar-section"> <div class="sidebar-label" data-i18n="section_mon_espace">Mon espace</div> <div class="nav-item active" id="snav-0" onclick="showTab('accueil')"><span class="nav-icon">🏠</span> <span data-i18n="nav_dashboard_short">Tableau de bord</span></div> <div class="nav-item" id="snav-1" onclick="showTab('beneficiaires')"><span class="nav-icon">👥</span> <span data-i18n="nav_beneficiaires_short">Bénéficiaires</span> <span class="nav-badge-g">22</span></div> <div class="nav-item" id="snav-3" onclick="showTab('alertes')"><span class="nav-icon">🔔</span> <span data-i18n="nav_alertes_short">Alertes</span> <span class="nav-badge" id="alertes-badge">0</span></div> <div class="nav-item" id="snav-profile" onclick="showTab('profile')"><span class="nav-icon">👤</span> <span data-i18n="nav_profil_short">Mon Profil</span></div> </div> <div class="sidebar-section" id="sidebar-saisie-section"> <div class="sidebar-label" data-i18n="section_saisie">Saisie</div> <div class="nav-item" id="snav-4" onclick="showTab('saisie');showSaisieTab('presences')"><span class="nav-icon">✅</span> <span data-i18n="nav_presences_short">Présences</span></div> <div class="nav-item" id="snav-5" onclick="showTab('saisie');showSaisieTab('notes')"><span class="nav-icon">🎯</span> <span data-i18n="nav_notes_short">Notes</span></div> <div class="nav-item" id="snav-6" onclick="showTab('saisie');showSaisieTab('suivi')"><span class="nav-icon">📝</span> <span data-i18n="nav_suivi_short">Suivi quotidien</span></div> <div class="nav-item" id="snav-7" onclick="showTab('saisie');showSaisieTab('rapports')"><span class="nav-icon">📊</span> <span data-i18n="nav_rapports_short">Rapports</span></div> </div> <div class="sidebar-section" id="sidebar-gestion-section"> <div class="sidebar-label">Gestion</div> <div class="nav-item" id="snav-planning" onclick="showTab('planning')"><span class="nav-icon">📅</span>Planning hebdomadaire</div> <div class="nav-item" id="snav-objectifs" onclick="showTab('objectifs')"><span class="nav-icon">🎯</span>Objectifs SMART</div> <div class="nav-item" id="snav-messages" onclick="showTab('messages')"><span class="nav-icon">💬</span>Messagerie interne <span id="msg-badge-nav" style="display:none;background:#dc2626;color:#fff;border-radius:100px;font-size:10px;font-weight:800;padding:1px 6px;margin-left:3px"></span></div> <div class="nav-item" id="snav-bilan" onclick="showTab('bilan')"><span class="nav-icon">📊</span>Mon Bilan mensuel</div> <div class="nav-item" id="snav-calendrier" onclick="showTab('calendrier')"><span class="nav-icon">🗓</span>Calendrier association</div> </div> <div class="sidebar-section" id="sidebar-pei-section" style="display:none"> <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div> <div class="nav-item pei-nav" id="snav-pei-pei" onclick="showTab('accueil')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_pei">برنامج PEI</span></div> <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📚</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div> <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> <span data-i18n="pei_nav_ghiyab">تتبع الحضور والغياب</span></div> <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣</span> <span data-i18n="pei_nav_talabat">جدول الطلبات</span></div> <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> <span data-i18n="pei_nav_ri3aya">جدول الرعاية الذاتية</span></div> <div class="nav-item pei-nav" id="snav-pei-tan9it" onclick="showTab('tan9it')"><span class="nav-icon">📈</span> <span data-i18n="pei_nav_tan9it">برنامج التنقيط</span></div> <div class="nav-item pei-nav" id="snav-pei-ta9yim" onclick="showTab('ta9yim-asasi')"><span class="nav-icon">📊</span> <span data-i18n="pei_nav_ta9yim">التقييم الأساسي (ABLLS)</span></div> <div class="nav-item pei-nav" id="snav-pei-kpi" onclick="showTab('kpi-classe')"><span class="nav-icon">🏆</span> <span data-i18n="pei_nav_kpi">إحصائيات الأداء</span></div> </div> <!-- Section Informatique S2 — supprimée (remplacée par l'accueil dynamique buildInfoAccueil) --> <div id="sidebar-info-section" style="display:none"></div> <div class="sidebar-bottom"> <div class="logout-btn" onclick="doLogout()"><span data-i18n="logout">← Se déconnecter</span></div> </div>
 </aside> <!-- ── MAIN ── -->
-<main class="main" style="display:none"> <div class="topbar"> <!-- Hamburger visible uniquement sur mobile --> <button class="mob-hamburger" id="mob-ham-btn" onclick="mobToggleSidebar()" aria-label="Menu">☰</button> <div class="breadcrumb" id="topbar-bc">ElAwail Digital <span class="bc-sep">›</span> <span class="bc-a" data-i18n="nav_dashboard">Tableau de bord</span> </div> <div class="topbar-right"> <span class="topbar-tag" id="topbar-tag-main">Informatique — Semestre 2</span> <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── --> <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v3.2.0</span> <!-- ── Indicateur connexion Firebase ── --> <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
+<main class="main" id="ea-main"> <div class="topbar"> <!-- Hamburger visible uniquement sur mobile --> <button class="mob-hamburger" id="mob-ham-btn" onclick="mobToggleSidebar()" aria-label="Menu">☰</button> <div class="breadcrumb" id="topbar-bc">ElAwail Digital <span class="bc-sep">›</span> <span class="bc-a" data-i18n="nav_dashboard">Tableau de bord</span> </div> <div class="topbar-right"> <span class="topbar-tag" id="topbar-tag-main">Informatique — Semestre 2</span> <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── --> <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v3.2.0</span> <!-- ── Indicateur connexion Firebase ── --> <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
            style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite"> ⚠ Hors ligne
       </div> <!-- ── Bouton mode sombre ── --> <div class="topbar-btn" id="dark-mode-btn" onclick="toggleDarkMode()"
            title="Mode sombre / Mode clair"
@@ -5364,56 +5362,36 @@ window.onload = () => {
         .catch(e => console.warn('[LastLogin]', e));
     }
 
-    /* ── Masquer l'écran de chargement EN PREMIER —
-       L'overlay Firebase (z-index 99999) est retiré AVANT le routing
-       pour que le contenu derrière soit visible immédiatement. ── */
-    if (loading) {
-      loading.style.transition = 'none';          /* supprime le délai de fondu */
-      loading.style.opacity    = '0';
-      loading.style.pointerEvents = 'none';
-      loading.style.display    = 'none';          /* retrait immédiat — pas de setTimeout */
-    }
-
-    /* ── Routing selon le rôle (CLAUDE.md §6) ── */
+    /* ── Routing selon le rôle (CLAUDE.md §6) ──
+       Architecture simplifiée :
+       • Le portail enseignant (sidebar + main) est TOUJOURS dans le DOM et visible.
+       • #firebase-loading (z-index:99999) le couvre pendant l'authentification.
+       • Pour un enseignant : on cache simplement firebase-loading → portail visible.
+       • Pour un admin : showAdminDashboard() ouvre l'admin-overlay (z-index:1200)
+         ET body.ea-admin-mode cache le portail enseignant via CSS.
+       Plus aucun risque de page blanche liée à display:none / CSS body classes. ── */
     try {
       const _role = (CURRENT_USER && CURRENT_USER.role) ? CURRENT_USER.role.toLowerCase() : '';
       console.log('[Auth] Routing → rôle :', _role, '| teacherId :', CURRENT_USER && CURRENT_USER.teacherId);
       if (['admin', 'gestionnaire', 'consultant'].includes(_role)) {
         showAdminDashboard();
       } else {
-        /* ── Portail enseignant : rendre sidebar + main visibles ──
-           1. body class ea-teacher-mode → CSS !important règle qui override tout
-           2. style.setProperty avec 'important' → inline !important, priorité absolue
-           Ces deux mécanismes ensemble garantissent l'affichage quelle que soit
-           la cascade CSS (media queries, spécificité, héritage Edge/Chrome). ── */
+        /* ── Enseignant : le portail est déjà visible dans le DOM.
+           On applique les données de l'utilisateur connecté puis on affiche l'accueil. ── */
         document.body.classList.remove('ea-admin-mode');
-        document.body.classList.add('ea-teacher-mode');
 
-        const _ts = document.querySelector('aside.sidebar');
-        const _tm = document.querySelector('main.main');
-        if (_ts) { _ts.style.setProperty('display', 'flex', 'important'); }
-        if (_tm) { _tm.style.setProperty('display', 'flex', 'important'); }
-        console.log('[Auth] Sidebar visible:', _ts ? _ts.style.display : 'NOT FOUND',
-                    '| Main visible:', _tm ? _tm.style.display : 'NOT FOUND');
-
-        /* ── Injecter un contenu de secours dans view-accueil AVANT
-           d'appeler applyUserToPortal — ainsi même si buildPEIDashboard /
-           buildInfoAccueil lèvent une exception, l'utilisateur voit au moins
-           une carte avec ses informations plutôt qu'une page blanche. ── */
+        /* Injecter un contenu de bienvenue immédiat dans view-accueil AVANT
+           d'appeler applyUserToPortal, pour éviter un flash de contenu Marzouk. */
         const _vacc = document.getElementById('view-accueil');
         if (_vacc) {
           _vacc.style.display = 'block';
-          /* Ne remplacer le contenu statique QUE s'il contient encore 'Marzouk'
-             (le placeholder HTML) — sinon déjà peuplé par un appel précédent. */
-          if (_vacc.innerHTML.includes('Marzouk') || _vacc.innerHTML.trim() === '') {
-            _vacc.innerHTML = '<div style="padding:40px 20px;text-align:center">'
-              + '<div style="font-size:40px;margin-bottom:12px">👋</div>'
-              + '<div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#1b3a6b;margin-bottom:6px">'
-              + 'Bienvenue, ' + (CURRENT_USER.name || CURRENT_USER.teacherId || '…') + '</div>'
-              + '<div style="color:#64748b;font-size:13px;margin-bottom:8px">' + (CURRENT_USER.matiere || '') + '</div>'
-              + '<div style="color:#94a3b8;font-size:12px">Chargement du tableau de bord…</div>'
-              + '</div>';
-          }
+          _vacc.innerHTML = '<div style="padding:40px 20px;text-align:center">'
+            + '<div style="font-size:40px;margin-bottom:12px">👋</div>'
+            + '<div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#1b3a6b;margin-bottom:6px">'
+            + 'Bienvenue, ' + (CURRENT_USER.name || CURRENT_USER.teacherId || '…') + '</div>'
+            + '<div style="color:#64748b;font-size:13px;margin-bottom:8px">' + (CURRENT_USER.matiere || '') + '</div>'
+            + '<div style="display:inline-block;width:24px;height:24px;border:3px solid #1b3a6b;border-top-color:transparent;border-radius:50%;animation:fbspin .8s linear infinite;margin-top:12px"></div>'
+            + '</div>';
         }
 
         /* try-finally garantit que showTab('accueil') est TOUJOURS appelé,
@@ -5423,7 +5401,6 @@ window.onload = () => {
           renderTable();
         } catch(_portalErr) {
           console.error('[Portal] Erreur dans applyUserToPortal :', _portalErr);
-          /* Laisser le fallback visible — ne pas écraser davantage */
         } finally {
           showTab('accueil');   /* ← TOUJOURS affiché, même en cas d'erreur */
         }
@@ -5434,6 +5411,13 @@ window.onload = () => {
         const overlay = document.getElementById('admin-overlay');
         if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
       } catch(e2) { /* ignore */ }
+    }
+
+    /* ── Masquer l'écran de chargement après le routing ──
+       Maintenant que le portail est prêt, on retire l'overlay de couverture. ── */
+    if (loading) {
+      loading.style.transition = 'none';
+      loading.style.display    = 'none';
     }
 
     /* [Problème 3] Démarrer le refresh automatique des données toutes les 10 minutes. */
@@ -6226,12 +6210,6 @@ async function doLogout() {
   /* Masquer le panneau admin si ouvert */
   const adminDash = document.getElementById('admin-overlay');
   if (adminDash) { adminDash.classList.add('hidden'); adminDash.style.display = 'none'; }
-
-  /* Restaurer le portail enseignant (masqué par showAdminDashboard) */
-  const _lts = document.querySelector('aside.sidebar');
-  const _ltm = document.querySelector('main.main');
-  if (_lts) _lts.style.display = 'flex';
-  if (_ltm) _ltm.style.display = 'flex';
 
   /* Réinitialiser l'état du portail */
   resetPortalState();
@@ -19396,13 +19374,9 @@ function backToAdmin() {
   const topbarTag = document.querySelector('.topbar-tag');
   if(topbarTag) topbarTag.textContent = ' Admin — Accès complet';
 
-  // Re-masquer le portail enseignant via body class !important
+  // Re-masquer le portail enseignant via body class (CSS #ea-sidebar, #ea-main)
   document.body.classList.add('ea-admin-mode');
   document.body.classList.remove('ea-teacher-mode');
-  const _bts = document.querySelector('aside.sidebar');
-  const _btm = document.querySelector('main.main');
-  if (_bts) _bts.style.display = 'none';
-  if (_btm) _btm.style.display = 'none';
 
   // Show admin overlay and go to benef section
   const _bOverlay = document.getElementById('admin-overlay');
@@ -19641,7 +19615,7 @@ function _adminShowSectionCore(sec) {
 function showAdminDashboard(){
   loadPEIStatuses();
 
-  /* ── Body class : active le mode admin (masque portail enseignant via CSS !important) ── */
+  /* ── Cacher le portail enseignant via body class + overlay admin ── */
   document.body.classList.add('ea-admin-mode');
   document.body.classList.remove('ea-teacher-mode');
 
@@ -22036,17 +22010,11 @@ function adminOpenBenef(idx){
   // Load PEI statuses so the full PEI data is fresh
   if(b.type === 'pei') loadPEIStatuses();
 
-  // Hide admin overlay — show the main portal canvas via body class !important
-  document.body.classList.add('ea-teacher-mode');
+  // Masquer l'overlay admin — le portail enseignant est visible via suppression ea-admin-mode
   document.body.classList.remove('ea-admin-mode');
+  document.body.classList.add('ea-teacher-mode');
   document.getElementById('admin-overlay').classList.add('hidden');
   document.getElementById('admin-overlay').style.display = 'none';
-
-  // Restaurer le portail enseignant (sidebar + main) masqué par showAdminDashboard
-  const _ts = document.querySelector('aside.sidebar');
-  const _tm = document.querySelector('main.main');
-  if (_ts) _ts.style.display = 'flex';
-  if (_tm) _tm.style.display = 'flex';
 
   // Show main tabs bar (needed by openBeneficiaire)
   const tabsBar = document.getElementById('main-tabs-bar');
