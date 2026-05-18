@@ -100,8 +100,8 @@ async function doLogin() {
     /* ── 4. Firestore en arrière-plan (non bloquant) ── */
     _sauvegarderProfilFirestore(uid, profil);
 
-    /* ── 5. Rediriger vers le dashboard ── */
-    window.location.href = 'dashboard.html';
+    /* ── 5. Rediriger vers le dashboard avec timestamp anti-cache ── */
+    window.location.href = 'dashboard.html?t=' + Date.now();
 
   } catch (err) {
     btnEl.disabled = false;

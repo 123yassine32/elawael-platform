@@ -671,7 +671,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 matiere: '', stats: { niveaux: 2, modules: 4 } };
           sessionStorage.setItem('ea_user_profil', JSON.stringify(profil));
         }
-        window.location.href = 'dashboard.html';
+        /* Ajouter un timestamp unique pour bypasser le cache navigateur/CDN */
+        window.location.href = 'dashboard.html?t=' + Date.now();
       } else {
         /* Pas de session → afficher le formulaire */
         afficherFormulaire();
