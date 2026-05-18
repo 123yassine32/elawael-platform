@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>ElAwail Digital — M. Yassine Marzouk · Informatique</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1046,7 +1049,7 @@ body.is-consultant .sensitive-data::after {
 </div> <!-- ── SIDEBAR ── -->
 <aside class="sidebar" style="display:none"> <div class="logo-row"> <div class="logo-icon" style="padding:0;overflow:hidden;background:transparent;border-radius:10px"><img src="assets/logo/logo_elawael.png" style="width:40px;height:40px;object-fit:contain;border-radius:10px"></div> <div> <div class="logo-text">ElAwail Digital</div> <div class="logo-sub" data-i18n="logo_sub"><span data-i18n="login_platform">Plateforme de Gestion</span></div> </div> </div> <div class="sidebar-teacher"> <div style="display:flex;align-items:center;gap:12px"> <div class="t-ava" style="padding:0;overflow:hidden;background:transparent;border-radius:50%"><img src="assets/logo/logo_elawael.png" style="width:46px;height:46px;object-fit:cover;border-radius:50%"></div> <div> <div style="color:#fff;font-size:13px;font-weight:700">Mohamed Yassine Marzouk</div> <div style="color:rgba(255,255,255,0.55);font-size:11px;margin-top:2px">Enseignant Informatique</div> </div> </div> <div class="t-stats-mini"> <div class="tsm"><span class="tsm-v">22</span><span class="tsm-l" data-i18n="kpi_beneficiaires">Bénéficiaires</span></div> <div class="tsm"><span class="tsm-v">4</span><span class="tsm-l" data-i18n="kpi_niveaux">Niveaux</span></div> <div class="tsm"><span class="tsm-v">8</span><span class="tsm-l" data-i18n="kpi_modules">Modules</span></div> <div class="tsm"><span class="tsm-v">22/22</span><span class="tsm-l" data-i18n="kpi_dossiers">Dossiers ✓</span></div> </div> </div> <div class="sidebar-section"> <div class="sidebar-label" data-i18n="section_mon_espace">Mon espace</div> <div class="nav-item active" id="snav-0" onclick="showTab('accueil')"><span class="nav-icon">🏠</span> <span data-i18n="nav_dashboard_short">Tableau de bord</span></div> <div class="nav-item" id="snav-1" onclick="showTab('beneficiaires')"><span class="nav-icon">👥</span> <span data-i18n="nav_beneficiaires_short">Bénéficiaires</span> <span class="nav-badge-g">22</span></div> <div class="nav-item" id="snav-3" onclick="showTab('alertes')"><span class="nav-icon">🔔</span> <span data-i18n="nav_alertes_short">Alertes</span> <span class="nav-badge" id="alertes-badge">0</span></div> <div class="nav-item" id="snav-profile" onclick="showTab('profile')"><span class="nav-icon">👤</span> <span data-i18n="nav_profil_short">Mon Profil</span></div> </div> <div class="sidebar-section" id="sidebar-saisie-section"> <div class="sidebar-label" data-i18n="section_saisie">Saisie</div> <div class="nav-item" id="snav-4" onclick="showTab('saisie');showSaisieTab('presences')"><span class="nav-icon">✅</span> <span data-i18n="nav_presences_short">Présences</span></div> <div class="nav-item" id="snav-5" onclick="showTab('saisie');showSaisieTab('notes')"><span class="nav-icon">🎯</span> <span data-i18n="nav_notes_short">Notes</span></div> <div class="nav-item" id="snav-6" onclick="showTab('saisie');showSaisieTab('suivi')"><span class="nav-icon">📝</span> <span data-i18n="nav_suivi_short">Suivi quotidien</span></div> <div class="nav-item" id="snav-7" onclick="showTab('saisie');showSaisieTab('rapports')"><span class="nav-icon">📊</span> <span data-i18n="nav_rapports_short">Rapports</span></div> </div> <div class="sidebar-section" id="sidebar-gestion-section"> <div class="sidebar-label">Gestion</div> <div class="nav-item" id="snav-planning" onclick="showTab('planning')"><span class="nav-icon">📅</span>Planning hebdomadaire</div> <div class="nav-item" id="snav-objectifs" onclick="showTab('objectifs')"><span class="nav-icon">🎯</span>Objectifs SMART</div> <div class="nav-item" id="snav-messages" onclick="showTab('messages')"><span class="nav-icon">💬</span>Messagerie interne <span id="msg-badge-nav" style="display:none;background:#dc2626;color:#fff;border-radius:100px;font-size:10px;font-weight:800;padding:1px 6px;margin-left:3px"></span></div> <div class="nav-item" id="snav-bilan" onclick="showTab('bilan')"><span class="nav-icon">📊</span>Mon Bilan mensuel</div> <div class="nav-item" id="snav-calendrier" onclick="showTab('calendrier')"><span class="nav-icon">🗓</span>Calendrier association</div> </div> <div class="sidebar-section" id="sidebar-pei-section" style="display:none"> <div class="sidebar-label" style="font-size:12px;font-weight:900;color:#fff;letter-spacing:1px;opacity:1;padding:0 10px;margin-bottom:8px" data-i18n="pei_section_label">🧩 وثائق الاشتغال</div> <div class="nav-item pei-nav" id="snav-pei-pei" onclick="showTab('accueil')"><span class="nav-icon">📋</span> <span data-i18n="pei_nav_pei">برنامج PEI</span></div> <div class="nav-item pei-nav" id="snav-pei-barnamaj" onclick="showTab('beneficiaires')"><span class="nav-icon">📚</span> <span data-i18n="pei_nav_barnamaj">البرنامج الكبير</span></div> <div class="nav-item pei-nav" id="snav-pei-ghiyab" onclick="showTab('ghiyab')"><span class="nav-icon">📅</span> <span data-i18n="pei_nav_ghiyab">تتبع الحضور والغياب</span></div> <div class="nav-item pei-nav" id="snav-pei-talabat" onclick="showTab('jadwal-talabat')"><span class="nav-icon">🗣</span> <span data-i18n="pei_nav_talabat">جدول الطلبات</span></div> <div class="nav-item pei-nav" id="snav-pei-ri3aya" onclick="showTab('jadwal-ri3aya')"><span class="nav-icon">🛁</span> <span data-i18n="pei_nav_ri3aya">جدول الرعاية الذاتية</span></div> <div class="nav-item pei-nav" id="snav-pei-tan9it" onclick="showTab('tan9it')"><span class="nav-icon">📈</span> <span data-i18n="pei_nav_tan9it">برنامج التنقيط</span></div> <div class="nav-item pei-nav" id="snav-pei-ta9yim" onclick="showTab('ta9yim-asasi')"><span class="nav-icon">📊</span> <span data-i18n="pei_nav_ta9yim">التقييم الأساسي (ABLLS)</span></div> <div class="nav-item pei-nav" id="snav-pei-kpi" onclick="showTab('kpi-classe')"><span class="nav-icon">🏆</span> <span data-i18n="pei_nav_kpi">إحصائيات الأداء</span></div> </div> <!-- Section Informatique S2 — supprimée (remplacée par l'accueil dynamique buildInfoAccueil) --> <div id="sidebar-info-section" style="display:none"></div> <div class="sidebar-bottom"> <div class="logout-btn" onclick="doLogout()"><span data-i18n="logout">← Se déconnecter</span></div> </div>
 </aside> <!-- ── MAIN ── -->
-<main class="main" style="display:none"> <div class="topbar"> <!-- Hamburger visible uniquement sur mobile --> <button class="mob-hamburger" id="mob-ham-btn" onclick="mobToggleSidebar()" aria-label="Menu">☰</button> <div class="breadcrumb" id="topbar-bc">ElAwail Digital <span class="bc-sep">›</span> <span class="bc-a" data-i18n="nav_dashboard">Tableau de bord</span> </div> <div class="topbar-right"> <span class="topbar-tag" id="topbar-tag-main">Informatique — Semestre 2</span> <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── --> <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v3.1.0</span> <!-- ── Indicateur connexion Firebase ── --> <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
+<main class="main" style="display:none"> <div class="topbar"> <!-- Hamburger visible uniquement sur mobile --> <button class="mob-hamburger" id="mob-ham-btn" onclick="mobToggleSidebar()" aria-label="Menu">☰</button> <div class="breadcrumb" id="topbar-bc">ElAwail Digital <span class="bc-sep">›</span> <span class="bc-a" data-i18n="nav_dashboard">Tableau de bord</span> </div> <div class="topbar-right"> <span class="topbar-tag" id="topbar-tag-main">Informatique — Semestre 2</span> <!-- ── Badge version — permet de vérifier si le CDN a propagé le nouveau code ── --> <span title="Version du code déployé" style="font-size:9px;color:var(--muted);opacity:0.5;user-select:none;letter-spacing:.3px">v3.2.0</span> <!-- ── Indicateur connexion Firebase ── --> <div id="topbar-offline-badge" title="Hors ligne — données non synchronisées"
            style="display:none;font-size:11px;font-weight:800;padding:4px 10px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;border-radius:100px;animation:pulse-badge 2s infinite"> ⚠ Hors ligne
       </div> <!-- ── Bouton mode sombre ── --> <div class="topbar-btn" id="dark-mode-btn" onclick="toggleDarkMode()"
            title="Mode sombre / Mode clair"
@@ -5248,6 +5251,7 @@ const DAMJ_DATA = [
    Vérifie la session Firebase au chargement de la page.
    Redirige vers index.html si non authentifié.
 ════════════════════════════════════════════════════════ */
+console.log('[ElAwail] dashboard.html v3.2.0 — script démarré ✓');
 window.onload = () => {
 
   /* Vérifier que Firebase est bien chargé */
@@ -5360,23 +5364,58 @@ window.onload = () => {
         .catch(e => console.warn('[LastLogin]', e));
     }
 
-    /* ── Routing selon le rôle (CLAUDE.md §6) ──
-       NB : l'écran de chargement est masqué APRÈS le routing pour éviter
-       que l'utilisateur ne voie brièvement le portail statique (Marzouk HTML). */
+    /* ── Masquer l'écran de chargement EN PREMIER —
+       L'overlay Firebase (z-index 99999) est retiré AVANT le routing
+       pour que le contenu derrière soit visible immédiatement. ── */
+    if (loading) {
+      loading.style.transition = 'none';          /* supprime le délai de fondu */
+      loading.style.opacity    = '0';
+      loading.style.pointerEvents = 'none';
+      loading.style.display    = 'none';          /* retrait immédiat — pas de setTimeout */
+    }
+
+    /* ── Routing selon le rôle (CLAUDE.md §6) ── */
     try {
       const _role = (CURRENT_USER && CURRENT_USER.role) ? CURRENT_USER.role.toLowerCase() : '';
       console.log('[Auth] Routing → rôle :', _role, '| teacherId :', CURRENT_USER && CURRENT_USER.teacherId);
       if (['admin', 'gestionnaire', 'consultant'].includes(_role)) {
         showAdminDashboard();
       } else {
-        /* ── Body class : active le mode teacher (masque admin-overlay via CSS !important) ── */
-        document.body.classList.add('ea-teacher-mode');
+        /* ── Portail enseignant : rendre sidebar + main visibles ──
+           1. body class ea-teacher-mode → CSS !important règle qui override tout
+           2. style.setProperty avec 'important' → inline !important, priorité absolue
+           Ces deux mécanismes ensemble garantissent l'affichage quelle que soit
+           la cascade CSS (media queries, spécificité, héritage Edge/Chrome). ── */
         document.body.classList.remove('ea-admin-mode');
-        /* Restaurer le portail enseignant (masqué par défaut dans le HTML statique) */
+        document.body.classList.add('ea-teacher-mode');
+
         const _ts = document.querySelector('aside.sidebar');
         const _tm = document.querySelector('main.main');
-        if (_ts) _ts.style.display = 'flex';
-        if (_tm) _tm.style.display = 'flex';
+        if (_ts) { _ts.style.setProperty('display', 'flex', 'important'); }
+        if (_tm) { _tm.style.setProperty('display', 'flex', 'important'); }
+        console.log('[Auth] Sidebar visible:', _ts ? _ts.style.display : 'NOT FOUND',
+                    '| Main visible:', _tm ? _tm.style.display : 'NOT FOUND');
+
+        /* ── Injecter un contenu de secours dans view-accueil AVANT
+           d'appeler applyUserToPortal — ainsi même si buildPEIDashboard /
+           buildInfoAccueil lèvent une exception, l'utilisateur voit au moins
+           une carte avec ses informations plutôt qu'une page blanche. ── */
+        const _vacc = document.getElementById('view-accueil');
+        if (_vacc) {
+          _vacc.style.display = 'block';
+          /* Ne remplacer le contenu statique QUE s'il contient encore 'Marzouk'
+             (le placeholder HTML) — sinon déjà peuplé par un appel précédent. */
+          if (_vacc.innerHTML.includes('Marzouk') || _vacc.innerHTML.trim() === '') {
+            _vacc.innerHTML = '<div style="padding:40px 20px;text-align:center">'
+              + '<div style="font-size:40px;margin-bottom:12px">👋</div>'
+              + '<div style="font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:#1b3a6b;margin-bottom:6px">'
+              + 'Bienvenue, ' + (CURRENT_USER.name || CURRENT_USER.teacherId || '…') + '</div>'
+              + '<div style="color:#64748b;font-size:13px;margin-bottom:8px">' + (CURRENT_USER.matiere || '') + '</div>'
+              + '<div style="color:#94a3b8;font-size:12px">Chargement du tableau de bord…</div>'
+              + '</div>';
+          }
+        }
+
         /* try-finally garantit que showTab('accueil') est TOUJOURS appelé,
            même si applyUserToPortal rencontre une erreur interne. */
         try {
@@ -5384,24 +5423,17 @@ window.onload = () => {
           renderTable();
         } catch(_portalErr) {
           console.error('[Portal] Erreur dans applyUserToPortal :', _portalErr);
+          /* Laisser le fallback visible — ne pas écraser davantage */
         } finally {
           showTab('accueil');   /* ← TOUJOURS affiché, même en cas d'erreur */
         }
       }
     } catch(routingErr) {
       console.error('[Auth] Erreur routing :', routingErr);
-      /* Fallback : afficher le panneau admin si possible */
       try {
         const overlay = document.getElementById('admin-overlay');
         if (overlay) { overlay.classList.remove('hidden'); overlay.style.display = 'flex'; }
       } catch(e2) { /* ignore */ }
-    }
-
-    /* Masquer l'écran de chargement APRÈS que le bon portail est affiché */
-    if (loading) {
-      loading.style.opacity = '0';
-      loading.style.pointerEvents = 'none';
-      setTimeout(() => { if (loading) loading.style.display = 'none'; }, 400);
     }
 
     /* [Problème 3] Démarrer le refresh automatique des données toutes les 10 minutes. */
@@ -15831,7 +15863,7 @@ function buildPEIDashboard(user, myBenef, total, dossiers, modules) {
 // PEI TOOLS — جدول الطلبات · الرعاية الذاتية · التنقيط · التقييم
 // ════════════════════════════════════════════════════════
 
-const PEI_TEACHERS = ['hawari','ahjam','bouhdidi','bassi','dakni','azlou','khajou','eznaki','benchahboun','elkehili','bourdan','sahnoune','zarqiq'];
+const PEI_TEACHERS = ['hawari','ahjam','bouhdidi','bassi','dakni','azlou','khajou','eznaki','benchahboun','elkehili','bourdan','sahnoune','zarqiq','amtiou'];
 function isPEIUser(){ return CURRENT_USER && PEI_TEACHERS.includes(CURRENT_USER.teacherId); }
 function initPEIToolDropdowns(){ /* dropdowns filled lazily on tab open */ }
 
