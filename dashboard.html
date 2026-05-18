@@ -450,6 +450,18 @@ canvas{max-height:200px;}
 /* z-index:1200 > sidebar desktop(100) et sidebar mobile(999!important) */
 #admin-overlay{position:fixed;inset:0;background:var(--bg);z-index:1200;display:flex;overflow:hidden;}
 #admin-overlay.hidden{display:none;}
+/* ── MODE SWITCHING — body classes garantissent la visibilité via !important ──
+   Ces règles ont priorité absolue sur tout inline style (display:flex ou none).
+   ea-admin-mode  → masque le portail enseignant, montre admin-overlay
+   ea-teacher-mode → masque admin-overlay, montre le portail enseignant
+   Sans classe → état initial : tout masqué (authentification en cours)
+──────────────────────────────────────────────────────────────────────────── */
+body.ea-admin-mode aside.sidebar,
+body.ea-admin-mode main.main   { display:none  !important; }
+body.ea-admin-mode #admin-overlay.hidden { display:flex !important; }
+body.ea-teacher-mode aside.sidebar { display:flex  !important; }
+body.ea-teacher-mode main.main     { display:flex  !important; }
+body.ea-teacher-mode #admin-overlay { display:none  !important; }
 .admin-sidebar{width:260px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;overflow-y:auto;flex-shrink:0;box-shadow:3px 0 16px rgba(0,0,0,0.15);}
 .admin-main{flex:1;overflow-y:auto;padding:28px;}
 .admin-banner{background:linear-gradient(135deg,#1b3a6b,#7c3aed 70%,#2563eb);border-radius:18px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
@@ -5284,10 +5296,18 @@ window.onload = () => {
 
     /* ── Résolution USERS : l'email donne username (ex: 'delhawari'),
        mais USERS contient teacherId réel (ex: 'hawari').
-       On cherche l'entrée USERS par username pour récupérer
-       teacherId, name, classe, stats, matiere corrects. ── */
+       On cherche l'entrée USERS par username, puis par teacherId en fallback,
+       pour récupérer teacherId, name, classe, stats, matiere corrects.
+       Cela couvre les deux formats possibles d'email Firebase :
+         • delhawari@elawail.ma  → username 'delhawari' → teacherId 'hawari'
+         • hawari@elawail.ma     → teacherId direct 'hawari'
+    ── */
     const _username  = (profil.teacherId || profil.nom || '').toLowerCase();
-    const _userEntry = USERS.find(u =>u.username === _username);
+    const _userEntry = USERS.find(u => u.username === _username)
+                    || USERS.find(u => u.teacherId === _username);
+    console.log('[Auth] username résolu:', _username,
+                '| userEntry trouvé:', !!_userEntry,
+                '| teacherId final:', _userEntry ? _userEntry.teacherId : _username);
 
     CURRENT_USER = Object.assign({}, _userEntry || {}, profil, {
       name:        _userEntry ? _userEntry.name        : (profil.nom || profil.name || ''),
@@ -5349,6 +5369,9 @@ window.onload = () => {
       if (['admin', 'gestionnaire', 'consultant'].includes(_role)) {
         showAdminDashboard();
       } else {
+        /* ── Body class : active le mode teacher (masque admin-overlay via CSS !important) ── */
+        document.body.classList.add('ea-teacher-mode');
+        document.body.classList.remove('ea-admin-mode');
         /* Restaurer le portail enseignant (masqué par défaut dans le HTML statique) */
         const _ts = document.querySelector('aside.sidebar');
         const _tm = document.querySelector('main.main');
@@ -5848,6 +5871,9 @@ function doLogin() {
 }
 
 function applyUserToPortal(user) {
+  console.log('[Portal] applyUserToPortal → teacherId:', user && user.teacherId,
+              '| name:', user && user.name,
+              '| role:', user && user.role);
   // Load PEI statuses for autisme itars
   loadS2ProgStatuses();
   if (user.teacherId === 'hawari' || user.teacherId === 'ahjam' || user.teacherId === 'bouhdidi' || user.teacherId === 'bassi' || user.teacherId === 'dakni' || user.teacherId === 'azlou' || user.teacherId === 'khajou' || user.teacherId === 'eznaki' || user.teacherId === 'benchahboun' || user.teacherId === 'elkehili' || user.teacherId === 'bourdan' || user.teacherId === 'sahnoune' || user.teacherId === 'zarqiq' || user.teacherId === 'amtiou') loadPEIStatuses();
@@ -5858,8 +5884,9 @@ function applyUserToPortal(user) {
   if (matiereEl) matiereEl.textContent = user.matiere;
 
   // Count this teacher's beneficiaires
-  const myBenef = BENEFICIAIRES.filter(b =>b.teacherId === user.teacherId);
+  const myBenef = BENEFICIAIRES.filter(b => b.teacherId === user.teacherId);
   const total = myBenef.length;
+  console.log('[Portal] myBenef.length:', total, '| BENEFICIAIRES.length:', BENEFICIAIRES.length);
   const dossiers = myBenef.filter(b =>b.dossier).length;
   const _stats = user.stats || { niveaux: 2, modules: 4 };
   const niveaux = _stats.niveaux;
@@ -6153,6 +6180,9 @@ document.addEventListener('DOMContentLoaded', () => {
 async function doLogout() {
   CURRENT_USER = null;
   adminMode = false;
+
+  /* ── Nettoyer les classes de mode ── */
+  document.body.classList.remove('ea-admin-mode', 'ea-teacher-mode');
 
   /* Masquer le panneau admin si ouvert */
   const adminDash = document.getElementById('admin-overlay');
@@ -19327,7 +19357,9 @@ function backToAdmin() {
   const topbarTag = document.querySelector('.topbar-tag');
   if(topbarTag) topbarTag.textContent = ' Admin — Accès complet';
 
-  // Re-masquer le portail enseignant (sidebar + main)
+  // Re-masquer le portail enseignant via body class !important
+  document.body.classList.add('ea-admin-mode');
+  document.body.classList.remove('ea-teacher-mode');
   const _bts = document.querySelector('aside.sidebar');
   const _btm = document.querySelector('main.main');
   if (_bts) _bts.style.display = 'none';
@@ -19569,6 +19601,10 @@ function _adminShowSectionCore(sec) {
 
 function showAdminDashboard(){
   loadPEIStatuses();
+
+  /* ── Body class : active le mode admin (masque portail enseignant via CSS !important) ── */
+  document.body.classList.add('ea-admin-mode');
+  document.body.classList.remove('ea-teacher-mode');
 
   /* Topbar dynamique selon le rôle */
   const _roleLabels = {
@@ -21961,7 +21997,9 @@ function adminOpenBenef(idx){
   // Load PEI statuses so the full PEI data is fresh
   if(b.type === 'pei') loadPEIStatuses();
 
-  // Hide admin overlay — show the main portal canvas
+  // Hide admin overlay — show the main portal canvas via body class !important
+  document.body.classList.add('ea-teacher-mode');
+  document.body.classList.remove('ea-admin-mode');
   document.getElementById('admin-overlay').classList.add('hidden');
   document.getElementById('admin-overlay').style.display = 'none';
 
