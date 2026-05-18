@@ -458,10 +458,8 @@ canvas{max-height:200px;}
 ──────────────────────────────────────────────────────────────────────────── */
 body.ea-admin-mode aside.sidebar,
 body.ea-admin-mode main.main   { display:none  !important; }
-body.ea-admin-mode #admin-overlay.hidden { display:flex !important; }
 body.ea-teacher-mode aside.sidebar { display:flex  !important; }
 body.ea-teacher-mode main.main     { display:flex  !important; }
-body.ea-teacher-mode #admin-overlay { display:none  !important; }
 .admin-sidebar{width:260px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;overflow-y:auto;flex-shrink:0;box-shadow:3px 0 16px rgba(0,0,0,0.15);}
 .admin-main{flex:1;overflow-y:auto;padding:28px;}
 .admin-banner{background:linear-gradient(135deg,#1b3a6b,#7c3aed 70%,#2563eb);border-radius:18px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
@@ -5377,9 +5375,16 @@ window.onload = () => {
         const _tm = document.querySelector('main.main');
         if (_ts) _ts.style.display = 'flex';
         if (_tm) _tm.style.display = 'flex';
-        applyUserToPortal(CURRENT_USER);
-        renderTable();
-        showTab('accueil');
+        /* try-finally garantit que showTab('accueil') est TOUJOURS appelé,
+           même si applyUserToPortal rencontre une erreur interne. */
+        try {
+          applyUserToPortal(CURRENT_USER);
+          renderTable();
+        } catch(_portalErr) {
+          console.error('[Portal] Erreur dans applyUserToPortal :', _portalErr);
+        } finally {
+          showTab('accueil');   /* ← TOUJOURS affiché, même en cas d'erreur */
+        }
       }
     } catch(routingErr) {
       console.error('[Auth] Erreur routing :', routingErr);
@@ -5919,8 +5924,8 @@ function applyUserToPortal(user) {
 
   // ── PEI USER: replace accueil view with PEI dashboard ──
   if (user.teacherId === 'hawari' || user.teacherId === 'ahjam' || user.teacherId === 'bouhdidi' || user.teacherId === 'bassi' || user.teacherId === 'dakni' || user.teacherId === 'azlou' || user.teacherId === 'khajou' || user.teacherId === 'eznaki' || user.teacherId === 'benchahboun' || user.teacherId === 'elkehili' || user.teacherId === 'bourdan' || user.teacherId === 'sahnoune' || user.teacherId === 'zarqiq' || user.teacherId === 'amtiou') {
-    adaptSaisieForPEI();
-    buildPEIDashboard(user, myBenef, total, dossiers, modules);
+    try { adaptSaisieForPEI(); } catch(e){ console.error('[PEI] adaptSaisieForPEI:', e); }
+    try { buildPEIDashboard(user, myBenef, total, dossiers, modules); console.log('[PEI] buildPEIDashboard OK'); } catch(e){ console.error('[PEI] buildPEIDashboard:', e); }
     // Show PEI sidebar, hide Informatique saisie sidebar
     const saisieSection = document.getElementById('sidebar-saisie-section');
     if (saisieSection) saisieSection.style.display = 'none';
@@ -5930,17 +5935,17 @@ function applyUserToPortal(user) {
     const infoSection = document.getElementById('sidebar-info-section');
     if (infoSection) infoSection.style.display = 'none';
     // Update profile
-    buildDinaProfile(user, myBenef, total);
+    try { buildDinaProfile(user, myBenef, total); } catch(e){ console.error('[PEI] buildDinaProfile:', e); }
     // Init PEI tool dropdowns
-    initPEIToolDropdowns();
+    try { initPEIToolDropdowns(); } catch(e){ console.error('[PEI] initPEIToolDropdowns:', e); }
   } else {
     // Hide Informatique S2 sidebar section for all itar users (not needed)
     const infoSection = document.getElementById('sidebar-info-section');
     if (infoSection) infoSection.style.display = 'none';
     // Build dynamic accueil for informatique teachers
-    buildInfoAccueil(user, myBenef);
+    try { buildInfoAccueil(user, myBenef); console.log('[Portal] buildInfoAccueil OK'); } catch(e){ console.error('[Portal] buildInfoAccueil:', e); }
     // Build dynamic profile for informatique teachers
-    buildInfoProfile(user, myBenef);
+    try { buildInfoProfile(user, myBenef); } catch(e){ console.error('[Portal] buildInfoProfile:', e); }
     // ── Adapter les formulaires de saisie selon le type de portail ──
     // (التربية الخاصة vs Informatique)
     setTimeout(() => {
