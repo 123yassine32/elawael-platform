@@ -148,3 +148,228 @@ body.rtl-mode .main-content {
   .no-print   { display: none !important; }
   .print-only { display: block !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE COMPLÉMENTAIRE — v3.5.1
+   Ces règles complètent les media queries inline de dashboard.html
+   sans jamais les modifier.
+   Breakpoints  :  768px (tablet)  |  480px (mobile)  |  375px (petit mobile)
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Safe-area insets — iPhone X / notch / Dynamic Island ── */
+@supports (padding: max(0px)) {
+  .topbar {
+    padding-left:  max(14px, env(safe-area-inset-left))  !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+  }
+  .sidebar,
+  .admin-sidebar {
+    padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  }
+  #back-to-top {
+    bottom: max(28px, calc(env(safe-area-inset-bottom) + 12px)) !important;
+    right:  max(28px, env(safe-area-inset-right))                !important;
+  }
+}
+
+/* ── 2. Taille de toucher minimum 44×44 px (WCAG 2.5.5) ── */
+@media (max-width: 768px) {
+  .btn,
+  .nav-item,
+  .main-tab,
+  .mob-hamburger,
+  .adm-nav-item,
+  button:not([style*="font-size:9px"]):not([style*="font-size:10px"]) {
+    min-height: 44px;
+  }
+  /* Topbar icons */
+  .topbar-btn {
+    min-width:  44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ── 3. Prévention du zoom automatique iOS (font-size < 16px = zoom) ── */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ── 4. Canvas Chart.js — empêcher le débordement sur petit écran ── */
+@media (max-width: 480px) {
+  canvas {
+    max-width:  100%  !important;
+    max-height: 240px !important;
+    height: auto      !important;
+  }
+  .chart-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── 5. Tableaux — colonnes secondaires masquées ≤ 480px ── */
+/* Principe : afficher uniquement les 2 premières colonnes + la dernière (action) */
+@media (max-width: 480px) {
+
+  /* Tableau bénéficiaires — cacher modules theo/prat/dossier */
+  #view-beneficiaires table thead th:nth-child(n+4):not(:last-child),
+  #view-beneficiaires table tbody td:nth-child(n+4):not(:last-child) {
+    display: none !important;
+  }
+
+  /* Tableau présences — garder date + noms + statut total */
+  .pres-wrap table thead th:nth-child(n+5),
+  .pres-wrap table tbody td:nth-child(n+5) {
+    display: none !important;
+  }
+
+  /* Toutes les tables dans les cards admin — scroll + taille réduite */
+  .admin-main table {
+    font-size: 11px !important;
+  }
+  .admin-main thead th {
+    padding: 8px 6px !important;
+    font-size: 10px  !important;
+  }
+  .admin-main tbody td {
+    padding: 8px 6px !important;
+  }
+}
+
+/* ── 6. Breakpoint 375px — très petit mobile ── */
+@media (max-width: 375px) {
+
+  /* Valeurs KPI plus compactes */
+  .kpi-val  { font-size: 20px !important; }
+  .kpi-big  { font-size: 22px !important; }
+  .kpi-lbl  { font-size: 10px !important; }
+  .kpi-sub  { font-size:  9px !important; }
+
+  /* Titres de cards */
+  .card-title { font-size: 12px !important; }
+
+  /* Onglets encore plus compacts */
+  .main-tab {
+    font-size:  10px !important;
+    padding:     5px 7px !important;
+  }
+
+  /* Padding contenu réduit */
+  .content,
+  .admin-main {
+    padding: 8px !important;
+  }
+
+  /* Avatar initiales plus petit */
+  .av {
+    width:  32px !important;
+    height: 32px !important;
+    font-size: 11px !important;
+  }
+
+  /* Grilles KPI — 1 colonne sur 375px */
+  .g4,
+  .ben-kpis,
+  .perf-grid-4 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  [style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:repeat(4,1fr)"],
+  [style*="grid-template-columns:repeat(5,1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── 7. Toast et modals repositionnés sur mobile ── */
+@media (max-width: 480px) {
+
+  /* Toast : pleine largeur en bas */
+  .toast {
+    left:      10px    !important;
+    right:     10px    !important;
+    bottom:    16px    !important;
+    width: auto        !important;
+    min-width: 0       !important;
+    max-width: none    !important;
+    text-align: center !important;
+  }
+
+  /* Modal de confirmation */
+  #confirm-modal > div,
+  .modal-inner {
+    margin:    12px     !important;
+    max-width: calc(100vw - 24px) !important;
+    width:     auto     !important;
+  }
+}
+
+/* ── 8. Navigation sidebar — items plus lisibles au toucher ── */
+@media (max-width: 768px) {
+  .nav-item {
+    padding:   12px 18px !important;
+    font-size:    13px   !important;
+    line-height:   1.4   !important;
+  }
+  .nav-item .nav-icon {
+    font-size: 17px !important;
+  }
+  /* Fermer la sidebar au clic sur un lien (déjà géré par mobCloseSidebar) */
+}
+
+/* ── 9. Sections d'accueil — cartes stats empilées ── */
+@media (max-width: 480px) {
+  /* Score global card */
+  .score-split > div:first-child {
+    display: none !important; /* Masquer le graphique jauge sur < 480 */
+  }
+
+  /* Simulation — sliders pleine largeur */
+  .sim-container {
+    flex-direction: column !important;
+  }
+
+  /* Séances — calendrier scroll */
+  .cal-grid {
+    gap: 2px !important;
+  }
+  .cal-day {
+    min-height: 36px !important;
+    font-size:  10px !important;
+  }
+}
+
+/* ── 10. Indicateur visuel scroll horizontal sur tables ── */
+@media (max-width: 768px) {
+  /* Wrap pour les tables dans des cards — positionné pour ::after */
+  .card {
+    overflow: visible; /* laisser le contenu déborder proprement */
+  }
+
+  /* Conteneur table scroll → ombre droite hint */
+  .card > .table-scroll-wrap {
+    position:   relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card > .table-scroll-wrap::after {
+    content:  '';
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 20px;
+    background: linear-gradient(to right, transparent, rgba(248,250,252,0.9));
+    pointer-events: none;
+  }
+}

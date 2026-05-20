@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -6343,6 +6343,80 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+/* ─────────────────────────────────────────────────────────────
+   SWIPE GESTURES — Sidebar mobile (Fix #9)
+   • Swipe droite (bord gauche) → ouvre la sidebar éducateur
+   • Swipe gauche sur sidebar ouverte → ferme la sidebar
+   • Swipe droite sur sidebar admin ouverte → ferme la sidebar admin
+   ───────────────────────────────────────────────────────────── */
+(function initSwipeGestures() {
+  var _touchStartX = 0;
+  var _touchStartY = 0;
+  var _touchLastX  = 0;
+  var SWIPE_THRESHOLD  = 60;   /* Distance minimale (px) pour déclencher */
+  var EDGE_ZONE        = 30;   /* Zone bord gauche pour ouvrir la sidebar */
+  var ANGLE_TOLERANCE  = 40;   /* Tolérance d'angle (déG) pour distinguer horiz/vert */
+
+  document.addEventListener('touchstart', function(e) {
+    if (window.innerWidth > 768) return;
+    var touch = e.changedTouches[0];
+    _touchStartX = touch.clientX;
+    _touchStartY = touch.clientY;
+    _touchLastX  = touch.clientX;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    if (window.innerWidth > 768) return;
+    var touch = e.changedTouches[0];
+    _touchLastX = touch.clientX;
+
+    /* Bloquer le scroll vertical quand la sidebar est ouverte */
+    var sidebar      = document.querySelector('aside.sidebar');
+    var adminSidebar = document.querySelector('.admin-sidebar');
+    var sidebarOpen  = (sidebar      && sidebar.classList.contains('mob-open')) ||
+                       (adminSidebar && adminSidebar.classList.contains('mob-open'));
+    if (sidebarOpen) {
+      var dX = Math.abs(touch.clientX - _touchStartX);
+      var dY = Math.abs(touch.clientY - _touchStartY);
+      /* Si mouvement principalement horizontal → laisser le swipe agir */
+      if (dX > dY) e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function(e) {
+    if (window.innerWidth > 768) return;
+
+    var dX = _touchLastX - _touchStartX;
+    var dY = Math.abs(e.changedTouches[0].clientY - _touchStartY);
+
+    /* Vérifier que c'est un swipe horizontal (et non un scroll vertical) */
+    if (dY > Math.abs(dX) * Math.tan(ANGLE_TOLERANCE * Math.PI / 180)) return;
+
+    var sidebar      = document.querySelector('aside.sidebar');
+    var adminSidebar = document.querySelector('.admin-sidebar');
+
+    /* ── Swipe DROITE depuis le bord gauche → ouvrir sidebar éducateur ── */
+    if (dX > SWIPE_THRESHOLD && _touchStartX < EDGE_ZONE) {
+      if (sidebar && !sidebar.classList.contains('mob-open')) {
+        mobToggleSidebar();
+      }
+      return;
+    }
+
+    /* ── Swipe GAUCHE sur sidebar éducateur ouverte → fermer ── */
+    if (dX < -SWIPE_THRESHOLD && sidebar && sidebar.classList.contains('mob-open')) {
+      mobCloseSidebar();
+      return;
+    }
+
+    /* ── Swipe GAUCHE sur sidebar admin ouverte → fermer ── */
+    if (dX < -SWIPE_THRESHOLD && adminSidebar && adminSidebar.classList.contains('mob-open')) {
+      mobCloseSidebar();
+      return;
+    }
+  }, { passive: true });
+})();
 
 async function doLogout() {
   CURRENT_USER = null;

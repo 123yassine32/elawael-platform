@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -388,6 +388,34 @@
     @media (max-width: 480px) {
       .login-box { padding: 36px 24px; }
       .lang-toggle { top: 14px; right: 14px; }
+    }
+
+    /* ── iOS zoom prevention — input ≥ 16px ── */
+    @media (max-width: 768px) {
+      input[type="email"],
+      input[type="password"],
+      input[type="text"] {
+        font-size: 16px !important;
+      }
+    }
+
+    /* ── 375px — très petit écran ── */
+    @media (max-width: 375px) {
+      .login-box {
+        padding:       28px 18px;
+        border-radius: 18px;
+      }
+      .login-title  { font-size: 20px; }
+      .login-label  { font-size: 12px; }
+    }
+
+    /* ── Safe-area insets iPhone X+ ── */
+    @supports (padding: max(0px)) {
+      body {
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left:   env(safe-area-inset-left);
+        padding-right:  env(safe-area-inset-right);
+      }
     }
   </style>
 </head>
