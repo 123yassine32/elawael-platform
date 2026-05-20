@@ -1,8 +1,11 @@
 # ═══════════════════════════════════════════════════════════
-# DÉPLOIEMENT AUTOMATIQUE — ElAwail Digital Platform
+# DÉPLOIEMENT AUTOMATIQUE — ElAwail Digital Platform v3.5.1
 # Fichier : .github/workflows/deploy.yml
-# Déclenché : à chaque push sur la branche main
+# Déclenché : à chaque push sur master/main
 # Cible     : GitHub Pages (gratuit — CLAUDE.md §1)
+#
+# SÉCURITÉ : seuls les fichiers nécessaires sont déployés.
+# Les outils de dev, node_modules, LaTeX, etc. sont exclus.
 # ═══════════════════════════════════════════════════════════
 
 name: 🚀 Deploy ElAwail to GitHub Pages
@@ -40,18 +43,49 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      # 2. Configurer GitHub Pages
+      # 2. Construire le dossier de déploiement (fichiers nécessaires uniquement)
+      - name: 📁 Préparer les fichiers de déploiement
+        run: |
+          mkdir -p dist
+
+          # Pages HTML principales
+          cp index.html    dist/
+          cp dashboard.html dist/
+
+          # CSS externe
+          mkdir -p dist/css
+          cp css/style.css dist/css/
+
+          # Modules JavaScript
+          mkdir -p dist/js/config dist/js/auth dist/js/data dist/js/features
+          cp js/config/firebase.js    dist/js/config/
+          cp js/auth/login.js         dist/js/auth/
+          cp js/auth/roles.js         dist/js/auth/
+          cp js/data/sync.js          dist/js/data/
+          cp js/features/kpi.js       dist/js/features/
+          cp js/features/export.js    dist/js/features/
+          cp js/features/audit.js     dist/js/features/
+          cp js/features/simulation.js dist/js/features/
+
+          # Assets (logo, images)
+          if [ -d "assets" ]; then
+            cp -r assets dist/
+          fi
+
+          echo "✅ Fichiers préparés :"
+          find dist -type f | sort
+
+      # 3. Configurer GitHub Pages
       - name: 🔧 Setup Pages
         uses: actions/configure-pages@v4
 
-      # 3. Uploader les fichiers statiques
-      #    Exclure : fichiers de config, node_modules, .git
-      - name: 📦 Upload artifact
+      # 4. Uploader uniquement le dossier dist/
+      - name: 📦 Upload artifact (dist/ uniquement)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'dist'
 
-      # 4. Déployer
+      # 5. Déployer
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,27 +1,37 @@
 rules_version = '2';
 
 // ===================================================================
-// Regles de securite Firestore — ElAwail Platform
-// Deployer via : firebase deploy --only firestore:rules
+// RÈGLES FIRESTORE — ElAwail Digital Platform v3.5.1
+// Fichier : firestore.rules
 //
-// Architecture des roles (CLAUDE.md §6) :
-//   ADMIN        -> lecture + ecriture + suppression + gestion utilisateurs
-//   GESTIONNAIRE -> lecture + ecriture (pas de suppression)
-//   CONSULTANT   -> lecture seule (donnees sensibles masquees cote client)
+// DÉPLOIEMENT :
+//   Option A : Firebase Console → Firestore → Règles (coller le contenu)
+//   Option B : firebase deploy --only firestore:rules (Firebase CLI)
 //
-// PRINCIPE : le role est stocke dans /users/{uid}.role
-// Toute action est refusee par defaut (deny-by-default).
+// ARCHITECTURE DES COLLECTIONS :
+//   /users/{uid}                    → profil utilisateur (role, lastLogin)
+//   /userData/{uid}/keys/{key}      → données sync localStorage
+//   /userData/{uid}/bundles/{name}  → bundles PEI/ABLLS/Ghiyab
+//   /org_new_benef/{docId}          → nouveaux bénéficiaires
+//   /audit_logs/{logId}             → journal d'audit (immuable)
+//   /shared/{doc}                   → données globales partagées
+//
+// ROLES (CLAUDE.md §6) :
+//   ADMIN        → tout voir + modifier + supprimer + gérer utilisateurs
+//   GESTIONNAIRE → voir + modifier (pas de suppression, pas gestion users)
+//   CONSULTANT   → lecture seule (PII masqués côté client)
+//   EDUCATEUR    → accès uniquement à ses propres données
 // ===================================================================
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Regle par defaut : tout refuser
+    // ── Règle par défaut : tout refuser ──
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // --- Fonctions utilitaires ---
+    // ── Fonctions utilitaires ──
 
     function isAuth() {
       return request.auth != null;
@@ -43,38 +53,50 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == uid;
     }
 
-    // --- Profils utilisateurs /users/{userId} ---
-    // Chaque utilisateur lit/cree son propre profil (necessaire au premier login).
-    // Seul un admin peut changer le champ 'role' ou supprimer un profil.
+    // ── Profils utilisateurs /users/{userId} ──
+    // Chaque utilisateur lit/crée son propre profil.
+    // Seul un admin peut modifier le champ 'role'.
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-
-      // Creation : l'utilisateur peut creer SON propre document au premier login.
-      // Il ne peut pas s'attribuer un role admin — seul isAdmin() peut le faire.
-      allow create: if isOwner(userId) && !request.resource.data.keys().hasAny(['role'])
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if (isOwner(userId) && !request.resource.data.keys().hasAny(['role']))
                     || isAdmin();
-
-      // Mise a jour : le proprietaire peut tout modifier SAUF le champ 'role'.
       allow update: if isAdmin()
                     || (isOwner(userId)
                         && !request.resource.data.diff(resource.data)
                               .affectedKeys().hasAny(['role']));
-
       allow delete: if isAdmin();
     }
 
-    // --- Donnees utilisateur /userData/{userId}/keys/{key} ---
-    // Chaque educateur lit/ecrit uniquement ses propres donnees.
-    // Admin et gestionnaire peuvent lire toutes les donnees.
+    // ── Données utilisateur /userData/{userId}/keys/{key} ──
+    // Éducateur : accès exclusif à ses propres données.
+    // Admin/Gestionnaire : peuvent lire toutes les données (rapports).
     match /userData/{userId}/keys/{key} {
       allow read:   if isOwner(userId) || isAdminOrGestionnaire();
       allow write:  if isOwner(userId) || isAdminOrGestionnaire();
       allow delete: if isOwner(userId) || isAdmin();
     }
 
-    // --- Journal d'audit /audit_logs/{logId} ---
-    // Lecture : tout utilisateur authentifie.
-    // Creation : uniquement ses propres entrees (uid = auth.uid).
+    // ── Bundles de clés dynamiques /userData/{userId}/bundles/{bundleName} ──
+    // Même règles que les clés simples.
+    // Couvre : ea_pei_full_bundle, ea_ta9_bundle, ea_gh_bundle, ea_watha2iq_bundle
+    match /userData/{userId}/bundles/{bundleName} {
+      allow read:   if isOwner(userId) || isAdminOrGestionnaire();
+      allow write:  if isOwner(userId) || isAdminOrGestionnaire();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // ── Nouveaux bénéficiaires /org_new_benef/{docId} ──
+    // Tout utilisateur authentifié peut ajouter.
+    // Admin/Gestionnaire peuvent lire pour la vue globale.
+    match /org_new_benef/{docId} {
+      allow read:   if isAdminOrGestionnaire();
+      allow create: if isAuth();
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Journal d'audit /audit_logs/{logId} ──
+    // Lecture : tout utilisateur authentifié.
+    // Création : uniquement ses propres entrées.
     // Modification et suppression INTERDITES — journal immuable.
     match /audit_logs/{logId} {
       allow read:   if isAuth();
@@ -83,8 +105,8 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // --- Donnees globales partagees /shared/{doc} ---
-    // Alertes, vacances, config — lecture par tous, ecriture admin/gestionnaire.
+    // ── Données globales partagées /shared/{doc} ──
+    // Vacances, config, alertes globales.
     match /shared/{doc} {
       allow read:   if isAuth();
       allow write:  if isAdminOrGestionnaire();
