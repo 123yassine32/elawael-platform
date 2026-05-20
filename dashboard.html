@@ -25,7 +25,7 @@
 <script src="js/auth/roles.js?v=3.5.1"></script>
 <script src="js/data/sync.js?v=3.5.1"></script>
 <!-- Chargement et migration des données bénéficiaires depuis Firestore -->
-<script src="js/data/beneficiaires.js?v=3.5.1"></script>
+<script src="js/data/beneficiaires.js?v=3.5.2"></script>
 <style> /* Masquer immédiatement le login overlay — l'auth est gérée dans index.html via Firebase */
   #login-overlay { display: none !important; }
   /* Écran de chargement Firebase affiché pendant la vérification de session */
@@ -5532,13 +5532,17 @@ window.onload = () => {
             _va2.style.display = 'block';
             _rescued = true; console.warn('[Rescue] view-accueil forcé visible');
           }
-          console.log('[Rescue] v3.5.0 @+2s — ea-admin-mode:', document.body.classList.contains('ea-admin-mode'),
-            '| sidebar:', _sb2 ? getComputedStyle(_sb2).display : 'absent',
-            '| main:', _mn2 ? getComputedStyle(_mn2).display : 'absent',
-            '| adminOverlay:', _ao2 ? getComputedStyle(_ao2).display : 'absent',
-            '| loading:', _ld2 ? _ld2.style.display : 'absent',
-            '| viewAccueil:', _va2 ? getComputedStyle(_va2).display : 'absent',
-            '| rescued:', _rescued);
+          /* Log uniquement si une intervention a eu lieu (évite le bruit console) */
+          if (_rescued) {
+            console.warn('[Rescue] v3.5.1 @+2s — INTERVENTION effectuée',
+              '| ea-admin-mode:', document.body.classList.contains('ea-admin-mode'),
+              '| sidebar:', _sb2 ? getComputedStyle(_sb2).display : 'absent',
+              '| main:', _mn2 ? getComputedStyle(_mn2).display : 'absent',
+              '| adminOverlay:', _ao2 ? getComputedStyle(_ao2).display : 'absent',
+              '| loading:', _ld2 ? _ld2.style.display : 'absent',
+              '| viewAccueil:', _va2 ? getComputedStyle(_va2).display : 'absent');
+          }
+          /* Pas de log si tout est correct — portail visible, pas d'intervention requise */
         }, 2000);
       }
     } catch(routingErr) {
@@ -14669,6 +14673,12 @@ BENEFICIAIRES_DGHOUGHI.forEach(b =>BENEFICIAIRES.push(b));
 
 /* ── Nettoyage défensif : retirer toute entrée null/undefined/invalide ── */
 BENEFICIAIRES = BENEFICIAIRES.filter(b =>b != null && typeof b === 'object' && b.teacherId);
+
+/* ── Exposer sur window pour beneficiaires.js (Fix #1)
+   `let` au niveau global n'est pas une propriété de window,
+   contrairement à `var`. Cette ligne rend le tableau accessible
+   depuis les modules externes chargés en <head>. ── */
+window.BENEFICIAIRES = BENEFICIAIRES;
 
 /* ═══════════════════════════════════════════════════════════════════════
    DÉDUPLICATION BÉNÉFICIAIRES — VUES ADMIN UNIQUEMENT

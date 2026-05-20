@@ -134,8 +134,10 @@ const EaBenefModule = (function () {
       return; /* Ne pas bloquer l'expérience si Firestore inaccessible */
     }
 
-    /* Récupérer BENEFICIAIRES depuis le contexte global */
-    const source = window.BENEFICIAIRES;
+    /* Récupérer BENEFICIAIRES depuis le contexte global.
+       `let` au niveau global n'est pas sur window → on essaie les deux. */
+    const source = window.BENEFICIAIRES
+      || (typeof BENEFICIAIRES !== 'undefined' ? BENEFICIAIRES : null);
     if (!Array.isArray(source) || source.length === 0) {
       console.warn('[Benef] BENEFICIAIRES introuvable ou vide — migration annulée');
       return;
@@ -202,7 +204,9 @@ const EaBenefModule = (function () {
    * @param {string} [teacherId]  teacherId de l'éducateur (requis si role === EDUCATEUR)
    */
   async function loadAndEnrich(uid, role, teacherId) {
-    const target = window.BENEFICIAIRES;
+    /* `let` au niveau global n'est pas sur window → double fallback */
+    const target = window.BENEFICIAIRES
+      || (typeof BENEFICIAIRES !== 'undefined' ? BENEFICIAIRES : null);
     if (!Array.isArray(target)) {
       console.warn('[Benef] BENEFICIAIRES introuvable — chargement ignoré');
       return;
@@ -351,4 +355,4 @@ function saveBeneficiaireFirestore(benef) {
   return EaBenefModule.save(benef);
 }
 
-console.log('[Benef] js/data/beneficiaires.js v3.5.1 chargé ✓');
+console.log('[Benef] js/data/beneficiaires.js v3.5.2 chargé ✓');
