@@ -53,6 +53,14 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == uid;
     }
 
+    function getTeacherId() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.teacherId;
+    }
+
+    function isTeacherOf(teacherId) {
+      return isAuth() && getTeacherId() == teacherId;
+    }
+
     // ── Profils utilisateurs /users/{userId} ──
     // Chaque utilisateur lit/crée son propre profil.
     // Seul un admin peut modifier le champ 'role'.
@@ -92,6 +100,21 @@ service cloud.firestore {
       allow read:   if isAdminOrGestionnaire();
       allow create: if isAuth();
       allow update, delete: if isAdmin();
+    }
+
+    // ── Données PII bénéficiaires /beneficiaires/{docId} ──
+    // Migration automatique par l'admin + chargement sécurisé par rôle.
+    // Éducateur : accès en lecture/écriture à SES bénéficiaires uniquement.
+    // Admin/Gestionnaire : accès complet.
+    // Consultant : lecture seule (masquage PII géré côté client).
+    match /beneficiaires/{docId} {
+      allow read:   if isAdminOrGestionnaire()
+                    || (isAuth() && getRole() == 'CONSULTANT')
+                    || isTeacherOf(resource.data.teacherId);
+      allow create: if isAdmin();
+      allow update: if isAdmin()
+                    || isTeacherOf(resource.data.teacherId);
+      allow delete: if isAdmin();
     }
 
     // ── Journal d'audit /audit_logs/{logId} ──

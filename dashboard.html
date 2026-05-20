@@ -24,6 +24,8 @@
 <script src="js/config/firebase.js?v=3.5.1"></script>
 <script src="js/auth/roles.js?v=3.5.1"></script>
 <script src="js/data/sync.js?v=3.5.1"></script>
+<!-- Chargement et migration des données bénéficiaires depuis Firestore -->
+<script src="js/data/beneficiaires.js?v=3.5.1"></script>
 <style> /* Masquer immédiatement le login overlay — l'auth est gérée dans index.html via Firebase */
   #login-overlay { display: none !important; }
   /* Écran de chargement Firebase affiché pendant la vérification de session */
@@ -5364,6 +5366,19 @@ window.onload = () => {
     ─────────────────────────────────────────────────────── */
     if (typeof initSync === 'function') {
       await initSync(firebaseUser.uid);
+    }
+
+    /* ── Chargement des données PII depuis Firestore (Fix #1 audit)
+       Migration automatique si ADMIN + collection vide.
+       Enrichit le tableau BENEFICIAIRES en mémoire sans bloquer l'affichage.
+       Fallback silencieux si Firestore indisponible. ── */
+    if (typeof initBeneficiaires === 'function' && CURRENT_USER) {
+      const _bRole      = (CURRENT_USER.role || 'EDUCATEUR').toUpperCase();
+      const _bTeacherId = CURRENT_USER.teacherId || null;
+      /* Non bloquant — l'UI s'affiche immédiatement, les PII arrivent en overlay */
+      initBeneficiaires(firebaseUser.uid, _bRole, _bTeacherId).catch(function(_be) {
+        console.warn('[Auth] initBeneficiaires non-critique :', _be && _be.message);
+      });
     }
 
     /* ── Vérification du rôle côté Firestore AVANT le routing (Fix #4 audit)
@@ -24999,8 +25014,14 @@ function adminSaveNewBenef(){
   }
 
   BENEFICIAIRES.push(_newBenef);
-  /* Sauvegarder en Firestore (CRITIQUE 2 — CLAUDE.md) */
+  /* Sauvegarder en Firestore — données de synchronisation (CRITIQUE 2 — CLAUDE.md) */
   if (typeof syncSaveNewBenef === 'function') syncSaveNewBenef(_newBenef);
+  /* Sauvegarder les données PII dans la collection sécurisée (Fix #1 — CLAUDE.md) */
+  if (typeof saveBeneficiaireFirestore === 'function') {
+    saveBeneficiaireFirestore(_newBenef).catch(function(_e) {
+      console.warn('[Benef] Sauvegarde PII non-critique :', _e && _e.message);
+    });
+  }
   auditLog('beneficiaire', 'Ajout d\'un nouveau bénéficiaire',
     `${nom} · Cadre : ${teacherId} · Type : ${type} · Handicap : ${handicap}`);
 

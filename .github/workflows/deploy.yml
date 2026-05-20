@@ -58,14 +58,16 @@ jobs:
 
           # Modules JavaScript
           mkdir -p dist/js/config dist/js/auth dist/js/data dist/js/features
-          cp js/config/firebase.js    dist/js/config/
-          cp js/auth/login.js         dist/js/auth/
-          cp js/auth/roles.js         dist/js/auth/
-          cp js/data/sync.js          dist/js/data/
-          cp js/features/kpi.js       dist/js/features/
-          cp js/features/export.js    dist/js/features/
-          cp js/features/audit.js     dist/js/features/
-          cp js/features/simulation.js dist/js/features/
+          cp js/config/firebase.js         dist/js/config/
+          cp js/auth/login.js              dist/js/auth/
+          cp js/auth/roles.js              dist/js/auth/
+          cp js/data/sync.js               dist/js/data/
+          cp js/data/beneficiaires.js      dist/js/data/
+          cp js/features/kpi.js            dist/js/features/
+          cp js/features/export.js         dist/js/features/
+          cp js/features/audit.js          dist/js/features/
+          cp js/features/simulation.js     dist/js/features/
+          # tools/ et scripts de migration sont exclus du déploiement (sécurité)
 
           # Assets (logo, images)
           if [ -d "assets" ]; then

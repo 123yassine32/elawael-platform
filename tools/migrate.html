@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElAwail — Migration Firestore (Admin uniquement)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f1f42;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 36px;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  h1 { font-size: 22px; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 28px; }
+  .badge {
+    display: inline-block;
+    background: #7f1d1d;
+    color: #fca5a5;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: .5px;
+  }
+  .section { margin-bottom: 20px; }
+  .section label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #f1f5f9;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input:focus { border-color: #3b82f6; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+  }
+  .btn-primary { background: #1d4ed8; color: #fff; }
+  .btn-primary:hover { background: #1e40af; }
+  .btn-primary:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+  .btn-success { background: #065f46; color: #6ee7b7; }
+  .btn-success:hover { background: #047857; }
+  .btn-success:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+  .btn-danger  { background: #7f1d1d; color: #fca5a5; }
+  .btn-danger:hover { background: #991b1b; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  #status {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+  }
+  #status.info    { background: #1e3a5f; border: 1px solid #1d4ed8; color: #93c5fd; }
+  #status.success { background: #052e16; border: 1px solid #065f46; color: #6ee7b7; }
+  #status.error   { background: #3b0a0a; border: 1px solid #991b1b; color: #fca5a5; }
+  #status.warn    { background: #3b2500; border: 1px solid #d97706; color: #fcd34d; }
+  .progress { margin-top: 14px; height: 6px; background: #0f172a; border-radius: 4px; overflow: hidden; }
+  .progress-bar { height: 100%; background: #3b82f6; width: 0%; transition: width .3s; border-radius: 4px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  .stat { background: #0f172a; border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-val { font-size: 28px; font-weight: 800; color: #3b82f6; }
+  .stat-lbl { font-size: 11px; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .divider { border: none; border-top: 1px solid #334155; margin: 24px 0; }
+  #log-zone { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <span class="badge">⚠ OUTIL ADMIN — NE PAS DÉPLOYER</span>
+  <h1>Migration Firestore — ElAwail Platform</h1>
+  <p class="subtitle">Transfert des données PII des bénéficiaires vers Firestore. Cette opération est idempotente et peut être exécutée plusieurs fois sans risque.</p>
+
+  <!-- Connexion Firebase -->
+  <div id="login-section">
+    <div class="section">
+      <label>Email administrateur</label>
+      <input type="email" id="email" value="admin@elawail.ma" placeholder="admin@elawail.ma">
+    </div>
+    <div class="section">
+      <label>Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="doLogin()">🔑 Connexion</button>
+    </div>
+  </div>
+
+  <!-- Section migration (affichée après connexion) -->
+  <div id="migration-section" style="display:none">
+    <div id="user-info" style="font-size:13px; color:#94a3b8; margin-bottom:16px;"></div>
+
+    <div class="stat-grid" id="stats-grid" style="display:none">
+      <div class="stat"><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total HTML</div></div>
+      <div class="stat"><div class="stat-val" id="stat-firestore">0</div><div class="stat-lbl">Dans Firestore</div></div>
+      <div class="stat"><div class="stat-val" id="stat-migrated">0</div><div class="stat-lbl">Migrés</div></div>
+    </div>
+
+    <div class="progress" id="progress-zone" style="display:none">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="btn-check" onclick="checkStatus()">🔍 Vérifier l'état</button>
+      <button class="btn btn-success" id="btn-migrate" onclick="runMigration()" disabled>🚀 Lancer la migration</button>
+      <button class="btn btn-danger" id="btn-reset" onclick="resetFlag()" title="Réinitialise le flag localStorage pour forcer une re-migration">🔄 Réinitialiser flag</button>
+      <button class="btn" style="background:#334155; color:#94a3b8" onclick="doLogout()">Se déconnecter</button>
+    </div>
+
+    <div id="status"></div>
+    <div id="log-zone"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+/* ── Configuration Firebase (même que dashboard.html) ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyAM29BVKLyohD9WnmUcOIhZPb_HIqnR_XY",
+  authDomain:        "elawael-platform-df2e3.firebaseapp.com",
+  projectId:         "elawael-platform-df2e3",
+  storageBucket:     "elawael-platform-df2e3.firebasestorage.app",
+  messagingSenderId: "43664796026",
+  appId:             "1:43664796026:web:6f1ce1da9a692d7b278ec3"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+const COLLECTION = 'beneficiaires';
+const FLAG_KEY   = 'ea_benef_migrated_v1';
+const PII_FIELDS = ['handicap', 'ddn', 'tel', 'sexe', 'age', 'tuteur', 'adresse'];
+const BATCH_SIZE = 400;
+
+/* ── Utilitaires UI ── */
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.className = type || 'info';
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function appendLog(msg) {
+  const zone = document.getElementById('log-zone');
+  const line = document.createElement('div');
+  line.style.cssText = 'font-size:11px; color:#64748b; padding:2px 0; font-family:monospace;';
+  line.textContent = new Date().toISOString().slice(11,19) + ' ' + msg;
+  zone.appendChild(line);
+  zone.scrollTop = zone.scrollHeight;
+}
+function setProgress(pct) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+/* ── Auth ── */
+function doLogin() {
+  const email = document.getElementById('email').value.trim();
+  const pwd   = document.getElementById('password').value;
+  showStatus('Connexion en cours…', 'info');
+  auth.signInWithEmailAndPassword(email, pwd)
+    .then(() => {})
+    .catch(e => showStatus('❌ Erreur connexion : ' + e.message, 'error'));
+}
+function doLogout() {
+  auth.signOut();
+}
+
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('migration-section').style.display = 'block';
+
+    /* Vérifier le rôle */
+    try {
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      const role = (userDoc.data() || {}).role || '';
+      if (role.toUpperCase() !== 'ADMIN') {
+        showStatus('❌ Accès refusé : cet outil nécessite le rôle ADMIN.\nRôle détecté : ' + role, 'error');
+        document.getElementById('btn-check').disabled = true;
+        document.getElementById('btn-migrate').disabled = true;
+        return;
+      }
+      document.getElementById('user-info').textContent =
+        '✅ Connecté : ' + user.email + ' — Rôle : ' + role;
+    } catch (e) {
+      showStatus('⚠ Impossible de vérifier le rôle : ' + e.message, 'warn');
+    }
+  } else {
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('migration-section').style.display = 'none';
+  }
+});
+
+/* ── Générer un ID document Firestore stable ── */
+function makeDocId(teacherId, nom) {
+  const clean = s => (s || '').toLowerCase()
+    .replace(/[أإآ]/g, 'a').replace(/[ًَُِّْ]/g, '')
+    .replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '').slice(0, 60);
+  return clean(teacherId) + '_' + clean(nom);
+}
+
+/* ── Vérifier l'état actuel ── */
+async function checkStatus() {
+  showStatus('🔍 Vérification en cours…', 'info');
+  document.getElementById('btn-check').disabled = true;
+
+  try {
+    /* Compter dans Firestore */
+    const snap = await db.collection(COLLECTION).get();
+    const fsCount = snap.size;
+
+    /* Flag localStorage */
+    const flagSet = localStorage.getItem(FLAG_KEY) === '1';
+
+    /* Données disponibles dans dashboard.html (ce fichier ne les inclut pas) */
+    const info = [
+      '📊 Collection Firestore "' + COLLECTION + '" : ' + fsCount + ' documents',
+      '🏷  Flag migration localStorage : ' + (flagSet ? '✅ présent (migration effectuée)' : '❌ absent (migration non effectuée)'),
+      '',
+      '📌 Pour lancer la migration :',
+      '   1. Assurez-vous que dashboard.html est ouvert dans un autre onglet',
+      '   2. Cliquez "Lancer la migration" ci-dessous',
+      '',
+      fsCount > 0
+        ? '✅ Des données existent déjà dans Firestore.'
+        : '⚠ La collection est VIDE — la migration automatique se déclenchera',
+      '   à la prochaine connexion admin sur dashboard.html.',
+    ].join('\n');
+
+    showStatus(info, fsCount > 0 ? 'success' : 'warn');
+
+    /* Stats */
+    document.getElementById('stat-firestore').textContent = fsCount;
+    document.getElementById('stats-grid').style.display = 'grid';
+    document.getElementById('btn-migrate').disabled = (fsCount > 0);
+
+    if (fsCount === 0) {
+      appendLog('Collection vide — migration recommandée');
+    } else {
+      appendLog(fsCount + ' bénéficiaires trouvés dans Firestore');
+    }
+
+  } catch (e) {
+    showStatus('❌ Erreur : ' + e.message, 'error');
+  } finally {
+    document.getElementById('btn-check').disabled = false;
+  }
+}
+
+/* ── Lancer la migration depuis ce fichier ── */
+async function runMigration() {
+  showStatus('ℹ La migration automatique se déclenche à la première connexion admin sur dashboard.html.\n\n' +
+    '✅ Ce comportement est déjà intégré dans beneficiaires.js :\n' +
+    '   → Ouvrez dashboard.html\n' +
+    '   → Connectez-vous avec admin@elawail.ma\n' +
+    '   → La migration se lance automatiquement en arrière-plan\n' +
+    '   → Vérifiez la console DevTools pour voir la progression\n\n' +
+    '📌 Ensuite, revenez ici et cliquez "Vérifier l\'état" pour confirmer.', 'info');
+}
+
+/* ── Réinitialiser le flag localStorage ── */
+function resetFlag() {
+  localStorage.removeItem(FLAG_KEY);
+  appendLog('Flag migration supprimé — la prochaine connexion admin re-migrera les données');
+  showStatus('🔄 Flag de migration réinitialisé.\nLa prochaine connexion admin sur dashboard.html relancera la migration.', 'warn');
+}
+</script>
+</body>
+</html>
