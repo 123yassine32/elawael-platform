@@ -19828,6 +19828,10 @@ function showAdminDashboard(){
   initConsultantTabs();
 
   renderAdminDashboard();
+
+  /* ── Navigation directe via ?section=X (pour les tests et liens profonds) ── */
+  const _urlSec = new URLSearchParams(window.location.search).get('section');
+  if (_urlSec) setTimeout(() => adminShowSection(_urlSec), 350);
 }
 
 /* ═══════════════════════════════════════════════════════════
