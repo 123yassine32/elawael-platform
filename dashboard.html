@@ -1999,7 +1999,7 @@ var I18N = {
     // ── Vue Tan9it ──
     tan9it_title: 'Programme de notation journalier',
 
-    lang_flag:  '',
+    lang_flag:  '🇲🇦',
     lang_label: 'عربي',
 
     // ── Nouveaux — i18n complémentaire ──
@@ -3387,7 +3387,7 @@ var I18N = {
     // ── برنامج التنقيط ──
     tan9it_title: 'برنامج التنقيط اليومي',
 
-    lang_flag:  '',
+    lang_flag:  '🇫🇷',
     lang_label: 'Français',
 
     // ── جديد — تكملة الترجمة ──
@@ -3855,7 +3855,10 @@ var CURRENT_LANG = localStorage.getItem('ea_lang') || 'ar';
 /* ── Traduction key → texte ── */
 function t(key) {
   const dict = I18N[CURRENT_LANG] || I18N.fr;
-  return dict[key] || I18N.fr[key] || key;
+  /* Utiliser 'in' pour distinguer la valeur vide ('') de l'absence de clé */
+  if (key in dict)      return dict[key];
+  if (key in I18N.fr)   return I18N.fr[key];
+  return key;
 }
 
 /* ══════════════════════════════════════════════════════
