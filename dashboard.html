@@ -25737,6 +25737,50 @@ function rhSoumettreDemande() {
 }
 
 /**
+ * Listener temps réel sur les demandes RH du cadre.
+ * Dès que l'admin modifie le statut, le cadre voit le changement instantanément.
+ * Stocké dans window._myRHUnsub pour pouvoir le détacher (logout).
+ */
+function _myRHStartLiveListener() {
+  if (typeof db === 'undefined' || !CURRENT_USER) return;
+  if (window._myRHUnsub) return; /* Déjà actif */
+  const myTid = CURRENT_USER.teacherId || CURRENT_USER.uid;
+  if (!myTid) return;
+
+  try {
+    window._myRHUnsub = db.collection('rh_demandes')
+      .where('teacherId', '==', myTid)
+      .onSnapshot(snap => {
+        const local = loadData(RH_KEY) || [];
+        let changed = false;
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (!d || !d.id) return;
+          const i = local.findIndex(m => m.id === d.id);
+          if (i >= 0) {
+            /* Fusion : Firestore fait autorité */
+            const before = JSON.stringify(local[i]);
+            local[i] = { ...local[i], ...d };
+            if (before !== JSON.stringify(local[i])) changed = true;
+          } else {
+            local.push(d); changed = true;
+          }
+        });
+        if (changed) {
+          saveData(RH_KEY, local);
+          /* Re-rendre la section si elle est visible */
+          if (document.getElementById('rh-my-list')) _renderMyRHDemandesSync();
+        }
+      }, err => {
+        console.warn('[RH live] Listener erreur :', err.message);
+      });
+    console.log('[RH live] Listener temps réel actif pour', myTid);
+  } catch(e) {
+    console.warn('[RH live] Init listener échouée :', e.message);
+  }
+}
+
+/**
  * Récupère les demandes RH du cadre depuis Firestore et fusionne avec localStorage.
  * Permet au cadre de voir les statuts mis à jour par l'admin sur un autre navigateur.
  */
@@ -25774,6 +25818,8 @@ async function _myRHFetchFromFirestore() {
 
 /** Afficher les demandes RH du cadre connecté */
 function renderMyRHDemandes() {
+  /* Activer le listener temps réel pour voir les approbations admin instantanément */
+  _myRHStartLiveListener();
   /* Fetch async puis re-rendre, ET rendu immédiat avec données locales */
   _myRHFetchFromFirestore().then(() => _renderMyRHDemandesSync()).catch(() => _renderMyRHDemandesSync());
   _renderMyRHDemandesSync();
