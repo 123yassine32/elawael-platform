@@ -17325,6 +17325,125 @@ function _pushToFirestore(key, data) {
       .set({ value: JSON.stringify(data), updatedAt: new Date().toISOString() })
       .catch(e =>console.warn('[Firestore push]', key, e.code || e.message));
   } catch(e) { /* silencieux — ne pas bloquer l'UI */ }
+
+  /* [Fix Bug 5.1] Pousser aussi vers la collection partagée org_shared
+     pour que l'admin puisse lire les données de tous les éducateurs */
+  _pushToOrgShared(key, data);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COLLECTION PARTAGÉE — org_shared (Fix Bug 5.1)
+   ─────────────────────────────────────────────────────────────
+   Les éducateurs écrivent dans userData (privé) MAIS aussi dans
+   org_shared (lisible par admin/gestionnaire). Cela permet à
+   l'admin d'agréger les présences/ABLLS/ghiyab de tous les
+   éducateurs pour calculer un Score Organisationnel exact.
+   Doc id : ${teacherId}__${key}
+═══════════════════════════════════════════════════════════════ */
+
+/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab) */
+const ORG_SHARED_PREFIXES = ['ea_presences', 'ea_ta9_', 'ea_gh_'];
+
+function _isOrgSharedKey(key) {
+  return ORG_SHARED_PREFIXES.some(p => key === p || key.startsWith(p));
+}
+
+function _pushToOrgShared(key, data) {
+  try {
+    if (!_isOrgSharedKey(key)) return;
+    if (typeof db === 'undefined') return;
+    const user = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? CURRENT_USER : null;
+    if (!user) return;
+    const tid = user.teacherId || user.uid;
+    if (!tid) return;
+    /* Ne pas pousser pour les rôles admin/gestionnaire/consultant
+       (ils ne saisissent pas de données — ils ne font que lire) */
+    const r = (user.role || '').toLowerCase();
+    if (['admin', 'gestionnaire', 'consultant'].includes(r)) return;
+
+    const docId = tid + '__' + key;
+    db.collection('org_shared').doc(docId).set({
+      teacherId: tid,
+      key:       key,
+      value:     JSON.stringify(data),
+      updatedAt: new Date().toISOString()
+    }).catch(e => console.warn('[org_shared push]', key, e.code || e.message));
+  } catch(e) { /* silencieux */ }
+}
+
+/**
+ * Charge toutes les données partagées depuis Firestore (admin/gestionnaire).
+ * Pour 'ea_presences' : merge les listes de tous les éducateurs.
+ * Pour 'ea_ta9_*' et 'ea_gh_*' : copie directe (clés uniques par bénéficiaire).
+ * Appelé au démarrage du Cockpit Directeur.
+ */
+async function _loadOrgSharedForAdmin() {
+  if (typeof db === 'undefined' || !CURRENT_USER) return;
+  const role = (CURRENT_USER.role || '').toLowerCase();
+  if (role !== 'admin' && role !== 'gestionnaire') return;
+
+  try {
+    const snap = await db.collection('org_shared').get();
+    if (snap.empty) {
+      console.log('[org_shared] Collection vide — aucune donnée partagée');
+      return;
+    }
+
+    /* Grouper par clé */
+    const grouped = {}; /* {key: [docs]} */
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (!d || !d.key || !d.value) return;
+      (grouped[d.key] = grouped[d.key] || []).push(d);
+    });
+
+    let mergedKeys = 0;
+    Object.keys(grouped).forEach(key => {
+      const docs = grouped[key];
+
+      if (key === 'ea_presences') {
+        /* Merge des listes de séances depuis tous les éducateurs.
+           Dédoublonner par id si présent, sinon par (date + teacherId). */
+        const seen = new Set();
+        const merged = [];
+        /* D'abord les locaux (autorité si conflit d'id) */
+        const local = JSON.parse(localStorage.getItem('ea_presences') || '[]');
+        local.forEach(s => {
+          const k = s.id || `${s.date}__${s.teacherId || ''}`;
+          if (!seen.has(k)) { seen.add(k); merged.push(s); }
+        });
+        /* Puis les distants */
+        docs.forEach(doc => {
+          let arr;
+          try { arr = JSON.parse(doc.value); } catch(e) { return; }
+          if (!Array.isArray(arr)) return;
+          arr.forEach(s => {
+            const k = s.id || `${s.date}__${s.teacherId || doc.teacherId}`;
+            if (!seen.has(k)) {
+              seen.add(k);
+              /* Forcer teacherId si manquant */
+              if (!s.teacherId) s.teacherId = doc.teacherId;
+              merged.push(s);
+            }
+          });
+        });
+        localStorage.setItem('ea_presences', JSON.stringify(merged));
+        mergedKeys++;
+      } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_')) {
+        /* Clé unique par bénéficiaire — prendre la plus récente */
+        const sorted = docs.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        try {
+          const val = JSON.parse(sorted[0].value);
+          localStorage.setItem(key, JSON.stringify(val));
+          mergedKeys++;
+        } catch(e) { /* ignore */ }
+      }
+    });
+
+    console.log('[org_shared] Fusionné', mergedKeys, 'clés depuis Firestore pour admin');
+  } catch(e) {
+    console.warn('[org_shared] Impossible de charger :', e.message);
+  }
 }
 
 /* initSync est défini dans js/data/sync.js (v3.5.1)
@@ -19829,6 +19948,14 @@ function showAdminDashboard(){
 
   renderAdminDashboard();
 
+  /* [Fix Bug 5.1] Charger les données partagées (présences/ABLLS/ghiyab de
+     tous les éducateurs) puis re-rendre le Cockpit pour un score exact */
+  _loadOrgSharedForAdmin().then(() => {
+    if (typeof renderAdminOverview === 'function') {
+      try { renderAdminOverview(); } catch(e) { console.warn('[Cockpit re-render]', e.message); }
+    }
+  }).catch(() => {});
+
   /* ── Navigation directe via ?section=X (pour les tests et liens profonds) ── */
   const _urlSec = new URLSearchParams(window.location.search).get('section');
   if (_urlSec) setTimeout(() => { try { adminShowSection(_urlSec); } catch(e) { console.error('[?section=]', e); } }, 1500);
@@ -21042,7 +21169,8 @@ function calcOrgScore(d, presences) {
     : 1;
   const _tauxNiveau  = Math.min(100, Math.round((_niveauMoyen - 1) / 3 * 100));
 
-  /* 2c. Cadres actifs S2 — conservé pour affichage dans breakdown */
+  /* 2c. Cadres actifs S2 — métrique conservée pour affichage breakdown
+     (utilisée dans la décomposition visuelle, pas dans le score final) */
   const _itarUsers       = USERS.filter(u => !u.role);
   const _cadresActifsS2  = new Set(_presS2.map(p =>p.teacherId).filter(Boolean));
   const _nbActifsS2      = _itarUsers.filter(u => _cadresActifsS2.has(u.teacherId)).length;
@@ -21050,38 +21178,57 @@ function calcOrgScore(d, presences) {
     ? Math.round(_nbActifsS2 / _itarUsers.length * 100)
     : 0;
 
-  /* 2d. Indépendance finale — ABLLS si dispo, sinon niveau */
-  const tauxIndependance = _ablDonnees ? _tauxABLLS : _tauxNiveau;
+  /* 2d. Indépendance finale — ABLLS si dispo, sinon fallback niveau
+     [Fix Bug 5.2] Si pas d'ABLLS ET niveau moyen ≤ 1.2 (rien d'évalué),
+     considérer comme données absentes → neutre 50 (pas de pénalité).
+     Sinon utiliser le score niveau réel. */
+  let tauxIndependance;
+  let _indHasMeaningfulData;
+  if (_ablDonnees) {
+    tauxIndependance = _tauxABLLS;
+    _indHasMeaningfulData = true;
+  } else if (_niveauMoyen > 1.2) {
+    /* Niveaux variés saisis → données significatives */
+    tauxIndependance = _tauxNiveau;
+    _indHasMeaningfulData = true;
+  } else {
+    /* Aucune éval ABLLS ET tous niveau 1 (défaut) → pas de données fiables */
+    tauxIndependance = 50;
+    _indHasMeaningfulData = false;
+  }
 
   /* ════════════════════════════════════════════════════════════════
-     DOSSIERS — 10% (inchangé)
+     DOSSIERS — 10%
+     [Fix Bug 5.3] Neutre 50 si aucun bénéficiaire (cohérent avec autres
+     composantes) au lieu de 0 par défaut.
   ════════════════════════════════════════════════════════════════ */
-  const tauxDossiers = d.totalBenef >0
+  const _dossiersDonnees = d.totalBenef > 0;
+  const tauxDossiers = _dossiersDonnees
     ? Math.round(d.totalDossiers / d.totalBenef * 100)
-    : 0;
+    : 50;
 
   /* ════════════════════════════════════════════════════════════════
      SCORE GLOBAL PONDÉRÉ — Management 4.0 Handicap
      PEI 40% · Présence 30% · Indépendance 20% · Dossiers 10%
      Valeur neutre 50 pour les composantes sans données (no penalty)
   ════════════════════════════════════════════════════════════════ */
-  const _peiScore  = _peiDonnees      ? tauxRealisation : 50;
-  const _presScore = _presenceDonnees ? tauxPresence    : 50;
-  const _indScore  = _ablDonnees || _niveaux.length >0
-    ? tauxIndependance
-    : 50;
+  const _peiScore  = _peiDonnees           ? tauxRealisation : 50;
+  const _presScore = _presenceDonnees      ? tauxPresence    : 50;
+  const _indScore  = _indHasMeaningfulData ? tauxIndependance : 50;
+  const _dossScore = _dossiersDonnees      ? tauxDossiers    : 50;
 
   const score = Math.round(
     (_peiScore   * 0.40) +
     (_presScore  * 0.30) +
     (_indScore   * 0.20) +
-    (tauxDossiers * 0.10)
+    (_dossScore  * 0.10)
   );
 
   return {
     score,
     tauxRealisation,  tauxPresence,     tauxIndependance, tauxDossiers,
     _peiDonnees,      _presenceDonnees,  _ablDonnees,
+    _indHasMeaningfulData, _dossiersDonnees,
     _tauxNiveau,      _tauxCadresActifs,
     _tauxABLLS,       _presSource,       _presNbSeances,
     _peiDoneVal,      _peiProgVal,

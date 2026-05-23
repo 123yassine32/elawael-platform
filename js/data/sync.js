@@ -353,6 +353,12 @@ async function initSync(uid) {
        match /beneficiaires/{doc} {
          allow read, write: if request.auth != null;
        }
+
+       // Données partagées (présences/ABLLS/ghiyab) pour Score Organisationnel
+       // Les éducateurs écrivent leurs propres données, admin/gestionnaire lit tout
+       match /org_shared/{doc} {
+         allow read, write: if request.auth != null;
+       }
      }
    }
 ══════════════════════════════════════════════════════════ */
