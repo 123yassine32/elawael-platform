@@ -24085,7 +24085,14 @@ function auditLog(type, action, detail) {
       db.collection('audit_logs').add({
         ...entry,
         uid: _syncUid
-      }).catch(() => {}); /* Silencieux si hors-ligne */
+      }).catch(e => {
+        /* En cas de permission-denied : règles Firestore manquantes */
+        if (e && e.code === 'permission-denied') {
+          console.error('[Audit] ❌ Firestore refuse l\'écriture — vérifier les règles audit_logs dans Firebase Console');
+        } else {
+          console.warn('[Audit] Push Firestore échoué :', e.message || e);
+        }
+      });
     }
   } catch(e) {
     /* Le journal ne doit jamais bloquer l'application */
@@ -25696,9 +25703,11 @@ function rhSoumettreDemande() {
   demandes.push(nouvelleDemande);
   saveData(RH_KEY, demandes);
 
-  /* Sync Firestore */
+  /* Sync Firestore — utiliser l'id comme docId pour synchronisation bidirectionnelle */
   if (typeof db !== 'undefined') {
-    db.collection('rh_demandes').add(nouvelleDemande).catch(e =>console.warn('[RH]', e));
+    db.collection('rh_demandes').doc(String(nouvelleDemande.id))
+      .set(nouvelleDemande)
+      .catch(e => console.warn('[RH soumettre]', e.message));
   }
 
   /* Créer une alerte dans le centre d'alertes admin */
@@ -25727,8 +25736,50 @@ function rhSoumettreDemande() {
   if (typeof updateAlertesBadge === 'function') updateAlertesBadge();
 }
 
+/**
+ * Récupère les demandes RH du cadre depuis Firestore et fusionne avec localStorage.
+ * Permet au cadre de voir les statuts mis à jour par l'admin sur un autre navigateur.
+ */
+async function _myRHFetchFromFirestore() {
+  if (typeof db === 'undefined' || !CURRENT_USER) return;
+  const myTid = CURRENT_USER.teacherId || CURRENT_USER.uid;
+  if (!myTid) return;
+
+  try {
+    const snap = await db.collection('rh_demandes')
+      .where('teacherId', '==', myTid)
+      .get();
+    if (snap.empty) return;
+
+    const local = loadData(RH_KEY) || [];
+    const remote = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d && d.id) remote.push(d);
+    });
+
+    /* Fusion : Firestore fait autorité sur le statut */
+    const merged = [...local];
+    remote.forEach(r => {
+      const i = merged.findIndex(m => m.id === r.id);
+      if (i >= 0) merged[i] = { ...merged[i], ...r };
+      else merged.push(r);
+    });
+
+    saveData(RH_KEY, merged);
+  } catch(e) {
+    console.warn('[RH my] Impossible de charger Firestore :', e.message);
+  }
+}
+
 /** Afficher les demandes RH du cadre connecté */
 function renderMyRHDemandes() {
+  /* Fetch async puis re-rendre, ET rendu immédiat avec données locales */
+  _myRHFetchFromFirestore().then(() => _renderMyRHDemandesSync()).catch(() => _renderMyRHDemandesSync());
+  _renderMyRHDemandesSync();
+}
+
+function _renderMyRHDemandesSync() {
   const demandes = (loadData(RH_KEY) || [])
     .filter(d =>d.teacherId === (CURRENT_USER.teacherId || CURRENT_USER.uid));
 
@@ -26108,11 +26159,15 @@ function rhAdminAction(idx, nouveauStatut) {
   demandes[idx].dateMiseAJour= new Date().toLocaleString('fr-FR');
   saveData(RH_KEY, demandes);
 
-  /* Sync Firestore si l'entrée a un ID */
-  if (typeof db !== 'undefined' && demandes[idx].firestoreId) {
-    db.collection('rh_demandes').doc(demandes[idx].firestoreId)
-      .update({ statut: nouveauStatut, noteAdmin: note })
-      .catch(e =>console.warn('[RH Firestore]', e));
+  /* Sync Firestore — utiliser l'id comme docId pour synchronisation bidirectionnelle */
+  if (typeof db !== 'undefined' && demandes[idx].id) {
+    db.collection('rh_demandes').doc(String(demandes[idx].id))
+      .set({
+        statut: nouveauStatut,
+        noteAdmin: note,
+        dateMiseAJour: demandes[idx].dateMiseAJour
+      }, { merge: true })
+      .catch(e => console.warn('[RH update]', e.message));
   }
 
   const st = RH_STATUT_STYLE[nouveauStatut];
