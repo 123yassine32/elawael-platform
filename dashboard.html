@@ -22192,6 +22192,18 @@ function adminOpenBenef(idx){
   document.getElementById('admin-overlay').classList.add('hidden');
   document.getElementById('admin-overlay').style.display = 'none';
 
+  /* ── FIX page blanche : showAdminDashboard() pose display:none INLINE sur
+     aside.sidebar et main.main. Il faut les restaurer sinon la fiche bénéf.
+     reste invisible derrière un portail enseignant masqué. ── */
+  const _teacherSidebar = document.getElementById('ea-sidebar') || document.querySelector('aside.sidebar');
+  const _teacherMain    = document.getElementById('ea-main')    || document.querySelector('main.main');
+  if (_teacherSidebar) { _teacherSidebar.style.removeProperty('display'); _teacherSidebar.style.removeProperty('visibility'); }
+  if (_teacherMain)    { _teacherMain.style.removeProperty('display');    _teacherMain.style.removeProperty('visibility'); }
+
+  /* Restaurer la vue détaillée bénéficiaire (showAdminDashboard avait tout masqué) */
+  const _vbd = document.getElementById('view-beneficiaire-detail');
+  if (_vbd) _vbd.style.display = 'block';
+
   // Show main tabs bar (needed by openBeneficiaire)
   const tabsBar = document.getElementById('main-tabs-bar');
   if(tabsBar) tabsBar.style.display = 'flex';
