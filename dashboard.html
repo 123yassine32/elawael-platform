@@ -19775,13 +19775,13 @@ function _adminShowSectionCore(sec) {
     const al = document.getElementById('adm-archives-list');
     if (av) av.style.display = 'none';
     if (al) al.style.display = 'block';
-    renderAdminArchives();
+    _safeRender(renderAdminArchives, 'archives');
   }
-  if (sec === 'listes')               renderAdminListes();
-  if (sec === 'users')                renderAdminUsers();
-  if (sec === 'rh')                   renderAdminRH();
-  if (sec === 'recommandations')      renderAdminRecommandations();
-  if (sec === 'mes-recommandations')  renderConsultantMesRecommandations();
+  if (sec === 'listes')               _safeRender(renderAdminListes, 'listes');
+  if (sec === 'users')                _safeRender(renderAdminUsers, 'users');
+  if (sec === 'rh')                   _safeRender(renderAdminRH, 'rh');
+  if (sec === 'recommandations')      _safeRender(renderAdminRecommandations, 'recommandations');
+  if (sec === 'mes-recommandations')  _safeRender(renderConsultantMesRecommandations, 'mes-recommandations');
 }
 
 function showAdminDashboard(){
