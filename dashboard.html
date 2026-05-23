@@ -19831,7 +19831,7 @@ function showAdminDashboard(){
 
   /* ── Navigation directe via ?section=X (pour les tests et liens profonds) ── */
   const _urlSec = new URLSearchParams(window.location.search).get('section');
-  if (_urlSec) setTimeout(() => adminShowSection(_urlSec), 350);
+  if (_urlSec) setTimeout(() => { try { adminShowSection(_urlSec); } catch(e) { console.error('[?section=]', e); } }, 1500);
 }
 
 /* ═══════════════════════════════════════════════════════════
