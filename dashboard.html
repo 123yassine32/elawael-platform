@@ -26205,14 +26205,13 @@ function rhAdminAction(idx, nouveauStatut) {
   demandes[idx].dateMiseAJour= new Date().toLocaleString('fr-FR');
   saveData(RH_KEY, demandes);
 
-  /* Sync Firestore — utiliser l'id comme docId pour synchronisation bidirectionnelle */
+  /* Sync Firestore — utiliser l'id comme docId pour synchronisation bidirectionnelle
+     Pousser TOUTE la demande complète (pas juste statut+note) pour que le doc
+     existe avec id+teacherId même si la demande originale avait été créée
+     avec un auto-id avant le fix de docId stable. */
   if (typeof db !== 'undefined' && demandes[idx].id) {
     db.collection('rh_demandes').doc(String(demandes[idx].id))
-      .set({
-        statut: nouveauStatut,
-        noteAdmin: note,
-        dateMiseAJour: demandes[idx].dateMiseAJour
-      }, { merge: true })
+      .set(demandes[idx], { merge: true })
       .catch(e => console.warn('[RH update]', e.message));
   }
 
