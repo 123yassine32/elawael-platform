@@ -24093,9 +24093,64 @@ function auditLog(type, action, detail) {
 }
 
 /**
+ * Synchronise les logs Firestore vers localStorage (admin/gestionnaire uniquement).
+ * Fusionne audit_logs Firestore avec le localStorage local en dédoublonnant par id.
+ * Permet à l'admin de voir les actions effectuées par tous les éducateurs.
+ */
+async function _auditFetchFromFirestore() {
+  if (typeof db === 'undefined' || !CURRENT_USER) return;
+  const role = (CURRENT_USER.role || '').toLowerCase();
+  if (role !== 'admin' && role !== 'gestionnaire') return; /* Réservé */
+
+  try {
+    /* Limite à 1000 logs récents pour ne pas exploser la quota */
+    const snap = await db.collection('audit_logs')
+      .orderBy('ts', 'desc')
+      .limit(1000)
+      .get();
+
+    if (snap.empty) return;
+
+    const localLogs  = JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
+    const localIds   = new Set(localLogs.map(l => l.id));
+    const remoteLogs = [];
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d && d.id && !localIds.has(d.id)) {
+        remoteLogs.push({
+          id: d.id, ts: d.ts, user: d.user, role: d.role,
+          type: d.type, action: d.action, detail: d.detail
+        });
+      }
+    });
+
+    if (remoteLogs.length === 0) return;
+
+    /* Fusion + tri par timestamp décroissant + limite 500 */
+    const merged = [...remoteLogs, ...localLogs]
+      .sort((a, b) => (b.ts || '').localeCompare(a.ts || ''))
+      .slice(0, 500);
+
+    localStorage.setItem(AUDIT_KEY, JSON.stringify(merged));
+    console.log('[Audit] Fusionné', remoteLogs.length, 'logs distants depuis Firestore');
+  } catch (e) {
+    console.warn('[Audit] Impossible de charger depuis Firestore :', e.message);
+  }
+}
+
+/**
  * Affiche le journal d'audit avec filtres et KPIs.
+ * Fetch async depuis Firestore (admin/gestionnaire) puis rendu.
  */
 function renderAuditJournal() {
+  /* Lancer le fetch Firestore en parallèle puis re-rendre */
+  _auditFetchFromFirestore().then(() => _renderAuditJournalSync()).catch(() => _renderAuditJournalSync());
+  /* Rendu immédiat avec données locales pour réactivité */
+  _renderAuditJournalSync();
+}
+
+function _renderAuditJournalSync() {
   const logs = JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
 
   /* ── Peupler le filtre utilisateurs ── */
@@ -25950,7 +26005,48 @@ function rhAdminFilter(filtre, btn) {
   renderAdminRH();
 }
 
+/**
+ * Synchronise les demandes RH Firestore vers localStorage (admin/gestionnaire uniquement).
+ * Permet à l'admin de voir les demandes soumises par tous les éducateurs sur leurs navigateurs.
+ */
+async function _rhFetchFromFirestore() {
+  if (typeof db === 'undefined' || !CURRENT_USER) return;
+  const role = (CURRENT_USER.role || '').toLowerCase();
+  if (role !== 'admin' && role !== 'gestionnaire') return;
+
+  try {
+    const snap = await db.collection('rh_demandes').get();
+    if (snap.empty) return;
+
+    const localDemandes = loadData(RH_KEY) || [];
+    const localIds = new Set(localDemandes.map(d => d.id));
+    const remoteDemandes = [];
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (d && d.id && !localIds.has(d.id)) {
+        remoteDemandes.push(d);
+      }
+    });
+
+    if (remoteDemandes.length === 0) return;
+
+    const merged = [...localDemandes, ...remoteDemandes];
+    saveData(RH_KEY, merged);
+    console.log('[RH] Fusionné', remoteDemandes.length, 'demandes distantes depuis Firestore');
+  } catch (e) {
+    console.warn('[RH] Impossible de charger depuis Firestore :', e.message);
+  }
+}
+
 function renderAdminRH() {
+  /* Fetch Firestore en arrière-plan, puis re-rendre */
+  _rhFetchFromFirestore().then(() => _renderAdminRHSync()).catch(() => _renderAdminRHSync());
+  /* Rendu immédiat avec données locales */
+  _renderAdminRHSync();
+}
+
+function _renderAdminRHSync() {
   const toutes = loadData(RH_KEY) || [];
   const filtrées = _rhAdminFilter === 'tous' ? toutes
     : toutes.filter(d =>d.statut === _rhAdminFilter);

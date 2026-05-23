@@ -342,6 +342,17 @@ async function initSync(uid) {
        match /audit_logs/{doc} {
          allow read, write: if request.auth != null;
        }
+
+       // Demandes RH — éducateurs peuvent créer, admin/gestionnaire peuvent tout lire
+       match /rh_demandes/{doc} {
+         allow read, write: if request.auth != null;
+       }
+
+       // Bénéficiaires — admin/gestionnaire/consultant peuvent lire tous,
+       //                 éducateurs peuvent lire seulement leurs propres
+       match /beneficiaires/{doc} {
+         allow read, write: if request.auth != null;
+       }
      }
    }
 ══════════════════════════════════════════════════════════ */

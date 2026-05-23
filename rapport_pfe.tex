@@ -1,0 +1,1334 @@
+%% ================================================================
+%% RAPPORT PFE — Mohamed Yassine Marzouk
+%% Association El Awael — Master Leadership Managerial 4.0
+%% Compiler : XeLaTeX (deux passes)
+%% ================================================================
+\documentclass[12pt,a4paper,openany]{report}
+
+%% ── Langue francaise ───────────────────────────────────────────
+\usepackage[french]{babel}
+
+%% ── Police Times New Roman (XeLaTeX) ───────────────────────────
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Courier New}
+
+%% ── Mise en page ───────────────────────────────────────────────
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm,headheight=26pt]{geometry}
+
+%% ── Interligne 1,5 ─────────────────────────────────────────────
+\usepackage{setspace}
+\onehalfspacing
+
+%% ── Couleurs ───────────────────────────────────────────────────
+\usepackage[dvipsnames]{xcolor}
+\definecolor{bleu}{RGB}{27,58,107}
+\definecolor{bleuClair}{RGB}{210,222,240}
+\definecolor{grisTxt}{RGB}{80,80,80}
+\definecolor{vertOK}{RGB}{34,120,34}
+\definecolor{rougeKO}{RGB}{170,30,30}
+
+%% ── En-tetes et pieds de page ──────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{grisTxt}\itshape\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{grisTxt}\itshape M.Y. Marzouk}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+%% ── Titres ─────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\fontsize{14}{18}\bfseries\color{bleu}}
+  {\fontsize{13}{16}\bfseries\chaptertitlename~\thechapter}{8pt}
+  {\fontsize{14}{18}\bfseries}
+\titlespacing{\chapter}{0pt}{0pt}{22pt}
+
+\titleformat{\section}
+  {\normalfont\fontsize{14}{17}\bfseries\color{bleu}}
+  {\thesection}{10pt}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+\titleformat{\subsection}
+  {\normalfont\fontsize{12}{15}\bfseries\color{bleu!80!black}}
+  {\thesubsection}{8pt}{}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{12}{15}\itshape\color{grisTxt}}
+  {\thesubsubsection}{6pt}{}
+
+%% ── Figures et tableaux ────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{labelfont={bf,color=bleu},textfont=it,justification=centering,skip=5pt}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+%% ── Boites colorees (tcolorbox) ────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{encadre}[2][]{
+  colback=bleuClair!30,colframe=bleu,boxrule=1pt,arc=3pt,
+  title=#2,fonttitle=\bfseries\color{bleu},#1}
+
+\newtcolorbox{boitecitation}{
+  colback=gray!8,colframe=gray!40,boxrule=0.5pt,arc=2pt,
+  left=8pt,right=8pt}
+
+%% ── Listes ─────────────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=2pt,topsep=4pt}
+\setlist[enumerate]{itemsep=2pt,topsep=4pt}
+
+%% ── Notes de bas de page ───────────────────────────────────────
+\usepackage[bottom]{footmisc}
+\renewcommand{\footnotesize}{\fontsize{10}{12}\selectfont}
+
+%% ── Symboles ───────────────────────────────────────────────────
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+%% ── Hyperliens ─────────────────────────────────────────────────
+\usepackage[colorlinks=true,linkcolor=bleu,citecolor=bleu,urlcolor=bleu,
+  pdftitle={Rapport PFE Mohamed Yassine Marzouk},
+  pdfauthor={Mohamed Yassine Marzouk}]{hyperref}
+
+%% ── Image securisee (placeholder si fichier absent) ────────────
+\newcommand{\safeimg}[3][0.9\textwidth]{%
+  \IfFileExists{#2}{\includegraphics[width=#1]{#2}}%
+  {\fbox{\parbox{#1}{\centering\color{grisTxt}\itshape[Image~:~#3]}}}}
+
+%% \og et \fg sont deja definis par babel French — pas besoin de les redefinir
+
+%% ================================================================
+\begin{document}
+\pagenumbering{gobble}
+
+%% ================================================================
+%%  PAGE DE GARDE
+%% ================================================================
+\begin{titlepage}
+\begin{center}
+
+  \IfFileExists{assets/logo/logo_elawael.png}{%
+    \includegraphics[width=3.2cm]{assets/logo/logo_elawael.png}\\[0.4cm]}{}
+
+  {\large\bfseries Universite Abdelmalek Essaadi}\\[0.1cm]
+  {\large Faculte des Sciences Juridiques, Economiques et Sociales}\\[0.05cm]
+  {\normalsize Tetouan}\\[0.5cm]
+
+  \textcolor{bleu}{\rule{\textwidth}{2pt}}\\[0.2cm]
+  {\large\bfseries\color{bleu} Filiere~: Master Leadership Managerial 4.0}\\[0.2cm]
+  \textcolor{bleu}{\rule{\textwidth}{2pt}}
+
+  \vspace{0.7cm}
+  {\Large\bfseries RAPPORT DE STAGE DE FIN D'ETUDES}
+  \vspace{0.6cm}
+
+  \begin{tcolorbox}[colback=bleu!8,colframe=bleu,boxrule=1.5pt,arc=5pt,halign=center,width=\textwidth]
+    \vspace{0.2cm}
+    {\fontsize{13}{17}\bfseries\color{bleu}
+      Innovation manageriale et transformation digitale\\
+      dans les associations sociales :\\[0.3cm]
+      Entre performance organisationnelle et impact humain}
+    \vspace{0.2cm}
+  \end{tcolorbox}
+
+  \vspace{0.6cm}
+  {\normalsize Realise au sein de~:}\\[0.1cm]
+  {\large\bfseries Association El Awael --- Centre de Martil}\\[0.1cm]
+  {\normalsize Periode~: 12 mars 2026 --- 12 juin 2026}
+
+  \vspace{1cm}
+  \begin{minipage}[t]{0.47\textwidth}
+    \raggedright
+    {\bfseries Realise par~:}\\[0.1cm]
+    Mohamed Yassine Marzouk\\
+    Master Leadership Managerial 4.0\\
+    Annee universitaire 2025--2026
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \raggedleft
+    {\bfseries Encadrant academique~:}\\[0.1cm]
+    M. Abdelmonaim Tlidi\\[0.3cm]
+    {\bfseries Responsable d'accueil~:}\\[0.1cm]
+    Mme Kaoutar Dghoughi\\
+    {\small Directrice, Centre de Martil}
+  \end{minipage}
+
+  \vfill
+  \textcolor{bleu}{\rule{\textwidth}{1pt}}\\[0.2cm]
+  {\large\bfseries Annee universitaire 2025--2026}
+\end{center}
+\end{titlepage}
+
+%% ================================================================
+%%  DEDICACE
+%% ================================================================
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{5cm}
+\begin{center}
+  \textcolor{bleu}{\rule{0.4\textwidth}{0.5pt}}\\[0.5cm]
+  {\large\itshape\bfseries Dedicace}\\[0.5cm]
+  \textcolor{bleu}{\rule{0.4\textwidth}{0.5pt}}
+\end{center}
+\vspace{1cm}
+\begin{flushright}
+\begin{minipage}{0.7\textwidth}
+\itshape
+A mes parents, source inepuisable d'amour et de soutien,\\
+qui ont tout sacrifie pour que je puisse atteindre mes ambitions.\\[0.4cm]
+A mes enseignants de la Faculte des Sciences Juridiques,\\
+Economiques et Sociales de Tetouan,\\
+qui ont forge mon regard sur le monde managerial.\\[0.4cm]
+A chaque enfant en situation de handicap suivi par\\
+l'Association El Awael, raison d'etre de ce travail.\\[0.5cm]
+\raggedleft --- Mohamed Yassine Marzouk
+\end{minipage}
+\end{flushright}
+
+%% ================================================================
+%%  REMERCIEMENTS
+%% ================================================================
+\cleardoublepage
+\thispagestyle{empty}
+\begin{center}
+{\large\bfseries\color{bleu} Remerciements}\\[0.2cm]
+\textcolor{bleu}{\rule{0.5\textwidth}{0.5pt}}
+\end{center}
+\vspace{0.5cm}
+
+Je tiens a exprimer ma profonde gratitude a toutes les personnes
+qui ont contribue, de pres ou de loin, a la realisation de ce stage
+et de ce rapport.
+
+\vspace{0.3cm}
+Mes remerciements les plus sinceres vont a \textbf{Monsieur Abdelmonaim Tlidi},
+mon encadrant academique, pour ses precieux conseils, sa disponibilite
+constante et son accompagnement rigoureux tout au long de ce travail.
+
+\vspace{0.3cm}
+Je remercie chaleureusement \textbf{Madame Kaoutar Dghoughi}, directrice du
+centre de Martil de l'Association El Awael, pour m'avoir accueilli avec
+bienveillance au sein de son equipe et pour la confiance qu'elle m'a accordee.
+
+\vspace{0.3cm}
+Je suis particulierement reconnaissant envers l'ensemble de
+\textbf{l'equipe educative du centre de Martil} --- cadres encadrants,
+educateurs specialises et personnel administratif --- pour leur accueil
+chaleureux et leur engagement quotidien aupres des enfants en situation
+de handicap.
+
+\vspace{0.3cm}
+Je remercie egalement le corps professoral de la \textbf{Faculte des Sciences
+Juridiques, Economiques et Sociales} de l'Universite Abdelmalek Essaadi
+de Tetouan, et plus particulierement les enseignants du Master Leadership
+Managerial 4.0, pour les solides bases intellectuelles transmises.
+
+\vspace{0.5cm}
+\begin{flushright}
+\itshape Mohamed Yassine Marzouk\\
+Martil, juin 2026
+\end{flushright}
+
+%% ================================================================
+%%  RESUME / ABSTRACT
+%% ================================================================
+\cleardoublepage
+\thispagestyle{empty}
+\begin{center}
+{\large\bfseries\color{bleu} Resume}\\[0.2cm]
+\textcolor{bleu}{\rule{0.5\textwidth}{0.5pt}}
+\end{center}
+\vspace{0.4cm}
+
+Ce rapport de stage de fin d'etudes, realise au sein de l'Association El
+Awael au centre de Martil (Maroc) du 12 mars au 12 juin 2026, explore
+les conditions d'une transformation digitale au service de l'innovation
+manageriale dans une association a vocation sociale. La mission a conduit
+a la conception et au deploiement d'une \textbf{plateforme de gestion numerique
+integree} --- ElAwael Digital Platform --- couvrant l'authentification
+securisee, la gestion des dossiers des beneficiaires en situation de
+handicap, le suivi pedagogique individualise (PEI), les tableaux de bord
+decisionnels (KPI), la simulation strategique et le journal d'audit.
+
+\vspace{0.3cm}
+L'analyse theorique mobilise les concepts du Management 4.0, de
+l'innovation manageriale et de la transformation digitale, appliques a la
+specificite du secteur associatif marocain. Le diagnostic organisationnel
+revele des dysfonctionnements critiques que la solution technique resout
+de maniere structuree, avec des gains mesurables en performance et en
+qualite du suivi des beneficiaires.
+
+\vspace{0.3cm}
+\textbf{Mots-cles~:} Transformation digitale, Innovation manageriale,
+Management 4.0, Association sociale, PEI, KPI, Firebase,
+Performance organisationnelle, Handicap.
+
+\vspace{0.8cm}
+\begin{center}
+{\large\bfseries\color{bleu} Abstract}\\[0.2cm]
+\textcolor{bleu}{\rule{0.5\textwidth}{0.5pt}}
+\end{center}
+\vspace{0.4cm}
+
+This internship report, conducted at the El Awael Association's Martil
+centre (Morocco) from March 12 to June 12, 2026, examines the conditions
+for digital transformation serving managerial innovation in a social
+welfare organization. The mission led to the design and deployment of an
+integrated digital management platform covering secure authentication,
+beneficiary file management, individualized educational planning (IEP)
+monitoring, KPI dashboards, strategic simulation and audit logging.
+
+\vspace{0.3cm}
+\textbf{Keywords~:} Digital transformation, Managerial innovation,
+Management 4.0, Social association, IEP, KPI, Firebase,
+Organizational performance, Disability.
+
+%% ================================================================
+%%  LISTE DES ABREVIATIONS
+%% ================================================================
+\cleardoublepage
+\thispagestyle{empty}
+\begin{center}
+{\large\bfseries\color{bleu} Liste des abreviations}\\[0.2cm]
+\textcolor{bleu}{\rule{0.5\textwidth}{0.5pt}}
+\end{center}
+\vspace{0.4cm}
+
+\begin{longtable}{@{}>{\bfseries}p{3.5cm}p{11cm}@{}}
+\toprule
+\textbf{Abreviation} & \textbf{Signification}\\
+\midrule
+ABLLS & Assessment of Basic Language and Learning Skills\\
+API   & Application Programming Interface\\
+CIN   & Carte d'Identite Nationale\\
+CRUD  & Create, Read, Update, Delete\\
+FSJES & Faculte des Sciences Juridiques, Economiques et Sociales\\
+IA    & Intelligence Artificielle\\
+JS    & JavaScript\\
+KPI   & Key Performance Indicator (Indicateur Cle de Performance)\\
+ONG   & Organisation Non Gouvernementale\\
+PEI   & Projet Educatif Individualise\\
+RTL   & Right-To-Left (ecriture droite a gauche)\\
+SI    & Systeme d'Information\\
+SOG   & Score Organisationnel Global\\
+TIC   & Technologies de l'Information et de la Communication\\
+UX/UI & User Experience / User Interface\\
+\bottomrule
+\end{longtable}
+
+%% ================================================================
+%%  TABLES
+%% ================================================================
+\cleardoublepage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+
+\cleardoublepage
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+
+\cleardoublepage
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+
+%% ================================================================
+%%  CORPS
+%% ================================================================
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%% ================================================================
+%%  INTRODUCTION GENERALE
+%% ================================================================
+\chapter*{Introduction generale}
+\addcontentsline{toc}{chapter}{Introduction generale}
+\markboth{Introduction generale}{Introduction generale}
+
+\begin{boitecitation}
+\itshape
+\og{}L'innovation est l'instrument specifique de l'entrepreneuriat,
+l'acte qui confere aux ressources une nouvelle capacite a creer de la
+richesse.\fg{}\\
+\raggedleft --- Peter Drucker, 1985
+\end{boitecitation}
+
+\vspace{0.5cm}
+Dans un monde en mutation acceleree, marque par l'omniprésence du
+numerique et l'exigence croissante de transparence et d'efficacite,
+aucun secteur n'echappe a la necessite de se reinventer. Le secteur
+associatif marocain, traditionnellement ancre dans des pratiques de
+solidarite et d'accompagnement humain, se trouve aujourd'hui au
+carrefour d'une double obligation~: preserver sa mission sociale
+fondamentale tout en integrant les apports transformateurs des
+technologies de l'information et de la communication.
+
+\vspace{0.3cm}
+L'Association El Awael, implantee dans la region de Tetouan avec des
+centres a Martil, M'diq et Fnideq, incarne cette realite avec une
+acuite particuliere. Dediee a l'accompagnement des enfants en situation
+de handicap et de leurs familles, l'association dispose d'un capital
+humain engage et d'une mission d'une importance capitale pour les
+populations les plus vulnerables. Pourtant, elle se heurtait, avant ce
+stage, a des limites structurelles~: une gestion documentaire encore
+largement manuelle, une tracabilite insuffisante, l'absence d'outils
+decisionnels et une securite des donnees preoccupante.
+
+\vspace{0.3cm}
+C'est dans ce contexte que s'inscrit le present stage de fin d'etudes,
+realise au centre de Martil du 12 mars au 12 juin 2026, dans le cadre
+du Master Leadership Managerial 4.0 de la Faculte des Sciences
+Juridiques, Economiques et Sociales de l'Universite Abdelmalek Essaadi
+de Tetouan.
+
+\begin{encadre}{Problematique centrale}
+\textbf{Comment la transformation digitale, articulee aux principes du
+Management 4.0, peut-elle constituer un levier d'innovation manageriale
+pour une association sociale, en conciliant performance organisationnelle
+et preservation de l'impact humain aupres des beneficiaires~?}
+\end{encadre}
+
+\vspace{0.3cm}
+Pour repondre a cette question, ce rapport est structure en
+\textbf{trois parties}~:
+
+\begin{description}
+  \item[Partie I] Presentation de l'Association El Awael et cadre
+    theorique de la transformation digitale (Chapitres 1 et 2).
+  \item[Partie II] Diagnostic organisationnel et conception de la
+    solution digitale (Chapitres 3 et 4).
+  \item[Partie III] Realisation de la plateforme et evaluation de
+    l'impact (Chapitres 5 et 6).
+\end{description}
+
+%% ================================================================
+\part{Cadre general et fondements theoriques}
+
+%% ================================================================
+\chapter{Presentation de l'Association El Awael et contexte du stage}
+
+\section{Le secteur associatif marocain}
+
+Le tissu associatif marocain a connu une croissance exponentielle au
+cours des trois dernieres decennies. Le Maroc compte aujourd'hui plus
+de 230\,000 associations legalement enregistrees\footnote{Source~:
+Secretariat General du Gouvernement, Rapport annuel sur le mouvement
+associatif, 2024.}, couvrant des champs aussi varies que l'education,
+la sante, le developpement rural, la culture et l'aide aux personnes
+en situation de vulnerabilite.
+
+\vspace{0.3cm}
+La majorite des associations a vocation sociale souffrent de contraintes
+communes~: dependance aux financements publics, turn-over important des
+ressources humaines benevoles, absence de systemes d'information
+formalises, et difficultes a rendre compte de leur impact de maniere
+rigoureuse aupres des partenaires institutionnels.
+
+\begin{table}[H]
+\centering
+\caption{Caracteristiques du secteur associatif marocain}
+\label{tab:secteur}
+\begin{tabularx}{\textwidth}{>{\bfseries}lX}
+\toprule
+Indicateur & Donnees\\
+\midrule
+Associations enregistrees & $>$ 230\,000 (2024)\\
+Associations actives estimees & 45\,000 a 60\,000\\
+Domaine social et caritatif & $\approx$ 35\% du total\\
+Associations sans systeme d'info. & $>$ 70\% (estimation)\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: SGG, INDH, compilation auteur, 2024--2026.}
+\end{table}
+
+\section{Identite et historique de l'Association El Awael}
+
+\subsection{Fondation et mission}
+
+L'Association El Awael est une organisation a but non lucratif marocaine
+dediee a la \textbf{prise en charge, a l'education specialisee et a la
+rehabilitation des enfants en situation de handicap}. Sa mission
+fondamentale s'articule autour de trois axes~:
+
+\begin{enumerate}
+  \item \textbf{L'inclusion educative}~: accompagner chaque beneficiaire
+    vers le developpement de ses capacites cognitives, langagieres et
+    motrices, a travers des programmes individualises adaptes a chaque
+    profil de handicap~;
+  \item \textbf{Le soutien aux familles}~: offrir un espace d'ecoute,
+    de formation et d'accompagnement aux parents et tuteurs~;
+  \item \textbf{Le plaidoyer social}~: sensibiliser la communaute et
+    les institutions aux droits des personnes en situation de handicap.
+\end{enumerate}
+
+\subsection{Implantation geographique}
+
+L'Association El Awael dispose de \textbf{trois centres} dans la region
+de M'diq-Fnideq~:
+
+\begin{table}[H]
+\centering
+\caption{Les trois centres de l'Association El Awael}
+\label{tab:centres}
+\begin{tabularx}{\textwidth}{lXXl}
+\toprule
+\textbf{Centre} & \textbf{Role} & \textbf{Specificites} & \textbf{Statut}\\
+\midrule
+Fnideq & Siege social & Administration centrale & Siege principal\\
+\textbf{Martil} & Centre operationnel & Suivi PEI, presences & \textbf{Centre du stage}\\
+M'diq & Centre complementaire & Rehabilitation, ateliers & Antenne regionale\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Documentation interne de l'Association El Awael, 2026.}
+\end{table}
+
+\subsection{Structure organisationnelle}
+
+\begin{figure}[H]
+\centering
+\begin{tcolorbox}[colback=bleuClair!20,colframe=bleu,boxrule=0.8pt,arc=3pt,width=0.9\textwidth]
+\centering\small
+{\bfseries\color{bleu} Bureau Executif (Fnideq)}\\[0.25cm]
+$\downarrow$\\[0.15cm]
+{\bfseries Directrice du Centre de Martil}\\
+{\small Mme Kaoutar Dghoughi}\\[0.25cm]
+$\downarrow$\\[0.15cm]
+\begin{tabular}{ccc}
+\fbox{\parbox{3cm}{\centering\small Equipe pedagogique\\(Educateurs specialises)}} & \quad &
+\fbox{\parbox{3cm}{\centering\small Personnel\\administratif}}
+\end{tabular}\\[0.25cm]
+$\downarrow$\\[0.15cm]
+{\bfseries Beneficiaires et familles}
+\end{tcolorbox}
+\caption{Organigramme simplifie du centre de Martil}
+\label{fig:organigramme}
+\small\textit{Source~: Elaboration de l'auteur d'apres observations, 2026.}
+\end{figure}
+
+\section{Les beneficiaires et le Projet Educatif Individualise (PEI)}
+
+Le centre de Martil accueille des enfants et adolescents presentant
+des profils varies de handicap~: deficiences intellectuelles, troubles
+du spectre autistique (TSA), handicaps moteurs et troubles sensoriels.
+
+\vspace{0.3cm}
+L'outil pedagogique central est le \textbf{Projet Educatif Individualise
+(PEI)}, document etabli pour chaque beneficiaire, definissant~:
+
+\begin{encadre}{Composantes d'un PEI}
+\begin{itemize}
+  \item Les objectifs a court, moyen et long terme (cognitifs, moteurs,
+    communicationnels)~;
+  \item Les modalites d'intervention de chaque educateur specialise~;
+  \item Les criteres d'evaluation des progres realises~;
+  \item Le calendrier de revision et d'actualisation des objectifs~;
+  \item Les recommandations adressees aux familles.
+\end{itemize}
+\end{encadre}
+
+\section{Deroulement du stage}
+
+Le stage s'est deroule du \textbf{12 mars au 12 juin 2026}, soit une
+periode de trois mois au sein du centre de Martil.
+
+\begin{table}[H]
+\centering
+\caption{Chronogramme des activites de stage}
+\label{tab:chronogramme}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Periode} & \textbf{Phase} & \textbf{Activites principales}\\
+\midrule
+12 mars -- 31 mars & Phase 1 & Integration, observation, audit de l'existant\\
+1 avril -- 30 avril & Phase 2 & Conception et developpement de la plateforme\\
+1 mai -- 25 mai & Phase 3 & Tests, deploiement, formation utilisateurs\\
+26 mai -- 12 juin & Phase 4 & Evaluation de l'impact, redaction du rapport\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Plan de projet elabore par l'auteur, 2026.}
+\end{table}
+
+%% ================================================================
+\chapter{Innovation manageriale et transformation digitale~: cadre theorique}
+
+\section{L'innovation manageriale}
+
+\subsection{Definition}
+
+L'innovation manageriale designe l'introduction de pratiques, processus
+ou structures organisationnelles substantiellement nouveaux, dans le
+but d'ameliorer la performance de l'organisation\footnote{Birkinshaw,
+J., \& Mol, M. (2006). How management innovation happens. \textit{MIT
+Sloan Management Review}, 47(4), 81--88.}.
+
+\begin{table}[H]
+\centering
+\caption{Les quatre dimensions de l'innovation manageriale}
+\label{tab:dimensions}
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Dimension} & \textbf{Definition} & \textbf{Application El Awael}\\
+\midrule
+Processus & Nouveaux modes d'organisation du travail & Workflow numerique PEI\\
+Structure & Nouvelles formes de coordination & Tableau de bord centralise\\
+Pratiques & Nouvelles manieres de decider & KPIs et alertes automatiques\\
+Systemes & Nouveaux outils de pilotage & Plateforme integree\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Adapte de Birkinshaw \& Mol (2006), application auteur.}
+\end{table}
+
+\section{La transformation digitale}
+
+\subsection{Definition et portee}
+
+La transformation digitale est definie comme le processus par lequel
+une organisation integre les technologies numeriques dans l'ensemble
+de ses activites, entrainant des changements fondamentaux dans son
+fonctionnement et dans la valeur qu'elle delivre\footnote{Westerman,
+G., Bonnet, D., \& McAfee, A. (2014). \textit{Leading Digital}.
+Harvard Business Press.}.
+
+\begin{table}[H]
+\centering
+\caption{Trois niveaux du passage au numerique}
+\label{tab:niveaux}
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Niveau} & \textbf{Definition} & \textbf{Exemple}\\
+\midrule
+Numerisation & Conversion de supports physiques & Scanner des dossiers papier\\
+Digitalisation & Usage du numerique pour ameliorer & Tableur Excel remplacant un registre\\
+Transformation digitale & Refonte globale de l'organisation & Plateforme integree + KPIs\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Adapte de Gartner (2021), application auteur.}
+\end{table}
+
+\section{Le Management 4.0}
+
+Le Management 4.0 est une transposition des principes de l'Industrie 4.0
+au champ du management organisationnel. Il se caracterise par l'integration
+des technologies numeriques dans les processus de decision et de pilotage.
+
+\begin{encadre}{Les cinq piliers du Management 4.0}
+\begin{enumerate}
+  \item \textbf{Pilotage par les donnees}~: toute decision s'appuie sur des
+    indicateurs mesures en temps reel~;
+  \item \textbf{Agilite organisationnelle}~: adaptation rapide aux besoins
+    des beneficiaires~;
+  \item \textbf{Collaboration numerique}~: partage fluide entre educateurs,
+    administration et direction~;
+  \item \textbf{Automatisation des taches a faible valeur ajoutee}~: liberer
+    du temps pour l'accompagnement humain~;
+  \item \textbf{Transparence et redevabilite}~: tracabilite complete des
+    actions pour les partenaires et financeurs.
+\end{enumerate}
+\end{encadre}
+
+\section{Specificites de la transformation digitale dans le secteur associatif}
+
+La transformation digitale dans les associations a vocation sociale presente
+des specificites importantes~:
+
+\begin{itemize}
+  \item \textbf{Contrainte budgetaire severe}~: toute solution doit etre
+    gratuite ou a cout marginal nul~;
+  \item \textbf{Resistance culturelle}~: les equipes peuvent percevoir le
+    numerique comme une menace a la dimension humaine~;
+  \item \textbf{Sensibilite des donnees}~: les dossiers des beneficiaires
+    sont soumis aux obligations de protection les plus strictes~;
+  \item \textbf{Exigence de reporting}~: les partenaires institutionnels
+    exigent des rapports d'activite de plus en plus detailles.
+\end{itemize}
+
+%% ================================================================
+\part{Diagnostic organisationnel et conception de la solution}
+
+%% ================================================================
+\chapter{Diagnostic de la situation existante}
+
+\section{Methodologie du diagnostic}
+
+Pour etablir un diagnostic organisationnel rigoureux, j'ai mobilise~:
+
+\begin{itemize}
+  \item \textbf{Observation participante}~: presence quotidienne pendant
+    quatre semaines~;
+  \item \textbf{Entretiens semi-directifs}~: avec la directrice, trois
+    educateurs et le responsable administratif~;
+  \item \textbf{Analyse documentaire}~: examen des registres papier et
+    fichiers informatiques~;
+  \item \textbf{Cartographie des processus}~: reconstitution du flux
+    d'information de la gestion d'un beneficiaire.
+\end{itemize}
+
+\section{Dysfonctionnements critiques identifies}
+
+\begin{table}[H]
+\centering
+\caption{Synthese des dysfonctionnements critiques}
+\label{tab:dysfonctionnements}
+\begin{tabularx}{\textwidth}{llXl}
+\toprule
+\textbf{N} & \textbf{Priorite} & \textbf{Dysfonctionnement} & \textbf{Impact}\\
+\midrule
+1 & \textcolor{rougeKO}{\bfseries CRITIQUE} & 44 mots de passe en clair dans le HTML & Securite\\
+2 & \textcolor{rougeKO}{\bfseries CRITIQUE} & Donnees stockees localement (perte possible) & Integrite\\
+3 & \textcolor{orange}{\bfseries IMPORTANT} & Absence d'indicateurs de pilotage (KPIs) & Decision\\
+4 & \textcolor{orange}{\bfseries IMPORTANT} & Alertes uniquement reactives, non proactives & Prevention\\
+5 & \textcolor{orange}{\bfseries IMPORTANT} & Export limite a l'impression & Reporting\\
+6 & \textcolor{vertOK}{\bfseries MOYEN} & Interface non professionnelle (alertes navigateur) & Experience\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Audit de terrain realise par l'auteur, mars 2026.}
+\end{table}
+
+\section{Analyse SWOT}
+
+\begin{table}[H]
+\centering
+\caption{Analyse SWOT de l'Association El Awael --- Centre de Martil}
+\label{tab:swot}
+\begin{tabularx}{\textwidth}{XX}
+\toprule
+\textcolor{vertOK}{\bfseries Forces} & \textcolor{rougeKO}{\bfseries Faiblesses}\\
+\midrule
+\begin{itemize}[leftmargin=*,topsep=0pt]
+  \item Equipe educative engagee et experimentee
+  \item Reconnaissance institutionnelle locale
+  \item Approche PEI individualisee
+  \item Forte legitimite aupres des familles
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*,topsep=0pt]
+  \item Gestion entierement manuelle
+  \item Absence de SI centralise
+  \item Securite des donnees insuffisante
+  \item Reporting chronophage et peu fiable
+\end{itemize}\\
+\midrule
+\textcolor{bleu}{\bfseries Opportunites} & \textcolor{orange}{\bfseries Menaces}\\
+\midrule
+\begin{itemize}[leftmargin=*,topsep=0pt]
+  \item Outils cloud gratuits (Firebase)
+  \item Appui academique (stage Master)
+  \item Contexte national favorable a l'inclusion
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*,topsep=0pt]
+  \item Risque de perte de donnees
+  \item Turn-over du personnel
+  \item Resistance au changement
+\end{itemize}\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Elaboration de l'auteur d'apres analyse de terrain, 2026.}
+\end{table}
+
+\section{Analyse des besoins (MoSCoW)}
+
+\begin{table}[H]
+\centering
+\caption{Analyse MoSCoW des besoins}
+\label{tab:moscow}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Priorite} & \textbf{Besoins identifies}\\
+\midrule
+\textcolor{rougeKO}{\bfseries Must have} &
+  Authentification securisee, dossiers beneficiaires en ligne,
+  suivi presences, stockage cloud securise\\
+\midrule
+\textcolor{orange}{\bfseries Should have} &
+  Tableau de bord KPIs, alertes automatiques, export PDF/Excel\\
+\midrule
+\textcolor{bleu}{\bfseries Could have} &
+  Simulation strategique, heatmap des risques, journal d'audit,
+  dashboard institutionnel\\
+\midrule
+\textcolor{grisTxt}{\bfseries Won't have} &
+  Application mobile native, integration systemes ministeriels\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Elaboration de l'auteur d'apres diagnostic, 2026.}
+\end{table}
+
+%% ================================================================
+\chapter{Methodologie et conception de la solution digitale}
+
+\section{Methodologie agile adaptee}
+
+Face a la complexite des besoins, j'ai opte pour une methodologie
+de developpement agile, decoupee en \textbf{quatre sprints}~:
+
+\begin{table}[H]
+\centering
+\caption{Decoupage en sprints du projet}
+\label{tab:sprints}
+\begin{tabularx}{\textwidth}{llXl}
+\toprule
+\textbf{Sprint} & \textbf{Periode} & \textbf{Livrable} & \textbf{Validation}\\
+\midrule
+Sprint 1 & 1--14 avril & Authentification Firebase + login & Directrice\\
+Sprint 2 & 15--28 avril & Gestion beneficiaires + PEI & Educateurs\\
+Sprint 3 & 1--15 mai & KPIs + alertes + simulation & Direction\\
+Sprint 4 & 16--25 mai & Heatmap + audit + deploiement & Equipe\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Plan de projet elabore par l'auteur, 2026.}
+\end{table}
+
+\section{Architecture technique}
+
+La plateforme repose sur une architecture \textbf{client-side} s'appuyant
+sur des services cloud gratuits, eliminant le besoin d'un serveur dedie~:
+
+\begin{figure}[H]
+\centering
+\begin{tcolorbox}[colback=bleuClair!20,colframe=bleu,boxrule=0.8pt,arc=3pt,width=0.9\textwidth]
+\centering\small
+\begin{tabular}{ccc}
+\fbox{\parbox{4cm}{\centering\bfseries Navigateur Web\\(HTML5 + CSS3 + JS pur)}} &
+$\longleftrightarrow$ &
+\fbox{\parbox{4cm}{\centering\bfseries Firebase\\Firestore DB\\Authentication\\Storage}}\\[0.5cm]
+$\uparrow$ & & \\[0.1cm]
+\fbox{\parbox{4cm}{\centering\bfseries GitHub Pages\\Deploiement statique gratuit}} & &
+\end{tabular}
+\end{tcolorbox}
+\caption{Architecture technique globale de la plateforme ElAwael}
+\label{fig:architecture}
+\small\textit{Source~: Elaboration de l'auteur, 2026.}
+\end{figure}
+
+\section{Choix technologiques}
+
+\begin{table}[H]
+\centering
+\caption{Technologies retenues et justification}
+\label{tab:techno}
+\begin{tabularx}{\textwidth}{llXl}
+\toprule
+\textbf{Technologie} & \textbf{Role} & \textbf{Justification} & \textbf{Cout}\\
+\midrule
+Firebase Firestore & Base de donnees & Temps reel, scalable, securise & 0 MAD\\
+Firebase Auth & Authentification & Sessions, roles, reset mdp par email & 0 MAD\\
+Firebase Storage & Fichiers & Stockage documents beneficiaires & 0 MAD\\
+GitHub Pages & Hebergement & Deploiement statique gratuit & 0 MAD\\
+GitHub Actions & CI/CD & Deploiement automatique a chaque commit & 0 MAD\\
+Chart.js 4.4 & Visualisation & Graphiques interactifs, bibliotheque legere & 0 MAD\\
+JavaScript pur & Logique & Aucune dependance framework & 0 MAD\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Analyse des options effectuee par l'auteur, 2026.}
+\end{table}
+
+\section{Systeme de roles et gestion des acces (RBAC)}
+
+\begin{table}[H]
+\centering
+\caption{Matrice des permissions par role}
+\label{tab:rbac}
+\begin{tabularx}{\textwidth}{Xcccc}
+\toprule
+\textbf{Fonctionnalite} & \textbf{Admin} & \textbf{Gestionnaire} & \textbf{Educateur} & \textbf{Consultant}\\
+\midrule
+Voir les KPIs & \cmark & \cmark & \cmark & \cmark\\
+Dossiers beneficiaires & \cmark & \cmark & \cmark & Masque\\
+Modifier les donnees & \cmark & \cmark & \cmark & \xmark\\
+Supprimer des donnees & \cmark & \xmark & \xmark & \xmark\\
+Gerer les utilisateurs & \cmark & \xmark & \xmark & \xmark\\
+Exporter PDF/Excel & \cmark & \cmark & \xmark & \xmark\\
+Journal d'audit & \cmark & \cmark & \xmark & \xmark\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Specifications fonctionnelles, auteur, 2026.}
+\end{table}
+
+%% ================================================================
+\part{Realisation de la plateforme et evaluation de l'impact}
+
+%% ================================================================
+\chapter{La plateforme ElAwael Digital Platform}
+
+\section{Vue d'ensemble}
+
+La plateforme ElAwael Digital Platform est un \textbf{systeme d'information
+integre}, accessible depuis n'importe quel navigateur web, sans installation
+prealable, couvrant l'ensemble du cycle operationnel de l'association.
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/overview.png}{Vue d'ensemble de la plateforme}
+\caption{Vue d'ensemble de la plateforme ElAwael Digital Platform}
+\label{fig:overview}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\section{Module d'authentification et securite}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.82\textwidth]{screenshots/sc_login.png}{Page de connexion securisee}
+\caption{Page de connexion securisee}
+\label{fig:login}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, avril 2026.}
+\end{figure}
+
+\begin{encadre}{Couches de securite implementees}
+\begin{enumerate}
+  \item Authentification Firebase avec tokens JWT auto-renouvelables~;
+  \item Persistance de session via IndexedDB (reste connecte apres fermeture)~;
+  \item Regles Firestore~: acces zero pour les non-authentifies~;
+  \item Protection anti-boucle de redirection~;
+  \item Reset de mot de passe automatique par email.
+\end{enumerate}
+\end{encadre}
+
+\vspace{0.3cm}
+Avant l'implementation, la situation securitaire etait critique~:
+\textbf{44 mots de passe en clair} etaient codes directement dans le
+fichier HTML principal, accessibles a toute personne consultant le code source.
+
+\section{Tableau de bord et indicateurs cles de performance}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/sc_kpi.png}{Tableau de bord KPIs}
+\caption{Tableau de bord decisionnel --- Indicateurs Cles de Performance}
+\label{fig:kpi}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/dashboard2.png}{Vue complete tableau de bord}
+\caption{Vue complete du tableau de bord administrateur}
+\label{fig:dashboard2}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Les huit KPIs principaux et leur formule de calcul}
+\label{tab:kpis}
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+\textbf{KPI} & \textbf{Formule} & \textbf{Seuil critique}\\
+\midrule
+Realisation PEI & Objectifs realises / Objectifs totaux $\times$ 100 & $<$ 50\%\\
+Taux de presence & Presences / Seances prevues $\times$ 100 & $<$ 70\%\\
+Beneficiaires a risque & Count(score\_risque $\geq$ 61) & $>$ 20\%\\
+Ratio cadre/benef. & Nb beneficiaires / Nb cadres actifs & $>$ 8\\
+Cadres actifs & Count(seances ce mois $>$ 0) & $<$ 80\%\\
+Alertes non resolues & Count(alertes.statut = ouvert) & $>$ 5\\
+Sans seance ce mois & Count(seances\_mois = 0) & $>$ 3\\
+Dossiers complets & Dossiers complets / Total $\times$ 100 & $<$ 85\%\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Specifications fonctionnelles, auteur, 2026.}
+\end{table}
+
+\subsection{Le Score Organisationnel Global (SOG)}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.85\textwidth]{screenshots/sc_sog.png}{Score Organisationnel Global}
+\caption{Jauge du Score Organisationnel Global (SOG)}
+\label{fig:sog}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{encadre}{Formule du Score Organisationnel Global (SOG)}
+\[
+SOG = \bigl(\bar{R}_{PEI} \times 40\%\bigr)
+    + \bigl(\bar{P}_{presence} \times 30\%\bigr)
+    + \bigl(\bar{I}_{indep.} \times 20\%\bigr)
+    + \bigl(T_{dossiers} \times 10\%\bigr)
+\]
+\textbf{Interpretation~:}
+\textcolor{vertOK}{$\geq 70$ = Excellent}~|~%
+\textcolor{orange}{$\geq 40$ = Bien}~|~%
+\textcolor{rougeKO}{$< 40$ = A ameliorer}
+\end{encadre}
+
+\section{Gestion des beneficiaires}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/sc_benef.png}{Module beneficiaires}
+\caption{Module de gestion des beneficiaires}
+\label{fig:benef}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/beneficiaires.png}{Liste beneficiaires}
+\caption{Liste complete avec indicateurs de risque individuel}
+\label{fig:liste-benef}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Criteres de calcul du score de risque individuel}
+\label{tab:risque}
+\begin{tabularx}{\textwidth}{Xc}
+\toprule
+\textbf{Critere} & \textbf{Points}\\
+\midrule
+Taux de presence $<$ 50\% & +40\\
+Taux de presence entre 50\% et 70\% & +25\\
+Taux de realisation PEI $<$ 30\% & +35\\
+Taux de realisation PEI entre 30\% et 50\% & +20\\
+Dossier incomplet (champs manquants) & +15\\
+Aucune seance enregistree ce mois & +10\\
+\midrule
+\textbf{Interpretation} : 0--30 = Stable / 31--60 = Surveiller / 61--100 = Urgent & \\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Specifications fonctionnelles, auteur, 2026.}
+\end{table}
+
+\section{Module de simulation strategique}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/sc_simulation.png}{Simulation strategique}
+\caption{Module de simulation strategique --- leviers d'action et score simule}
+\label{fig:simulation}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+Le simulateur offre trois leviers reglables~: amelioration de la presence
+(0 a +30\%), de la realisation PEI (0 a +30\%) et de l'autonomie ABLLS
+(0 a +20\%). Le score simule est recalcule en temps reel.
+
+\section{Heatmap des risques et alertes}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/alertes.png}{Heatmap et alertes}
+\caption{Heatmap des risques et centre d'alertes --- Vue par classe}
+\label{fig:alertes}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\section{Journal d'audit}
+
+\begin{table}[H]
+\centering
+\caption{Typologies d'evenements traces dans le journal d'audit}
+\label{tab:audit}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Categorie} & \textbf{Exemples d'evenements traces}\\
+\midrule
+Connexion & Connexion reussie, echec d'authentification, deconnexion\\
+Beneficiaires & Creation, modification, suppression d'un dossier\\
+PEI & Mise a jour des objectifs, evaluation saisie\\
+Presences & Saisie de presence, modification d'une entree\\
+Documents & Upload, telechargement, suppression de documents\\
+Exports & Export Excel, export PDF, rapport institutionnel\\
+Suppressions & Toute suppression avec identification de l'auteur\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Specifications du module d'audit, auteur, 2026.}
+\end{table}
+
+%% ================================================================
+\chapter{Impact organisationnel et humain}
+
+\section{Evaluation de la performance}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des indicateurs avant et apres deploiement}
+\label{tab:impact}
+\begin{tabularx}{\textwidth}{Xccl}
+\toprule
+\textbf{Indicateur} & \textbf{Avant} & \textbf{Apres} & \textbf{Evolution}\\
+\midrule
+Production d'un rapport direction & 3--4 heures & $<$ 5 min & \textcolor{vertOK}{$\downarrow$ 97\%}\\
+Completude des dossiers & $\approx$ 45\% & $>$ 92\% & \textcolor{vertOK}{$\uparrow$ +47 pts}\\
+Detection d'un beneficiaire a risque & Plusieurs semaines & Temps reel & \textcolor{vertOK}{Immediat}\\
+Tracabilite des actions & Nulle & Complete & \textcolor{vertOK}{100\%}\\
+Securite des donnees & Insuffisante & Conforme & \textcolor{vertOK}{OK}\\
+Accessibilite (deplacement) & Locale uniquement & Tout navigateur & \textcolor{vertOK}{Cloud}\\
+Cout de la solution & -- & 0 MAD/mois & \textcolor{vertOK}{Gratuit}\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Mesures realisees par l'auteur, mars et juin 2026.}
+\end{table}
+
+\section{Gain de temps pour les equipes}
+
+\begin{table}[H]
+\centering
+\caption{Gain de temps hebdomadaire par poste}
+\label{tab:temps}
+\begin{tabularx}{\textwidth}{Xcc}
+\toprule
+\textbf{Tache automatisee} & \textbf{Avant} & \textbf{Apres}\\
+\midrule
+Saisie des presences & 45 min/sem. & 10 min/sem.\\
+Mise a jour des objectifs PEI & 2h/sem. & 30 min/sem.\\
+Preparation des bilans & 3h/mois & 20 min/mois\\
+Reporting direction & 4h/mois & 5 min/mois\\
+Recherche dans les dossiers & 20 min/recherche & $<$ 1 min\\
+\midrule
+\textbf{Total estime} & \textbf{7h/semaine/poste} & \textbf{1h30/semaine/poste}\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Entretiens de retour d'experience, juin 2026.}
+\end{table}
+
+\section{Retour d'experience des utilisateurs}
+
+\begin{table}[H]
+\centering
+\caption{Resultats du questionnaire de satisfaction (n=5)}
+\label{tab:satisfaction}
+\begin{tabularx}{\textwidth}{Xccc}
+\toprule
+\textbf{Critere evalue} & \textbf{Insatisfait} & \textbf{Neutre} & \textbf{Satisfait}\\
+\midrule
+Facilite de prise en main & 0\% & 20\% & 80\%\\
+Clarte de l'interface & 0\% & 0\% & 100\%\\
+Utilite des KPIs & 0\% & 0\% & 100\%\\
+Amelioration du suivi & 0\% & 20\% & 80\%\\
+Gain de temps percu & 0\% & 0\% & 100\%\\
+Souhait de continuer & 0\% & 0\% & 100\%\\
+\bottomrule
+\end{tabularx}
+\vspace{0.1cm}
+\small\textit{Source~: Questionnaire administre par l'auteur, juin 2026~; n=5.}
+\end{table}
+
+\begin{boitecitation}
+\itshape
+\og{}Avant, je savais intuitivement quels enfants avaient besoin de plus
+d'attention. Maintenant, j'ai les chiffres qui le confirment, et je peux
+les montrer a nos partenaires.\fg{}\\
+\raggedleft --- Mme Kaoutar Dghoughi, directrice, entretien du 5 juin 2026.
+\end{boitecitation}
+
+\section{Recommandations strategiques}
+
+\begin{enumerate}
+  \item \textbf{Designer un referent numerique interne} charge de la
+    maintenance et de la formation des nouveaux arrivants~;
+  \item \textbf{Systematiser la saisie} via une procedure operationnelle
+    standard definissant qui saisit quoi, quand et comment~;
+  \item \textbf{Etendre aux autres centres} (M'diq et Fnideq) avec des
+    adaptations mineures~;
+  \item \textbf{Envisager une version mobile} (Progressive Web App) pour
+    la saisie des presences sur smartphone~;
+  \item \textbf{Formaliser le reporting institutionnel} en exploitant le
+    dashboard financeur pour les partenaires.
+\end{enumerate}
+
+%% ================================================================
+\chapter*{Conclusion generale}
+\addcontentsline{toc}{chapter}{Conclusion generale}
+\markboth{Conclusion generale}{Conclusion generale}
+
+Ce stage de fin d'etudes au sein de l'Association El Awael --- centre de
+Martil --- a constitue une experience fondatrice a plus d'un titre. Il a
+permis d'eprouver in vivo la puissance et les limites de la transformation
+digitale lorsqu'elle est conduite dans un contexte associatif caracterise
+par des ressources limitees, mais une mission sociale d'une haute noblesse.
+
+\vspace{0.4cm}
+La question centrale posee en introduction a trouve des elements de
+reponse concrets. La plateforme ElAwael Digital Platform demontre qu'il
+est possible, avec des outils entierement gratuits et un investissement en
+competences plutot qu'en capital financier, de passer d'une gestion
+intuitive et papier a un pilotage base sur les donnees, sans sacrifier la
+dimension humaine qui constitue l'identite profonde de l'association.
+
+\vspace{0.4cm}
+Les trois apports principaux de ce travail sont~:
+
+\begin{enumerate}
+  \item \textbf{Un apport theorique}~: la demonstration que les concepts
+    du Management 4.0 sont transposables au secteur associatif avec des
+    adaptations appropriees~;
+
+  \item \textbf{Un apport methodologique}~: l'articulation d'un diagnostic
+    rigoureux avec un developpement agile centre sur les utilisateurs reels~;
+
+  \item \textbf{Un apport pratique}~: une plateforme de gestion numerique
+    integree, operationnelle, securisee, bilingue et accessible, couvrant
+    l'ensemble du cycle de vie organisationnel de l'Association El Awael.
+\end{enumerate}
+
+\vspace{0.4cm}
+Si ce stage a confirme une conviction, c'est celle-ci~: la technologie
+n'est pas une fin en soi, mais un \textbf{moyen au service d'une mission}.
+Et cette mission --- accompagner avec dignite des enfants en situation de
+handicap vers le meilleur developpement possible --- merite tous les outils
+que l'ingenuosite humaine peut mobiliser a son service.
+
+%% ================================================================
+\begin{thebibliography}{99}
+\addcontentsline{toc}{chapter}{Bibliographie}
+
+\bibitem{birkinshaw2006}
+Birkinshaw, J., \& Mol, M. (2006). How management innovation happens.
+\textit{MIT Sloan Management Review}, 47(4), 81--88.
+
+\bibitem{hamel2006}
+Hamel, G. (2006). The why, what, and how of management innovation.
+\textit{Harvard Business Review}, 84(2), 72--84.
+
+\bibitem{westerman2014}
+Westerman, G., Bonnet, D., \& McAfee, A. (2014).
+\textit{Leading Digital: Turning Technology into Business Transformation}.
+Boston~: Harvard Business Press.
+
+\bibitem{roblek2016}
+Roblek, V., Mesko, M., \& Krapez, A. (2016).
+A Complex View of Industry 4.0. \textit{SAGE Open}, 6(2), 1--11.
+
+\bibitem{bentaleb2019}
+Bentaleb, A., Benali, N., \& Hmioui, A. (2019).
+Enjeux de la transformation digitale pour le management des organisations.
+\textit{Revue Internationale des Sciences de Gestion}, 2(3), 114--132.
+
+\bibitem{drucker1985}
+Drucker, P. (1985).
+\textit{Innovation and Entrepreneurship}. New York~: Harper \& Row.
+
+\bibitem{gartner2021}
+Gartner. (2021). \textit{Gartner Glossary: Digitalization}.
+Stamford~: Gartner Inc.
+
+\bibitem{onu2006}
+ONU. (2006). \textit{Convention relative aux droits des personnes
+handicapees}. New York~: ONU. [Ratifiee par le Maroc en 2009]
+
+\bibitem{sgg2024}
+Secretariat General du Gouvernement. (2024).
+\textit{Rapport annuel sur le mouvement associatif au Maroc}.
+Rabat~: Imprimerie Officielle.
+
+\bibitem{firebase2024}
+Google Firebase. (2024). \textit{Firebase Documentation}.
+\url{https://firebase.google.com/docs}
+
+\end{thebibliography}
+
+%% ================================================================
+%%  ANNEXES
+%% ================================================================
+\appendix
+\chapter{Captures d'ecran complementaires}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/portal.png}{Portail principal}
+\caption{Vue portail de la plateforme ElAwael}
+\label{fig:portal}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\safeimg[0.92\textwidth]{screenshots/dashboard.png}{Dashboard educateur}
+\caption{Tableau de bord educateur}
+\label{fig:dash-educ}
+\small\textit{Source~: Capture d'ecran realisee par l'auteur, mai 2026.}
+\end{figure}
+
+\chapter{Questionnaire de retour d'experience}
+
+\textbf{1. Satisfaction globale vis-a-vis de la plateforme~?}\\
+$\square$ Tres insatisfait \quad $\square$ Insatisfait \quad $\square$ Neutre \quad
+$\square$ Satisfait \quad $\square$ Tres satisfait
+
+\vspace{0.4cm}
+\textbf{2. La plateforme a-t-elle ameliore votre efficacite~?}\\
+$\square$ Pas du tout \quad $\square$ Peu \quad $\square$ Moyennement \quad
+$\square$ Beaucoup \quad $\square$ Tres fortement
+
+\vspace{0.4cm}
+\textbf{3. Gain de temps hebdomadaire estime~?}\\
+$\square$ Moins d'1h \quad $\square$ 1--3h \quad $\square$ 3--5h \quad $\square$ Plus de 5h
+
+\vspace{0.4cm}
+\textbf{4. L'interface est-elle intuitive sans formation longue~?}\\
+$\square$ Oui, totalement \quad $\square$ Avec quelques difficultes \quad
+$\square$ Formation necessaire
+
+\vspace{0.4cm}
+\textbf{5. Souhaitez-vous que la plateforme soit etendue aux autres centres~?}\\
+$\square$ Oui, certainement \quad $\square$ Plutot oui \quad $\square$ Neutre \quad $\square$ Non
+
+\vspace{0.4cm}
+\textbf{6. Suggestions~:}\\
+\rule{\textwidth}{0.4pt}\\[0.3cm]
+\rule{\textwidth}{0.4pt}
+
+\chapter{Regles de securite Firestore}
+
+\begin{verbatim}
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /beneficiaires/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && get(/databases/$(database)/documents/
+               users/$(request.auth.uid)).data.role
+           in ['ADMIN', 'GESTIONNAIRE', 'EDUCATEUR'];
+    }
+    match /audit_logs/{logId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if get(/databases/$(database)/documents/
+        users/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+  }
+}
+\end{verbatim}
+
+\end{document}
