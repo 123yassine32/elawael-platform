@@ -17341,8 +17341,8 @@ function _pushToFirestore(key, data) {
    Doc id : ${teacherId}__${key}
 ═══════════════════════════════════════════════════════════════ */
 
-/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab) */
-const ORG_SHARED_PREFIXES = ['ea_presences', 'ea_ta9_', 'ea_gh_'];
+/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab + PEI) */
+const ORG_SHARED_PREFIXES = ['ea_presences', 'ea_ta9_', 'ea_gh_', 'ea_pei_statuses', 'ea_pei_full_'];
 
 function _isOrgSharedKey(key) {
   return ORG_SHARED_PREFIXES.some(p => key === p || key.startsWith(p));
@@ -17429,7 +17429,7 @@ async function _loadOrgSharedForAdmin() {
         });
         localStorage.setItem('ea_presences', JSON.stringify(merged));
         mergedKeys++;
-      } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_')) {
+      } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_') || key.startsWith('ea_pei_full_')) {
         /* Clé unique par bénéficiaire — prendre la plus récente */
         const sorted = docs.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
         try {
@@ -17437,6 +17437,19 @@ async function _loadOrgSharedForAdmin() {
           localStorage.setItem(key, JSON.stringify(val));
           mergedKeys++;
         } catch(e) { /* ignore */ }
+      } else if (key === 'ea_pei_statuses') {
+        /* Statuts PEI : MERGE de tous les éducateurs en un seul objet */
+        const merged = JSON.parse(localStorage.getItem('ea_pei_statuses') || '{}');
+        docs.forEach(doc => {
+          try {
+            const obj = JSON.parse(doc.value);
+            Object.assign(merged, obj);
+          } catch(e) { /* ignore */ }
+        });
+        localStorage.setItem('ea_pei_statuses', JSON.stringify(merged));
+        /* Recharger les statuts dans BENEFICIAIRES en mémoire */
+        if (typeof loadPEIStatuses === 'function') loadPEIStatuses();
+        mergedKeys++;
       }
     });
 
@@ -17517,7 +17530,7 @@ async function genererDonneesDemoS2() {
     + 'pour TOUS les bénéficiaires sur tout le S2 (Fév-Juin 2026).\n\n'
     + '• ' + _DEMO_S2_JOURS_OUVRES.length + ' jours ouvrés (Lun-Ven, vacances exclues)\n'
     + '• ~228 bénéficiaires × 40 cadres\n'
-    + '• Présences + ABLLS + Ghiyab\n\n'
+    + '• Présences + ABLLS + Ghiyab + Statuts PEI (60% done · 20% en cours · 20% non démarrés)\n\n'
     + 'Continuer ?')) return;
 
   showToast('⏳ Génération en cours...', '#2563eb');
@@ -17628,6 +17641,75 @@ async function genererDonneesDemoS2() {
       }
     });
   });
+
+  /* ─── 4. PEI STATUSES — progrès optimiste des objectifs ─── */
+  /* Pour chaque cadre, construire son ea_pei_statuses contenant les statuts
+     de tous les objectifs de tous SES bénéficiaires PEI.
+     Distribution optimiste : 60% done · 20% in-progress · 20% new */
+  for (const tid of teacherIds) {
+    const benefs = cadresMap[tid].filter(b => b.type === 'pei');
+    if (!benefs.length) continue;
+    const peiStatuses = {};
+    let nbDone = 0, nbProg = 0, nbNew = 0;
+
+    benefs.forEach(b => {
+      const prof = _demoProfilBenef(b.nom);
+      /* Ajuster le taux done selon le profil */
+      const tauxDone = prof.profil === 'assidu' ? 0.70
+                     : prof.profil === 'regulier' ? 0.55
+                     : prof.profil === 'irregulier' ? 0.35
+                     : 0.20;
+      const tauxProg = 0.20; /* +20% en cours pour tous */
+
+      (b.pei_domaines || []).forEach(dom => {
+        (dom.objectifs || []).forEach(obj => {
+          if (!obj.code) return;
+          const r = _demoRand(b.nom + '_' + obj.code + '_pei');
+          let statut, dateInzal = '', dateTahqiq = '';
+          /* Date d'inzal aléatoire sur les 4 derniers mois (Feb-Mai 2026) */
+          const moisOptions = ['2026-02', '2026-03', '2026-04', '2026-05'];
+          const moisIdx = Math.floor(_demoRand(b.nom + obj.code + '_m') * moisOptions.length);
+          const jour = String(1 + Math.floor(_demoRand(b.nom + obj.code + '_j') * 27)).padStart(2, '0');
+          dateInzal = moisOptions[moisIdx] + '-' + jour;
+
+          if (r < tauxDone) {
+            statut = 'done';
+            /* Date de réalisation : ~3-6 semaines après inzal */
+            const dInz = new Date(dateInzal);
+            dInz.setDate(dInz.getDate() + 21 + Math.floor(_demoRand(b.nom + obj.code + '_d') * 21));
+            dateTahqiq = dInz.toISOString().substring(0, 10);
+            nbDone++;
+          } else if (r < tauxDone + tauxProg) {
+            statut = 'in-progress';
+            nbProg++;
+          } else {
+            statut = 'new';
+            dateInzal = ''; /* Pas démarré → pas de date */
+            nbNew++;
+          }
+
+          peiStatuses[b.nom + '_' + obj.code] = {
+            statut    : statut,
+            date_inzal: dateInzal,
+            date_tahqiq: dateTahqiq,
+            notes     : ''
+          };
+        });
+      });
+    });
+
+    /* Push vers Firestore org_shared */
+    if (Object.keys(peiStatuses).length > 0) {
+      batchPromises.push(
+        db.collection('org_shared').doc(tid + '__ea_pei_statuses').set({
+          teacherId : tid,
+          key       : 'ea_pei_statuses',
+          value     : JSON.stringify(peiStatuses),
+          updatedAt : new Date().toISOString()
+        }).then(() => totalPush++).catch(() => totalErr++)
+      );
+    }
+  }
 
   /* Attendre tous les pushes */
   showToast('⏳ Push Firestore (' + batchPromises.length + ' docs)...', '#2563eb');
