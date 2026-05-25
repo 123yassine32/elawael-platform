@@ -17532,9 +17532,9 @@ async function genererDonneesDemoS2() {
     + '• ' + _DEMO_S2_JOURS_OUVRES.length + ' jours ouvrés (Lun-Ven, vacances exclues)\n'
     + '• ~228 bénéficiaires × 40 cadres\n'
     + '• Présences + ABLLS + Ghiyab + Statuts PEI\n'
-    + '• Suivis pédagogiques (12-15/bénéf) + Rapports mensuels + Notes /20\n'
-    + '• ~5-8 demandes RH par cadre (avec réponses admin)\n\n'
-    + 'Volume estimé : ~3500 documents Firestore. Durée : 1-2 min.\n\n'
+    + '• Suivis pédagogiques (12-15/bénéf) + Rapports mensuels + Notes /20\n\n'
+    + 'Volume estimé : ~3200 documents Firestore. Durée : 1-2 min.\n'
+    + '(Demandes RH NON incluses — à saisir manuellement)\n\n'
     + 'Continuer ?')) return;
 
   showToast('⏳ Génération en cours...', '#2563eb');
@@ -17882,72 +17882,6 @@ async function genererDonneesDemoS2() {
           teacherId: tid, key: 'ea_notes',
           value: JSON.stringify(notes), updatedAt: new Date().toISOString()
         }).then(() => totalPush++).catch(() => totalErr++)
-      );
-    }
-  }
-
-  /* ─── 8. DEMANDES RH — historique du semestre avec traitement admin ─── */
-  const RH_TYPES = ['conge', 'maladie', 'formation', 'attestation', 'reclamation'];
-  const RH_MOTIFS = {
-    conge: ['Congé annuel programmé', 'Événement familial', 'Voyage personnel'],
-    maladie: ['Arrêt maladie médical', 'Récupération chirurgicale légère', 'Convalescence'],
-    formation: ['Formation continue ABA', 'Séminaire pédagogie spécialisée', 'Workshop ABLLS'],
-    attestation: ['Attestation de travail pour banque', 'Attestation de salaire', 'Attestation pour visa'],
-    reclamation: ['Demande matériel pédagogique', 'Aménagement horaire', 'Question paie']
-  };
-  const RH_PRIORITES = ['normale', 'normale', 'normale', 'importante', 'urgente'];
-  const RH_STATUTS = ['approuve', 'approuve', 'approuve', 'rejete', 'en_attente'];
-
-  for (const tid of teacherIds) {
-    const cadreUser = USERS.find(u => u.teacherId === tid);
-    if (!cadreUser) continue;
-    /* 4-8 demandes par cadre sur le semestre */
-    const nbDemandes = 4 + Math.floor(_demoRand(tid + 'rhcount') * 5);
-    for (let i = 0; i < nbDemandes; i++) {
-      const type = RH_TYPES[Math.floor(_demoRand(tid + 'rht' + i) * RH_TYPES.length)];
-      const motifList = RH_MOTIFS[type];
-      const motif = motifList[Math.floor(_demoRand(tid + 'rhm' + i) * motifList.length)];
-      const priorite = RH_PRIORITES[Math.floor(_demoRand(tid + 'rhp' + i) * RH_PRIORITES.length)];
-      const statut = RH_STATUTS[Math.floor(_demoRand(tid + 'rhs' + i) * RH_STATUTS.length)];
-
-      /* Date création : un jour ouvré aléatoire du S2 */
-      const dateIdx = Math.floor(_demoRand(tid + 'rhd' + i) * _DEMO_S2_JOURS_OUVRES.length);
-      const dateCreation = _DEMO_S2_JOURS_OUVRES[dateIdx];
-
-      /* Pour congés/maladie : dates début/fin */
-      let dateDebut = '', dateFin = '';
-      if (type === 'conge' || type === 'maladie') {
-        const dStart = new Date(dateCreation);
-        dStart.setDate(dStart.getDate() + 3 + Math.floor(_demoRand(tid + 'rhds' + i) * 14));
-        dateDebut = dStart.toISOString().substring(0, 10);
-        const dEnd = new Date(dStart);
-        dEnd.setDate(dEnd.getDate() + 1 + Math.floor(_demoRand(tid + 'rhde' + i) * 6));
-        dateFin = dEnd.toISOString().substring(0, 10);
-      }
-
-      const demId = Date.now() + i * 10000 + Math.floor(_demoRand(tid + 'rid' + i) * 9999);
-      const demande = {
-        id          : demId,
-        teacherId   : tid,
-        nomCadre    : cadreUser.name || tid,
-        classe      : cadreUser.classe || '',
-        type        : type,
-        priorite    : priorite,
-        dateDebut   : dateDebut,
-        dateFin     : dateFin,
-        motif       : motif,
-        statut      : statut,
-        noteAdmin   : statut === 'approuve' ? 'Demande validée par la direction.'
-                    : statut === 'rejete' ? 'Demande refusée — voir RH pour reformuler.'
-                    : '',
-        dateCreation: dateCreation.replace(/-/g, '/') + ' 09:30',
-        dateMiseAJour: statut !== 'en_attente' ? (dateCreation.replace(/-/g, '/') + ' 14:15') : ''
-      };
-
-      /* Push direct vers la collection rh_demandes (id stable) */
-      batchPromises.push(
-        db.collection('rh_demandes').doc(String(demId)).set(demande)
-          .then(() => totalPush++).catch(() => totalErr++)
       );
     }
   }
