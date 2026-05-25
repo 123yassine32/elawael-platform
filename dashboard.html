@@ -17341,8 +17341,12 @@ function _pushToFirestore(key, data) {
    Doc id : ${teacherId}__${key}
 ═══════════════════════════════════════════════════════════════ */
 
-/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab + PEI) */
-const ORG_SHARED_PREFIXES = ['ea_presences', 'ea_ta9_', 'ea_gh_', 'ea_pei_statuses', 'ea_pei_full_'];
+/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab + PEI + suivis + rapports + notes) */
+const ORG_SHARED_PREFIXES = [
+  'ea_presences', 'ea_ta9_', 'ea_gh_',
+  'ea_pei_statuses', 'ea_pei_full_',
+  'ea_suivis', 'ea_rapports', 'ea_notes'
+];
 
 function _isOrgSharedKey(key) {
   return ORG_SHARED_PREFIXES.some(p => key === p || key.startsWith(p));
@@ -17401,33 +17405,30 @@ async function _loadOrgSharedForAdmin() {
     Object.keys(grouped).forEach(key => {
       const docs = grouped[key];
 
-      if (key === 'ea_presences') {
-        /* Merge des listes de séances depuis tous les éducateurs.
-           Dédoublonner par id si présent, sinon par (date + teacherId). */
+      if (key === 'ea_presences' || key === 'ea_suivis' || key === 'ea_rapports' || key === 'ea_notes') {
+        /* Merge des listes (séances/suivis/rapports/notes) depuis tous les éducateurs.
+           Dédoublonner par id principalement. */
         const seen = new Set();
         const merged = [];
-        /* D'abord les locaux (autorité si conflit d'id) */
-        const local = JSON.parse(localStorage.getItem('ea_presences') || '[]');
+        const local = JSON.parse(localStorage.getItem(key) || '[]');
         local.forEach(s => {
-          const k = s.id || `${s.date}__${s.teacherId || ''}`;
+          const k = s.id || `${s.date || ''}__${s.teacher || s.teacherId || ''}__${s.benef || ''}`;
           if (!seen.has(k)) { seen.add(k); merged.push(s); }
         });
-        /* Puis les distants */
         docs.forEach(doc => {
           let arr;
           try { arr = JSON.parse(doc.value); } catch(e) { return; }
           if (!Array.isArray(arr)) return;
           arr.forEach(s => {
-            const k = s.id || `${s.date}__${s.teacherId || doc.teacherId}`;
+            const k = s.id || `${s.date || ''}__${s.teacher || s.teacherId || doc.teacherId}__${s.benef || ''}`;
             if (!seen.has(k)) {
               seen.add(k);
-              /* Forcer teacherId si manquant */
-              if (!s.teacherId) s.teacherId = doc.teacherId;
+              if (!s.teacherId && key === 'ea_presences') s.teacherId = doc.teacherId;
               merged.push(s);
             }
           });
         });
-        localStorage.setItem('ea_presences', JSON.stringify(merged));
+        localStorage.setItem(key, JSON.stringify(merged));
         mergedKeys++;
       } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_') || key.startsWith('ea_pei_full_')) {
         /* Clé unique par bénéficiaire — prendre la plus récente */
@@ -17530,7 +17531,10 @@ async function genererDonneesDemoS2() {
     + 'pour TOUS les bénéficiaires sur tout le S2 (Fév-Juin 2026).\n\n'
     + '• ' + _DEMO_S2_JOURS_OUVRES.length + ' jours ouvrés (Lun-Ven, vacances exclues)\n'
     + '• ~228 bénéficiaires × 40 cadres\n'
-    + '• Présences + ABLLS + Ghiyab + Statuts PEI (60% done · 20% en cours · 20% non démarrés)\n\n'
+    + '• Présences + ABLLS + Ghiyab + Statuts PEI\n'
+    + '• Suivis pédagogiques (12-15/bénéf) + Rapports mensuels + Notes /20\n'
+    + '• ~5-8 demandes RH par cadre (avec réponses admin)\n\n'
+    + 'Volume estimé : ~3500 documents Firestore. Durée : 1-2 min.\n\n'
     + 'Continuer ?')) return;
 
   showToast('⏳ Génération en cours...', '#2563eb');
@@ -17707,6 +17711,243 @@ async function genererDonneesDemoS2() {
           value     : JSON.stringify(peiStatuses),
           updatedAt : new Date().toISOString()
         }).then(() => totalPush++).catch(() => totalErr++)
+      );
+    }
+  }
+
+  /* ─── 5. SUIVIS PÉDAGOGIQUES — 3-4 par mois par bénéficiaire ─── */
+  const DOMAINES = ['Communication', 'Cognition', 'Autonomie', 'Social', 'Moteur', 'Langage'];
+  const STATUS_SUIVI = ['Acquis ✅', 'En cours 🔄', 'Difficultés ⚠', 'Non démarré'];
+  const OBJECTIFS_TXT = [
+    'Identifier les couleurs primaires',
+    'Suivre une consigne simple à 1 étape',
+    'Reconnaître son prénom écrit',
+    'Manipuler les chiffres 1-10',
+    'Pointer vers l\'objet demandé',
+    'Tenir un crayon correctement',
+    'Imiter un geste moteur',
+    'Compter jusqu\'à 5',
+    'Reconnaître les formes géométriques',
+    'Demander de l\'aide verbalement',
+    'Partager un jeu avec un pair',
+    'S\'habiller seul (boutons)',
+    'Se brosser les dents',
+    'Saluer en arrivant',
+    'Reconnaître les émotions de base'
+  ];
+  const OBSERVATIONS = [
+    'Bénéficiaire concentré durant toute la séance. Progrès notables observés.',
+    'Excellente participation. L\'objectif est atteint avec aisance.',
+    'Bonne disposition aujourd\'hui. À continuer dans cette voie.',
+    'Difficultés initiales surmontées en seconde partie de séance.',
+    'Comportement coopératif et engagé. Réponses pertinentes.',
+    'Session productive — l\'enfant montre une réelle compréhension.',
+    'Réussite après plusieurs tentatives. Renforcement positif efficace.',
+    'A su mobiliser les acquis précédents pour cette tâche.',
+    'Évolution positive comparé à la séance précédente.',
+    'Léger besoin de guidage mais autonomie en augmentation.'
+  ];
+  const SUPPORTS = [
+    'Cartes images, jeux éducatifs',
+    'Tablette pédagogique, vidéos',
+    'Pictogrammes PECS',
+    'Matériel Montessori',
+    'Jeux de société adaptés',
+    'Fiches de travail visuelles',
+    'Manipulation d\'objets concrets'
+  ];
+
+  for (const tid of teacherIds) {
+    const benefs = cadresMap[tid];
+    const suivis = [];
+    benefs.forEach(b => {
+      const prof = _demoProfilBenef(b.nom);
+      /* 3 suivis par mois × 5 mois = 15 suivis par bénéf pour assidus */
+      const nbSuivis = prof.profil === 'assidu' ? 15
+                     : prof.profil === 'regulier' ? 12
+                     : prof.profil === 'irregulier' ? 8 : 4;
+      for (let i = 0; i < nbSuivis; i++) {
+        const dateIdx = Math.floor(_demoRand(b.nom + 'suivi' + i) * _DEMO_S2_JOURS_OUVRES.length);
+        const date = _DEMO_S2_JOURS_OUVRES[dateIdx];
+        const domIdx = Math.floor(_demoRand(b.nom + 'd' + i) * DOMAINES.length);
+        /* Statut selon profil : assidus plus de "Acquis", risque plus de "Difficultés" */
+        const r = _demoRand(b.nom + 'st' + i);
+        let status;
+        if (prof.profil === 'assidu')   status = r < 0.55 ? STATUS_SUIVI[0] : r < 0.85 ? STATUS_SUIVI[1] : STATUS_SUIVI[2];
+        else if (prof.profil === 'regulier') status = r < 0.40 ? STATUS_SUIVI[0] : r < 0.80 ? STATUS_SUIVI[1] : STATUS_SUIVI[2];
+        else if (prof.profil === 'irregulier') status = r < 0.20 ? STATUS_SUIVI[0] : r < 0.55 ? STATUS_SUIVI[1] : r < 0.85 ? STATUS_SUIVI[2] : STATUS_SUIVI[3];
+        else status = r < 0.10 ? STATUS_SUIVI[0] : r < 0.30 ? STATUS_SUIVI[1] : r < 0.75 ? STATUS_SUIVI[2] : STATUS_SUIVI[3];
+
+        const objTxt = OBJECTIFS_TXT[Math.floor(_demoRand(b.nom + 'o' + i) * OBJECTIFS_TXT.length)];
+        const obsTxt = OBSERVATIONS[Math.floor(_demoRand(b.nom + 'obs' + i) * OBSERVATIONS.length)];
+        const suppTxt = SUPPORTS[Math.floor(_demoRand(b.nom + 'sup' + i) * SUPPORTS.length)];
+
+        suivis.push({
+          id      : Date.now() + i * 100 + Math.floor(_demoRand(tid + b.nom + i) * 99),
+          benef   : b.nom,
+          date    : date,
+          dom     : DOMAINES[domIdx],
+          status  : status,
+          obj     : objTxt,
+          obs     : obsTxt,
+          supp    : suppTxt,
+          teacher : (USERS.find(u => u.teacherId === tid) || {}).name || tid
+        });
+      }
+    });
+    if (suivis.length) {
+      batchPromises.push(
+        db.collection('org_shared').doc(tid + '__ea_suivis').set({
+          teacherId: tid, key: 'ea_suivis',
+          value: JSON.stringify(suivis), updatedAt: new Date().toISOString()
+        }).then(() => totalPush++).catch(() => totalErr++)
+      );
+    }
+  }
+
+  /* ─── 6. RAPPORTS MENSUELS — 1 par bénéficiaire × mois ─── */
+  const PERIODES = ['Février 2026', 'Mars 2026', 'Avril 2026', 'Mai 2026'];
+  const APPRECIATIONS = ['Excellent', 'Très bien', 'Bien', 'Satisfaisant', 'À améliorer'];
+  for (const tid of teacherIds) {
+    const benefs = cadresMap[tid];
+    const teacherName = (USERS.find(u => u.teacherId === tid) || {}).name || tid;
+    const rapports = [];
+    benefs.forEach(b => {
+      const prof = _demoProfilBenef(b.nom);
+      PERIODES.forEach((periode, pIdx) => {
+        const r = _demoRand(b.nom + 'rap' + pIdx);
+        if (r > 0.85) return; /* Skip 15% des rapports (réalisme) */
+        const taux = prof.profil === 'assidu' ? 70 + Math.floor(_demoRand(b.nom + 't' + pIdx) * 25)
+                  : prof.profil === 'regulier' ? 55 + Math.floor(_demoRand(b.nom + 't' + pIdx) * 20)
+                  : prof.profil === 'irregulier' ? 35 + Math.floor(_demoRand(b.nom + 't' + pIdx) * 20)
+                  : 15 + Math.floor(_demoRand(b.nom + 't' + pIdx) * 20);
+        const appre = taux >= 80 ? APPRECIATIONS[0] : taux >= 65 ? APPRECIATIONS[1] : taux >= 50 ? APPRECIATIONS[2] : taux >= 35 ? APPRECIATIONS[3] : APPRECIATIONS[4];
+        rapports.push({
+          id              : Date.now() + pIdx * 1000 + Math.floor(_demoRand(tid + b.nom + 'r' + pIdx) * 999),
+          benef           : b.nom,
+          periode         : periode,
+          realises        : OBJECTIFS_TXT[Math.floor(_demoRand(b.nom + 're' + pIdx) * 5)] + '. ' + OBJECTIFS_TXT[Math.floor(_demoRand(b.nom + 're2' + pIdx) * 5)],
+          encours         : OBJECTIFS_TXT[Math.floor(_demoRand(b.nom + 'en' + pIdx) * 10)],
+          nonrealises     : taux < 60 ? OBJECTIFS_TXT[Math.floor(_demoRand(b.nom + 'nr' + pIdx) * 10)] : '',
+          recommandations : 'Maintenir la régularité des séances. Renforcer la pratique en milieu familial.',
+          taux            : String(taux),
+          appre           : appre,
+          statut          : 'valide',
+          date            : '2026-' + String(2 + pIdx).padStart(2, '0') + '-28',
+          teacher         : teacherName,
+          dateStatut      : new Date().toISOString()
+        });
+      });
+    });
+    if (rapports.length) {
+      batchPromises.push(
+        db.collection('org_shared').doc(tid + '__ea_rapports').set({
+          teacherId: tid, key: 'ea_rapports',
+          value: JSON.stringify(rapports), updatedAt: new Date().toISOString()
+        }).then(() => totalPush++).catch(() => totalErr++)
+      );
+    }
+  }
+
+  /* ─── 7. NOTES — évaluations chiffrées /20 ─── */
+  const MODULES = ['Arabe', 'Math', 'Sciences', 'Activités manuelles', 'Sport', 'Musique', 'Vie quotidienne'];
+  for (const tid of teacherIds) {
+    const benefs = cadresMap[tid];
+    const teacherName = (USERS.find(u => u.teacherId === tid) || {}).name || tid;
+    const notes = [];
+    benefs.forEach(b => {
+      const prof = _demoProfilBenef(b.nom);
+      const nbNotes = prof.profil === 'assidu' ? 12 : prof.profil === 'regulier' ? 9 : 6;
+      for (let i = 0; i < nbNotes; i++) {
+        const dateIdx = Math.floor(_demoRand(b.nom + 'note' + i) * _DEMO_S2_JOURS_OUVRES.length);
+        const date = _DEMO_S2_JOURS_OUVRES[dateIdx];
+        const noteBase = prof.profil === 'assidu' ? 14 : prof.profil === 'regulier' ? 12 : prof.profil === 'irregulier' ? 9 : 6;
+        const note = Math.min(20, Math.max(0, noteBase + Math.floor(_demoRand(b.nom + 'nv' + i) * 6) - 2));
+        notes.push({
+          id      : Date.now() + i * 100 + Math.floor(_demoRand(tid + b.nom + 'n' + i) * 99),
+          benef   : b.nom,
+          date    : date,
+          type    : i % 2 === 0 ? 'Contrôle' : 'Évaluation continue',
+          module  : MODULES[Math.floor(_demoRand(b.nom + 'm' + i) * MODULES.length)],
+          note    : note,
+          appre   : note >= 16 ? 'Excellent' : note >= 12 ? 'Très bien' : note >= 10 ? 'Bien' : 'À améliorer',
+          comment : note < 10 ? 'Nécessite un accompagnement renforcé.' : '',
+          teacher : teacherName
+        });
+      }
+    });
+    if (notes.length) {
+      batchPromises.push(
+        db.collection('org_shared').doc(tid + '__ea_notes').set({
+          teacherId: tid, key: 'ea_notes',
+          value: JSON.stringify(notes), updatedAt: new Date().toISOString()
+        }).then(() => totalPush++).catch(() => totalErr++)
+      );
+    }
+  }
+
+  /* ─── 8. DEMANDES RH — historique du semestre avec traitement admin ─── */
+  const RH_TYPES = ['conge', 'maladie', 'formation', 'attestation', 'reclamation'];
+  const RH_MOTIFS = {
+    conge: ['Congé annuel programmé', 'Événement familial', 'Voyage personnel'],
+    maladie: ['Arrêt maladie médical', 'Récupération chirurgicale légère', 'Convalescence'],
+    formation: ['Formation continue ABA', 'Séminaire pédagogie spécialisée', 'Workshop ABLLS'],
+    attestation: ['Attestation de travail pour banque', 'Attestation de salaire', 'Attestation pour visa'],
+    reclamation: ['Demande matériel pédagogique', 'Aménagement horaire', 'Question paie']
+  };
+  const RH_PRIORITES = ['normale', 'normale', 'normale', 'importante', 'urgente'];
+  const RH_STATUTS = ['approuve', 'approuve', 'approuve', 'rejete', 'en_attente'];
+
+  for (const tid of teacherIds) {
+    const cadreUser = USERS.find(u => u.teacherId === tid);
+    if (!cadreUser) continue;
+    /* 4-8 demandes par cadre sur le semestre */
+    const nbDemandes = 4 + Math.floor(_demoRand(tid + 'rhcount') * 5);
+    for (let i = 0; i < nbDemandes; i++) {
+      const type = RH_TYPES[Math.floor(_demoRand(tid + 'rht' + i) * RH_TYPES.length)];
+      const motifList = RH_MOTIFS[type];
+      const motif = motifList[Math.floor(_demoRand(tid + 'rhm' + i) * motifList.length)];
+      const priorite = RH_PRIORITES[Math.floor(_demoRand(tid + 'rhp' + i) * RH_PRIORITES.length)];
+      const statut = RH_STATUTS[Math.floor(_demoRand(tid + 'rhs' + i) * RH_STATUTS.length)];
+
+      /* Date création : un jour ouvré aléatoire du S2 */
+      const dateIdx = Math.floor(_demoRand(tid + 'rhd' + i) * _DEMO_S2_JOURS_OUVRES.length);
+      const dateCreation = _DEMO_S2_JOURS_OUVRES[dateIdx];
+
+      /* Pour congés/maladie : dates début/fin */
+      let dateDebut = '', dateFin = '';
+      if (type === 'conge' || type === 'maladie') {
+        const dStart = new Date(dateCreation);
+        dStart.setDate(dStart.getDate() + 3 + Math.floor(_demoRand(tid + 'rhds' + i) * 14));
+        dateDebut = dStart.toISOString().substring(0, 10);
+        const dEnd = new Date(dStart);
+        dEnd.setDate(dEnd.getDate() + 1 + Math.floor(_demoRand(tid + 'rhde' + i) * 6));
+        dateFin = dEnd.toISOString().substring(0, 10);
+      }
+
+      const demId = Date.now() + i * 10000 + Math.floor(_demoRand(tid + 'rid' + i) * 9999);
+      const demande = {
+        id          : demId,
+        teacherId   : tid,
+        nomCadre    : cadreUser.name || tid,
+        classe      : cadreUser.classe || '',
+        type        : type,
+        priorite    : priorite,
+        dateDebut   : dateDebut,
+        dateFin     : dateFin,
+        motif       : motif,
+        statut      : statut,
+        noteAdmin   : statut === 'approuve' ? 'Demande validée par la direction.'
+                    : statut === 'rejete' ? 'Demande refusée — voir RH pour reformuler.'
+                    : '',
+        dateCreation: dateCreation.replace(/-/g, '/') + ' 09:30',
+        dateMiseAJour: statut !== 'en_attente' ? (dateCreation.replace(/-/g, '/') + ' 14:15') : ''
+      };
+
+      /* Push direct vers la collection rh_demandes (id stable) */
+      batchPromises.push(
+        db.collection('rh_demandes').doc(String(demId)).set(demande)
+          .then(() => totalPush++).catch(() => totalErr++)
       );
     }
   }
