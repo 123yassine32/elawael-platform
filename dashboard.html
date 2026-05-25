@@ -17341,11 +17341,14 @@ function _pushToFirestore(key, data) {
    Doc id : ${teacherId}__${key}
 ═══════════════════════════════════════════════════════════════ */
 
-/** Clés qui doivent être partagées avec admin (présence + ABLLS + ghiyab + PEI + suivis + rapports + notes) */
+/** Clés qui doivent être partagées avec admin */
 const ORG_SHARED_PREFIXES = [
   'ea_presences', 'ea_ta9_', 'ea_gh_',
   'ea_pei_statuses', 'ea_pei_full_',
-  'ea_suivis', 'ea_rapports', 'ea_notes'
+  'ea_suivis', 'ea_rapports', 'ea_notes',
+  'ea_tn_',  /* برنامج التنقيط — grilles mensuelles PEI */
+  'ea_rd_',  /* جدول الرعاية الذاتية — grilles mensuelles autonomie */
+  'ea_jt_'   /* جدول الطلبات — grilles mensuelles demandes */
 ];
 
 function _isOrgSharedKey(key) {
@@ -17430,7 +17433,8 @@ async function _loadOrgSharedForAdmin() {
         });
         localStorage.setItem(key, JSON.stringify(merged));
         mergedKeys++;
-      } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_') || key.startsWith('ea_pei_full_')) {
+      } else if (key.startsWith('ea_ta9_') || key.startsWith('ea_gh_') || key.startsWith('ea_pei_full_')
+              || key.startsWith('ea_tn_') || key.startsWith('ea_rd_') || key.startsWith('ea_jt_')) {
         /* Clé unique par bénéficiaire — prendre la plus récente */
         const sorted = docs.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
         try {
@@ -17532,8 +17536,12 @@ async function genererDonneesDemoS2() {
     + '• ' + _DEMO_S2_JOURS_OUVRES.length + ' jours ouvrés (Lun-Ven, vacances exclues)\n'
     + '• ~228 bénéficiaires × 40 cadres\n'
     + '• Présences + ABLLS + Ghiyab + Statuts PEI\n'
-    + '• Suivis pédagogiques (12-15/bénéf) + Rapports mensuels + Notes /20\n\n'
-    + 'Volume estimé : ~3200 documents Firestore. Durée : 1-2 min.\n'
+    + '• Suivis pédagogiques + Rapports mensuels + Notes /20\n'
+    + '• 📊 برنامج التنقيط (Tan9it) — grilles mensuelles PEI\n'
+    + '• 🧼 جدول الرعاية الذاتية (Ri3aya) — 20 items × mois\n'
+    + '• 🙋 جدول الطلبات (Talabat) — 10 items × mois\n'
+    + '• 📚 البرنامج الكبير (PEI complet) persisté\n\n'
+    + 'Volume estimé : ~5500 documents Firestore. Durée : 2-3 min.\n'
     + '(Demandes RH NON incluses — à saisir manuellement)\n\n'
     + 'Continuer ?')) return;
 
@@ -17885,6 +17893,121 @@ async function genererDonneesDemoS2() {
       );
     }
   }
+
+  /* ─── 8. GRILLES MENSUELLES — Tan9it / Ri3aya / Talabat ─── */
+  /* Ces 3 grilles ont la même structure : {ri_d: value} où ri = index ligne, d = jour
+     - Tan9it (ea_tn_): valeurs ✅/🔄/⭕ — lignes = objectifs PEI du bénéf
+     - Ri3aya (ea_rd_): valeurs +/~/- — lignes = items autonomie (20 items)
+     - Talabat (ea_jt_): valeurs +/~/- — lignes = items demandes (10 items) */
+  const moisGrid = [
+    { an: 2026, mm: '02' }, { an: 2026, mm: '03' },
+    { an: 2026, mm: '04' }, { an: 2026, mm: '05' }
+  ];
+
+  /* Jours ouvrés par mois (extrait de _DEMO_S2_JOURS_OUVRES) */
+  const joursParMois = {};
+  _DEMO_S2_JOURS_OUVRES.forEach(d => {
+    const ym = d.substring(0, 7);
+    const j = parseInt(d.substring(8, 10), 10);
+    (joursParMois[ym] = joursParMois[ym] || []).push(j);
+  });
+
+  benefList.forEach(b => {
+    const prof = _demoProfilBenef(b.nom);
+    /* Probabilité d'obtenir une marque positive selon profil */
+    const tauxOK = prof.profil === 'assidu' ? 0.78
+                 : prof.profil === 'regulier' ? 0.62
+                 : prof.profil === 'irregulier' ? 0.42
+                 : 0.25;
+    const tauxMid = 0.20; /* +20% en évolution/partiel */
+
+    moisGrid.forEach(({ an, mm }) => {
+      const ym = an + '-' + mm;
+      const jours = joursParMois[ym] || [];
+      if (!jours.length) return;
+
+      /* ── 8a. TAN9IT (التنقيط) : grille objectifs PEI × jours ── */
+      if (b.type === 'pei' && b.pei_domaines && b.pei_domaines.length) {
+        const tn = {};
+        let ri = 0;
+        b.pei_domaines.forEach(dom => {
+          (dom.objectifs || []).forEach(obj => {
+            jours.forEach(j => {
+              const r = _demoRand(b.nom + 'tn' + ri + '_' + ym + '_' + j);
+              if (r < tauxOK) tn[ri + '_' + j] = '✅';
+              else if (r < tauxOK + tauxMid) tn[ri + '_' + j] = '🔄';
+              else if (r < tauxOK + tauxMid + 0.12) tn[ri + '_' + j] = '⭕';
+              /* sinon : vide (jour sans évaluation) */
+            });
+            ri++;
+          });
+        });
+        if (Object.keys(tn).length > 0) {
+          const key = 'ea_tn_' + b.nom + '_' + an + '_' + mm;
+          batchPromises.push(
+            db.collection('org_shared').doc(b.teacherId + '__' + key).set({
+              teacherId: b.teacherId, key: key,
+              value: JSON.stringify(tn), updatedAt: new Date().toISOString()
+            }).then(() => totalPush++).catch(() => totalErr++)
+          );
+        }
+      }
+
+      /* ── 8b. RI3AYA (الرعاية الذاتية) : grille 20 items × jours ── */
+      const rd = {};
+      for (let ri = 0; ri < 20; ri++) {
+        jours.forEach(j => {
+          const r = _demoRand(b.nom + 'rd' + ri + '_' + ym + '_' + j);
+          if (r < tauxOK) rd[ri + '_' + j] = '+';
+          else if (r < tauxOK + tauxMid) rd[ri + '_' + j] = '~';
+          else if (r < tauxOK + tauxMid + 0.12) rd[ri + '_' + j] = '-';
+        });
+      }
+      if (Object.keys(rd).length > 0) {
+        const key = 'ea_rd_' + b.nom + '_' + an + '_' + mm;
+        batchPromises.push(
+          db.collection('org_shared').doc(b.teacherId + '__' + key).set({
+            teacherId: b.teacherId, key: key,
+            value: JSON.stringify(rd), updatedAt: new Date().toISOString()
+          }).then(() => totalPush++).catch(() => totalErr++)
+        );
+      }
+
+      /* ── 8c. TALABAT (الطلبات) : grille 10 items × jours ── */
+      const jt = {};
+      for (let ri = 0; ri < 10; ri++) {
+        jours.forEach(j => {
+          const r = _demoRand(b.nom + 'jt' + ri + '_' + ym + '_' + j);
+          if (r < tauxOK) jt[ri + '_' + j] = '+';
+          else if (r < tauxOK + tauxMid) jt[ri + '_' + j] = '~';
+          else if (r < tauxOK + tauxMid + 0.12) jt[ri + '_' + j] = '-';
+        });
+      }
+      if (Object.keys(jt).length > 0) {
+        const key = 'ea_jt_' + b.nom + '_' + an + '_' + mm;
+        batchPromises.push(
+          db.collection('org_shared').doc(b.teacherId + '__' + key).set({
+            teacherId: b.teacherId, key: key,
+            value: JSON.stringify(jt), updatedAt: new Date().toISOString()
+          }).then(() => totalPush++).catch(() => totalErr++)
+        );
+      }
+    });
+  });
+
+  /* ─── 9. البرنامج الكبير (PEI complet persisté) ─── */
+  /* Persister la structure pei_domaines de chaque bénéficiaire PEI dans
+     ea_pei_full_${nom} (clé déjà dans ORG_SHARED_PREFIXES). Cela permet
+     à loadPEIStatuses() de la recharger depuis localStorage côté admin. */
+  benefList.filter(b => b.type === 'pei' && b.pei_domaines && b.pei_domaines.length).forEach(b => {
+    const key = 'ea_pei_full_' + b.nom;
+    batchPromises.push(
+      db.collection('org_shared').doc(b.teacherId + '__' + key).set({
+        teacherId: b.teacherId, key: key,
+        value: JSON.stringify(b.pei_domaines), updatedAt: new Date().toISOString()
+      }).then(() => totalPush++).catch(() => totalErr++)
+    );
+  });
 
   /* Attendre tous les pushes */
   showToast('⏳ Push Firestore (' + batchPromises.length + ' docs)...', '#2563eb');
