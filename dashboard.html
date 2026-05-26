@@ -21974,12 +21974,51 @@ function calcJRI(benef) {
                : Math.round((tauxPres + tauxAcquis) / 2); /* Proxy si pas de modules */
   }
 
-  /* ─── E. STAGES — placeholder (Priorité 3 — Module Carnet de Stage) ─── */
-  /* Pour l'instant : score basé sur ABLLS "mobilité" + présence si > 80%
-     À remplacer par les vrais stages quand le module sera créé */
-  const stages = tauxPres >= 80 ? 30 + Math.round(_demoRand ? _demoRand(benef.nom + 'stg') * 40 : Math.random() * 40)
-              : tauxPres >= 60 ? 15 + Math.round((_demoRand ? _demoRand(benef.nom + 'stg') : Math.random()) * 25)
-              : 0;
+  /* ─── E. STAGES — données réelles du module Carnet de Stage ─── */
+  /* Calcul à partir des stages effectifs du bénéficiaire :
+     - Si stage(s) avec évaluation : moyenne des scores /5 → ×20 → /100
+     - Si stage(s) sans évaluation : 30 pts (potentiel mais non mesuré)
+     - Si aucun stage : 0 pts (objectif non démarré)
+     Bonus : si statut 'termine' avec score ≥4 → +5 pts (insertion réussie)
+            si statut 'rompu' → −10 pts (échec d'intégration) */
+  const tousStages = loadData(STAGES_KEY) || [];
+  const mesStages = tousStages.filter(s => s.benef === benef.nom);
+  let stages = 0;
+  let _stagesInfo = { nb: 0, nbEvals: 0, nbTermines: 0, nbRompus: 0, scoreMoy5: null };
+
+  if (mesStages.length > 0) {
+    _stagesInfo.nb = mesStages.length;
+    _stagesInfo.nbTermines = mesStages.filter(s => s.statut === 'termine').length;
+    _stagesInfo.nbRompus   = mesStages.filter(s => s.statut === 'rompu').length;
+
+    /* Calcul du score moyen sur tous les critères de toutes les évaluations */
+    let total = 0, count = 0;
+    mesStages.forEach(s => {
+      (s.evaluations || []).forEach(ev => {
+        ['ponctualite', 'technique', 'comportement', 'initiative', 'equipe'].forEach(k => {
+          const v = parseFloat(ev[k]);
+          if (!isNaN(v)) { total += v; count++; _stagesInfo.nbEvals++; }
+        });
+      });
+    });
+    _stagesInfo.nbEvals = mesStages.reduce((s, st) => s + (st.evaluations || []).length, 0);
+
+    if (count > 0) {
+      const scoreMoy5 = total / count;       /* moyenne sur 5 */
+      _stagesInfo.scoreMoy5 = Math.round(scoreMoy5 * 10) / 10;
+      stages = Math.round(scoreMoy5 * 20);   /* converti en /100 */
+
+      /* Bonus/malus selon clôtures */
+      const stagesReussis = mesStages.filter(s => s.statut === 'termine' && (s.scoreFinal || 0) >= 4).length;
+      stages += stagesReussis * 5;
+      stages -= _stagesInfo.nbRompus * 10;
+      stages = Math.max(0, Math.min(100, stages));
+    } else {
+      /* Stage(s) sans évaluation */
+      stages = 30;
+    }
+  }
+  /* Aucun stage : stages = 0 (cohérent — objectif non amorcé) */
 
   /* ─── JRI final pondéré ─── */
   const jri = Math.round(
@@ -21998,7 +22037,7 @@ function calcJRI(benef) {
   else if (jri >= 40) { mention = '⚠ Renforcement';            color = '#f59e0b'; profil = 'renforcement'; }
   else                { mention = '🔄 Atelier protégé / ESAT'; color = '#dc2626'; profil = 'critique'; }
 
-  return { jri, hard, soft, jobReady, production, stages, mention, color, profil, classeName, weights };
+  return { jri, hard, soft, jobReady, production, stages, mention, color, profil, classeName, weights, _stagesInfo };
 }
 
 /* Cache des instances Chart.js par bénéficiaire (pour destroy avant re-render) */
@@ -22168,6 +22207,7 @@ function fproShowRadar(nomBenef) {
         <div><div style="font-weight:700;color:#d97706">${data.production}</div><div style="color:var(--muted);font-size:10px">Production</div></div>
         <div><div style="font-weight:700;color:#059669">${data.stages}</div><div style="color:var(--muted);font-size:10px">Stages</div></div>
       </div>
+      ${data._stagesInfo && data._stagesInfo.nb > 0 ? `<div style="margin-top:10px;padding:8px 12px;background:#ecfdf5;border-left:3px solid #059669;border-radius:6px;font-size:11px;color:var(--text);line-height:1.5">📒 <strong>${data._stagesInfo.nb} stage(s)</strong> · ${data._stagesInfo.nbEvals} évaluation(s)${data._stagesInfo.scoreMoy5 !== null ? ` · Moy : <strong>${data._stagesInfo.scoreMoy5}/5</strong>` : ''}${data._stagesInfo.nbTermines > 0 ? ` · ✅ ${data._stagesInfo.nbTermines} terminé(s)` : ''}${data._stagesInfo.nbRompus > 0 ? ` · ❌ ${data._stagesInfo.nbRompus} rompu(s)` : ''}</div>` : '<div style="margin-top:10px;padding:8px 12px;background:var(--bg);border-left:3px solid var(--muted);border-radius:6px;font-size:11px;color:var(--muted);font-style:italic">📒 Aucun stage enregistré — créez-en un dans l\'onglet Carnet de Stages</div>'}
     `;
   }
 
