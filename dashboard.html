@@ -20916,7 +20916,8 @@ function renderAdminOverview(){
     const items = [];
 
     /* 1. Demandes RH en attente */
-    const rhDemandes = (loadData('ea_demandes_rh') || []).filter(d => d.statut === 'en_attente');
+    const _rhKey = typeof RH_KEY !== 'undefined' ? RH_KEY : 'ea_rh_demandes';
+    const rhDemandes = (loadData(_rhKey) || []).filter(d => d.statut === 'en_attente');
     if (rhDemandes.length > 0) {
       const nbUrgentes = rhDemandes.filter(d => d.priorite === 'urgente').length;
       items.push({
@@ -20929,12 +20930,23 @@ function renderAdminOverview(){
 
     /* 2. Stages à clôturer (statut 'encours' avec date_fin <= aujourd'hui) */
     const todayStr = new Date().toISOString().substring(0, 10);
-    const stagesAClore = (loadData(STAGES_KEY) || []).filter(s => s.statut === 'encours' && s.dateFin && s.dateFin <= todayStr);
+    const allStages = loadData(STAGES_KEY) || [];
+    const stagesAClore = allStages.filter(s => s.statut === 'encours' && s.dateFin && s.dateFin <= todayStr);
     if (stagesAClore.length > 0) {
       items.push({
         icon: '📒', col: '#7c3aed', bg: '#ede9fe',
         titre: stagesAClore.length + ' stage(s) à clôturer',
         sub: 'Date fin atteinte — passer en "terminé"',
+        action: 'Voir →', onclick: "adminShowSection('formationpro');setTimeout(()=>fproSwitchMainTab('stages'),300)"
+      });
+    }
+    /* 2 bis. Stages planifiés en retard (dateDébut < aujourd'hui & toujours planifié) */
+    const stagesEnRetard = allStages.filter(s => s.statut === 'planifie' && s.dateDebut && s.dateDebut < todayStr);
+    if (stagesEnRetard.length > 0) {
+      items.push({
+        icon: '⚠', col: '#f59e0b', bg: '#fef3c7',
+        titre: stagesEnRetard.length + ' stage(s) en retard de démarrage',
+        sub: 'Statut planifié mais date début dépassée',
         action: 'Voir →', onclick: "adminShowSection('formationpro');setTimeout(()=>fproSwitchMainTab('stages'),300)"
       });
     }
