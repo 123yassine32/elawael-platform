@@ -22571,9 +22571,318 @@ function stageSupprimer(id) {
   renderStages();
 }
 
-/** Placeholder pour l'Étape 4 (évaluations hebdo) */
+/* ═══════════════════════════════════════════════════════════════
+   ÉVALUATIONS HEBDO + SYNTHÈSE STAGE (Étape 4/5)
+═══════════════════════════════════════════════════════════════ */
+
+const STAGE_EVAL_CRITERES = [
+  { key: 'ponctualite', lbl: '⏰ Ponctualité & assiduité',   col: '#2563eb' },
+  { key: 'technique',   lbl: '🔧 Compétence technique',       col: '#0d9488' },
+  { key: 'comportement',lbl: '👔 Comportement professionnel', col: '#7c3aed' },
+  { key: 'initiative',  lbl: '💡 Initiative & autonomie',     col: '#d97706' },
+  { key: 'equipe',      lbl: '🤝 Travail en équipe',          col: '#059669' }
+];
+
+/** Calcule la moyenne d'une évaluation hebdo donnée */
+function _stageEvalMoyenne(ev) {
+  let total = 0, count = 0;
+  STAGE_EVAL_CRITERES.forEach(c => {
+    const v = parseFloat(ev[c.key]);
+    if (!isNaN(v)) { total += v; count++; }
+  });
+  return count > 0 ? Math.round((total / count) * 10) / 10 : 0;
+}
+
+/** Génère la synthèse automatique d'un stage à partir de ses évaluations */
+function _stageGenererSynthese(stage) {
+  const evals = stage.evaluations || [];
+  if (evals.length === 0) {
+    return { scoreFinal: null, recommandation: 'Aucune évaluation enregistrée.', niveau: '—', color: 'var(--muted)' };
+  }
+
+  /* Moyenne par critère */
+  const moyParCritere = {};
+  STAGE_EVAL_CRITERES.forEach(c => {
+    let total = 0, count = 0;
+    evals.forEach(ev => {
+      const v = parseFloat(ev[c.key]);
+      if (!isNaN(v)) { total += v; count++; }
+    });
+    moyParCritere[c.key] = count > 0 ? total / count : 0;
+  });
+
+  /* Score final global */
+  const scoreFinal = Math.round(
+    Object.values(moyParCritere).reduce((s, v) => s + v, 0) / STAGE_EVAL_CRITERES.length * 10
+  ) / 10;
+
+  /* Identifier les forces et faiblesses */
+  const sorted = STAGE_EVAL_CRITERES
+    .map(c => ({ ...c, moy: moyParCritere[c.key] }))
+    .sort((a, b) => b.moy - a.moy);
+  const force = sorted[0];
+  const faiblesse = sorted[sorted.length - 1];
+
+  /* Niveau + recommandation */
+  let niveau, color, recommandation;
+  if (scoreFinal >= 4.5) {
+    niveau = '🌟 Excellent';
+    color = '#059669';
+    recommandation = `Bénéficiaire exemplaire. Forte aptitude à l'emploi. Force : ${force.lbl.split(' ').slice(1).join(' ')}. Recommandation : poursuivre vers CDD ou CDI dans le secteur ${stage.entrepriseNom ? 'de l\'entreprise ' + stage.entrepriseNom : 'du stage'}.`;
+  } else if (scoreFinal >= 3.5) {
+    niveau = '✅ Très satisfaisant';
+    color = '#10b981';
+    recommandation = `Bonne performance globale. Adapté à un premier emploi accompagné. Point fort : ${force.lbl.split(' ').slice(1).join(' ')}. À renforcer : ${faiblesse.lbl.split(' ').slice(1).join(' ')}.`;
+  } else if (scoreFinal >= 2.5) {
+    niveau = '🟡 Satisfaisant';
+    color = '#d97706';
+    recommandation = `Progression visible. Nécessite un accompagnement renforcé. Force : ${force.lbl.split(' ').slice(1).join(' ')}. Point d'attention principal : ${faiblesse.lbl.split(' ').slice(1).join(' ')}.`;
+  } else if (scoreFinal >= 1.5) {
+    niveau = '🟠 À améliorer';
+    color = '#f59e0b';
+    recommandation = `Difficultés à compenser avant nouvel essai. Reprendre la formation théorique. Point critique : ${faiblesse.lbl.split(' ').slice(1).join(' ')}.`;
+  } else {
+    niveau = '🔴 Insuffisant';
+    color = '#dc2626';
+    recommandation = `Stage difficile. Réorientation à envisager vers un type de poste différent ou un atelier protégé. Réunion équipe recommandée.`;
+  }
+
+  return { scoreFinal, recommandation, niveau, color, moyParCritere, force, faiblesse };
+}
+
+/** Ouvre la modal d'évaluation d'un stage */
 function stageOuvrirEval(id) {
-  showToast('🚧 Grille d\'évaluation hebdo — Étape 4 prochain commit', '#d97706');
+  const stages = loadData(STAGES_KEY) || [];
+  const stage = stages.find(s => s.id === id);
+  if (!stage) {
+    showToast('⚠ Stage introuvable', '#dc2626');
+    return;
+  }
+  window._currentStageEvalId = id;
+
+  const modal = document.getElementById('stage-eval-modal');
+  const title = document.getElementById('stage-eval-title');
+  const content = document.getElementById('stage-eval-content');
+  if (!modal || !content) return;
+
+  if (title) title.innerHTML = `⭐ Évaluation — <strong>${stage.benef}</strong>`;
+
+  /* Préparer la liste des évaluations existantes */
+  const evals = stage.evaluations || [];
+  const synth = _stageGenererSynthese(stage);
+
+  /* Liste des évaluations passées */
+  const evalsHtml = evals.length === 0
+    ? `<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;background:var(--bg);border-radius:8px">Aucune évaluation encore enregistrée — créez la première ci-dessous.</div>`
+    : evals.map((ev, idx) => {
+        const moy = _stageEvalMoyenne(ev);
+        const col = moy >= 4 ? '#059669' : moy >= 3 ? '#d97706' : '#dc2626';
+        return `<div style="background:var(--bg);border-left:3px solid ${col};padding:10px 14px;border-radius:6px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-size:12px;font-weight:800;color:var(--text)">Semaine ${ev.semaine || idx+1} — ${ev.date || '—'}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-family:Sora,sans-serif;font-size:16px;font-weight:900;color:${col}">${moy}<span style="font-size:11px;color:var(--muted);font-weight:600">/5</span></span>
+              <button onclick="stageSupprimerEval(${id},${idx})" style="background:none;border:1px solid #dc2626;color:#dc2626;border-radius:5px;font-size:10px;padding:2px 8px;cursor:pointer">🗑</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px;font-size:10px">
+            ${STAGE_EVAL_CRITERES.map(c => `<div style="text-align:center"><div style="font-weight:800;color:${c.col}">${ev[c.key] || '—'}</div><div style="color:var(--muted)">${c.lbl.split(' ')[0]}</div></div>`).join('')}
+          </div>
+          ${ev.commentaire ? `<div style="font-size:11px;color:var(--text);font-style:italic;background:var(--card);padding:6px 10px;border-radius:5px;margin-top:4px">💬 ${ev.commentaire}</div>` : ''}
+        </div>`;
+      }).join('');
+
+  /* Synthèse */
+  const synthHtml = synth.scoreFinal === null
+    ? ''
+    : `<div style="background:linear-gradient(135deg,${synth.color}15,${synth.color}25);border:1.5px solid ${synth.color}40;border-radius:12px;padding:16px;margin-top:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <div style="font-size:13px;font-weight:800;color:var(--text)">📊 Synthèse générale</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div><span style="font-family:Sora,sans-serif;font-size:24px;font-weight:900;color:${synth.color}">${synth.scoreFinal}</span><span style="font-size:13px;color:var(--muted)">/5</span></div>
+            <span style="font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;background:${synth.color}30;color:${synth.color}">${synth.niveau}</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text);line-height:1.7;background:var(--card);padding:10px 14px;border-radius:8px">${synth.recommandation}</div>
+        ${stage.statut !== 'termine' ? `<button onclick="stageMarquerTermine(${id})" class="btn btn-p" style="font-size:12px;padding:7px 14px;margin-top:10px;background:#059669;border-color:#059669">✅ Marquer le stage terminé</button>` : '<div style="font-size:11px;color:#059669;font-weight:700;margin-top:8px">✅ Stage déjà clôturé</div>'}
+      </div>`;
+
+  /* Formulaire nouvelle évaluation */
+  const prochaineSemaine = evals.length + 1;
+  const formHtml = `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:14px">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px">➕ Nouvelle évaluation hebdomadaire</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Semaine n°</label>
+          <input type="number" id="eval-semaine" value="${prochaineSemaine}" min="1" max="52" class="admin-search-input" style="width:100%">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Date évaluation</label>
+          <input type="date" id="eval-date" value="${new Date().toISOString().substring(0,10)}" class="admin-search-input" style="width:100%">
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+        ${STAGE_EVAL_CRITERES.map(c => `
+          <div style="display:flex;align-items:center;gap:12px">
+            <label style="font-size:12px;font-weight:600;color:var(--text);flex:1;min-width:160px">${c.lbl}</label>
+            <div style="display:flex;gap:4px" id="rate-${c.key}">
+              ${[1,2,3,4,5].map(n => `<button type="button" data-val="${n}" onclick="stageSetRate('${c.key}',${n})" style="background:var(--bg);border:1.5px solid var(--border);border-radius:6px;width:32px;height:32px;cursor:pointer;font-weight:800;font-size:13px;color:var(--muted)">${n}</button>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px">Commentaire (optionnel)</label>
+        <textarea id="eval-commentaire" rows="2" class="admin-search-input" style="width:100%;resize:vertical" placeholder="Observations de la semaine, points marquants, suggestions..."></textarea>
+      </div>
+      <button onclick="stageAjouterEval(${id})" class="btn btn-p" style="font-size:12px;padding:9px 18px;background:#7c3aed;border-color:#7c3aed">⭐ Ajouter cette évaluation</button>
+    </div>`;
+
+  content.innerHTML = `
+    <div style="background:var(--bg);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:12px;color:var(--text)">
+      🏢 <strong>${stage.entrepriseNom || '—'}</strong>
+      ${stage.tuteur ? ' · 👤 ' + stage.tuteur : ''}
+      <br>📅 ${stage.dateDebut || '—'} → ${stage.dateFin || '—'}
+      · ⏱ ${_stageDureeSemaines(stage.dateDebut, stage.dateFin)} sem.
+      · 🏷 ${stage.classe || '—'}
+    </div>
+    <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">📋 Évaluations précédentes (${evals.length})</div>
+    <div style="max-height:280px;overflow-y:auto;margin-bottom:6px">${evalsHtml}</div>
+    ${synthHtml}
+    ${formHtml}
+  `;
+  /* Réinitialiser les notes */
+  window._currentEvalRatings = { ponctualite: 0, technique: 0, comportement: 0, initiative: 0, equipe: 0 };
+  modal.style.display = 'flex';
+}
+
+/** Met à jour la note d'un critère lors du clic sur un bouton étoile */
+function stageSetRate(critere, val) {
+  if (!window._currentEvalRatings) window._currentEvalRatings = {};
+  window._currentEvalRatings[critere] = val;
+  /* Visuel : highlight buttons 1..val */
+  const container = document.getElementById('rate-' + critere);
+  if (!container) return;
+  const cfg = STAGE_EVAL_CRITERES.find(c => c.key === critere);
+  const col = cfg ? cfg.col : 'var(--primary)';
+  container.querySelectorAll('button').forEach((btn, i) => {
+    if ((i + 1) <= val) {
+      btn.style.background = col;
+      btn.style.color = '#fff';
+      btn.style.borderColor = col;
+    } else {
+      btn.style.background = 'var(--bg)';
+      btn.style.color = 'var(--muted)';
+      btn.style.borderColor = 'var(--border)';
+    }
+  });
+}
+
+/** Ajoute une évaluation hebdo au stage */
+function stageAjouterEval(stageId) {
+  const ratings = window._currentEvalRatings || {};
+  /* Vérifier que les 5 critères sont notés */
+  const manquants = STAGE_EVAL_CRITERES.filter(c => !ratings[c.key] || ratings[c.key] < 1);
+  if (manquants.length > 0) {
+    showToast(`⚠ Note manquante : ${manquants.map(c => c.lbl.split(' ')[1]).join(', ')}`, '#dc2626');
+    return;
+  }
+
+  const stages = loadData(STAGES_KEY) || [];
+  const idx = stages.findIndex(s => s.id === stageId);
+  if (idx < 0) return;
+
+  const semaine = parseInt(document.getElementById('eval-semaine')?.value || '1', 10);
+  const date    = document.getElementById('eval-date')?.value || new Date().toISOString().substring(0, 10);
+  const comm    = document.getElementById('eval-commentaire')?.value.trim() || '';
+
+  const newEval = {
+    semaine     : semaine,
+    date        : date,
+    ponctualite : ratings.ponctualite,
+    technique   : ratings.technique,
+    comportement: ratings.comportement,
+    initiative  : ratings.initiative,
+    equipe      : ratings.equipe,
+    commentaire : comm,
+    dateAjout   : new Date().toISOString()
+  };
+
+  stages[idx].evaluations = stages[idx].evaluations || [];
+  stages[idx].evaluations.push(newEval);
+
+  /* Recalculer score final + synthèse */
+  const synth = _stageGenererSynthese(stages[idx]);
+  stages[idx].scoreFinal     = synth.scoreFinal;
+  stages[idx].synthese       = synth.recommandation;
+  stages[idx].niveauFinal    = synth.niveau;
+
+  /* Si statut était planifié → passer à en cours */
+  if (stages[idx].statut === 'planifie') stages[idx].statut = 'encours';
+
+  saveData(STAGES_KEY, stages);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global', key: STAGES_KEY,
+      value: JSON.stringify(stages), updatedAt: new Date().toISOString()
+    }).catch(() => {});
+  }
+
+  showToast(`⭐ Évaluation S${semaine} ajoutée — moyenne ${_stageEvalMoyenne(newEval)}/5`, '#059669');
+  auditLog('rapport', 'Évaluation stage ajoutée', `${stages[idx].benef} · S${semaine} · ${_stageEvalMoyenne(newEval)}/5`);
+
+  /* Re-render le modal et la liste */
+  stageOuvrirEval(stageId);
+  renderStages();
+}
+
+/** Supprime une évaluation hebdo */
+function stageSupprimerEval(stageId, evalIdx) {
+  if (!confirm('Supprimer cette évaluation ?')) return;
+  const stages = loadData(STAGES_KEY) || [];
+  const idx = stages.findIndex(s => s.id === stageId);
+  if (idx < 0 || !stages[idx].evaluations) return;
+  stages[idx].evaluations.splice(evalIdx, 1);
+
+  /* Recalculer synthèse */
+  const synth = _stageGenererSynthese(stages[idx]);
+  stages[idx].scoreFinal  = synth.scoreFinal;
+  stages[idx].synthese    = synth.recommandation;
+  stages[idx].niveauFinal = synth.niveau;
+
+  saveData(STAGES_KEY, stages);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global', key: STAGES_KEY,
+      value: JSON.stringify(stages), updatedAt: new Date().toISOString()
+    }).catch(() => {});
+  }
+
+  showToast('🗑 Évaluation supprimée', '#dc2626');
+  stageOuvrirEval(stageId);
+  renderStages();
+}
+
+/** Marque un stage comme terminé */
+function stageMarquerTermine(stageId) {
+  if (!confirm('Marquer ce stage comme terminé ?\nLe statut passera à ✅ Terminé.')) return;
+  const stages = loadData(STAGES_KEY) || [];
+  const idx = stages.findIndex(s => s.id === stageId);
+  if (idx < 0) return;
+  stages[idx].statut = 'termine';
+  stages[idx].dateCloture = new Date().toISOString().substring(0, 10);
+  saveData(STAGES_KEY, stages);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global', key: STAGES_KEY,
+      value: JSON.stringify(stages), updatedAt: new Date().toISOString()
+    }).catch(() => {});
+  }
+  showToast(`✅ Stage clôturé — ${stages[idx].benef}`, '#059669');
+  auditLog('rapport', 'Stage clôturé', `${stages[idx].benef} · ${stages[idx].entrepriseNom}`);
+  document.getElementById('stage-eval-modal').style.display = 'none';
+  renderStages();
 }
 
 /* ═══════════════════════════════════════════════════════════════
