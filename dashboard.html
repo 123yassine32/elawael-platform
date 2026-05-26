@@ -20859,6 +20859,74 @@ function renderAdminOverview(){
   const _sc3Card = document.getElementById('sante-card-dossiers');
   if (_sc3Card) _sc3Card.style.borderColor = _sc3.border;
 
+  // ══════════════════════════════════════════════════
+  // TENDANCES vs MOIS PRÉCÉDENT (P3 Cockpit) — Pour Présence + PEI
+  // ══════════════════════════════════════════════════
+  const _yearCur  = parseInt(_ym.substring(0, 4), 10);
+  const _monthCur = parseInt(_ym.substring(5, 7), 10);
+  const _yearPrev = _monthCur === 1 ? _yearCur - 1 : _yearCur;
+  const _monthPrev = _monthCur === 1 ? 12 : _monthCur - 1;
+  const _ymPrev = _yearPrev + '-' + String(_monthPrev).padStart(2, '0');
+
+  /* Helper : produit un chip de tendance ↗↘→ avec couleur */
+  function _trendChip(cur, prev, opts) {
+    opts = opts || {};
+    const inverse = opts.inverse === true; /* true pour "risque" : baisse=bonne */
+    const suffix  = opts.suffix || '';
+    if (cur === null || cur === undefined || prev === null || prev === undefined) {
+      return '<span style="font-size:9px;color:var(--muted);font-weight:600;margin-left:6px;font-style:italic">— mois préc.</span>';
+    }
+    const delta = Math.round((cur - prev) * 10) / 10;
+    if (Math.abs(delta) < 0.5) {
+      return '<span style="font-size:9px;color:var(--muted);font-weight:700;margin-left:6px;background:#f1f5f9;padding:1px 7px;border-radius:100px">→ stable</span>';
+    }
+    const positive = inverse ? delta < 0 : delta > 0;
+    const arrow = delta > 0 ? '↗' : '↘';
+    const col = positive ? '#059669' : '#dc2626';
+    const sign = delta > 0 ? '+' : '';
+    return `<span title="vs ${_ymPrev}" style="font-size:9px;font-weight:800;color:${col};margin-left:6px;background:${col}18;padding:2px 8px;border-radius:100px;white-space:nowrap">${arrow} ${sign}${delta}${suffix}</span>`;
+  }
+
+  /* Présence mois précédent */
+  const _seancesMoisPrev = presences.filter(p => p.date && p.date.startsWith(_ymPrev));
+  let _sObsP = 0, _sPresP = 0;
+  _seancesMoisPrev.forEach(p => (p.presences||[]).forEach(x => { _sObsP++; if(x.statut==='P') _sPresP++; }));
+  const _presValPrev = _sObsP > 0 ? Math.round(_sPresP / _sObsP * 100) : null;
+
+  /* PEI réalisé mois précédent — basé sur dates de réalisation date_tahqiq */
+  const _peiStat = JSON.parse(localStorage.getItem('ea_pei_statuses') || '{}');
+  let _peiDoneCur = 0, _peiDonePrev = 0, _peiTotalAll = 0;
+  benefAdmin.filter(b => b.type === 'pei').forEach(b => {
+    (b.pei_domaines || []).forEach(dom => {
+      (dom.objectifs || []).forEach(obj => {
+        if (!obj.code) return;
+        _peiTotalAll++;
+        const st = _peiStat[b.nom + '_' + obj.code] || {};
+        const tahqiq = st.date_tahqiq || obj.date_tahqiq || '';
+        if (st.statut === 'done' || obj.statut === 'done') {
+          if (tahqiq.startsWith(_ym))     _peiDoneCur++;
+          if (tahqiq.startsWith(_ymPrev)) _peiDonePrev++;
+        }
+      });
+    });
+  });
+  /* Ratio mensuel : objectifs réalisés ce mois / total objectifs PEI */
+  const _peiPctCur  = _peiTotalAll > 0 ? Math.round(_peiDoneCur / _peiTotalAll * 100) : null;
+  const _peiPctPrev = _peiTotalAll > 0 ? Math.round(_peiDonePrev / _peiTotalAll * 100) : null;
+
+  /* Injection des chips de tendance dans les labels */
+  const _lblPres = document.getElementById('sante-lbl-presence');
+  if (_lblPres) {
+    const baseTxt = _sObs > 0 ? `${seancesMois.length} ${t('adm_seances_ce_mois')}` : t('adm_aucune_seance_saisie');
+    _lblPres.innerHTML = baseTxt + _trendChip(_presVal, _presValPrev, { suffix: '%' });
+  }
+  const _lblPei = document.getElementById('sante-lbl-pei');
+  if (_lblPei) {
+    const baseTxt = d.peiTotal ? `${d.peiDone} / ${d.peiTotal} ${t('adm_objectifs_pei')}` : t('adm_aucun_objectif_pei');
+    /* Pour PEI, on compare le nombre d'objectifs réalisés ce mois vs mois précédent */
+    _lblPei.innerHTML = baseTxt + _trendChip(_peiDoneCur, _peiDonePrev, { suffix: ' obj.' });
+  }
+
   /* 4. Risque moyen — score de risque pondéré (Critique 5 CLAUDE.md) — liste dédupliquée */
   const _risqueScores = benefAdmin.map(b => {
     let pts = 0;
@@ -20899,9 +20967,87 @@ function renderAdminOverview(){
     : { ic:'🔴', border:'#dc2626', color:'#dc2626' };
   setT('sante-ic-risque',  _sc4.ic);
   setT('sante-val-risque', _risqueMoyen);
-  setT('sante-lbl-risque', _risqueMoyen <= 30 ? t('rapp_stable') : _risqueMoyen <= 60 ? t('rapp_surveiller_lb') : t('rapp_urgent'));
   const _sc4Card = document.getElementById('sante-card-risque');
   if (_sc4Card) _sc4Card.style.borderColor = _sc4.border;
+
+  /* Tendance Risque vs mois précédent (P3 — risque inverse : baisse = bonne) */
+  const _risqueScoresPrev = benefAdmin.map(b => {
+    let pts = 0;
+    let bObs = 0, bPres = 0;
+    _seancesMoisPrev.forEach(p => (p.presences||[]).forEach(x => {
+      if (x.nom === b.nom) { bObs++; if(x.statut==='P') bPres++; }
+    }));
+    if (bObs > 0) {
+      const bPct = Math.round(bPres / bObs * 100);
+      if (bPct < 50)       pts += 40;
+      else if (bPct < 70)  pts += 25;
+    } else {
+      pts += 40;
+    }
+    if (b.type === 'pei') {
+      const bPeiT = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).length, 0);
+      const bPeiD = (b.pei_domaines||[]).reduce((s,dd)=>s+(dd.objectifs||[]).filter(o=>o.statut==='done').length, 0);
+      if (bPeiT >0) {
+        const bPeiPct = Math.round(bPeiD / bPeiT * 100);
+        if (bPeiPct < 30)       pts += 35;
+        else if (bPeiPct < 50)  pts += 20;
+      }
+    }
+    if (!b.dossier) pts += 15;
+    return Math.min(100, pts);
+  });
+  const _risqueMoyenPrev = _risqueScoresPrev.length > 0 && _seancesMoisPrev.length > 0
+    ? Math.round(_risqueScoresPrev.reduce((s,v)=>s+v,0) / _risqueScoresPrev.length)
+    : null;
+  const _lblRisque = document.getElementById('sante-lbl-risque');
+  if (_lblRisque) {
+    const baseTxt = _risqueMoyen <= 30 ? t('rapp_stable') : _risqueMoyen <= 60 ? t('rapp_surveiller_lb') : t('rapp_urgent');
+    _lblRisque.innerHTML = baseTxt + _trendChip(_risqueMoyen, _risqueMoyenPrev, { inverse: true, suffix: ' pts' });
+  }
+
+  /* ── Tendance Score Global vs mois précédent (P3) ──
+     Approche pragmatique : recalcule le score avec les données mois préc.
+     Indépendance et dossiers considérés stables (snapshot actuel). */
+  try {
+    const _peiPrevDoneCum = benefAdmin.filter(b => b.type === 'pei').reduce((tot, b) => {
+      return tot + (b.pei_domaines || []).reduce((s, dom) => {
+        return s + (dom.objectifs || []).filter(obj => {
+          if (!obj.code) return false;
+          const st = _peiStat[b.nom + '_' + obj.code] || {};
+          const tahqiq = st.date_tahqiq || obj.date_tahqiq || '';
+          /* "Done" si réalisé AVANT ou PENDANT le mois préc. */
+          return (st.statut === 'done' || obj.statut === 'done') && tahqiq && tahqiq <= _ymPrev + '-31';
+        }).length;
+      }, 0);
+    }, 0);
+    const _peiPctPrevCum = d.peiTotal > 0 ? Math.round(_peiPrevDoneCum * 100 / d.peiTotal) : null;
+    /* Score approximatif mois précédent : utilise prev présence + prev PEI cumulé,
+       indep + dossiers identiques */
+    const _scorePrev = (_presValPrev !== null && _peiPctPrevCum !== null)
+      ? Math.round(
+          (_peiPctPrevCum * 0.40) +
+          (_presValPrev * 0.30) +
+          ((typeof tauxIndependance !== 'undefined' ? tauxIndependance : 50) * 0.20) +
+          ((typeof tauxDossiers !== 'undefined' ? tauxDossiers : 50) * 0.10)
+        )
+      : null;
+    const _stripBadgeEl = document.getElementById('adm-score-strip-badge');
+    if (_stripBadgeEl && _scorePrev !== null) {
+      /* Injection après le badge du score : ajoute la tendance */
+      const _trendHtml = _trendChip(score, _scorePrev, { suffix: ' pts' });
+      /* Cibler le parent pour ajouter le chip à côté du badge si pas encore présent */
+      const _stripParent = _stripBadgeEl.parentElement;
+      if (_stripParent && !_stripParent.querySelector('.score-trend-chip')) {
+        const trendEl = document.createElement('div');
+        trendEl.className = 'score-trend-chip';
+        trendEl.style.cssText = 'margin-top:6px;display:inline-block';
+        trendEl.innerHTML = _trendHtml;
+        _stripParent.appendChild(trendEl);
+      } else if (_stripParent && _stripParent.querySelector('.score-trend-chip')) {
+        _stripParent.querySelector('.score-trend-chip').innerHTML = _trendHtml;
+      }
+    }
+  } catch(_e) { /* silencieux */ }
 
   // ══════════════════════════════════════════════════
   // DÉCISIONS EN ATTENTE (P2 Cockpit)
