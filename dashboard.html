@@ -17348,7 +17348,9 @@ const ORG_SHARED_PREFIXES = [
   'ea_suivis', 'ea_rapports', 'ea_notes',
   'ea_tn_',  /* برنامج التنقيط — grilles mensuelles PEI */
   'ea_rd_',  /* جدول الرعاية الذاتية — grilles mensuelles autonomie */
-  'ea_jt_'   /* جدول الطلبات — grilles mensuelles demandes */
+  'ea_jt_', /* جدول الطلبات — grilles mensuelles demandes */
+  'ea_stages',     /* Carnet de stages (Formation Pro) */
+  'ea_entreprises' /* Entreprises partenaires */
 ];
 
 function _isOrgSharedKey(key) {
@@ -17408,7 +17410,15 @@ async function _loadOrgSharedForAdmin() {
     Object.keys(grouped).forEach(key => {
       const docs = grouped[key];
 
-      if (key === 'ea_presences' || key === 'ea_suivis' || key === 'ea_rapports' || key === 'ea_notes') {
+      if (key === 'ea_stages' || key === 'ea_entreprises') {
+        /* Clés globales admin — une seule entrée 'global' fait autorité */
+        const sorted = docs.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        try {
+          const val = JSON.parse(sorted[0].value);
+          localStorage.setItem(key, JSON.stringify(val));
+          mergedKeys++;
+        } catch(e) { /* ignore */ }
+      } else if (key === 'ea_presences' || key === 'ea_suivis' || key === 'ea_rapports' || key === 'ea_notes') {
         /* Merge des listes (séances/suivis/rapports/notes) depuis tous les éducateurs.
            Dédoublonner par id principalement. */
         const seen = new Set();
@@ -22223,20 +22233,122 @@ function stageFiltrer(filtre) {
   renderStages();
 }
 
+/* Calcule la note moyenne d'un stage (sur 5) à partir des évaluations */
+function _stageScoreMoyen(stage) {
+  const evals = stage.evaluations || [];
+  if (evals.length === 0) return null;
+  let total = 0, count = 0;
+  evals.forEach(e => {
+    ['ponctualite', 'technique', 'comportement', 'initiative', 'equipe'].forEach(k => {
+      const v = parseFloat(e[k]);
+      if (!isNaN(v)) { total += v; count++; }
+    });
+  });
+  return count > 0 ? Math.round((total / count) * 10) / 10 : null;
+}
+
+/* Calcule la durée en semaines entre deux dates */
+function _stageDureeSemaines(dateDebut, dateFin) {
+  if (!dateDebut || !dateFin) return 0;
+  const d1 = new Date(dateDebut), d2 = new Date(dateFin);
+  const diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24 * 7));
+  return Math.max(1, diff);
+}
+
+const STAGE_STATUT_STYLE = {
+  planifie : { lbl: '📅 Planifié',  col: '#7c3aed', bg: '#ede9fe' },
+  encours  : { lbl: '🔄 En cours',  col: '#d97706', bg: '#fef3c7' },
+  termine  : { lbl: '✅ Terminé',   col: '#059669', bg: '#dcfce7' },
+  rompu    : { lbl: '❌ Rompu',     col: '#dc2626', bg: '#fee2e2' }
+};
+
+const STAGE_TYPE_STYLE = {
+  observation     : { lbl: '👀 Observation',     col: '#2563eb' },
+  'pratique'      : { lbl: '🔧 Pratique',        col: '#0d9488' },
+  'pre-embauche'  : { lbl: '🎯 Pré-embauche',    col: '#7c3aed' }
+};
+
 function renderStages() {
+  const stages = loadData(STAGES_KEY) || [];
+  const entreprises = loadData(ENTREPRISES_KEY) || [];
+  const entMap = {};
+  entreprises.forEach(e => { entMap[e.id] = e; });
+
+  /* Filtrage */
+  const filtered = _stageFilter === 'tous' ? stages : stages.filter(s => s.statut === _stageFilter);
+  /* Tri par date début décroissante */
+  filtered.sort((a, b) => (b.dateDebut || '').localeCompare(a.dateDebut || ''));
+
+  /* ─── KPIs ─── */
   const kpisEl = document.getElementById('stages-kpis');
-  const listEl = document.getElementById('stages-list');
-  const cntEl  = document.getElementById('stages-count');
   if (kpisEl) {
+    const nbTotal   = stages.length;
+    const nbEncours = stages.filter(s => s.statut === 'encours').length;
+    const nbTermine = stages.filter(s => s.statut === 'termine').length;
+    /* Note moyenne globale (stages terminés uniquement) */
+    let totalScore = 0, countScore = 0;
+    stages.forEach(s => {
+      const sc = _stageScoreMoyen(s);
+      if (sc !== null) { totalScore += sc; countScore++; }
+    });
+    const noteMoy = countScore > 0 ? (totalScore / countScore).toFixed(1) : '—';
     kpisEl.innerHTML = `
-      <div class="card" style="border-top:4px solid var(--primary)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--primary)">0</div><div style="font-size:11px;color:var(--muted)">Total stages</div></div></div>
-      <div class="card" style="border-top:4px solid var(--warning)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--warning)">0</div><div style="font-size:11px;color:var(--muted)">🔄 En cours</div></div></div>
-      <div class="card" style="border-top:4px solid var(--success)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--success)">0</div><div style="font-size:11px;color:var(--muted)">✅ Terminés</div></div></div>
-      <div class="card" style="border-top:4px solid #7c3aed"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:#7c3aed">—</div><div style="font-size:11px;color:var(--muted)">⭐ Note moyenne /5</div></div></div>
+      <div class="card" style="border-top:4px solid var(--primary)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--primary)">${nbTotal}</div><div style="font-size:11px;color:var(--muted)">Total stages</div></div></div>
+      <div class="card" style="border-top:4px solid var(--warning)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--warning)">${nbEncours}</div><div style="font-size:11px;color:var(--muted)">🔄 En cours</div></div></div>
+      <div class="card" style="border-top:4px solid var(--success)"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:var(--success)">${nbTermine}</div><div style="font-size:11px;color:var(--muted)">✅ Terminés</div></div></div>
+      <div class="card" style="border-top:4px solid #7c3aed"><div style="padding:14px;text-align:center"><div style="font-family:Sora,sans-serif;font-size:32px;font-weight:900;color:#7c3aed">${noteMoy}</div><div style="font-size:11px;color:var(--muted)">⭐ Note moyenne /5</div></div></div>
     `;
   }
-  if (listEl) listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px">📒</div> <div style="font-size:14px;font-weight:700">Aucun stage enregistré</div> <div style="font-size:12px;margin-top:6px">Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l'association.</div> </div>`;
-  if (cntEl) cntEl.textContent = '0 stages';
+
+  /* ─── Liste ─── */
+  const listEl = document.getElementById('stages-list');
+  const cntEl  = document.getElementById('stages-count');
+  if (cntEl) cntEl.textContent = `${filtered.length} stage(s)`;
+
+  if (!listEl) return;
+  if (filtered.length === 0) {
+    listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px">📒</div> <div style="font-size:14px;font-weight:700">Aucun stage ${_stageFilter !== 'tous' ? STAGE_STATUT_STYLE[_stageFilter]?.lbl.toLowerCase() : 'enregistré'}</div> <div style="font-size:12px;margin-top:6px">${stages.length === 0 ? 'Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l\\'association.' : 'Aucun stage dans cette catégorie. Changez de filtre ou créez un nouveau stage.'}</div> </div>`;
+    return;
+  }
+
+  listEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px;padding:14px">' + filtered.map(s => {
+    const st = STAGE_STATUT_STYLE[s.statut] || STAGE_STATUT_STYLE.planifie;
+    const tp = STAGE_TYPE_STYLE[s.type] || STAGE_TYPE_STYLE.observation;
+    const ent = entMap[s.entrepriseId];
+    const entNom = ent ? ent.nom : (s.entrepriseNom || '— Entreprise inconnue');
+    const score = _stageScoreMoyen(s);
+    const nbEvals = (s.evaluations || []).length;
+    const duree = _stageDureeSemaines(s.dateDebut, s.dateFin);
+
+    return `<div class="card" style="border-left:4px solid ${st.col};padding:0">
+      <div style="padding:14px 18px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+          <div style="flex:1;min-width:200px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px">
+              <span style="font-size:14px;font-weight:800;color:var(--text)">${s.benef}</span>
+              <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;background:${st.bg};color:${st.col}">${st.lbl}</span>
+              <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;background:${tp.col}22;color:${tp.col}">${tp.lbl}</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted)"><strong>🏢 ${entNom}</strong>${s.tuteur ? ' · 👤 ' + s.tuteur : ''}</div>
+          </div>
+          <div style="text-align:right">
+            ${score !== null ? `<div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;color:${st.col};line-height:1">${score}<span style="font-size:13px;color:var(--muted);font-weight:600">/5</span></div><div style="font-size:10px;color:var(--muted)">${nbEvals} évaluation(s)</div>` : `<div style="font-size:11px;color:var(--muted);font-style:italic">Pas encore évalué</div>`}
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding-top:8px;border-top:1px solid var(--border)">
+          <span>📅 <strong>${s.dateDebut || '—'}</strong> → <strong>${s.dateFin || '—'}</strong></span>
+          <span>⏱ <strong>${duree} sem.</strong></span>
+          ${s.classe ? `<span>🏷 <strong>${s.classe}</strong></span>` : ''}
+        </div>
+        ${s.notes ? `<div style="margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text);font-style:italic">📝 ${s.notes}</div>` : ''}
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+          <button onclick="stageOuvrirEval(${s.id})" class="btn btn-p" style="font-size:11px;padding:5px 12px;background:#7c3aed;border-color:#7c3aed">⭐ Évaluation</button>
+          <button onclick="stageOuvrirForm(${s.id})" class="btn" style="font-size:11px;padding:5px 12px">✏ Modifier</button>
+          <button onclick="stageSupprimer(${s.id})" class="btn" style="font-size:11px;padding:5px 12px;color:#dc2626;border-color:#dc2626">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
 }
 
 function renderEntreprises() {
@@ -22285,9 +22397,184 @@ function renderEntreprises() {
   }
 }
 
-/* Stubs stages (complets en Étape 3) */
-function stageOuvrirForm()  { showToast('🚧 Création de stages — Étape 3 prochain commit', '#d97706'); }
-function stageSauvegarder() { showToast('🚧 À venir Étape 3', '#d97706'); }
+/* ═══════════════════════════════════════════════════════════════
+   STAGES — CRUD complet (Étape 3/5)
+═══════════════════════════════════════════════════════════════ */
+
+/** Récupère les bénéficiaires Formation Pro (Info + Couture) */
+function _stageBenefsEligibles() {
+  const FORMATION_PRO = ['Informatique', 'Couture'];
+  const itarsCl = USERS.filter(u => !u.role && FORMATION_PRO.includes(u.classe));
+  const tids = itarsCl.map(u => u.teacherId);
+  return getBeneficiairesAdmin().filter(b => tids.includes(b.teacherId));
+}
+
+/** Ouvre le modal de création/édition stage */
+function stageOuvrirForm(id) {
+  const modal = document.getElementById('stage-modal');
+  const title = document.getElementById('stage-modal-title');
+  if (!modal) return;
+
+  /* Peupler les listes déroulantes */
+  const benefSel = document.getElementById('stg-benef');
+  const entSel   = document.getElementById('stg-entreprise');
+
+  if (benefSel) {
+    const benefs = _stageBenefsEligibles();
+    if (benefs.length === 0) {
+      showToast('⚠ Aucun bénéficiaire Formation Pro trouvé', '#d97706');
+      return;
+    }
+    /* Trier par classe puis par nom */
+    benefs.sort((a, b) => {
+      const ca = (USERS.find(u => u.teacherId === a.teacherId) || {}).classe || '';
+      const cb = (USERS.find(u => u.teacherId === b.teacherId) || {}).classe || '';
+      return ca.localeCompare(cb) || a.nom.localeCompare(b.nom);
+    });
+    benefSel.innerHTML = '<option value="">— Sélectionner —</option>' + benefs.map(b => {
+      const classe = (USERS.find(u => u.teacherId === b.teacherId) || {}).classe || '';
+      const icon = classe === 'Informatique' ? '💻' : '✂️';
+      return `<option value="${b.nom}" data-classe="${classe}">${icon} ${b.nom} (${classe})</option>`;
+    }).join('');
+  }
+
+  if (entSel) {
+    const entreprises = loadData(ENTREPRISES_KEY) || [];
+    if (entreprises.length === 0) {
+      entSel.innerHTML = '<option value="">⚠ Aucune entreprise — créez-en une d\'abord</option>';
+    } else {
+      entSel.innerHTML = '<option value="">— Sélectionner —</option>' + entreprises.map(e =>
+        `<option value="${e.id}">${e.nom} (${e.ville || ''}) · ${e.secteur}</option>`
+      ).join('');
+    }
+  }
+
+  if (id) {
+    /* Mode édition */
+    const stages = loadData(STAGES_KEY) || [];
+    const stg = stages.find(s => s.id === id);
+    if (!stg) return;
+    if (title) title.textContent = '✏ Modifier le stage';
+    document.getElementById('stg-id').value         = id;
+    document.getElementById('stg-benef').value      = stg.benef || '';
+    document.getElementById('stg-entreprise').value = stg.entrepriseId || '';
+    document.getElementById('stg-type').value       = stg.type || 'observation';
+    document.getElementById('stg-tuteur').value     = stg.tuteur || '';
+    document.getElementById('stg-debut').value      = stg.dateDebut || '';
+    document.getElementById('stg-fin').value        = stg.dateFin || '';
+    document.getElementById('stg-statut').value     = stg.statut || 'planifie';
+    document.getElementById('stg-notes').value      = stg.notes || '';
+  } else {
+    /* Mode création — valeurs par défaut */
+    if (title) title.textContent = '📒 Nouveau stage';
+    document.getElementById('stg-id').value = '';
+    ['stg-benef','stg-entreprise','stg-tuteur','stg-debut','stg-fin','stg-notes'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('stg-type').value   = 'observation';
+    document.getElementById('stg-statut').value = 'planifie';
+    /* Date début proposée = aujourd'hui */
+    document.getElementById('stg-debut').value = new Date().toISOString().substring(0, 10);
+  }
+  modal.style.display = 'flex';
+}
+
+/** Sauvegarde un stage */
+function stageSauvegarder() {
+  const benef = document.getElementById('stg-benef').value;
+  if (!benef) { showFieldError('stg-benef', 'Bénéficiaire requis'); return; }
+  const entId = document.getElementById('stg-entreprise').value;
+  if (!entId) { showFieldError('stg-entreprise', 'Entreprise requise'); return; }
+  const dateDebut = document.getElementById('stg-debut').value;
+  if (!dateDebut) { showFieldError('stg-debut', 'Date début requise'); return; }
+  const dateFin = document.getElementById('stg-fin').value;
+  if (!dateFin) { showFieldError('stg-fin', 'Date fin requise'); return; }
+  if (dateFin < dateDebut) { showFieldError('stg-fin', 'La date de fin doit être après le début'); return; }
+
+  const existingId = document.getElementById('stg-id').value;
+  const stages = loadData(STAGES_KEY) || [];
+
+  /* Récupérer la classe du bénéficiaire */
+  const benefObj = BENEFICIAIRES.find(b => b.nom === benef);
+  const cadre    = benefObj ? USERS.find(u => u.teacherId === benefObj.teacherId) : null;
+  const classe   = cadre ? cadre.classe : '';
+
+  /* Récupérer le nom de l'entreprise (pour fallback si suppression) */
+  const ent = (loadData(ENTREPRISES_KEY) || []).find(e => e.id === parseInt(entId, 10));
+
+  const data = {
+    id           : existingId ? parseInt(existingId, 10) : Date.now(),
+    benef        : benef,
+    classe       : classe,
+    entrepriseId : parseInt(entId, 10),
+    entrepriseNom: ent ? ent.nom : '',
+    tuteur       : document.getElementById('stg-tuteur').value.trim(),
+    type         : document.getElementById('stg-type').value,
+    dateDebut    : dateDebut,
+    dateFin      : dateFin,
+    statut       : document.getElementById('stg-statut').value,
+    notes        : document.getElementById('stg-notes').value.trim(),
+    evaluations  : [],  /* sera rempli à l'Étape 4 */
+    synthese     : '',
+    dateCreation : new Date().toISOString().substring(0, 10)
+  };
+
+  if (existingId) {
+    const idx = stages.findIndex(s => s.id === data.id);
+    if (idx >= 0) {
+      /* Préserver les évaluations existantes */
+      data.evaluations = stages[idx].evaluations || [];
+      data.synthese    = stages[idx].synthese || '';
+      data.dateCreation= stages[idx].dateCreation;
+      stages[idx] = data;
+    } else {
+      stages.push(data);
+    }
+  } else {
+    stages.push(data);
+  }
+
+  saveData(STAGES_KEY, stages);
+  /* Push vers Firestore collection partagée */
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global',
+      key      : STAGES_KEY,
+      value    : JSON.stringify(stages),
+      updatedAt: new Date().toISOString()
+    }).catch(e => console.warn('[Stage sync]', e.message));
+  }
+
+  document.getElementById('stage-modal').style.display = 'none';
+  showToast(existingId ? '✏ Stage modifié' : `✅ Stage créé — ${benef} chez ${ent ? ent.nom : '—'}`, '#059669');
+  auditLog('systeme', existingId ? 'Stage modifié' : 'Stage créé',
+    `${benef} · ${ent ? ent.nom : '—'} · ${dateDebut} → ${dateFin}`);
+  renderStages();
+}
+
+/** Supprime un stage avec confirmation */
+function stageSupprimer(id) {
+  const stages = loadData(STAGES_KEY) || [];
+  const stg = stages.find(s => s.id === id);
+  if (!stg) return;
+  if (!confirm(`Supprimer le stage de "${stg.benef}" chez ${stg.entrepriseNom} ?\nToutes les évaluations associées seront également supprimées.`)) return;
+  const filtered = stages.filter(s => s.id !== id);
+  saveData(STAGES_KEY, filtered);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global', key: STAGES_KEY,
+      value: JSON.stringify(filtered), updatedAt: new Date().toISOString()
+    }).catch(() => {});
+  }
+  showToast(`🗑 Stage supprimé — ${stg.benef}`, '#dc2626');
+  auditLog('suppression', 'Stage supprimé', `${stg.benef} · ${stg.entrepriseNom}`);
+  renderStages();
+}
+
+/** Placeholder pour l'Étape 4 (évaluations hebdo) */
+function stageOuvrirEval(id) {
+  showToast('🚧 Grille d\'évaluation hebdo — Étape 4 prochain commit', '#d97706');
+}
 
 /* ═══════════════════════════════════════════════════════════════
    ENTREPRISES PARTENAIRES — CRUD complet (Étape 2/5)
