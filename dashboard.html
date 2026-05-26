@@ -22261,7 +22261,7 @@ function renderEntreprises() {
     } else {
       const icons = { 'Informatique':'💻', 'Couture':'✂', 'Administration':'📋', 'Commerce':'🛒', 'Services':'🛠', 'Artisanat':'🎨', 'Restauration':'🍽', 'Autre':'🏢' };
       gridEl.innerHTML = entreprises.map(e => `
-        <div class="card" style="border-top:3px solid #7c3aed;cursor:pointer" onclick="entrepriseOuvrirForm(${e.id})">
+        <div class="card" style="border-top:3px solid #7c3aed;position:relative">
           <div style="padding:14px 16px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
               <div style="font-size:24px">${icons[e.secteur] || '🏢'}</div>
@@ -22274,6 +22274,10 @@ function renderEntreprises() {
               ${e.tel ? '📞 ' + e.tel : ''}
             </div>
             ${e.postes ? `<div style="margin-top:10px;padding:6px 10px;background:var(--bg);border-radius:6px;font-size:10px;color:var(--text)"><strong>Postes :</strong> ${e.postes.substring(0,80)}${e.postes.length>80?'...':''}</div>` : ''}
+            <div style="margin-top:12px;display:flex;gap:6px;justify-content:flex-end">
+              <button onclick="event.stopPropagation();entrepriseOuvrirForm(${e.id})" class="btn" style="font-size:11px;padding:4px 10px" title="Modifier">✏</button>
+              <button onclick="event.stopPropagation();entrepriseSupprimer(${e.id})" class="btn" style="font-size:11px;padding:4px 10px;color:#dc2626;border-color:#dc2626" title="Supprimer">🗑</button>
+            </div>
           </div>
         </div>
       `).join('');
@@ -22281,12 +22285,193 @@ function renderEntreprises() {
   }
 }
 
-/* Stubs des fonctions à compléter dans le prochain commit */
-function stageOuvrirForm()       { showToast('🚧 Module Stage en cours de finalisation', '#d97706'); }
-function stageSauvegarder()      { showToast('🚧 À venir', '#d97706'); }
-function entrepriseOuvrirForm()  { showToast('🚧 À venir au prochain commit', '#d97706'); }
-function entrepriseSauvegarder() { showToast('🚧 À venir', '#d97706'); }
-function entrepriseInitDemo()    { showToast('🚧 À venir au prochain commit', '#d97706'); }
+/* Stubs stages (complets en Étape 3) */
+function stageOuvrirForm()  { showToast('🚧 Création de stages — Étape 3 prochain commit', '#d97706'); }
+function stageSauvegarder() { showToast('🚧 À venir Étape 3', '#d97706'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   ENTREPRISES PARTENAIRES — CRUD complet (Étape 2/5)
+═══════════════════════════════════════════════════════════════ */
+
+/** Ouvre le modal de création/édition entreprise */
+function entrepriseOuvrirForm(id) {
+  const modal = document.getElementById('entreprise-modal');
+  const title = document.getElementById('entreprise-modal-title');
+  if (!modal) return;
+
+  if (id) {
+    /* Mode édition */
+    const entreprises = loadData(ENTREPRISES_KEY) || [];
+    const ent = entreprises.find(e => e.id === id);
+    if (!ent) return;
+    if (title) title.textContent = '✏ Modifier entreprise';
+    document.getElementById('ent-id').value = id;
+    document.getElementById('ent-nom').value      = ent.nom || '';
+    document.getElementById('ent-secteur').value  = ent.secteur || 'Informatique';
+    document.getElementById('ent-ville').value    = ent.ville || 'Tétouan';
+    document.getElementById('ent-adresse').value  = ent.adresse || '';
+    document.getElementById('ent-contact').value  = ent.contact || '';
+    document.getElementById('ent-tel').value      = ent.tel || '';
+    document.getElementById('ent-email').value    = ent.email || '';
+    document.getElementById('ent-postes').value   = ent.postes || '';
+  } else {
+    /* Mode création */
+    if (title) title.textContent = '➕ Nouvelle entreprise partenaire';
+    document.getElementById('ent-id').value = '';
+    ['ent-nom','ent-adresse','ent-contact','ent-tel','ent-email','ent-postes'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('ent-secteur').value = 'Informatique';
+    document.getElementById('ent-ville').value   = 'Tétouan';
+  }
+  modal.style.display = 'flex';
+}
+
+/** Sauvegarde une entreprise (création ou modification) */
+function entrepriseSauvegarder() {
+  const nom = document.getElementById('ent-nom').value.trim();
+  if (!nom) {
+    showFieldError('ent-nom', 'Nom requis');
+    return;
+  }
+  const existingId = document.getElementById('ent-id').value;
+  const entreprises = loadData(ENTREPRISES_KEY) || [];
+
+  const data = {
+    id      : existingId ? parseInt(existingId, 10) : Date.now(),
+    nom     : nom,
+    secteur : document.getElementById('ent-secteur').value,
+    ville   : document.getElementById('ent-ville').value,
+    adresse : document.getElementById('ent-adresse').value.trim(),
+    contact : document.getElementById('ent-contact').value.trim(),
+    tel     : document.getElementById('ent-tel').value.trim(),
+    email   : document.getElementById('ent-email').value.trim(),
+    postes  : document.getElementById('ent-postes').value.trim(),
+    dateAjout: existingId ? undefined : new Date().toISOString().substring(0, 10)
+  };
+
+  if (existingId) {
+    const idx = entreprises.findIndex(e => e.id === data.id);
+    if (idx >= 0) {
+      data.dateAjout = entreprises[idx].dateAjout; /* préserver date originale */
+      entreprises[idx] = data;
+    } else {
+      entreprises.push(data);
+    }
+  } else {
+    entreprises.push(data);
+  }
+
+  saveData(ENTREPRISES_KEY, entreprises);
+  /* Push vers Firestore collection partagée */
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_entreprises').set({
+      teacherId: 'global',
+      key      : ENTREPRISES_KEY,
+      value    : JSON.stringify(entreprises),
+      updatedAt: new Date().toISOString()
+    }).catch(e => console.warn('[Entreprise sync]', e.message));
+  }
+
+  document.getElementById('entreprise-modal').style.display = 'none';
+  showToast(existingId ? '✏ Entreprise modifiée' : '✅ Entreprise ajoutée — ' + nom, '#059669');
+  auditLog('systeme', existingId ? 'Entreprise modifiée' : 'Entreprise ajoutée', nom);
+  renderEntreprises();
+}
+
+/** Supprime une entreprise (avec confirmation) */
+function entrepriseSupprimer(id) {
+  const entreprises = loadData(ENTREPRISES_KEY) || [];
+  const ent = entreprises.find(e => e.id === id);
+  if (!ent) return;
+  if (!confirm(`Supprimer l'entreprise "${ent.nom}" ?\nLes stages associés ne seront pas supprimés mais perdront le lien entreprise.`)) return;
+  const filtered = entreprises.filter(e => e.id !== id);
+  saveData(ENTREPRISES_KEY, filtered);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_entreprises').set({
+      teacherId: 'global', key: ENTREPRISES_KEY,
+      value: JSON.stringify(filtered), updatedAt: new Date().toISOString()
+    }).catch(() => {});
+  }
+  showToast('🗑 Entreprise supprimée — ' + ent.nom, '#dc2626');
+  auditLog('suppression', 'Entreprise supprimée', ent.nom);
+  renderEntreprises();
+}
+
+/**
+ * Initialise 10 entreprises partenaires fictives mais réalistes
+ * pour la région Tétouan/Martil — démo PFE.
+ */
+function entrepriseInitDemo() {
+  const existant = loadData(ENTREPRISES_KEY) || [];
+  if (existant.length > 0) {
+    if (!confirm(`Il y a déjà ${existant.length} entreprise(s) enregistrée(s).\n\n` +
+                 'Voulez-vous REMPLACER par les 10 entreprises de démo ?\n' +
+                 '(Cliquez Annuler pour conserver vos données.)')) return;
+  }
+
+  const demo = [
+    /* ═══ INFORMATIQUE (5) ═══ */
+    { nom: 'Cyber Atlas Tétouan',         secteur: 'Informatique',  ville: 'Tétouan', adresse: 'Av. Mohammed V, n°47, près Place Feddan',
+      contact: 'M. Ahmed Bennani',        tel: '0539962451', email: 'contact@cyberatlas.ma',
+      postes: 'Assistant saisie · Maintenance PC · Accueil clients' },
+    { nom: 'MediaTech Martil',            secteur: 'Informatique',  ville: 'Martil',  adresse: 'Centre commercial Marina, Local 12',
+      contact: 'Mme Fatima El Idrissi',   tel: '0539978312', email: 'mediatech@martil.com',
+      postes: 'Technicien junior maintenance · Vendeur accessoires informatique' },
+    { nom: 'Bureau Yacoub Conseil',       secteur: 'Administration',ville: 'Tétouan', adresse: 'Rue Achra May, Imm. Andalousie 2ème étage',
+      contact: 'M. Yacoub Saoudi',        tel: '0539711422', email: 'yacoub.conseil@gmail.com',
+      postes: 'Assistant administratif · Saisie de documents · Archivage numérique' },
+    { nom: 'Print Express Tétouan',       secteur: 'Informatique',  ville: 'Tétouan', adresse: 'Av. Hassan II, près Bab Okla',
+      contact: 'M. Khalid Lamrani',       tel: '0539694113', email: 'printexpress.tetouan@gmail.com',
+      postes: 'Aide PAO · Saisie de texte · Photocopies & impressions' },
+    { nom: 'WebPro Maroc',                secteur: 'Informatique',  ville: 'Martil',  adresse: 'Bd. Massira, Bât. Atlas 3, RDC',
+      contact: 'M. Younes Berrada',       tel: '0661452731', email: 'hello@webpromaroc.ma',
+      postes: 'Junior développeur web · Intégrateur HTML/CSS · Saisie contenu' },
+
+    /* ═══ COUTURE (3) ═══ */
+    { nom: 'Atelier Khayata El Andalous', secteur: 'Couture',       ville: 'Tétouan', adresse: 'Souk El Foki, médina, n°23',
+      contact: 'Lalla Najat',             tel: '0539762148', email: '',
+      postes: 'Aide-couturière · Finitions main · Broderie traditionnelle' },
+    { nom: 'Confection Moderne Martil',   secteur: 'Couture',       ville: 'Martil',  adresse: 'Zone industrielle, lot 14',
+      contact: 'M. Driss Choukri',        tel: '0539612557', email: 'confection.moderne@gmail.com',
+      postes: 'Opérateur machine à coudre · Contrôle qualité · Étiquetage' },
+    { nom: 'Maison Caftan El Wafa',       secteur: 'Couture',       ville: 'Tétouan', adresse: 'Rue Sidi El Mandri, médina',
+      contact: 'Lalla Saadia Wafa',       tel: '0670225391', email: 'caftan.elwafa@gmail.com',
+      postes: 'Apprenti(e) caftan · Broderie sfifa · Préparation tissus' },
+
+    /* ═══ AUTRES SECTEURS (2) ═══ */
+    { nom: 'Marjane Tétouan',             secteur: 'Commerce',      ville: 'Tétouan', adresse: 'Route Tanger, Sortie autoroute',
+      contact: 'Mme Salma El Bakkali',    tel: '0539971500', email: 'rh.tetouan@marjane.ma',
+      postes: 'Mise en rayon · Caissier accompagné · Entretien magasin' },
+    { nom: 'Restaurant Le Riad',          secteur: 'Restauration',  ville: 'Martil',  adresse: 'Corniche Martil, en face plage',
+      contact: 'M. Hicham El Fassi',      tel: '0539668042', email: '',
+      postes: 'Aide-serveur · Plonge · Mise en place tables' }
+  ];
+
+  /* Affecter id + dateAjout */
+  const now = new Date();
+  const aujourdhui = now.toISOString().substring(0, 10);
+  const entreprises = demo.map((e, i) => ({
+    id: 1700000000000 + i,  /* IDs déterministes stables */
+    ...e,
+    dateAjout: aujourdhui
+  }));
+
+  saveData(ENTREPRISES_KEY, entreprises);
+  /* Push vers Firestore */
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_entreprises').set({
+      teacherId: 'global',
+      key      : ENTREPRISES_KEY,
+      value    : JSON.stringify(entreprises),
+      updatedAt: new Date().toISOString()
+    }).catch(e => console.warn('[Demo entreprises]', e.message));
+  }
+
+  showToast('🎲 10 entreprises partenaires démo créées', '#059669');
+  auditLog('systeme', 'Init démo entreprises', '10 entreprises ajoutées (Tétouan/Martil)');
+  renderEntreprises();
+}
 
 /* ═══════════════════════════════════════════════════════════════
    ACCOMPAGNEMENT SPÉCIALISÉ — IBA (Indice de Bien-être & Autonomie)
