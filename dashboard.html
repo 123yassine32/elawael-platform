@@ -22307,7 +22307,7 @@ function renderStages() {
 
   if (!listEl) return;
   if (filtered.length === 0) {
-    listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px">📒</div> <div style="font-size:14px;font-weight:700">Aucun stage ${_stageFilter !== 'tous' ? STAGE_STATUT_STYLE[_stageFilter]?.lbl.toLowerCase() : 'enregistré'}</div> <div style="font-size:12px;margin-top:6px">${stages.length === 0 ? 'Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l\\'association.' : 'Aucun stage dans cette catégorie. Changez de filtre ou créez un nouveau stage.'}</div> </div>`;
+    listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px">📒</div> <div style="font-size:14px;font-weight:700">Aucun stage ${_stageFilter !== 'tous' ? STAGE_STATUT_STYLE[_stageFilter]?.lbl.toLowerCase() : 'enregistré'}</div> <div style="font-size:12px;margin-top:6px">${stages.length === 0 ? 'Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l\'association.' : 'Aucun stage dans cette catégorie. Changez de filtre ou créez un nouveau stage.'}</div> </div>`;
     return;
   }
 
