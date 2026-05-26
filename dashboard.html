@@ -20918,17 +20918,25 @@ function renderAdminOverview(){
   const _peiPctCur  = _peiTotalAll > 0 ? Math.round(_peiDoneCur / _peiTotalAll * 100) : null;
   const _peiPctPrev = _peiTotalAll > 0 ? Math.round(_peiDonePrev / _peiTotalAll * 100) : null;
 
-  /* Injection des chips de tendance dans les labels */
+  /* Injection des chips de tendance dans les labels
+     [Fix P3] Supprimer data-i18n pour empêcher translatePage() d'écraser */
   const _lblPres = document.getElementById('sante-lbl-presence');
   if (_lblPres) {
     const baseTxt = _sObs > 0 ? `${seancesMois.length} ${t('adm_seances_ce_mois')}` : t('adm_aucune_seance_saisie');
+    _lblPres.removeAttribute('data-i18n');
     _lblPres.innerHTML = baseTxt + _trendChip(_presVal, _presValPrev, { suffix: '%' });
   }
   const _lblPei = document.getElementById('sante-lbl-pei');
   if (_lblPei) {
     const baseTxt = d.peiTotal ? `${d.peiDone} / ${d.peiTotal} ${t('adm_objectifs_pei')}` : t('adm_aucun_objectif_pei');
-    /* Pour PEI, on compare le nombre d'objectifs réalisés ce mois vs mois précédent */
+    _lblPei.removeAttribute('data-i18n');
     _lblPei.innerHTML = baseTxt + _trendChip(_peiDoneCur, _peiDonePrev, { suffix: ' obj.' });
+  }
+  /* Pour le label Dossiers — ajouter aussi une tendance (cumulative donc souvent stable) */
+  const _lblDoss = document.getElementById('sante-lbl-dossiers');
+  if (_lblDoss) {
+    _lblDoss.removeAttribute('data-i18n');
+    _lblDoss.innerHTML = `${d.totalDossiers} / ${d.totalBenef} ${t('adm_complets')}`;
   }
 
   /* 4. Risque moyen — score de risque pondéré (Critique 5 CLAUDE.md) — liste dédupliquée */
@@ -21006,6 +21014,7 @@ function renderAdminOverview(){
   const _lblRisque = document.getElementById('sante-lbl-risque');
   if (_lblRisque) {
     const baseTxt = _risqueMoyen <= 30 ? t('rapp_stable') : _risqueMoyen <= 60 ? t('rapp_surveiller_lb') : t('rapp_urgent');
+    _lblRisque.removeAttribute('data-i18n');
     _lblRisque.innerHTML = baseTxt + _trendChip(_risqueMoyen, _risqueMoyenPrev, { inverse: true, suffix: ' pts' });
   }
 
