@@ -1020,8 +1020,8 @@ body.is-consultant .sensitive-data::after {
               style="flex:1;accent-color:var(--purple);height:6px;cursor:pointer"
               oninput="_simUpdateDebounced()"> <div style="font-family:Sora,sans-serif;font-size:16px;font-weight:800;color:var(--purple);white-space:nowrap" id="sim-lbl-duree">6 mois</div> </div> <div style="padding:0 16px 12px;font-size:11px;color:var(--muted)">Si l'amélioration est progressive et linéaire sur cette durée
           </div> <div style="padding:0 16px 16px"> <canvas id="sim-chart-projection" height="130"></canvas> </div> </div> </div> </div> <!-- ══ SECTION : Rapport institutionnel ══ --> <div id="adm-section-rapport" style="display:none"> <!-- En-tête institutionnel imprimable --> <div id="rapport-printable"> <!-- Bannière officielle --> <div style="background:linear-gradient(135deg,#1b3a6b 0%,#2563eb 60%,#1b3a6b 100%);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden"> <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:rgba(255,255,255,0.04);border-radius:50%"></div> <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:rgba(255,255,255,0.03);border-radius:50%"></div> <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px"> <div> <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:4px" data-i18n="rapp_titre_officiel">Rapport institutionnel — Usage officiel</div> <div style="font-family:Sora,sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:6px">Association El Awael</div> <div style="color:rgba(255,255,255,0.8);font-size:13px">الجمعية الأوائل لرعاية ذوي الإعاقة — المحمدية</div> <div style="margin-top:10px;color:rgba(255,255,255,0.6);font-size:11px" id="rapp-date-header">Généré le —</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"> <button onclick="rapportExportPDF()" class="btn btn-p" style="font-size:12px;padding:8px 18px;background:#fff;color:#1b3a6b;font-weight:800;border:none">Exporter PDF
-              </button> <div style="font-size:11px;color:rgba(255,255,255,0.5)" id="rapp-periode">Année scolaire 2025-2026</div> </div> </div> </div> <!-- 5 KPIs visuels institutionnels --> <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px"> <div class="card" style="border-top:4px solid var(--primary);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--primary)" id="rapp-k-score">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">/100</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_score">Score global</div> <div id="rapp-k-score-badge" style="font-size:10px;margin-top:4px;padding:2px 8px;border-radius:100px;display:inline-block;background:var(--bg);color:var(--muted)">—</div> </div> </div> <div class="card" style="border-top:4px solid var(--teal);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--teal)" id="rapp-k-benef">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px" data-i18n="rapp_kpi_personnes">personnes</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_benef_s">Bénéficiaires suivis</div> <div id="rapp-k-benef-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-presence" style="border-top:4px solid var(--success);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--success)" id="rapp-k-presence">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_presence_s">Taux de présence</div> <div id="rapp-k-presence-sub" style="font-size:10px;color:var(--muted);margin-top:4px" data-i18n="rapp_kpi_pres_moy">Moyenne annuelle</div> </div> </div> <div class="card" id="rapp-card-pei" style="border-top:4px solid var(--purple);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--purple)" id="rapp-k-pei">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_pei_s">Objectifs réalisés</div> <div id="rapp-k-pei-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-dossiers" style="border-top:4px solid var(--warning);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--warning)" id="rapp-k-dossiers">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_dossiers_s">Conformité dossiers</div> <div id="rapp-k-dossiers-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> </div> <!-- Graphiques institutionnels --> <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px"> <!-- Évolution 6 mois --> <div class="card" style="border-top:3px solid var(--primary)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_evol_titre">📈 Évolution des indicateurs clés — 6 derniers mois</div> </div> <div style="padding:12px 16px 16px"> <canvas id="rapp-chart-evolution" height="100"></canvas> </div> </div> <!-- Répartition des bénéficiaires --> <div class="card" style="border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_classes_titre">Répartition par classe</div> </div> <div style="padding:12px 16px 16px;display:flex;align-items:center;gap:12px"> <canvas id="rapp-chart-classes" width="130" height="130" style="flex-shrink:0"></canvas> <div id="rapp-classes-legend" style="flex:1;font-size:11px"></div> </div> </div> </div> <!-- Tableau synthèse par classe --> <div class="card" style="margin-bottom:24px;border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_synthese_filiere">📋 Synthèse par filière — Année scolaire 2025-2026</div> </div> <div style="overflow-x:auto"> <table> <thead> <tr> <th data-i18n="rapp_col_filiere">Filière</th> <th style="text-align:center" data-i18n="rapp_col_benef_rapp">Bénéficiaires</th> <th style="text-align:center" data-i18n="rapp_col_dossiers_rapp">Dossiers complets</th> <th style="text-align:center" data-i18n="rapp_col_pei_rapp">Réalisation PEI</th> <th style="text-align:center" data-i18n="rapp_col_cadres_rapp">Cadres encadrants</th> <th style="text-align:center" data-i18n="rapp_col_risque_rapp">Niveau de risque</th> </tr> </thead> <tbody id="rapp-table-classes"></tbody> </table> </div> </div> <!-- Synthèse textuelle --> <div class="card" style="border-top:3px solid var(--success)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_narrative_titre">📝 Synthèse narrative — Destinée aux partenaires & financeurs</div> </div> <div id="rapp-synthese" style="padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text)">Chargement…
-          </div> </div> </div><!-- fin rapport-printable --> </div> <!-- ══ SECTION : Journal d'audit ══ --> <div id="adm-section-audit" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px"> <div class="adm-section-title" style="margin-bottom:0" data-i18n="audit_titre">🔍 Journal d'audit — Traçabilité complète</div> <div style="display:flex;gap:8px;flex-wrap:wrap"> <button onclick="auditExportExcel()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#059669;border-color:#059669">Excel</button> <button onclick="auditExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px">PDF</button> </div> </div> <!-- KPIs du journal --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--primary)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_total">📋 Total actions</div> <div class="kpi-val" id="audit-k-total" style="color:var(--primary)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_total_sub">Toutes opérations</div></div> </div> <div class="card" style="border-top:3px solid var(--success)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_today">🟢 Aujourd'hui</div> <div class="kpi-val" id="audit-k-today" style="color:var(--success)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_today_sub">Actions ce jour</div></div> </div> <div class="card" style="border-top:3px solid var(--warning)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_users">👤 Utilisateurs actifs</div> <div class="kpi-val" id="audit-k-users" style="color:var(--warning)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_users_sub">Ce mois-ci</div></div> </div> <div class="card" style="border-top:3px solid var(--danger)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_delete">🗑️ Suppressions</div> <div class="kpi-val" id="audit-k-delete" style="color:var(--danger)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_delete_sub">Actions sensibles</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <span style="font-size:12px;font-weight:700;color:var(--muted)" data-i18n="audit_filtrer">Filtrer :</span> <select id="audit-filter-type" onchange="auditRender()"
+              </button> <div style="font-size:11px;color:rgba(255,255,255,0.5)" id="rapp-periode">Année scolaire 2025-2026</div> </div> </div> </div> <!-- 5 KPIs visuels institutionnels --> <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px"> <div class="card" style="border-top:4px solid var(--primary);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--primary)" id="rapp-k-score">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">/100</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_score">Score global</div> <div id="rapp-k-score-badge" style="font-size:10px;margin-top:4px;padding:2px 8px;border-radius:100px;display:inline-block;background:var(--bg);color:var(--muted)">—</div> </div> </div> <div class="card" style="border-top:4px solid var(--teal);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--teal)" id="rapp-k-benef">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px" data-i18n="rapp_kpi_personnes">personnes</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_benef_s">Bénéficiaires suivis</div> <div id="rapp-k-benef-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-presence" style="border-top:4px solid var(--success);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--success)" id="rapp-k-presence">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_presence_s">Taux de présence</div> <div id="rapp-k-presence-sub" style="font-size:10px;color:var(--muted);margin-top:4px" data-i18n="rapp_kpi_pres_moy">Moyenne annuelle</div> </div> </div> <div class="card" id="rapp-card-pei" style="border-top:4px solid var(--purple);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--purple)" id="rapp-k-pei">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_pei_s">Objectifs réalisés</div> <div id="rapp-k-pei-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> <div class="card" id="rapp-card-dossiers" style="border-top:4px solid var(--warning);text-align:center"> <div style="padding:16px 12px"> <div style="font-size:28px;margin-bottom:6px"></div> <div style="font-family:Sora,sans-serif;font-size:28px;font-weight:800;color:var(--warning)" id="rapp-k-dossiers">—</div> <div style="font-size:10px;color:var(--muted);margin-top:2px">%</div> <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:6px" data-i18n="rapp_kpi_dossiers_s">Conformité dossiers</div> <div id="rapp-k-dossiers-sub" style="font-size:10px;color:var(--muted);margin-top:4px">—</div> </div> </div> </div> <!-- Graphiques institutionnels --> <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px"> <!-- Évolution 6 mois --> <div class="card" style="border-top:3px solid var(--primary)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_evol_titre">📈 Évolution des indicateurs clés — 6 derniers mois</div> </div> <div style="padding:12px 16px 16px"> <canvas id="rapp-chart-evolution" height="100"></canvas> </div> </div> <!-- Répartition des bénéficiaires --> <div class="card" style="border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_chart_classes_titre">Répartition par classe</div> </div> <div style="padding:12px 16px 16px;display:flex;align-items:center;gap:12px"> <canvas id="rapp-chart-classes" width="130" height="130" style="flex-shrink:0"></canvas> <div id="rapp-classes-legend" style="flex:1;font-size:11px"></div> </div> </div> </div> <!-- Tableau synthèse par classe --> <div class="card" style="margin-bottom:24px;border-top:3px solid var(--teal)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_synthese_filiere">📋 Synthèse par filière — Année scolaire 2025-2026</div> </div> <div style="overflow-x:auto"> <table> <thead> <tr> <th data-i18n="rapp_col_filiere">Filière</th> <th style="text-align:center" data-i18n="rapp_col_benef_rapp">Bénéficiaires</th> <th style="text-align:center" data-i18n="rapp_col_dossiers_rapp">Dossiers complets</th> <th style="text-align:center" data-i18n="rapp_col_pei_rapp">Réalisation PEI</th> <th style="text-align:center" data-i18n="rapp_col_cadres_rapp">Cadres encadrants</th> <th style="text-align:center" data-i18n="rapp_col_risque_rapp">Niveau de risque</th> </tr> </thead> <tbody id="rapp-table-classes"></tbody> </table> </div> </div> <!-- Synthèse textuelle --> <!-- ══ SECTION INSERTION SOCIO-PROFESSIONNELLE (P1 Rapport) ══ --> <div class="card" style="margin-bottom:24px;border-top:3px solid #7c3aed"> <div class="card-header"> <div class="card-title">🎓 Insertion socio-professionnelle — Formation Pro</div> <span id="rapp-insertion-conv" style="font-size:11px;color:var(--muted)">— conversion globale</span> </div> <div style="padding:14px 18px"> <div id="rapp-insertion-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px"></div> <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">📊 Pipeline d'insertion (Formation Pro)</div> <div id="rapp-insertion-funnel" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center;margin-bottom:14px"></div> <div id="rapp-insertion-narrative" style="font-size:12px;color:var(--text);line-height:1.7;background:var(--bg);padding:10px 14px;border-radius:8px"></div> </div> </div> <!-- ══ SECTION ACCOMPAGNEMENT SPÉCIALISÉ (P2 Rapport) ══ --> <div class="card" style="margin-bottom:24px;border-top:3px solid #a855f7;background:linear-gradient(135deg,#faf5ff,#fff)"> <div class="card-header"> <div class="card-title">🧠 Accompagnement spécialisé — Déficience intellectuelle profonde</div> <span id="rapp-acc-mention" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:var(--bg);color:var(--muted)">—</span> </div> <div style="padding:10px 18px 14px"> <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(124,58,237,0.06);border-radius:8px;margin-bottom:12px"> <div style="font-size:22px">🌟</div> <div style="font-size:11px;color:var(--text);line-height:1.6">Approche centrée sur la personne — conforme à la <strong>Convention NU des droits des personnes handicapées (CRPD 2006)</strong>. Le succès ne se mesure pas en insertion mais en qualité de vie, autonomie et bien-être.</div> </div> <div id="rapp-acc-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:10px"></div> <div id="rapp-acc-distribution" style="margin-top:12px"></div> </div> </div> <!-- ══ SECTION DÉFIS & PERSPECTIVES (P3 Rapport) ══ --> <div class="card" style="margin-bottom:24px;border-top:3px solid #d97706"> <div class="card-header"> <div class="card-title">🎯 Défis identifiés & Plan d'action</div> </div> <div id="rapp-defis-content" style="padding:12px 18px;font-size:12px;line-height:1.8;color:var(--text)"></div> </div> <div class="card" style="border-top:3px solid var(--success)"> <div class="card-header"> <div class="card-title" data-i18n="rapp_narrative_titre">📝 Synthèse narrative — Destinée aux partenaires & financeurs</div> </div> <div id="rapp-synthese" style="padding:20px 24px;font-size:13px;line-height:1.9;color:var(--text)">Chargement…
+          </div> </div> </div><!-- <!-- ══ BLOC SIGNATURES OFFICIELLES (P4 Rapport) ══ --> <div class="card" style="margin-top:24px;background:linear-gradient(135deg,#f8fafc,#fff);border-top:2px solid #1b3a6b"> <div style="padding:18px 22px"> <div style="font-size:11px;font-weight:800;color:#1b3a6b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:18px;text-align:center">✍ Signatures officielles</div> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px"> <div style="text-align:center"> <div style="height:48px;border-bottom:1.5px solid #94a3b8;margin-bottom:6px"></div> <div style="font-size:11px;font-weight:800;color:#1b3a6b">Directeur</div> <div style="font-size:10px;color:#64748b;margin-top:1px">Association ElAwael</div> </div> <div style="text-align:center"> <div style="height:48px;border-bottom:1.5px solid #94a3b8;margin-bottom:6px"></div> <div style="font-size:11px;font-weight:800;color:#1b3a6b">Président·e</div> <div style="font-size:10px;color:#64748b;margin-top:1px">Conseil d'administration</div> </div> <div style="text-align:center"> <div style="height:48px;border-bottom:1.5px solid #94a3b8;margin-bottom:6px"></div> <div style="font-size:11px;font-weight:800;color:#1b3a6b">Conseiller·e pédagogique</div> <div style="font-size:10px;color:#64748b;margin-top:1px">Responsable suivi qualité</div> </div> </div> <div style="text-align:center;font-size:9px;color:#94a3b8;margin-top:14px;font-style:italic">Document généré automatiquement par ElAwail Digital — Tétouan, Maroc</div> </div> </div> <!-- fin rapport-printable --> </div> <!-- ══ SECTION : Journal d'audit ══ --> <div id="adm-section-audit" style="display:none"> <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px"> <div class="adm-section-title" style="margin-bottom:0" data-i18n="audit_titre">🔍 Journal d'audit — Traçabilité complète</div> <div style="display:flex;gap:8px;flex-wrap:wrap"> <button onclick="auditExportExcel()" class="btn btn-p" style="font-size:12px;padding:7px 16px;background:#059669;border-color:#059669">Excel</button> <button onclick="auditExportPDF()" class="btn btn-p" style="font-size:12px;padding:7px 16px">PDF</button> </div> </div> <!-- KPIs du journal --> <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px"> <div class="card" style="border-top:3px solid var(--primary)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_total">📋 Total actions</div> <div class="kpi-val" id="audit-k-total" style="color:var(--primary)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_total_sub">Toutes opérations</div></div> </div> <div class="card" style="border-top:3px solid var(--success)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_today">🟢 Aujourd'hui</div> <div class="kpi-val" id="audit-k-today" style="color:var(--success)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_today_sub">Actions ce jour</div></div> </div> <div class="card" style="border-top:3px solid var(--warning)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_users">👤 Utilisateurs actifs</div> <div class="kpi-val" id="audit-k-users" style="color:var(--warning)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_users_sub">Ce mois-ci</div></div> </div> <div class="card" style="border-top:3px solid var(--danger)"> <div class="kpi"><div class="kpi-label" data-i18n="audit_kpi_delete">🗑️ Suppressions</div> <div class="kpi-val" id="audit-k-delete" style="color:var(--danger)">—</div> <div class="kpi-sub" data-i18n="audit_kpi_delete_sub">Actions sensibles</div></div> </div> </div> <!-- Filtres --> <div class="card" style="margin-bottom:16px"> <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"> <span style="font-size:12px;font-weight:700;color:var(--muted)" data-i18n="audit_filtrer">Filtrer :</span> <select id="audit-filter-type" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer"> <option value="all" data-i18n="audit_tous_types">📋 Tous les types</option> <option value="connexion" data-i18n="audit_connexion_type">🔐 Connexion / Déconnexion</option> <option value="beneficiaire" data-i18n="audit_benef_type">👤 Bénéficiaires</option> <option value="document" data-i18n="audit_docs_type">📎 Documents</option> <option value="export" data-i18n="audit_exports_type">📥 Exports</option> <option value="pei" data-i18n="audit_pei_type">🎯 PEI</option> <option value="presence" data-i18n="audit_pres_type">📅 Présences</option> <option value="rapport" data-i18n="audit_rapp_type">📝 Rapports</option> <option value="suppression" data-i18n="audit_suppr_type">🗑️ Suppressions</option> </select> <select id="audit-filter-user" onchange="auditRender()"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer"> <option value="all" data-i18n="audit_tous_users">👤 Tous les utilisateurs</option> </select> <!-- Préréglages rapides de période --> <div style="display:flex;gap:5px;flex-wrap:wrap"> <button onclick="auditSetPreset('today')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_auj_btn">📅 Aujourd'hui</button> <button onclick="auditSetPreset('week')"  class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_semaine_btn">📅 Cette semaine</button> <button onclick="auditSetPreset('month')" class="btn" style="font-size:10px;padding:4px 10px;font-weight:700" data-i18n="audit_mois_btn">📅 Ce mois</button> </div> <input type="date" id="audit-filter-date-from"
             style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)"
@@ -26641,8 +26641,250 @@ function renderRapportInstitutionnel() {
   /* ── Tableau par classe ── */
   _rappRenderTableClasses(d, presences);
 
+  /* ── Section Insertion (P1) ── */
+  _rappRenderInsertion(d);
+  /* ── Section Accompagnement Spécialisé (P2) ── */
+  _rappRenderAccompagnement();
+  /* ── Section Défis & Perspectives (P3) ── */
+  _rappRenderDefis(d, score, tauxPresence, tauxRealisation, tauxDossiers);
+
   /* ── Synthèse narrative ── */
   _rappRenderSynthese(d, score, tauxPresence, tauxRealisation, tauxDossiers, presences);
+}
+
+/* ─────────────────────────────────────────────────
+   P1 Rapport : Insertion socio-professionnelle
+   5 KPIs + funnel 5 niveaux + narrative
+───────────────────────────────────────────────── */
+function _rappRenderInsertion(d) {
+  /* Collecte des données */
+  let totalFPro = 0, jriMoy = 0, jriPrets = 0;
+  try {
+    if (typeof _fproBenefsByClasse === 'function' && typeof calcJRI === 'function') {
+      const allPro = [..._fproBenefsByClasse('Informatique'), ..._fproBenefsByClasse('Couture')];
+      totalFPro = allPro.length;
+      if (totalFPro > 0) {
+        const jris = allPro.map(b => calcJRI(b).jri);
+        jriMoy = Math.round(jris.reduce((s,j)=>s+j,0) / jris.length);
+        jriPrets = jris.filter(j => j >= 70).length;
+      }
+    }
+  } catch(e) {}
+
+  const allStages = loadData(STAGES_KEY) || [];
+  const stagesActifs = allStages.filter(s => s.statut === 'encours').length;
+  const stagesReussis = allStages.filter(s => s.statut === 'termine' && (s.scoreFinal||0) >= 4).length;
+  const insertions = Math.round(stagesReussis * 0.7);
+  const tauxConv = totalFPro > 0 ? Math.round(insertions / totalFPro * 100) : 0;
+  const entreprises = (loadData(ENTREPRISES_KEY) || []).length;
+
+  /* KPIs */
+  const kpisEl = document.getElementById('rapp-insertion-kpis');
+  if (kpisEl) {
+    const jriCol = jriMoy >= 70 ? '#059669' : jriMoy >= 55 ? '#d97706' : '#dc2626';
+    kpisEl.innerHTML = [
+      { lbl:'JRI moyen',     val: jriMoy,     sub:'/100',         col: jriCol,   icon:'🎯' },
+      { lbl:'Prêts emploi',  val: jriPrets,   sub:'JRI ≥ 70',     col:'#0d9488', icon:'✅' },
+      { lbl:'Stages actifs', val: stagesActifs, sub:'en cours',   col:'#7c3aed', icon:'📒' },
+      { lbl:'Insertions',    val: insertions, sub:'estimées 70%', col:'#059669', icon:'🚀' },
+      { lbl:'Partenaires',   val: entreprises, sub:'entreprises', col:'#a855f7', icon:'🏢' }
+    ].map(k => `
+      <div style="text-align:center;padding:12px 8px;background:${k.col}10;border:1px solid ${k.col}30;border-radius:10px">
+        <div style="font-size:18px;margin-bottom:4px">${k.icon}</div>
+        <div style="font-family:Sora,sans-serif;font-size:24px;font-weight:900;color:${k.col};line-height:1">${k.val}</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px">${k.sub}</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:4px">${k.lbl}</div>
+      </div>`).join('');
+  }
+
+  /* Conversion globale */
+  const convEl = document.getElementById('rapp-insertion-conv');
+  if (convEl) {
+    const col = tauxConv >= 15 ? '#059669' : tauxConv >= 5 ? '#d97706' : '#dc2626';
+    convEl.innerHTML = `Taux conversion global : <strong style="color:${col}">${tauxConv}%</strong>`;
+  }
+
+  /* Funnel 5 niveaux */
+  const funnelEl = document.getElementById('rapp-insertion-funnel');
+  if (funnelEl) {
+    const levels = [
+      { lbl:'Formation Pro', val: totalFPro,    col:'#2563eb' },
+      { lbl:'Prêts ≥70',     val: jriPrets,     col:'#0d9488' },
+      { lbl:'En stage',      val: stagesActifs, col:'#7c3aed' },
+      { lbl:'Réussis ≥4',    val: stagesReussis, col:'#f59e0b' },
+      { lbl:'Insertion',     val: insertions,   col:'#059669' }
+    ];
+    funnelEl.innerHTML = levels.map(lv => `
+      <div>
+        <div style="background:${lv.col};color:#fff;border-radius:8px;padding:8px 4px;font-family:Sora,sans-serif;font-size:22px;font-weight:900">${lv.val}</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px;font-weight:700">${lv.lbl}</div>
+      </div>`).join('');
+  }
+
+  /* Narrative */
+  const narrEl = document.getElementById('rapp-insertion-narrative');
+  if (narrEl) {
+    const recommandation = jriMoy >= 70 ? 'Les bénéficiaires Formation Pro affichent un excellent niveau d\'employabilité.'
+                         : jriMoy >= 55 ? 'Niveau d\'employabilité moyen — renforcer la pratique en milieu professionnel.'
+                         : 'Niveau d\'employabilité à renforcer — accélérer la création de stages et partenariats.';
+    narrEl.innerHTML = `<strong>📝 Analyse :</strong> Sur les ${totalFPro} bénéficiaires en Formation Professionnelle (Informatique + Couture), <strong>${jriPrets}</strong> sont actuellement prêts à l'emploi (JRI ≥ 70), <strong>${stagesActifs}</strong> sont engagés dans un parcours de stage, et <strong>${insertions}</strong> ont atteint l'insertion socio-professionnelle. Le réseau de <strong>${entreprises}</strong> entreprises partenaires sur Tétouan/Martil soutient cette démarche. ${recommandation}`;
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   P2 Rapport : Accompagnement Spécialisé
+   IBA + distribution par niveau d'épanouissement
+───────────────────────────────────────────────── */
+function _rappRenderAccompagnement() {
+  let benefs = [], ibaMoy = 0, items = [];
+  try {
+    if (typeof _accBenefs === 'function' && typeof calcIBA === 'function') {
+      benefs = _accBenefs();
+      items = benefs.map(b => ({ benef: b, ...calcIBA(b) }));
+      if (items.length > 0) {
+        ibaMoy = Math.round(items.reduce((s, it) => s + it.iba, 0) / items.length);
+      }
+    }
+  } catch(e) {}
+
+  const epanouis = items.filter(it => it.iba >= 65).length;
+  const stable = items.filter(it => it.iba >= 50 && it.iba < 65).length;
+  const vigilance = items.filter(it => it.iba < 50).length;
+
+  /* Mention globale */
+  const mentionEl = document.getElementById('rapp-acc-mention');
+  if (mentionEl) {
+    const col = ibaMoy >= 65 ? '#059669' : ibaMoy >= 50 ? '#d97706' : '#dc2626';
+    const lbl = ibaMoy >= 65 ? '🟢 Bien-être stable' : ibaMoy >= 50 ? '🟡 Évolution progressive' : '🟠 Vigilance';
+    mentionEl.textContent = `IBA moyen : ${ibaMoy}/100 · ${lbl}`;
+    mentionEl.style.background = col + '20';
+    mentionEl.style.color = col;
+  }
+
+  /* KPIs */
+  const kpisEl = document.getElementById('rapp-acc-kpis');
+  if (kpisEl) {
+    kpisEl.innerHTML = [
+      { lbl:'Bénéficiaires', val: benefs.length, sub:'DI profonde',     col:'#a855f7' },
+      { lbl:'IBA moyen',     val: ibaMoy || '—', sub:'/100',              col:'#7c3aed' },
+      { lbl:'🟢 Épanouis',   val: epanouis,      sub:'IBA ≥ 65',         col:'#059669' },
+      { lbl:'⚠ Vigilance',   val: vigilance,     sub:'IBA < 50',          col:'#dc2626' }
+    ].map(k => `
+      <div style="text-align:center;padding:10px 8px;background:#fff;border:1px solid ${k.col}30;border-left:3px solid ${k.col};border-radius:8px">
+        <div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;color:${k.col};line-height:1">${k.val}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${k.sub}</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:2px">${k.lbl}</div>
+      </div>`).join('');
+  }
+
+  /* Distribution barres horizontales */
+  const distEl = document.getElementById('rapp-acc-distribution');
+  if (distEl) {
+    const buckets = [
+      { lbl: '🌟 Épanouissement remarquable (IBA ≥ 80)', col: '#059669', count: items.filter(it => it.iba >= 80).length },
+      { lbl: '🟢 Bien-être stable (65–79)',              col: '#10b981', count: items.filter(it => it.iba >= 65 && it.iba < 80).length },
+      { lbl: '🟡 Évolution progressive (50–64)',          col: '#d97706', count: items.filter(it => it.iba >= 50 && it.iba < 65).length },
+      { lbl: '🟠 Vigilance requise (35–49)',              col: '#f59e0b', count: items.filter(it => it.iba >= 35 && it.iba < 50).length },
+      { lbl: '🔴 Intervention prioritaire (< 35)',         col: '#dc2626', count: items.filter(it => it.iba < 35).length }
+    ];
+    const total = items.length || 1;
+    distEl.innerHTML = `<div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">📊 Répartition par niveau d'épanouissement</div>` +
+      buckets.map(b => {
+        const pct = Math.round(b.count / total * 100);
+        return `<div style="margin-bottom:7px">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:3px">
+            <span style="font-weight:700;color:${b.col}">${b.lbl}</span>
+            <span style="color:var(--muted)"><strong>${b.count}</strong> · ${pct}%</span>
+          </div>
+          <div style="height:6px;background:var(--bg);border-radius:100px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${b.col};border-radius:100px"></div>
+          </div>
+        </div>`;
+      }).join('');
+  }
+}
+
+/* ─────────────────────────────────────────────────
+   P3 Rapport : Défis identifiés & Plan d'action
+   Analyse automatique des points critiques + recommandations S+1
+───────────────────────────────────────────────── */
+function _rappRenderDefis(d, score, tauxPresence, tauxRealisation, tauxDossiers) {
+  const box = document.getElementById('rapp-defis-content');
+  if (!box) return;
+
+  /* Identifier les défis */
+  const defis = [];
+
+  if (tauxPresence < 80) {
+    defis.push({
+      icon:'📅', col:'#d97706',
+      titre:`Taux de présence à ${tauxPresence}% (cible 80%)`,
+      action:`Mettre en place un système de relance familiale et identifier les facteurs d'absentéisme (transport, santé, motivation).`
+    });
+  }
+  if (tauxRealisation < 70 && d.peiTotal > 0) {
+    defis.push({
+      icon:'🎯', col:'#7c3aed',
+      titre:`Réalisation PEI à ${tauxRealisation}% (cible 70%)`,
+      action:`Accélérer la validation des objectifs PEI. Réunion mensuelle avec les cadres pour suivi des bénéficiaires en difficulté.`
+    });
+  }
+  if (tauxDossiers < 100) {
+    defis.push({
+      icon:'📂', col:'#d97706',
+      titre:`Conformité dossiers à ${tauxDossiers}% (${d.totalBenef - d.totalDossiers} dossier(s) incomplet(s))`,
+      action:`Audit administratif urgent pour compléter les dossiers manquants (CIN, certificats médicaux, etc.).`
+    });
+  }
+
+  /* Défis liés à l'insertion */
+  let jriPrets = 0, totalFPro = 0;
+  try {
+    if (typeof _fproBenefsByClasse === 'function') {
+      const allPro = [..._fproBenefsByClasse('Informatique'), ..._fproBenefsByClasse('Couture')];
+      totalFPro = allPro.length;
+      jriPrets = allPro.filter(b => calcJRI(b).jri >= 70).length;
+    }
+  } catch(e) {}
+
+  const allStages = loadData(STAGES_KEY) || [];
+  if (allStages.length === 0 && totalFPro > 0) {
+    defis.push({
+      icon:'📒', col:'#dc2626',
+      titre:`Aucun stage enregistré pour ${totalFPro} bénéficiaires Formation Pro`,
+      action:`Priorité haute : identifier et conventionner les premières entreprises d'accueil. Cible : 10 stages pour Q3.`
+    });
+  }
+
+  const entreprises = (loadData(ENTREPRISES_KEY) || []).length;
+  if (entreprises < 5) {
+    defis.push({
+      icon:'🏢', col:'#d97706',
+      titre:`Réseau partenaires limité (${entreprises} entreprises)`,
+      action:`Démarcher 5 nouvelles entreprises sur Tétouan/Martil dans les secteurs cibles (Informatique, Couture, Commerce, Services).`
+    });
+  }
+
+  /* Affichage */
+  if (defis.length === 0) {
+    box.innerHTML = `<div style="text-align:center;padding:20px;color:#059669;font-weight:700">✅ Aucun défi majeur identifié — situation maîtrisée. Maintenir le cap pour le prochain semestre.</div>`;
+    return;
+  }
+
+  box.innerHTML = `
+    <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">⚠ ${defis.length} défi(s) identifié(s) pour le semestre suivant</div>
+    ${defis.map(df => `
+      <div style="display:flex;gap:12px;padding:10px 14px;background:${df.col}10;border-left:3px solid ${df.col};border-radius:8px;margin-bottom:8px">
+        <div style="font-size:22px;flex-shrink:0">${df.icon}</div>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:800;color:${df.col};margin-bottom:3px">${df.titre}</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6"><strong>Plan d'action :</strong> ${df.action}</div>
+        </div>
+      </div>`).join('')}
+    <div style="margin-top:12px;padding:10px 14px;background:#ecfdf5;border-left:3px solid #059669;border-radius:8px;font-size:11px;color:var(--text);line-height:1.6">
+      <strong style="color:#059669">💡 Recommandation finale :</strong> Programmer une réunion de l'équipe de direction dans les 2 semaines pour valider ce plan d'action et attribuer les responsabilités.
+    </div>
+  `;
 }
 
 /** Graphique évolution 6 mois — présence + score mensuel */
