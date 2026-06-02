@@ -23650,6 +23650,7 @@ function entrepriseInitDemo() {
    pipeline d'insertion du Cockpit. IDs déterministes stables.
 ═══════════════════════════════════════════════════════════════ */
 function stageInitDemo() {
+ try {
   /* 1. S'assurer que les 10 entreprises existent (sinon les créer). */
   let entreprises = loadData(ENTREPRISES_KEY) || [];
   if (entreprises.length === 0) {
@@ -23660,15 +23661,24 @@ function stageInitDemo() {
   entreprises.forEach(e => { entMap[e.id] = e; });
   const E = i => entMap[1700000000000 + i] || entreprises[i] || {};
 
-  /* 2. Récupérer les bénéficiaires Formation Pro, triés pour déterminisme. */
+  /* 2. Récupérer les bénéficiaires Formation Pro (tri déterministe).
+        Sécurisé : si la fonction ou les données ne sont pas prêtes,
+        on retombe sur des noms de secours pour ne jamais bloquer. */
   const byNom = (a, b) => (a.nom || '').localeCompare(b.nom || '');
-  const info    = _fproBenefsByClasse('Informatique').slice().sort(byNom);
-  const couture = _fproBenefsByClasse('Couture').slice().sort(byNom);
-  if (info.length === 0 && couture.length === 0) {
-    showToast('⚠ Aucun bénéficiaire Formation Pro trouvé — générez d\'abord les données', '#dc2626');
-    return;
+  function safeBenefs(classe) {
+    try {
+      if (typeof _fproBenefsByClasse === 'function') {
+        const arr = _fproBenefsByClasse(classe) || [];
+        return arr.slice().sort(byNom);
+      }
+    } catch (e) { console.warn('[Demo stages] benefs ' + classe, e.message); }
+    return [];
   }
-  const pick = (arr, i) => (arr.length ? arr[i % arr.length].nom : 'Bénéficiaire ' + (i + 1));
+  const info    = safeBenefs('Informatique');
+  const couture = safeBenefs('Couture');
+  const FALLBACK_INFO    = ['Bénéficiaire Info 1','Bénéficiaire Info 2','Bénéficiaire Info 3','Bénéficiaire Info 4','Bénéficiaire Info 5','Bénéficiaire Info 6'];
+  const FALLBACK_COUTURE = ['Bénéficiaire Couture 1','Bénéficiaire Couture 2','Bénéficiaire Couture 3','Bénéficiaire Couture 4'];
+  const pick = (arr, i, fb) => (arr.length ? arr[i % arr.length].nom : fb[i % fb.length]);
 
   /* 3. Générateur d'évaluations hebdo selon un profil. */
   function addDays(iso, n) {
@@ -23723,10 +23733,11 @@ function stageInitDemo() {
 
   const stages = specs.map((sp, i) => {
     const ent = E(sp.ei);
-    const classe = sp.src === couture ? 'Couture' : 'Informatique';
+    const isCouture = sp.src === couture;
+    const classe = isCouture ? 'Couture' : 'Informatique';
     const stage = {
       id           : 1700000100000 + i,   /* IDs déterministes (≠ entreprises) */
-      benef        : pick(sp.src, sp.bi),
+      benef        : pick(sp.src, sp.bi, isCouture ? FALLBACK_COUTURE : FALLBACK_INFO),
       classe       : classe,
       entrepriseId : ent.id || (1700000000000 + sp.ei),
       entrepriseNom: ent.nom || '',
@@ -23740,12 +23751,14 @@ function stageInitDemo() {
       synthese     : '',
       dateCreation : new Date().toISOString().substring(0, 10)
     };
-    /* Synthèse + score final pour les stages évalués */
-    if (stage.evaluations.length > 0) {
-      const synth = _stageGenererSynthese(stage);
-      stage.scoreFinal  = synth.scoreFinal;
-      stage.synthese    = synth.recommandation;
-      stage.niveauFinal = synth.niveau;
+    /* Synthèse + score final pour les stages évalués (sécurisé) */
+    if (stage.evaluations.length > 0 && typeof _stageGenererSynthese === 'function') {
+      try {
+        const synth = _stageGenererSynthese(stage);
+        stage.scoreFinal  = synth.scoreFinal;
+        stage.synthese    = synth.recommandation;
+        stage.niveauFinal = synth.niveau;
+      } catch (e) { console.warn('[Demo stages] synthèse', e.message); }
     }
     if (sp.statut === 'termine') stage.dateCloture = sp.fin;
     return stage;
@@ -23763,8 +23776,13 @@ function stageInitDemo() {
   }
 
   showToast('10 stages démo créés (5 terminés · 3 en cours · 2 planifiés)', '#059669');
-  auditLog('systeme', 'Init démo stages', '10 stages Formation Pro générés');
+  try { auditLog('systeme', 'Init démo stages', '10 stages Formation Pro générés'); } catch (e) {}
   if (typeof renderStages === 'function') renderStages();
+ } catch (err) {
+  console.error('[Demo stages] ERREUR', err);
+  if (typeof showToast === 'function') showToast('Erreur création stages : ' + err.message, '#dc2626');
+  else alert('Erreur création stages : ' + err.message);
+ }
 }
 
 /* ═══════════════════════════════════════════════════════════════
