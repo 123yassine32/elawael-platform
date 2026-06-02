@@ -17290,9 +17290,28 @@ function buildPerfDashboard(b, idx) {
 /* ══════════════════════════════════════════════════════
    STOCKAGE LOCAL — Données de saisie
 ══════════════════════════════════════════════════════ */
-function loadData(key){ try{return JSON.parse(localStorage.getItem(key)||'[]');}catch(e){return [];} }
+/* Cache mémoire de secours : utilisé quand le quota localStorage est dépassé
+   (ex. après génération massive de données démo). Le cloud Firestore reste
+   la source de vérité ; ce cache garantit l'affichage durant la session. */
+const _memCache = {};
+function loadData(key){
+  try{
+    const raw = localStorage.getItem(key);
+    if(raw !== null) return JSON.parse(raw||'[]');
+  }catch(e){}
+  if(Object.prototype.hasOwnProperty.call(_memCache, key)) return _memCache[key];
+  return [];
+}
 function saveData(key,arr){
-  localStorage.setItem(key,JSON.stringify(arr));
+  try{
+    localStorage.setItem(key,JSON.stringify(arr));
+    delete _memCache[key]; /* localStorage à jour → plus besoin du secours */
+  }catch(e){
+    /* Quota localStorage dépassé → on conserve en mémoire et on s'appuie
+       sur Firestore pour la persistance. N'interrompt plus l'opération. */
+    _memCache[key] = arr;
+    console.warn('[saveData] quota localStorage dépassé pour "'+key+'" → cache mémoire + Firestore');
+  }
   /* Vider le cache de risque si les données qui l'alimentent changent */
   if(key==='ea_presences'||key==='ea_pei'||key==='ea_dossiers') clearRisqueCache();
   /* Sync vers Firestore en arrière-plan */
