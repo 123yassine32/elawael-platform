@@ -23557,14 +23557,11 @@ function entrepriseSupprimer(id) {
  * Initialise 10 entreprises partenaires fictives mais réalistes
  * pour la région Tétouan/Martil — démo PFE.
  */
-function entrepriseInitDemo() {
-  const existant = loadData(ENTREPRISES_KEY) || [];
-  if (existant.length > 0) {
-    if (!confirm(`Il y a déjà ${existant.length} entreprise(s) enregistrée(s).\n\n` +
-                 'Voulez-vous REMPLACER par les 10 entreprises de démo ?\n' +
-                 '(Cliquez Annuler pour conserver vos données.)')) return;
-  }
-
+/**
+ * Données démo des 10 entreprises partenaires (Tétouan / Martil).
+ * IDs déterministes stables 1700000000000 + index → réutilisables par les stages.
+ */
+function _entreprisesDemoData() {
   const demo = [
     /* ═══ INFORMATIQUE (5) ═══ */
     { nom: 'Cyber Atlas Tétouan',         secteur: 'Informatique',  ville: 'Tétouan', adresse: 'Av. Mohammed V, n°47, près Place Feddan',
@@ -23602,18 +23599,17 @@ function entrepriseInitDemo() {
       contact: 'M. Hicham El Fassi',      tel: '0539668042', email: '',
       postes: 'Aide-serveur · Plonge · Mise en place tables' }
   ];
-
-  /* Affecter id + dateAjout */
-  const now = new Date();
-  const aujourdhui = now.toISOString().substring(0, 10);
-  const entreprises = demo.map((e, i) => ({
+  const aujourdhui = new Date().toISOString().substring(0, 10);
+  return demo.map((e, i) => ({
     id: 1700000000000 + i,  /* IDs déterministes stables */
     ...e,
     dateAjout: aujourdhui
   }));
+}
 
+/** Persiste les entreprises (localStorage + Firestore partagé). */
+function _entreprisesPersist(entreprises) {
   saveData(ENTREPRISES_KEY, entreprises);
-  /* Push vers Firestore */
   if (typeof db !== 'undefined') {
     db.collection('org_shared').doc('global__ea_entreprises').set({
       teacherId: 'global',
@@ -23622,10 +23618,148 @@ function entrepriseInitDemo() {
       updatedAt: new Date().toISOString()
     }).catch(e => console.warn('[Demo entreprises]', e.message));
   }
+}
+
+function entrepriseInitDemo() {
+  const existant = loadData(ENTREPRISES_KEY) || [];
+  if (existant.length > 0) {
+    if (!confirm(`Il y a déjà ${existant.length} entreprise(s) enregistrée(s).\n\n` +
+                 'Voulez-vous REMPLACER par les 10 entreprises de démo ?\n' +
+                 '(Cliquez Annuler pour conserver vos données.)')) return;
+  }
+
+  const entreprises = _entreprisesDemoData();
+  _entreprisesPersist(entreprises);
 
   showToast('10 entreprises partenaires démo créées', '#059669');
   auditLog('systeme', 'Init démo entreprises', '10 entreprises ajoutées (Tétouan/Martil)');
   renderEntreprises();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DÉMO — 10 STAGES réalistes (Carnet de Stage)
+   ─────────────────────────────────────────────────────────────
+   Relie des bénéficiaires Formation Pro (Informatique/Couture)
+   aux 10 entreprises partenaires. Génère des évaluations hebdo +
+   synthèses auto pour alimenter le JRI (dimension Stages) et le
+   pipeline d'insertion du Cockpit. IDs déterministes stables.
+═══════════════════════════════════════════════════════════════ */
+function stageInitDemo() {
+  /* 1. S'assurer que les 10 entreprises existent (sinon les créer). */
+  let entreprises = loadData(ENTREPRISES_KEY) || [];
+  if (entreprises.length === 0) {
+    entreprises = _entreprisesDemoData();
+    _entreprisesPersist(entreprises);
+  }
+  const entMap = {};
+  entreprises.forEach(e => { entMap[e.id] = e; });
+  const E = i => entMap[1700000000000 + i] || entreprises[i] || {};
+
+  /* 2. Récupérer les bénéficiaires Formation Pro, triés pour déterminisme. */
+  const byNom = (a, b) => (a.nom || '').localeCompare(b.nom || '');
+  const info    = _fproBenefsByClasse('Informatique').slice().sort(byNom);
+  const couture = _fproBenefsByClasse('Couture').slice().sort(byNom);
+  if (info.length === 0 && couture.length === 0) {
+    showToast('⚠ Aucun bénéficiaire Formation Pro trouvé — générez d\'abord les données', '#dc2626');
+    return;
+  }
+  const pick = (arr, i) => (arr.length ? arr[i % arr.length].nom : 'Bénéficiaire ' + (i + 1));
+
+  /* 3. Générateur d'évaluations hebdo selon un profil. */
+  function addDays(iso, n) {
+    const d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + n);
+    return d.toISOString().substring(0, 10);
+  }
+  const PROFILS = {
+    excellent: [5, 5, 4, 4, 5],
+    bon      : [4, 4, 4, 3, 4],
+    moyen    : [3, 4, 3, 3, 3]
+  };
+  const COMMENTS = {
+    excellent: ['Très bonne intégration, dépasse les attentes.', 'Autonome et fiable, à encourager vers l\'emploi.', 'Excellent contact avec l\'équipe.'],
+    bon      : ['Progression régulière, sérieux au travail.', 'Bonne assiduité, gagne en confiance.', 'Comportement professionnel satisfaisant.'],
+    moyen    : ['Effort à maintenir sur la ponctualité.', 'Acquis en cours de consolidation.', 'Encadrement rapproché encore nécessaire.']
+  };
+  function genEvals(dateDebut, nbSemaines, profil) {
+    const base = PROFILS[profil] || PROFILS.bon;
+    const out = [];
+    for (let s = 0; s < nbSemaines; s++) {
+      /* Légère progression semaine après semaine (+0 ou +1, plafonné à 5) */
+      const bonus = Math.min(1, Math.floor(s / 2));
+      const cap = v => Math.min(5, v + bonus);
+      out.push({
+        semaine     : s + 1,
+        date        : addDays(dateDebut, 7 * (s + 1)),
+        ponctualite : cap(base[0]),
+        technique   : cap(base[1]),
+        comportement: cap(base[2]),
+        initiative  : cap(base[3]),
+        equipe      : cap(base[4]),
+        commentaire : COMMENTS[profil][s % COMMENTS[profil].length],
+        dateAjout   : new Date().toISOString()
+      });
+    }
+    return out;
+  }
+
+  /* 4. Spécifications des 10 stages (secteurs cohérents). */
+  const specs = [
+    { src: info,    bi: 0, ei: 0, type: 'pratique',     statut: 'termine',  deb: '2026-02-16', fin: '2026-03-13', sem: 4, prof: 'excellent' },
+    { src: info,    bi: 1, ei: 3, type: 'observation',  statut: 'termine',  deb: '2026-03-02', fin: '2026-03-27', sem: 3, prof: 'bon'       },
+    { src: info,    bi: 2, ei: 2, type: 'pratique',     statut: 'termine',  deb: '2026-03-16', fin: '2026-04-10', sem: 3, prof: 'moyen'     },
+    { src: info,    bi: 3, ei: 4, type: 'pre-embauche', statut: 'encours',  deb: '2026-05-18', fin: '2026-06-19', sem: 2, prof: 'excellent' },
+    { src: info,    bi: 4, ei: 1, type: 'observation',  statut: 'encours',  deb: '2026-05-25', fin: '2026-06-19', sem: 1, prof: 'bon'       },
+    { src: info,    bi: 5, ei: 8, type: 'pratique',     statut: 'planifie', deb: '2026-06-15', fin: '2026-07-10', sem: 0, prof: 'bon'       },
+    { src: couture, bi: 0, ei: 5, type: 'pratique',     statut: 'termine',  deb: '2026-02-23', fin: '2026-03-20', sem: 4, prof: 'excellent' },
+    { src: couture, bi: 1, ei: 6, type: 'pratique',     statut: 'termine',  deb: '2026-03-09', fin: '2026-04-03', sem: 3, prof: 'bon'       },
+    { src: couture, bi: 2, ei: 7, type: 'observation',  statut: 'encours',  deb: '2026-05-18', fin: '2026-06-12', sem: 2, prof: 'moyen'     },
+    { src: couture, bi: 3, ei: 6, type: 'pratique',     statut: 'planifie', deb: '2026-06-22', fin: '2026-07-17', sem: 0, prof: 'bon'       }
+  ];
+
+  const stages = specs.map((sp, i) => {
+    const ent = E(sp.ei);
+    const classe = sp.src === couture ? 'Couture' : 'Informatique';
+    const stage = {
+      id           : 1700000100000 + i,   /* IDs déterministes (≠ entreprises) */
+      benef        : pick(sp.src, sp.bi),
+      classe       : classe,
+      entrepriseId : ent.id || (1700000000000 + sp.ei),
+      entrepriseNom: ent.nom || '',
+      tuteur       : ent.contact || '',
+      type         : sp.type,
+      dateDebut    : sp.deb,
+      dateFin      : sp.fin,
+      statut       : sp.statut,
+      notes        : `Stage ${STAGE_TYPE_STYLE[sp.type] ? STAGE_TYPE_STYLE[sp.type].lbl.replace(/^[^A-Za-zÀ-ÿ]+/, '') : sp.type} · poste : ${(ent.postes || '').split('·')[0].trim()}`,
+      evaluations  : sp.sem > 0 ? genEvals(sp.deb, sp.sem, sp.prof) : [],
+      synthese     : '',
+      dateCreation : new Date().toISOString().substring(0, 10)
+    };
+    /* Synthèse + score final pour les stages évalués */
+    if (stage.evaluations.length > 0) {
+      const synth = _stageGenererSynthese(stage);
+      stage.scoreFinal  = synth.scoreFinal;
+      stage.synthese    = synth.recommandation;
+      stage.niveauFinal = synth.niveau;
+    }
+    if (sp.statut === 'termine') stage.dateCloture = sp.fin;
+    return stage;
+  });
+
+  /* 5. Persistance localStorage + Firestore partagé. */
+  saveData(STAGES_KEY, stages);
+  if (typeof db !== 'undefined') {
+    db.collection('org_shared').doc('global__ea_stages').set({
+      teacherId: 'global',
+      key      : STAGES_KEY,
+      value    : JSON.stringify(stages),
+      updatedAt: new Date().toISOString()
+    }).catch(e => console.warn('[Demo stages]', e.message));
+  }
+
+  showToast('10 stages démo créés (5 terminés · 3 en cours · 2 planifiés)', '#059669');
+  auditLog('systeme', 'Init démo stages', '10 stages Formation Pro générés');
+  if (typeof renderStages === 'function') renderStages();
 }
 
 /* ═══════════════════════════════════════════════════════════════
