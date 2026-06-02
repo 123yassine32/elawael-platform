@@ -22866,7 +22866,13 @@ function renderStages() {
 
   if (!listEl) return;
   if (filtered.length === 0) {
-    listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px"></div> <div style="font-size:14px;font-weight:700">Aucun stage ${_stageFilter !== 'tous' ? STAGE_STATUT_STYLE[_stageFilter]?.lbl.toLowerCase() : 'enregistré'}</div> <div style="font-size:12px;margin-top:6px">${stages.length === 0 ? 'Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l\'association.' : 'Aucun stage dans cette catégorie. Changez de filtre ou créez un nouveau stage.'}</div> </div>`;
+    /* Bouton de démo affiché UNIQUEMENT quand aucun stage n'existe encore.
+       Il disparaît automatiquement dès que des stages sont chargés
+       → invisible pour le jury le jour de la soutenance. */
+    const demoBtn = stages.length === 0
+      ? `<div style="margin-top:18px"><button class="btn btn-p" onclick="stageInitDemo()" style="font-size:13px">Charger 10 stages de démonstration</button><div style="font-size:11px;color:var(--muted);margin-top:6px">Crée aussi les 10 entreprises partenaires si nécessaire.</div></div>`
+      : '';
+    listEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)"> <div style="font-size:42px;margin-bottom:10px"></div> <div style="font-size:14px;font-weight:700">Aucun stage ${_stageFilter !== 'tous' ? STAGE_STATUT_STYLE[_stageFilter]?.lbl.toLowerCase() : 'enregistré'}</div> <div style="font-size:12px;margin-top:6px">${stages.length === 0 ? 'Cliquez sur "➕ Nouveau stage" pour créer le premier stage de l\'association.' : 'Aucun stage dans cette catégorie. Changez de filtre ou créez un nouveau stage.'}</div>${demoBtn} </div>`;
     return;
   }
 
