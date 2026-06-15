@@ -14,7 +14,11 @@ rules_version = '2';
 //   /userData/{uid}/bundles/{name}  → bundles PEI/ABLLS/Ghiyab
 //   /org_new_benef/{docId}          → nouveaux bénéficiaires
 //   /audit_logs/{logId}             → journal d'audit (immuable)
-//   /shared/{doc}                   → données globales partagées
+//   /org_shared/{doc}               → données partagées cadres↔admin
+//                                     (présences, suivis, stages, entreprises…)
+//   /rh_demandes/{id}               → demandes RH (congés, formations…)
+//   /recommandations/{id}           → recommandations consultants
+//   /shared/{doc}                   → données globales partagées (legacy)
 //
 // ROLES (CLAUDE.md §6) :
 //   ADMIN        → tout voir + modifier + supprimer + gérer utilisateurs
@@ -128,12 +132,50 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // ── Données globales partagées /shared/{doc} ──
+    // ── Données globales partagées /shared/{doc} (legacy) ──
     // Vacances, config, alertes globales.
     match /shared/{doc} {
       allow read:   if isAuth();
       allow write:  if isAdminOrGestionnaire();
       allow delete: if isAdmin();
+    }
+
+    // ── Données partagées cadres↔admin /org_shared/{doc} ──
+    // Clé docId : "{teacherId}__{key}" ou "global__{key}".
+    // Chaque cadre pousse ses données opérationnelles ; l'admin et le
+    // gestionnaire consolident l'ensemble pour le pilotage.
+    // Couvre : présences, suivis, rapports, notes, PEI, stages, entreprises…
+    // (données opérationnelles agrégées — pas de PII brute ici).
+    match /org_shared/{doc} {
+      allow read:   if isAuth();
+      allow create, update: if isAuth();
+      allow delete: if isAdmin();
+    }
+
+    // ── Demandes RH /rh_demandes/{id} ──
+    // Création par tout cadre authentifié pour ses propres demandes.
+    // Lecture par tous (le cadre suit l'état de sa demande, l'admin les traite).
+    // Mise à jour : admin/gestionnaire (validation) ou le cadre propriétaire.
+    match /rh_demandes/{id} {
+      allow read:   if isAuth();
+      allow create: if isAuth();
+      allow update: if isAdminOrGestionnaire()
+                    || (isAuth() && resource.data.teacherId == getTeacherId());
+      allow delete: if isAdmin();
+    }
+
+    // ── Recommandations consultants /recommandations/{id} ──
+    // Saisies par les consultants/cadres, consultées par l'admin.
+    match /recommandations/{id} {
+      allow read:   if isAuth();
+      allow create, update: if isAuth();
+      allow delete: if isAdmin();
+    }
+
+    // ── Test de connectivité /_ping/{doc} ──
+    // Simple vérification de la connexion Firestore.
+    match /_ping/{doc} {
+      allow read, write: if isAuth();
     }
 
   }

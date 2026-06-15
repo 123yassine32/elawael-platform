@@ -43,3 +43,10 @@ build/
 # Fichiers temporaires
 *.tmp
 *.temp
+
+# Artefact généré par tools/check_js.js (regénéré à chaque vérification)
+tools/extracted.js
+
+# Livrables Word volumineux + fichiers de verrouillage Office
+*.docx
+~$*
